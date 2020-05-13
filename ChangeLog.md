@@ -1,8 +1,11 @@
 
 
                               mnthread (mini Thread) ChangeLog
+Version 1.0.62 Mai 2020
+  * update examples - stripped
+  * switch from c3pb.gitlab to my public github account
 
-Version 1.0.6 November 2018:
+Version 1.0.60 November 2018:
   * rename:
       * sleep -> mn_sleep
       * usleep -> mn_usleep
