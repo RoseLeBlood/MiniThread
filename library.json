@@ -7,9 +7,16 @@
 		{
 			"name": "RoseLeBlood",
 			"email": "ambersophia.schroeck@outlook.com"
+			"maintainer": true
 		},
 	],
+	"repository": 
+	{
+		"type": "git",
+		"url": "https://github.com/RoseLeBlood/mnthread.git"
+	},
+	
 	"version": "1.0.5",
-	"framework": "arduino",
+	"framework": "espidf",
 	"platforms": "espressif32",
 }
