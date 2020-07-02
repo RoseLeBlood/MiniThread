@@ -1,6 +1,8 @@
 #ifndef __EXAMPLE_MNTHREAD_HALLOWORLD_H__
 #define __EXAMPLE_MNTHREAD_HALLOWORLD_H__
 
+#include <libmn.h>
+
 class helloWorld_task : public mthread {
 public:
   helloWorld_task();
