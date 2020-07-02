@@ -1,0 +1,19 @@
+{
+    "name": "mnthread",
+    "keywords": "esp32, thread, esp-idf, cpp, espressif32, espidf, mutex",
+    "description": "Mini Thread class for Cpp. For easy crating threads, mhtex, spinlocks on ESP32",
+    "authors":
+    {
+        "name": "RoseLeBlood",
+		"email": "ambersophia.schroeck@outlook.com",
+		"maintainer": true
+    },
+    "repository":
+    {
+        "type": "git",
+        "url": "https://github.com/RoseLeBlood/mnthread.git"
+    },
+    "version": "1.2",
+    "frameworks": "espidf",
+    "platforms": "espressif32"
+}
