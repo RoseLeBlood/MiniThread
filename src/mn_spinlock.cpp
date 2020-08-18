@@ -1,5 +1,5 @@
-#include "mn-spinlock.h"
-#include "mn-error.hpp"
+#include "mn_spinlock.hpp"
+#include "mn_error.hpp"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"

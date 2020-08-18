@@ -1,10 +1,11 @@
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
 
-#include "mn-autolock.h"
-#include "mn-error.hpp"
-#include "mn-sleep.h"
-#include "mn-micros.h"
+#include "mn_autolock.hpp"
+#include "mn_error.hpp"
+#include "mn_sleep.hpp"
+#include "mn_micros.hpp"
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"

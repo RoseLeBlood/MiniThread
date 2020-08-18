@@ -1,4 +1,4 @@
-#include "libmn.h"
+#include "libmn.hpp"
 #include <stdio.h>
 
 void libmn_panic() {

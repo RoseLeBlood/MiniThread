@@ -1,7 +1,7 @@
 #ifndef MINLIB_ESP32_SPINLOCK_
 #define MINLIB_ESP32_SPINLOCK_
 
-#include "mn-error.hpp"
+#include "mn_error.hpp"
 
 
 class basic_spinlock {

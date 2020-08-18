@@ -1,4 +1,4 @@
-#include "mn-thread.h"
+#include "mn_thread.hpp"
 #include <stdio.h>
 
 basic_thread::basic_thread(char const* strName, unsigned int uiPriority,

@@ -1,4 +1,4 @@
-#include "mn-mutex.h"
+#include "mn_mutex.hpp"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
