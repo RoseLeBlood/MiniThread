@@ -1,9 +1,9 @@
 #ifndef _MINLIB_AUTOLOCK_H_
 #define _MINLIB_AUTOLOCK_H_
 
-#include "mn_config.h"
-#include "mn_mutex.h"
-#include "mn_spinlock.h"
+#include "mn_config.hpp"
+#include "mn_mutex.hpp"
+#include "mn_spinlock.hpp"
 
 template <class MUTEX = basic_mutex>
 class  basic_autolock

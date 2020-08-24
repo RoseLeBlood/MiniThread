@@ -1,6 +1,6 @@
 mnthread
 =======
-
+##https://github.com/ID1258/oh-my-i3/blob/master/config
 Introduction
 ------------
 

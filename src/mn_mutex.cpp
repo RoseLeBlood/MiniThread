@@ -15,8 +15,8 @@ basic_mutex::~basic_mutex() { }
 int basic_mutex::create() {
   if (m_bisinitialized)
     return ERR_MUTEX_ALREADYINIT;
-  m_pmutex = xSemaphoreCreateBinary();
-
+  //m_pmutex = xSemaphoreCreateBinary();
+  m_pmutex = xSemaphoreCreateMutex();
 
   if (m_pmutex) {
     m_bisinitialized = true;

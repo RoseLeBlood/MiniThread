@@ -50,6 +50,13 @@ public:
   basic_thread*         get_child();
 
   bool                  add_child_thread(basic_thread* thread);
+
+  void                  yield();
+
+  /**
+   *  Internal helper function to signal this thread.
+   */
+  inline void signal()  { //ThreadWaitSem.Give(); }
 public:
   static void suspend(basic_thread *t)  { t->suspend(); }
   static void resume(basic_thread *t)   {   t->resume(); }
@@ -82,6 +89,8 @@ protected:
   LockType_t *m_contextMutext;
 
   LockType_t *m_continuemutex, *m_continuemutex2;
+
+  spinlock_t ThreadWaitSem;
 private:
   basic_thread *m_pChild;
   basic_thread *m_pParent;
