@@ -1,6 +1,16 @@
 
 
                               mnthread (mini Thread) ChangeLog
+Version 1.4 August 2020
+  * add Conditional Variable an diable in config file (mn_config.hpp)
+  * add new Cosfigurations items on mn_config.hpp
+  * add recursive matux and autolack tps for interrupt, critical_lock and schedular
+  * add Tasklets
+
+Version 1.2 August 2020
+  * rename the header files from mn-(xxx).h to mn_(xxx).hpp
+  * Platformio regestration
+
 Version 1.0.62 Mai 2020
   * update examples - stripped
   * switch from c3pb.gitlab to my public github account
