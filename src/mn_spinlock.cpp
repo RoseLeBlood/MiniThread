@@ -9,56 +9,69 @@
 
 #include "esp_attr.h"
 
-basic_spinlock::basic_spinlock(int count) : m_uiCount(count), m_bisinitialized(false) {
-    m_pSpinlock = xSemaphoreCreateCounting(0x7fffffff, count);
+basic_spinlock::basic_spinlock(int count, int maxcount) 
+  : m_uiCount(count), m_uiMaxCount(maxcount), m_bisinitialized(false) {
+    
 }
 basic_spinlock::~basic_spinlock() {
+    vSemaphoreDelete(m_pSpinlock);
 }
 
 int basic_spinlock::create() {
   if (m_bisinitialized)
     return ERR_SPINLOCK_ALREADYINIT;
-  m_pSpinlock = xSemaphoreCreateCounting(0x7fffffff, m_uiCount);
+
+  if (m_uiMaxCount < m_uiCount)
+    return ERR_SPINLOCK_BAD_INITIALCOUNT;
+
+  if (m_uiMaxCount == 0) {
+    m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
 
 
-  if (m_pSpinlock) {
-    printf("[MUTEX] xSemaphoreCreateCounting OK\n");
-    m_bisinitialized = true;
 
-    unlock();
+    if (m_pSpinlock) {
+      printf("[MUTEX] xSemaphoreCreateCounting OK\n");
+      m_bisinitialized = true;
 
-    return ERR_SPINLOCK_OK;
+      unlock();
+
+      return ERR_SPINLOCK_OK;
+    }
   }
-  return ERR_SPINLOCK_CANTCREATEMUTEX;
+  return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }
 
-int basic_spinlock::lock() {
+int basic_spinlock::lock(unsigned int timeout) {
+  BaseType_t success;
+
   if (!m_bisinitialized)
     return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+       success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
        if(xHigherPriorityTaskWoken)
          _frxt_setup_switch();
    } else {
-    xSemaphoreTake(m_pSpinlock, portMAX_DELAY);
+    success = xSemaphoreTake(m_pSpinlock, timeout);
    }
-  return ERR_SPINLOCK_OK;
+   return success == pdTRUE ? ERR_SPINLOCK_OK : -1;
 }
 int basic_spinlock::unlock() {
+  BaseType_t success;
+
   if (!m_bisinitialized)
     return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+       success = xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
        if(xHigherPriorityTaskWoken)
          _frxt_setup_switch();
    } else {
-			xSemaphoreGive(m_pSpinlock);
+			success = xSemaphoreGive(m_pSpinlock);
   }
-  return ERR_SPINLOCK_OK;
+  return success == pdTRUE ? ERR_SPINLOCK_OK : -1;
 }
 bool basic_spinlock::try_lock() {
   if (!m_bisinitialized)
@@ -69,4 +82,25 @@ bool basic_spinlock::try_lock() {
 int basic_spinlock::get_count() const {
   //return static_cast<int>(uxQueueMessagesWaiting(m_pSpinlock));
   return 0;
+}
+
+binary_semaphore::binary_semaphore() : basic_spinlock() { }
+
+
+int binary_semaphore::create() {
+  if (m_bisinitialized)
+    return ERR_SPINLOCK_ALREADYINIT;
+
+  m_pSpinlock = xSemaphoreCreateBinary();
+
+
+  if (m_pSpinlock) {
+    printf("[MUTEX] xSemaphoreCreateBinary OK\n");
+    m_bisinitialized = true;
+
+    unlock();
+
+    return ERR_SPINLOCK_OK;
+  }
+  return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }

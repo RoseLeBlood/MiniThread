@@ -1,16 +1,15 @@
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
 
-#include "mn_autolock.hpp"
-#include "mn_error.hpp"
-#include "mn_sleep.hpp"
-#include "mn_micros.hpp"
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
 
-
+#include "mn_autolock.hpp"
+#include "mn_error.hpp"
+#include "mn_sleep.hpp"
+#include "mn_micros.hpp"
+#include "mn_convar.hpp"
 
 class  basic_thread {
 public:
@@ -45,21 +44,17 @@ public:
   void                  resume();
 
   virtual void*         on_thread() { thread_started(); return NULL; }
+  virtual void          on_cleanup() { }
 
   basic_thread*         get_root();
   basic_thread*         get_child();
 
   bool                  add_child_thread(basic_thread* thread);
 
-  void                  yield();
-
-  /**
-   *  Internal helper function to signal this thread.
-   */
-  inline void signal()  { //ThreadWaitSem.Give(); }
 public:
   static void suspend(basic_thread *t)  { t->suspend(); }
   static void resume(basic_thread *t)   {   t->resume(); }
+
   static void yield()                   { taskYIELD(); }
   static void sleep(unsigned int secs)     { ::mn_sleep(secs); }
   static void usleep(unsigned int usec)     { ::mn_usleep(usec); }
@@ -89,11 +84,23 @@ protected:
   LockType_t *m_contextMutext;
 
   LockType_t *m_continuemutex, *m_continuemutex2;
-
-  spinlock_t ThreadWaitSem;
 private:
   basic_thread *m_pChild;
   basic_thread *m_pParent;
+
+#if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
+public:
+  void signal();
+  void signal_all();
+
+  int wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut = portMAX_DELAY);
+
+  virtual void on_signal() { }
+private:
+  semaphore_t* m_waitSem;
+
+  friend class basic_condition_variable;
+#endif
 };
 
 using mthread = basic_thread;

@@ -10,13 +10,21 @@
 #include "esp_attr.h"
 
 basic_mutex::basic_mutex() : m_bisinitialized(false) { }
-basic_mutex::~basic_mutex() { }
+basic_mutex::~basic_mutex() { 
+  vSemaphoreDelete(m_pmutex);
+}
 
 int basic_mutex::create() {
   if (m_bisinitialized)
     return ERR_MUTEX_ALREADYINIT;
-  //m_pmutex = xSemaphoreCreateBinary();
+
+#if MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_BINSPHORE 
+  m_pmutex = xSemaphoreCreateBinary();
+#elif MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_MUTEX 
   m_pmutex = xSemaphoreCreateMutex();
+#else
+  return ERR_MUTEX_CANTCREATEMUTEX;
+#endif
 
   if (m_pmutex) {
     m_bisinitialized = true;

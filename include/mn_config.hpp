@@ -7,12 +7,37 @@
 
 #define MN_THREAD_CONFIG_MUTEX      1
 #define MN_THREAD_CONFIG_SPINLOCK   2
+#define MN_THREAD_CONFIG_BINSPHORE  3
 
+#define MN_THREAD_CONFIG_YES        1
+#define MN_THREAD_CONFIG_NO         2
+
+/*
+MN_THREAD_CONFIG_BINSPHORE  mutex created with "xSemaphoreCreateBinary" (default)
+MN_THREAD_CONFIG_MUTEX mutex created with  "xSemaphoreCreateMutex"
+*/
+#define MN_THREAD_CONFIG_MUTEX_CLASS MN_THREAD_CONFIG_BINSPHORE   
+
+/* Default lock type using in the thread class
+MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
+MN_THREAD_CONFIG_SPINLOCK:   using the spinlock as default lock type
+*/
 #define MN_THREAD_CONFIG_AUTOLOCK MN_THREAD_CONFIG_MUTEX
+
+/*
+Condition variable support for this libary
+ 'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO'
+*/
+#define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
 
 // Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
 #define MN_THREAD_CONFIG_THREAD_LOCK MN_THREAD_CONFIG_MUTEX
 
+#if (configUSE_RECURSIVE_MUTEXES == 1)
+#define MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_YES
+#else 
+#define MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_NO
+#endif
 
 
 #endif

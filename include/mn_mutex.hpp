@@ -1,20 +1,25 @@
 #ifndef MINLIB_ESP32_MUTEX_
 #define MINLIB_ESP32_MUTEX_
 
+#include "mn_config.hpp"
+#include "mn_spinlock.hpp"
 #include "mn_error.hpp"
+
 
 class basic_mutex {
 public:
   basic_mutex();
-  ~basic_mutex();
+  virtual ~basic_mutex();
 
-  int create();
-	int lock();
-	int unlock();
+  virtual int create();
+	virtual int lock();
+	virtual int unlock();
 
-  bool try_lock();
+  virtual bool try_lock();
 
   bool is_initialized() const 						{ return m_bisinitialized; }
+
+  void* get_handle()                      { return m_pmutex; }
 private:
 	void* m_pmutex;
 	bool m_bisinitialized;

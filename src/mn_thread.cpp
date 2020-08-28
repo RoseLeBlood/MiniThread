@@ -1,6 +1,7 @@
 #include "mn_thread.hpp"
 #include <stdio.h>
 
+
 basic_thread::basic_thread(char const* strName, unsigned int uiPriority,
      unsigned short  usStackDepth) {
   m_strName = strName;
@@ -13,7 +14,7 @@ basic_thread::basic_thread(char const* strName, unsigned int uiPriority,
   m_pParent = NULL;
 }
 basic_thread::~basic_thread() {
-  if(!m_bRunning) {delete m_runningMutex; m_bMutexInit =false;}
+  if(!m_bRunning) { delete m_runningMutex; m_bMutexInit =false; }
 }
 basic_thread*  basic_thread::get_root() {
   autolock_t autolock(*m_contextMutext);
@@ -32,6 +33,7 @@ basic_thread*  basic_thread::get_child() {
   child = m_pChild;
   return child;
 }
+
 bool basic_thread::add_child_thread(basic_thread* thread) {
   autolock_t autolock(*m_contextMutext);
 
@@ -42,6 +44,7 @@ bool basic_thread::add_child_thread(basic_thread* thread) {
 
   return ret;
 }
+
 int basic_thread::create(int uiCore) {
   if(!m_bMutexInit) {
     m_runningMutex = new LockType_t();
@@ -49,6 +52,7 @@ int basic_thread::create(int uiCore) {
 
     m_continuemutex = new LockType_t();
     m_continuemutex2 = new LockType_t();
+
 
     if(m_runningMutex->create() != ERR_MUTEX_OK)
       return ERR_THREAD_CANTINITMUTEX;
@@ -59,6 +63,12 @@ int basic_thread::create(int uiCore) {
       return ERR_THREAD_CANTINITMUTEX;
     if(m_continuemutex2->create() != ERR_MUTEX_OK)
       return ERR_THREAD_CANTINITMUTEX;
+
+    #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
+      m_waitSem = new semaphore_t();
+      if(m_waitSem->create() != ERR_MUTEX_OK)
+        return ERR_THREAD_CANTINITMUTEX;
+    #endif
   }
   m_continuemutex->lock();
 	m_runningMutex->lock();
@@ -173,6 +183,7 @@ void basic_thread::runtaskstub(void* parm) {
 	esp_thread->m_continuemutex->unlock();
 
   ret = esp_thread->on_thread();
+  esp_thread->on_cleanup();
 
   esp_thread->m_runningMutex->lock();
 	esp_thread->m_bRunning = false;
@@ -190,3 +201,28 @@ uint32_t __internal_id_base__ = 0;
 uint32_t basic_thread::get_new_id() {
   return __internal_id_base__++;
 }
+
+
+#if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
+void basic_thread::signal()  { 
+  m_waitSem->unlock(); 
+  on_signal();
+}
+void basic_thread::signal_all()  { 
+  signal();
+
+  if(m_pChild) 
+    m_pChild->signal_all();  
+}
+int basic_thread::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut) {
+  cv.add_list(this);
+  
+  cvl.unlock();
+
+  int timed_out = m_waitSem->lock(timeOut);
+    
+  cvl.lock();
+
+  return timed_out;
+}
+#endif

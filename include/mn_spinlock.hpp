@@ -6,24 +6,36 @@
 
 class basic_spinlock {
 public:
-  basic_spinlock(int count = 1);
-  ~basic_spinlock();
+  basic_spinlock(int count = 1, int maxcount = 0x7fffffff);
+  virtual ~basic_spinlock();
 
-  int create();
-	int lock();
-	int unlock();
+  virtual int create();
 
-  bool try_lock();
+	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
+	virtual int unlock();
 
-  bool is_initialized() const 						{ return m_bisinitialized; }
+  virtual bool try_lock();
+
+  bool is_initialized() const { return m_bisinitialized; }
   int get_count() const;
-private:
+
+protected:
 	void* m_pSpinlock;
   int m_uiCount;
+  int m_uiMaxCount;
 	bool m_bisinitialized;
 };
 
-using spinlock_t = basic_spinlock;
+class binary_semaphore : public basic_spinlock {
+public:
+  binary_semaphore();
 
+  virtual int create();
+};
+
+
+
+using spinlock_t = basic_spinlock;
+using semaphore_t = binary_semaphore;
 
 #endif
