@@ -55,7 +55,7 @@ int basic_spinlock::lock(unsigned int timeout) {
    } else {
     success = xSemaphoreTake(m_pSpinlock, timeout);
    }
-   return success == pdTRUE ? ERR_SPINLOCK_OK : -1;
+   return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_LOCK;
 }
 int basic_spinlock::unlock() {
   BaseType_t success;
@@ -71,7 +71,7 @@ int basic_spinlock::unlock() {
    } else {
 			success = xSemaphoreGive(m_pSpinlock);
   }
-  return success == pdTRUE ? ERR_SPINLOCK_OK : -1;
+  return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_UNLOCK;
 }
 bool basic_spinlock::try_lock() {
   if (!m_bisinitialized)
@@ -80,8 +80,7 @@ bool basic_spinlock::try_lock() {
   return (xSemaphoreTake( m_pSpinlock, 0 ) == pdTRUE);
 }
 int basic_spinlock::get_count() const {
-  //return static_cast<int>(uxQueueMessagesWaiting(m_pSpinlock));
-  return 0;
+   return uxQueueMessagesWaiting(m_pSpinlock);
 }
 
 binary_semaphore::binary_semaphore() : basic_spinlock() { }

@@ -103,6 +103,6 @@ private:
 #endif
 };
 
-using mthread = basic_thread;
+using thread_t = basic_thread;
 
 #endif

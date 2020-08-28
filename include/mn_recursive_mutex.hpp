@@ -9,7 +9,7 @@ public:
   ~recursive_mutex();
 
   virtual int create();
-	virtual int lock();
+	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
 	virtual int unlock();
 
   virtual bool try_lock();

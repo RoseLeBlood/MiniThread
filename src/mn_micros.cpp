@@ -8,7 +8,6 @@
 #include "nvs_flash.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
-#include "sdkconfig.h"
 
 #include "esp_attr.h"
 #include "esp_partition.h"
@@ -30,5 +29,27 @@ unsigned long IRAM_ATTR micros() {
     return overflow + (ccount / CONFIG_ESP32_DEFAULT_CPU_FREQ_MHZ);
 }
 unsigned long millis() {
-  return xTaskGetTickCount() * portTICK_PERIOD_MS;
+  if (xPortInIsrContext()) {
+    return xTaskGetTickCountFromISR() * portTICK_PERIOD_MS;
+  } else {
+    return xTaskGetTickCount() * portTICK_PERIOD_MS;
+  }
+}
+
+unsigned int get_ticks() {
+  if (xPortInIsrContext()) {
+    return xTaskGetTickCountFromISR();
+  } else {
+    return xTaskGetTickCount();
+  }
+}
+
+unsigned int ticks_to_ms(unsigned int ticks) {
+  return ticks * portTICK_PERIOD_MS;
+}
+unsigned int ms_to_ticks(unsigned int ms) {
+  return ms / portTICK_PERIOD_MS;
+}
+unsigned int seconds_to_ticks(unsigned int sec) {
+  return (sec * 1000) / portTICK_PERIOD_MS;
 }

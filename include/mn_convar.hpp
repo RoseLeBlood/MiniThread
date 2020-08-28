@@ -26,7 +26,7 @@ public:
 private:
     void add_list(basic_thread *thread);
 protected:
-    mutex_t*                    m_mutex;
+    mutex_t                     m_mutex;
     std::list<basic_thread*>    m_waitList;
 };
 

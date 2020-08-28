@@ -2,13 +2,13 @@
 #define _MINLIB_CRITICAL_H_
 
 #include "mn_mutex.hpp"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 class basic_critical {
 public:
-    // NOT imp
-    static void enter(mutex_t& handle);
-    // NOT imp
-    static void exit(mutex_t& handle);
+    static void enter(portMUX_TYPE handle);
+    static void exit(portMUX_TYPE handle);
 
     static void disable_interrupts();
     static void enable_interrupts();
@@ -19,13 +19,12 @@ public:
 
 class basic_critical_lock {
 public:
-    basic_critical_lock(mutex_t& m) 
-        : m_pMutex(m) { }
+    basic_critical_lock();
 
-    virtual void lock() { basic_critical::enter(m_pMutex);  }
-    virtual void unlock() { basic_critical::exit(m_pMutex);  }
+    virtual void lock() { basic_critical::enter(m_pHandle);  }
+    virtual void unlock() { basic_critical::exit(m_pHandle);  }
 private:
-    mutex_t&    m_pMutex;
+    portMUX_TYPE m_pHandle;
 };
 
 class basic_interrupts_lock { 

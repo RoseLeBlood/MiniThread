@@ -34,38 +34,42 @@ int basic_mutex::create() {
     return ERR_MUTEX_CANTCREATEMUTEX;
   }
 }
-int basic_mutex::lock() {
+int basic_mutex::lock(unsigned int timeout) {
+  BaseType_t success;
+
   if (!m_bisinitialized)
     return ERR_MUTEX_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       xSemaphoreTakeFromISR( m_pmutex, &xHigherPriorityTaskWoken );
+       success = xSemaphoreTakeFromISR( m_pmutex, &xHigherPriorityTaskWoken );
        if(xHigherPriorityTaskWoken)
          _frxt_setup_switch();
    } else {
-    xSemaphoreTake(m_pmutex, portMAX_DELAY);
+    success = xSemaphoreTake(m_pmutex, timeout);
    }
 
-  return ERR_MUTEX_OK;
+  return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_LOCK;
 }
 int basic_mutex::unlock() {
+  BaseType_t success;
+
   if (!m_bisinitialized)
     return ERR_MUTEX_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       xSemaphoreGiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
+       success = xSemaphoreGiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
        if(xHigherPriorityTaskWoken)
          _frxt_setup_switch();
    } else {
-			xSemaphoreGive(m_pmutex);
+			success = xSemaphoreGive(m_pmutex);
   }
-  return ERR_MUTEX_OK;
+  return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_UNLOCK;
 }
 bool basic_mutex::try_lock() {
   if (!m_bisinitialized)
     return false;
 
-  return (xSemaphoreTake( m_pmutex, 0 ) == pdTRUE);
+  return (lock(0) == ERR_MUTEX_OK);
 }

@@ -18,7 +18,7 @@ recursive_mutex::recursive_mutex() : m_bisinitialized(false) {
 
 }
 recursive_mutex::~recursive_mutex() {
-    
+    vSemaphoreDelete(m_pmutex);
 }
 
 int recursive_mutex::create()  {
@@ -35,40 +35,44 @@ int recursive_mutex::create()  {
         return ERR_MUTEX_CANTCREATEMUTEX;
     }
 }
-int recursive_mutex::lock() {
+int recursive_mutex::lock(unsigned int timeout) {
+    BaseType_t success;
+
     if (!m_bisinitialized)
         return ERR_MUTEX_NOTINIT;
 
     if (xPortInIsrContext()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        xSemaphoreTakeRecursiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
+        success = xSemaphoreTakeRecursiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
         if(xHigherPriorityTaskWoken)
             _frxt_setup_switch();
     } else {
-        xSemaphoreTakeRecursive(m_pmutex, portMAX_DELAY);
+        success = xSemaphoreTakeRecursive(m_pmutex, timeout);
     }
 
-    return ERR_MUTEX_OK;
+    return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_LOCK;
 }
 int recursive_mutex::unlock() {
+    BaseType_t success;
+
     if (!m_bisinitialized)
     return ERR_MUTEX_NOTINIT;
 
     if (xPortInIsrContext()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        xSemaphoreGiveRecursiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
+        success = xSemaphoreGiveRecursiveFromISR( m_pmutex, &xHigherPriorityTaskWoken );
         if(xHigherPriorityTaskWoken)
             _frxt_setup_switch();
     } else {
-            xSemaphoreGiveRecursive(m_pmutex);
+        success = xSemaphoreGiveRecursive(m_pmutex);
     }
-    return ERR_MUTEX_OK;
+    return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_UNLOCK;
 }
 bool recursive_mutex::try_lock() {
     if (!m_bisinitialized)
         return false;
 
-    return (xSemaphoreTakeRecursive( m_pmutex, 0 ) == pdTRUE);
+    return (lock( 0 ) == ERR_MUTEX_OK);
 }
 
 
