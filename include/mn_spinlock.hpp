@@ -10,6 +10,7 @@ public:
   virtual ~basic_spinlock();
 
   virtual int create();
+  virtual int destroy();
 
 	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
 	virtual int unlock();

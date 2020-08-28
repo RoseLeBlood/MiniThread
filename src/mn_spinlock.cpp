@@ -17,6 +17,11 @@ basic_spinlock::~basic_spinlock() {
     vSemaphoreDelete(m_pSpinlock);
 }
 
+int basic_spinlock::destroy() {
+  vSemaphoreDelete(m_pSpinlock);
+  return ERR_SPINLOCK_OK;
+}
+
 int basic_spinlock::create() {
   if (m_bisinitialized)
     return ERR_SPINLOCK_ALREADYINIT;

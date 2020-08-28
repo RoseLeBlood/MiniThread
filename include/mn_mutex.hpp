@@ -12,6 +12,8 @@ public:
   virtual ~basic_mutex();
 
   virtual int create();
+  virtual int destroy();
+
 	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
 	virtual int unlock();
 

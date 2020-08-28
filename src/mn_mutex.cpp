@@ -34,6 +34,10 @@ int basic_mutex::create() {
     return ERR_MUTEX_CANTCREATEMUTEX;
   }
 }
+int basic_mutex::destroy() {
+  vSemaphoreDelete(m_pmutex);
+  return ERR_MUTEX_OK;
+}
 int basic_mutex::lock(unsigned int timeout) {
   BaseType_t success;
 

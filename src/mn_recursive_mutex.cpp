@@ -20,6 +20,10 @@ recursive_mutex::recursive_mutex() : m_bisinitialized(false) {
 recursive_mutex::~recursive_mutex() {
     vSemaphoreDelete(m_pmutex);
 }
+int recursive_mutex::destroy() {
+  vSemaphoreDelete(m_pmutex);
+  return ERR_MUTEX_OK;
+}
 
 int recursive_mutex::create()  {
     if (m_bisinitialized)

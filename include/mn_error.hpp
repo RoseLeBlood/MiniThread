@@ -27,4 +27,8 @@
 #define ERR_THREAD_NOTRUNNING			-7
 #define ERR_THREAD_ALREADYRUNNING		-8
 
+#define ERR_TASKLET_OK                   NO_ERROR
+#define ERR_TASKLET_CANTINITLOCKT  		-4
+#define ERR_TASKLET_CANTSTART   		-5
+
 #endif
