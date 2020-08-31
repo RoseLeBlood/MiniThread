@@ -33,3 +33,6 @@
 
 .pio
 .pio/*
+
+.vscode
+.vscode/*
