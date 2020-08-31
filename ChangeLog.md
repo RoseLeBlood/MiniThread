@@ -1,6 +1,10 @@
 
 
                               mnthread (mini Thread) ChangeLog
+Version 1.42 August 2020
+  * add queue wrapper (queue/mn_queue.hpp) queue_t
+  * add binary queue (queue/mn_binaryqueue.hpp) binaryqueue_t
+  
 Version 1.4 August 2020
   * add Conditional Variable an diable in config file (mn_config.hpp)
   * add new Cosfigurations items on mn_config.hpp
