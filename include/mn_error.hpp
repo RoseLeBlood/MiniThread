@@ -31,4 +31,12 @@
 #define ERR_TASKLET_CANTINITLOCKT  		-4
 #define ERR_TASKLET_CANTSTART   		-5
 
+#define ERR_QUEUE_OK                    NO_ERROR
+#define ERR_QUEUE_ALREADYINIT			-1
+#define ERR_QUEUE_CANTCREATE			-2
+#define ERR_QUEUE_NOTCREATED            -3
+#define ERR_QUEUE_ADD                   -4
+#define ERR_QUEUE_REMOVE                -5
+#define ERR_QUEUE_PEEK                  -6
+
 #endif

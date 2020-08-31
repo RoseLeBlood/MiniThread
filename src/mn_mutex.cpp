@@ -5,7 +5,6 @@
 #include "freertos/task.h"
 #include <stdio.h>
 
-#include "freertos/FreeRTOS.h"
 
 #include "esp_attr.h"
 

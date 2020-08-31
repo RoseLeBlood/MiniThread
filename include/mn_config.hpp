@@ -12,7 +12,8 @@
 #define MN_THREAD_CONFIG_YES        1
 #define MN_THREAD_CONFIG_NO         2
 
-/*
+
+/**
 MN_THREAD_CONFIG_BINSPHORE  mutex created with "xSemaphoreCreateBinary" (default)
 MN_THREAD_CONFIG_MUTEX mutex created with  "xSemaphoreCreateMutex"
 */
@@ -30,7 +31,13 @@ Condition variable support for this libary
 */
 #define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
 
-// Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
+/** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
+ * =================================================================
+ */
+
+/**
+ * 
+ */ 
 #define MN_THREAD_CONFIG_THREAD_LOCK MN_THREAD_CONFIG_MUTEX
 
 #if (configUSE_RECURSIVE_MUTEXES == 1)
