@@ -15,5 +15,18 @@
     },
     "version": "1.43",
     "frameworks": "espidf",
-    "platforms": "espressif32"
+    "platforms": "espressif32",
+    "examples": [
+        {
+            "name": "01_HalloWorld",
+            "base": "examples/01_HalloWorld",
+            "files": [
+                "platformio.ini",
+                "include/task.hpp",
+                "src/task.cpp",
+                "src/main.cpp",
+                "src/sdkconfig.h"
+            ]
+        }
+    ]
 }

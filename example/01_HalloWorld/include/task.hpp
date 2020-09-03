@@ -3,7 +3,7 @@
 
 #include <libmn.h>
 
-class helloWorld_task : public mthread {
+class helloWorld_task : public basic_thread {
 public:
   helloWorld_task();
 
