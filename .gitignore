@@ -37,4 +37,7 @@
 .vscode
 .vscode/*
 
+platformio.ini
 update pio.sh
+sdkconfig
+CMakeLists
