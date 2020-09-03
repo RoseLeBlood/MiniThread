@@ -1,7 +1,6 @@
 mnthread
 =======
-##https://github.com/ID1258/oh-my-i3/blob/master/config
-Introduction
+##Introduction
 ------------
 
 The name mnthread  means 'mini Thread'. This library was developed
