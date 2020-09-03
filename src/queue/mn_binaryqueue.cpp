@@ -4,7 +4,9 @@
 #include "queue/mn_binaryqueue.hpp"
 #include "mn_error.hpp"
 
-int basic_binaryqueue::add(void *item, unsigned int timeout) {
+int basic_binaryqueue::enqueue(void *item, unsigned int timeout) {
+    (void)timeout;
+
     if(m_pHandle == NULL) return ERR_QUEUE_NOTCREATED;
 
     if (xPortInIsrContext()) {

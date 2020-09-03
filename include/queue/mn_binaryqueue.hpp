@@ -23,11 +23,11 @@ public:
      *  Add an item to the queue.
      *
      *  @param item The item you are adding.
-     *  @param timeout How long to wait to add the item to the queue 
+     *  @param timeout not use 
      *  @return 'ERR_QUEUE_OK' when the item in the queue overwrited and 'ERR_QUEUE_NOTCREATED'
      *  the queue not created, please call the function create first
      */
-    virtual int add(void *item,  unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int enqueue(void *item,  unsigned int timeout = -1);
 };
 
 using binaryqueue_t = basic_binaryqueue;

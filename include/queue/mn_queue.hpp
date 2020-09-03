@@ -46,7 +46,7 @@ public:
      *  @return 'ERR_QUEUE_OK' the item was added, 'ERR_QUEUE_ADD' on an error
      *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
-    virtual int add(void *item, 
+    virtual int enqueue(void *item, 
                     unsigned int timeout = (unsigned int) 0xffffffffUL);
 
 
@@ -70,7 +70,7 @@ public:
      *  @return 'ERR_QUEUE_OK' the item was removed, 'ERR_QUEUE_REMOVE' on an error
      *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
-    virtual int remove(void *item, 
+    virtual int dequeue(void *item, 
                        unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**

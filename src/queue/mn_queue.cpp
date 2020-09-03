@@ -28,7 +28,7 @@ int basic_queue::destroy() {
     return ERR_QUEUE_OK;
 }
 
-int basic_queue::add(void *item, unsigned int timeout) {
+int basic_queue::enqueue(void *item, unsigned int timeout) {
     BaseType_t success;
 
     if(m_pHandle == NULL) return ERR_QUEUE_NOTCREATED;
@@ -46,7 +46,7 @@ int basic_queue::add(void *item, unsigned int timeout) {
 
     return success == pdTRUE ? ERR_QUEUE_OK : ERR_QUEUE_ADD;
 }
-int basic_queue::remove(void *item, unsigned int timeout) {
+int basic_queue::dequeue(void *item, unsigned int timeout) {
     BaseType_t success;
 
     if(m_pHandle == NULL) return ERR_QUEUE_NOTCREATED;
@@ -79,12 +79,12 @@ int basic_queue::peek(void *item, unsigned int timeout) {
 }
 
 bool basic_queue::is_empty() {
-    UBaseType_t cnt = get_num_items();
+    unsigned int cnt = get_num_items();
 
     return cnt == 0 ? true : false;
 }
 bool basic_queue::is_full() {
-    UBaseType_t cnt = get_left();
+    unsigned int cnt = get_left();
 
     return cnt == 0 ? true : false;
 }
@@ -95,11 +95,11 @@ int basic_queue::clear() {
 }
 
 
-UBaseType_t basic_queue::get_num_items() {
+unsigned int basic_queue::get_num_items() {
     return uxQueueMessagesWaiting(m_pHandle);
 }
 
 
-UBaseType_t basic_queue::get_left() {
+unsigned int basic_queue::get_left() {
     return uxQueueSpacesAvailable(m_pHandle);
 }
