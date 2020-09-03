@@ -23,4 +23,4 @@ Questions, comments and bug reports can be sent to
 
 ChangeLog
 ---------
-See [ChangeLog](ChangeLog.md)
+See [ChangeLog](ChangeLog)
