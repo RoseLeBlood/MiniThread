@@ -6,10 +6,10 @@
 #include <list>
 #include "mn_mutex.hpp"
 
-class basic_thread;
+class basic_convar_thread;
 
 class basic_condition_variable {
-    friend class basic_thread;
+    friend class basic_convar_thread;
 public:
     basic_condition_variable();
 
@@ -24,10 +24,10 @@ public:
     void broadcast(bool with_child_thread = true);
 
 private:
-    void add_list(basic_thread *thread);
+    void add_list(basic_convar_thread *thread);
 protected:
-    mutex_t                     m_mutex;
-    std::list<basic_thread*>    m_waitList;
+    mutex_t                            m_mutex;
+    std::list<basic_convar_thread*>    m_waitList;
 };
 
 using convar_t = basic_condition_variable;

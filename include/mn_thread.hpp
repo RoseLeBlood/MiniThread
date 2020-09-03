@@ -9,7 +9,7 @@
 #include "mn_error.hpp"
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
-#include "mn_convar.hpp"
+
 
 class  basic_thread {
 public:
@@ -42,6 +42,9 @@ public:
 
   void                  suspend();
   void                  resume();
+
+  virtual int           on_create() { return ERR_THREAD_OK; }
+  virtual int           on_kill()   { return ERR_THREAD_OK; }
 
   virtual void*         on_thread() { thread_started(); return NULL; }
   virtual void          on_cleanup() { }
@@ -84,23 +87,9 @@ protected:
   LockType_t *m_contextMutext;
 
   LockType_t *m_continuemutex, *m_continuemutex2;
-private:
+
   basic_thread *m_pChild;
   basic_thread *m_pParent;
-
-#if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
-public:
-  void signal();
-  void signal_all();
-
-  int wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut = portMAX_DELAY);
-
-  virtual void on_signal() { }
-private:
-  semaphore_t* m_waitSem;
-
-  friend class basic_condition_variable;
-#endif
 };
 
 using thread_t = basic_thread;

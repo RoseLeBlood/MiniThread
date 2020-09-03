@@ -1,6 +1,11 @@
 
 
                               mnthread (mini Thread) ChangeLog
+Version 1.43 September 2020   
+  * move convar function from basic_thread to basic_convar_thread 
+  * add basic_convar_thread when "MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES"is and update basic_condition_variable
+  * remove errors - (sorry, ... )
+                    
 Version 1.42 August 2020
   * add queue wrapper (queue/mn_queue.hpp) queue_t
   * add binary queue (queue/mn_binaryqueue.hpp) binaryqueue_t
