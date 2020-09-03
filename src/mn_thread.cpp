@@ -64,11 +64,6 @@ int basic_thread::create(int uiCore) {
     if(m_continuemutex2->create() != ERR_MUTEX_OK)
       return ERR_THREAD_CANTINITMUTEX;
 
-    #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
-      m_waitSem = new semaphore_t();
-      if(m_waitSem->create() != ERR_MUTEX_OK)
-        return ERR_THREAD_CANTINITMUTEX;
-    #endif
   }
   m_continuemutex->lock();
 	m_runningMutex->lock();
@@ -100,7 +95,7 @@ int basic_thread::create(int uiCore) {
 
 	m_continuemutex->unlock();
 
-	return 0;
+	return on_create();
 }
 int basic_thread::kill() {
   m_continuemutex->lock();
@@ -201,28 +196,3 @@ uint32_t __internal_id_base__ = 0;
 uint32_t basic_thread::get_new_id() {
   return __internal_id_base__++;
 }
-
-
-#if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
-void basic_thread::signal()  { 
-  m_waitSem->unlock(); 
-  on_signal();
-}
-void basic_thread::signal_all()  { 
-  signal();
-
-  if(m_pChild) 
-    m_pChild->signal_all();  
-}
-int basic_thread::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut) {
-  cv.add_list(this);
-  
-  cvl.unlock();
-
-  int timed_out = m_waitSem->lock(timeOut);
-    
-  cvl.lock();
-
-  return timed_out;
-}
-#endif

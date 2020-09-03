@@ -113,7 +113,7 @@ protected:
     QueueHandle_t  m_pHandle;
 
     unsigned int m_imaxItems;
-    unsigned int m_iitemSize
+    unsigned int m_iitemSize;
 };
 
 using queue_t = basic_queue;

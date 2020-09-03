@@ -10,7 +10,7 @@ int basic_binaryqueue::add(void *item, unsigned int timeout) {
     if (xPortInIsrContext()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-        (void)xQueueOverwriteFromISR(handle, item, &xHigherPriorityTaskWoken);
+        (void)xQueueOverwriteFromISR(m_pHandle, item, &xHigherPriorityTaskWoken);
 
         if(xHigherPriorityTaskWoken)
             _frxt_setup_switch();

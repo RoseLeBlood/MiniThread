@@ -5,8 +5,12 @@
 #include "mn_error.hpp"
 
 basic_queue::basic_queue(unsigned int maxItems, unsigned int itemSize) 
-    : m_pHandle(NULL), m_imaxItems(maxItems), m_iitemSize(itemSize)  { }
-basic_queue::~basic_queue();
+    : m_pHandle(NULL), m_imaxItems(maxItems), m_iitemSize(itemSize)  { 
+
+}
+basic_queue::~basic_queue() { 
+
+}
 
 int basic_queue::create() {
     if(m_pHandle != NULL) return ERR_QUEUE_ALREADYINIT;
@@ -85,8 +89,9 @@ bool basic_queue::is_full() {
     return cnt == 0 ? true : false;
 }
 
-void basic_queue::clear() {
+int basic_queue::clear() {
     xQueueReset(m_pHandle);
+    return ERR_QUEUE_OK;
 }
 
 
