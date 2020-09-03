@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-libmnVersion libmn_version;
+libmnVersion* libmnVersion::m_pInstance = NULL;
 
 libmnVersion::libmnVersion()
 {

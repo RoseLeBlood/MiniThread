@@ -10,10 +10,17 @@
 #include <sys/time.h>
 #include <sys/signal.h>
 
-
+/**
+ * Delay a given task for a given number of seconds.  
+ */ 
 unsigned mn_sleep(unsigned int secs);
+/**
+ * Delay a given task for a given number of micro seconds.
+ */ 
 int mn_usleep(useconds_t usec);
-
+/**
+ * Delay a given task for a given timespec 
+ */ 
 int mn_nsleep(const struct timespec *req, struct timespec *rem);
 
 #endif

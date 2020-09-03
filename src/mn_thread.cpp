@@ -14,7 +14,17 @@ basic_thread::basic_thread(char const* strName, unsigned int uiPriority,
   m_pParent = NULL;
 }
 basic_thread::~basic_thread() {
-  if(!m_bRunning) { delete m_runningMutex; m_bMutexInit =false; }
+  vTaskDelete(handle); 
+
+  if(!m_bRunning) { 
+
+    m_runningMutex->destroy();
+    m_contextMutext->destroy();
+    m_continuemutex->destroy();
+    m_continuemutex2->destroy();
+
+    m_bMutexInit =false; 
+  }
 }
 basic_thread*  basic_thread::get_root() {
   autolock_t autolock(*m_contextMutext);

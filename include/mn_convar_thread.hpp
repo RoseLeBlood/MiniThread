@@ -7,6 +7,7 @@
 #include "mn_thread.hpp"
 #include "mn_convar.hpp"
 
+
 class basic_convar_thread : public basic_thread {
     friend class basic_condition_variable;
 public:

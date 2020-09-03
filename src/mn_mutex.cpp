@@ -8,39 +8,37 @@
 
 #include "esp_attr.h"
 
-basic_mutex::basic_mutex() : m_bisinitialized(false) { }
-basic_mutex::~basic_mutex() { 
-  vSemaphoreDelete(m_pmutex);
-}
+basic_mutex::basic_mutex() : m_pmutex(NULL) { }
 
-int basic_mutex::create() {
-  if (m_bisinitialized)
+int basic_mutex::create() { 
+  if (m_pmutex != NULL)
     return ERR_MUTEX_ALREADYINIT;
 
 #if MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_BINSPHORE 
   m_pmutex = xSemaphoreCreateBinary();
 #elif MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_MUTEX 
   m_pmutex = xSemaphoreCreateMutex();
-#else
-  return ERR_MUTEX_CANTCREATEMUTEX;
 #endif
 
   if (m_pmutex) {
-    m_bisinitialized = true;
     unlock();
     return ERR_MUTEX_OK;
-  } else {
-    return ERR_MUTEX_CANTCREATEMUTEX;
   }
+
+  return ERR_MUTEX_CANTCREATEMUTEX;
 }
 int basic_mutex::destroy() {
+  if (m_pmutex == NULL)
+    return ERR_MUTEX_NOTINIT;
+
   vSemaphoreDelete(m_pmutex);
+
   return ERR_MUTEX_OK;
 }
 int basic_mutex::lock(unsigned int timeout) {
   BaseType_t success;
 
-  if (!m_bisinitialized)
+  if (m_pmutex == NULL)
     return ERR_MUTEX_NOTINIT;
 
   if (xPortInIsrContext()) {
@@ -57,7 +55,7 @@ int basic_mutex::lock(unsigned int timeout) {
 int basic_mutex::unlock() {
   BaseType_t success;
 
-  if (!m_bisinitialized)
+  if (m_pmutex == NULL)
     return ERR_MUTEX_NOTINIT;
 
   if (xPortInIsrContext()) {
@@ -71,8 +69,5 @@ int basic_mutex::unlock() {
   return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_UNLOCK;
 }
 bool basic_mutex::try_lock() {
-  if (!m_bisinitialized)
-    return false;
-
   return (lock(0) == ERR_MUTEX_OK);
 }

@@ -28,10 +28,8 @@ int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
 
     if (success == pdPASS)
         return ERR_TASKLET_OK;
-    else {
-        m_ssLock.unlock();
-    } 
-
+    
+    m_ssLock.unlock();
     return ERR_TASKLET_CANTSTART;
 }
 int basic_tasklet::destroy() {

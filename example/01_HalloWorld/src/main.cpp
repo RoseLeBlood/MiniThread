@@ -6,8 +6,10 @@
 helloWorld_task g_test[2];
 
 extern "C" void app_main() {
+    mnversion_t& version = mnversion_t::instance();
+
     printf("Thank you for using libmnthread version: %s\n",
-            libmn_version.to_string().c_str());
+            version.to_string().c_str());
 
     mn_sleep(3);
     

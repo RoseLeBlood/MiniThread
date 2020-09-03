@@ -22,7 +22,7 @@ unsigned mn_sleep(unsigned int secs) {
 }
 int mn_usleep(useconds_t usec) {
 	vTaskDelay(usec / ((TickType_t) 1000000 / configTICK_RATE_HZ));
-	return 0;
+	return 0; 
 }
 
 int IRAM_ATTR mn_nsleep(const struct timespec *req, struct timespec *rem) {

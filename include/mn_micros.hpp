@@ -2,8 +2,8 @@
 #define _MNTHREAD_MICROS_H_
 
 /**
- * 
- * 
+ * Get the current micros 
+ * @return Current micros
  */
 unsigned long micros();
 /**
