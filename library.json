@@ -1,6 +1,6 @@
 {
     "name": "mnthread",
-    "keywords": "esp32, thread, esp-idf, cpp, espressif32, espidf, mutex, recursive_mutex, queue, conditional_variable",
+    "keywords": "esp32, thread, mutex, recursive_mutex, queue, conditional_variable",
     "description": "Mini Thread class for Cpp. For easy crating threads, mutex, spinlocks on ESP32, with conditional variable support",
     "authors":
     {
