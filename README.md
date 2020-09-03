@@ -5,9 +5,7 @@ mnthread
 
 The name mnthread  means 'mini Thread'. This library was developed
 by  [RoseLeBlood](http://padersophia.wordpress.com),
-As the name suggests the goal of the library is to make it easier to create
-threads on the esp32. For more detailed information about the library, please
-refer to the library documentation.
+As the name suggests the goal of the library is to make it easier to crating threads with conditional variable support, mutex, recusive_mutex, spinlocks and queues on ESP32. For more detailed information about the library, please refer to the library documentation (in progress)
 
 License
 -------

@@ -1,7 +1,7 @@
 {
     "name": "mnthread",
     "keywords": ["esp32", "thread", "mutex", "rmutex", "queue", "convar", "group", "signal"],
-    "description": "Mini Thread class for Cpp. For easy crating threads, mutex, spinlocks on ESP32, with conditional variable support",
+    "description": "Mini Thread class for C++. For easy crating threads with conditional variable support, mutex, recusive_mutex, spinlocks and queues on ESP32",
     "authors":
     {
         "name": "RoseLeBlood",
