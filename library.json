@@ -18,15 +18,9 @@
     "platforms": "espressif32",
     "examples": [
         {
-            "name": "01_HalloWorld",
-            "base": "examples/01_HalloWorld",
-            "files": [
-                "platformio.ini",
-                "include/task.hpp",
-                "src/task.cpp",
-                "src/main.cpp",
-                "src/sdkconfig.h"
-            ]
+            "name": "simple",
+            "base": "examples/simple",
+            "files": [ "platformio.ini", "simple.cpp", "sdkconfig.h" ]
         }
     ]
 }
