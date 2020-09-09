@@ -27,5 +27,4 @@ See [ChangeLog](ChangeLog.md)
 
 Examples & Documentation
 ---------
-You can find examples in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples)
-and the documentation find you [hier](https://roseleblood.github.io/mnthread-docs/).
+You can find examples in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples),the basic example at /examples/basic and the documentation find you hier (https://roseleblood.github.io/mnthread-docs/).

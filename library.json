@@ -13,7 +13,8 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/mnthread.git"
     },
-    "version": "1.51",
+    "version": "1.52",
     "frameworks": "espidf",
-    "platforms": "espressif32"
+    "platforms": "espressif32",
+    "examples": "examples/*/*.cpp"
 }
