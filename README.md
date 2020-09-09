@@ -3,9 +3,7 @@ Mini Thread 1.5x
 Introduction
 ------------
 
-The name mnthread  means 'mini Thread'. This library was developed
-by  [RoseLeBlood](http://padersophia.wordpress.com),
-As the name suggests the goal of the library is to make it easier to crating threads with conditional variable support, mutex, recusive_mutex, spinlocks and queues on ESP32. For more detailed information about the library, please refer to the library documentation (in progress)
+TThis project is developed by RoseLeBlood, As the name suggests the goal of the library is to make it easier to crating threads with conditional variable support, mutex, recusive_mutex, spinlocks, conditions variable and queues on ESP32. For more detailed information about the library, please refer to the library documentation (https://roseleblood.github.io/mnthread-docs/)
 
 License
 -------
@@ -27,4 +25,4 @@ See [ChangeLog](ChangeLog.md)
 
 Examples & Documentation
 ---------
-You can find examples in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples),the basic example at /examples/basic and the documentation find you hier (https://roseleblood.github.io/mnthread-docs/).
+You can find examples in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples),the basic example at /examples/basic.cpp 
