@@ -1,6 +1,6 @@
-mnthread
+Mini Thread 1.41
 =======
-##Introduction
+Introduction
 ------------
 
 The name mnthread  means 'mini Thread'. This library was developed
@@ -11,7 +11,7 @@ License
 -------
 
 The license that applies to the library is the LGPL.The license texts of these
-licenses can be found in the files `LICENSE` of the
+licenses can be found in the files [LICENSE](LICENSE.md) of the
 source code archive.
 
 
@@ -23,4 +23,4 @@ Questions, comments and bug reports can be sent to
 
 ChangeLog
 ---------
-See [ChangeLog](ChangeLog)
+See [ChangeLog](ChangeLog.md)
