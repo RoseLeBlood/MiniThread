@@ -1,4 +1,4 @@
-Mini Thread 1.41
+Mini Thread 1.5x
 =======
 Introduction
 ------------

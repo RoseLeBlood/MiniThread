@@ -1,9 +1,10 @@
 
 
                               mini Thread ChangeLog
-Version 1.52 September 2020: 
+Version 1.53 September 2020: 
   * add eaxample
   * add Documentation add (https://roseleblood.github.io/mnthread-docs/)
+  * rename Project from mnthread to Mini Thread
 
 Version 1.43 September 2020:  (stable)
   * move convar function from basic_thread to basic_convar_thread 
