@@ -13,8 +13,8 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "1.53",
+    "version": "1.53.1",
     "frameworks": "espidf",
     "platforms": "espressif32",
-    "examples": "examples/*/*.cpp"
+    "examples": [ "examples/basic.cpp" ]
 }
