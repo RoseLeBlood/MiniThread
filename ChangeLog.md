@@ -1,6 +1,13 @@
 
 
                               mini Thread ChangeLog
+Version 1.54 September 2020: 
+  * Documentation ready
+  * add Licence text to source files
+  * remove semaphore_t and spinlock_t
+  * add counting_semaphore_t (autocsemp_t) and binary_semaphore_t (autobinsemp_t)  
+  please update code semaphore_t = counting_semaphore_t, spinlock_t = binary_semaphore_t
+                            
 Version 1.53 September 2020: 
   * add eaxample
   * add Documentation add (https://roseleblood.github.io/mnthread-docs/)

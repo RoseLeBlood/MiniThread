@@ -1,3 +1,19 @@
+/* 
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * Copyright (c) 2018 Amber-Sophia Schroeck
+ * 
+ * This program is free software: you can redistribute it and/or modify  
+ * it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 #ifndef MINLIB_ESP32_MUTEX_
 #define MINLIB_ESP32_MUTEX_
 
@@ -22,7 +38,7 @@ public:
    * @return 'ERR_MUTEX_OK' the mutex are created, 'ERR_MUTEX_ALREADYINIT' the mutex are already created and
    *         'ERR_MUTEX_CANTCREATEMUTEX' on error.
    * 
-   * @note When in config "MN_THREAD_CONFIG_MUTEX_CLASS" with MN_THREAD_CONFIG_BINSPHORE 
+   * @note When in config "MN_THREAD_CONFIG_MUTEX_CLASS" with MN_THREAD_CONFIG_BINARY_SEMAPHORE 
    *       then create the mutex with 'xSemaphoreCreateBinary' (esp32 online guids basic) and
    *       with 'MN_THREAD_CONFIG_MUTEX_CLASS' create the mutex with 'xSemaphoreCreateMutex'
    */

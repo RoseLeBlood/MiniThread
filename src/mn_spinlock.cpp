@@ -1,3 +1,19 @@
+/* 
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * Copyright (c) 2018 Amber-Sophia Schroeck
+ * 
+ * This program is free software: you can redistribute it and/or modify  
+ * it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "mn_spinlock.hpp"
 #include "mn_error.hpp"
 
@@ -9,47 +25,15 @@
 
 #include "esp_attr.h"
 
-basic_spinlock::basic_spinlock(int count, int maxcount) 
-  : m_uiCount(count), m_uiMaxCount(maxcount), m_bisinitialized(false) {
-    
-}
-basic_spinlock::~basic_spinlock() {
-    vSemaphoreDelete(m_pSpinlock);
+
+basic_semaphore::basic_semaphore() : m_pSpinlock(NULL) {
+
 }
 
-int basic_spinlock::destroy() {
-  vSemaphoreDelete(m_pSpinlock);
-  return ERR_SPINLOCK_OK;
-}
-
-int basic_spinlock::create() {
-  if (m_bisinitialized)
-    return ERR_SPINLOCK_ALREADYINIT;
-
-  if (m_uiMaxCount < m_uiCount)
-    return ERR_SPINLOCK_BAD_INITIALCOUNT;
-
-  if (m_uiMaxCount == 0) {
-    m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
-
-
-
-    if (m_pSpinlock) {
-      printf("[MUTEX] xSemaphoreCreateCounting OK\n");
-      m_bisinitialized = true;
-
-      unlock();
-
-      return ERR_SPINLOCK_OK;
-    }
-  }
-  return ERR_SPINLOCK_CANTCREATESPINLOCK;
-}
-
-int basic_spinlock::lock(unsigned int timeout) {
+int basic_semaphore::lock(unsigned int timeout) {
   BaseType_t success;
 
-  if (!m_bisinitialized)
+  if (m_pSpinlock == NULL)
     return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
@@ -62,10 +46,10 @@ int basic_spinlock::lock(unsigned int timeout) {
    }
    return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_LOCK;
 }
-int basic_spinlock::unlock() {
+int basic_semaphore::unlock() {
   BaseType_t success;
 
-  if (!m_bisinitialized)
+  if (m_pSpinlock == NULL)
     return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
@@ -78,33 +62,75 @@ int basic_spinlock::unlock() {
   }
   return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_UNLOCK;
 }
-bool basic_spinlock::try_lock() {
-  if (!m_bisinitialized)
-    return false;
-
-  return (xSemaphoreTake( m_pSpinlock, 0 ) == pdTRUE);
+bool basic_semaphore::try_lock() {
+  return (lock( 0 ) == ERR_SPINLOCK_OK);
 }
-int basic_spinlock::get_count() const {
+
+bool basic_semaphore::is_initialized() const { 
+  return m_pSpinlock != NULL;
+}
+
+//-------------------------------
+
+basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount) 
+  : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
+    
+}
+
+int basic_counting_semaphore::destroy() {
+  vSemaphoreDelete(m_pSpinlock);
+  m_pSpinlock = NULL;
+
+  return ERR_SPINLOCK_OK;
+}
+
+int basic_counting_semaphore::create() {
+  if (m_pSpinlock != NULL)
+    return ERR_SPINLOCK_ALREADYINIT;
+
+  if (m_uiMaxCount < m_uiCount)
+    return ERR_SPINLOCK_BAD_INITIALCOUNT;
+
+  if (m_uiMaxCount == 0) {
+    m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
+
+
+
+    if (m_pSpinlock) {
+      unlock();
+      return ERR_SPINLOCK_OK;
+    }
+  }
+  return ERR_SPINLOCK_CANTCREATESPINLOCK;
+}
+
+int basic_counting_semaphore::get_count() const {
    return uxQueueMessagesWaiting(m_pSpinlock);
 }
+//------------------
 
-binary_semaphore::binary_semaphore() : basic_spinlock() { }
 
 
-int binary_semaphore::create() {
-  if (m_bisinitialized)
+basic_binary_semaphore::basic_binary_semaphore() : basic_semaphore() { }
+
+
+int basic_binary_semaphore::create() {
+  if (m_pSpinlock != NULL)
     return ERR_SPINLOCK_ALREADYINIT;
 
   m_pSpinlock = xSemaphoreCreateBinary();
 
 
   if (m_pSpinlock) {
-    printf("[MUTEX] xSemaphoreCreateBinary OK\n");
-    m_bisinitialized = true;
-
     unlock();
-
     return ERR_SPINLOCK_OK;
   }
   return ERR_SPINLOCK_CANTCREATESPINLOCK;
+}
+
+int basic_binary_semaphore::destroy() {
+  vSemaphoreDelete(m_pSpinlock);
+  m_pSpinlock = NULL;
+
+  return ERR_SPINLOCK_OK;
 }

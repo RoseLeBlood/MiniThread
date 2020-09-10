@@ -1,3 +1,19 @@
+/* 
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * Copyright (c) 2018 Amber-Sophia Schroeck
+ * 
+ * This program is free software: you can redistribute it and/or modify  
+ * it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License 
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "mn_thread.hpp"
 #include <stdio.h>
 
@@ -105,7 +121,9 @@ int basic_thread::create(int uiCore) {
 
 	m_continuemutex->unlock();
 
-	return on_create();
+  on_create();
+
+	return ERR_THREAD_OK;
 }
 int basic_thread::kill() {
   m_continuemutex->lock();
@@ -123,7 +141,9 @@ int basic_thread::kill() {
   m_runningMutex->unlock();
   m_continuemutex->unlock();
 
-	return 0;
+  on_kill();
+
+	return ERR_THREAD_OK;
 }
 bool basic_thread::is_running() {
   autolock_t autolock(*m_runningMutex);
@@ -143,7 +163,12 @@ const char* basic_thread::get_name() {
 }
 unsigned int basic_thread::get_priority() {
   autolock_t autolock(*m_runningMutex);
-	return uxTaskPriorityGet(handle);
+
+  if (xPortInIsrContext()) {
+    return uxTaskPriorityGetFromISR(handle);
+  } else {
+	  return uxTaskPriorityGet(handle);
+  }
 }
 unsigned short basic_thread::get_stackdepth() {
   autolock_t autolock(*m_runningMutex);
@@ -163,6 +188,7 @@ uint32_t basic_thread::get_time_since_start() {
 }
 void  basic_thread::setPriority(unsigned int uiPriority) {
   autolock_t autolock(*m_runningMutex);
+  m_uiPriority = uiPriority;
   vTaskPrioritySet(handle, uiPriority);
 }
 void basic_thread::suspend() {
@@ -187,6 +213,7 @@ void basic_thread::runtaskstub(void* parm) {
   esp_thread->m_continuemutex->lock();
 	esp_thread->m_continuemutex->unlock();
 
+  esp_thread->thread_started();
   ret = esp_thread->on_thread();
   esp_thread->on_cleanup();
 
