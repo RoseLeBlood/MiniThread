@@ -1,19 +1,19 @@
-/* 
- * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2018 Amber-Sophia Schroeck
  * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation, version 3.
+ * The Mini Thread Library is free software; you can redistribute it and/or modify  
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.  
+**/
 #ifndef MINLIB_ESP32_MUTEX_
 #define MINLIB_ESP32_MUTEX_
 
@@ -26,7 +26,7 @@
  *  These objects are not recursively acquirable. Calling lock() twice from
  *  the same Thread (i.e. task) will deadlock.
  */
-class basic_mutex {
+class basic_mutex : public basic_semaphore {
 public:
   /**
    * The Ctor 
@@ -77,25 +77,6 @@ public:
    * @return true if the Lock was acquired, false when not
    */
   virtual bool try_lock();
-
-  /**
-   * Is the mutex created (initialized) ?
-   * 
-   * @return true if the mutex created (initialized) and false when not
-   */ 
-  bool is_initialized() const 						{ return m_pmutex == NULL; }
-
-  /**
-   * Get the FreeRTOS handle
-   * 
-   * @return the FreeRTOS handle
-   */
-  void* get_handle()                      { return m_pmutex; }
-protected:
-  /**
-   *  FreeRTOS semaphore handle.
-   */
-	void* m_pmutex;
 };
 
 using mutex_t = basic_mutex;

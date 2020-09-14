@@ -17,6 +17,7 @@ Version 1.60 September 2020:
   * remove config option MN_THREAD_CONFIG_MUTEX_CLASS. MN_THREAD_CONFIG_MUTEX_CLASS 
   * rename libmn.hpp to mn_base.hpp and add missing headers 
   * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
+  * basic_mutex extends basic_semaphore
 
 Version 1.54 September 2020: (unstable)
   * Documentation ready

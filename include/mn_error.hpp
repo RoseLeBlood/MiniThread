@@ -1,19 +1,19 @@
-/* 
- * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2018 Amber-Sophia Schroeck
  * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation, version 3.
+ * The Mini Thread Library is free software; you can redistribute it and/or modify  
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.  
+**/
 #ifndef MINLIB_ESP32_ERROR_
 #define MINLIB_ESP32_ERROR_
 
@@ -152,4 +152,33 @@
  */
 #define ERR_QUEUE_PEEK                  -6
 
+
+/**
+ * No Error in one of the Timer function
+ */
+#define ERR_TIMER_OK                    NO_ERROR
+/**
+ * The timer is allready Created
+ */
+#define ERR_TIMER_ALREADYINIT			-1
+/**
+ * The timer can't created
+ */
+#define ERR_TIMER_CANTCREATE			-2
+/**
+ * The timer is not created
+ */
+#define ERR_TIMER_NOTCREATED            -3
+/**
+ * The timer can not start
+ */
+#define ERR_TIMER_AKTIVATE              -4
+/**
+ * The timer can not stop
+ */
+#define ERR_TIMER_INAKTIVATE            -4
+/**
+ * The timer can not reset
+ */
+#define ERR_TIMER_RESET                 -4
 #endif

@@ -1,19 +1,19 @@
-/* 
- * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2020 Amber-Sophia Schroeck
+/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * Copyright (c) 2018 Amber-Sophia Schroeck
  * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation, version 3.
+ * The Mini Thread Library is free software; you can redistribute it and/or modify  
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, version 3, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of 
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.  
+**/
 #ifndef MINLIB_ESP32_WORK_QUEUE_
 #define MINLIB_ESP32_WORK_QUEUE_
 
@@ -39,11 +39,26 @@ class basic_work_queue {
 
             virtual ~work_queue_thread();
 
+            /**
+             * Get number of worked items, after run
+             * 
+             * @return The number of worked items, after run
+             * @note When the thread are running then return only 0;
+             */ 
+            unsigned int get_num_works() { 
+                void* val = get_return_value();
+                return *((unsigned int *)val);
+            }
         protected:
+            /**
+             * Implementation of your actual work queue working code ( Omg ...)
+             * @return The pointer of m_uiNumWorks - @see get_num_works()
+             */ 
             virtual void* on_thread();
 
         private:
             const basic_work_queue *m_parentWorkQueue;
+            unsigned int m_uiNumWorks;
     };
 public:
     /**
@@ -73,21 +88,16 @@ public:
 
     /**
      * Destroy the work_queue_t.
-     * 
-     * @return TODO
      */
-    int destroy();
+    void destroy();
 
     /**
      * Send a work_queue_item_t off to be executed.
      *
      * @param work Pointer to a work_queue_item_t.
-     *  //@return true if it was queued, false otherwise.
      * @note This function may block if the work_queue_t is presently full.
-     * 
-     * TODO: ADD create function work_queue_item
      */ 
-    int send(work_queue_item_t *work);
+    int queue(work_queue_item_t *work);
 private:
     /**
      *  Pointer to our WorkerThread.
@@ -103,9 +113,9 @@ private:
      *  Semaphore to support deconstruction without race conditions.
      */
     binary_semaphore_t *m_pComplete;
-    binary_semaphore_t *m_pRunningMutex;
+    binary_semaphore_t *m_pRunningSem;
     
-    bool m_created;
+    bool m_running;
 
     bool m_bMutexInit;
 };
