@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "libmn.hpp"
+#include "mn_base.hpp"
 #include <stdio.h>
 
-void libmn_panic() {
-  printf("LIBMN-PANIC!!!");
+void mn_panic() {
+  printf("MiniThread-PANIC!!!");
   for(;;) {
 
   }

@@ -20,7 +20,7 @@
 
 #include "mn_config.hpp"
 #include "mn_mutex.hpp"
-#include "mn_spinlock.hpp"
+#include "mn_semaphore.hpp"
 #include "mn_critical.hpp"
 
 
@@ -112,10 +112,14 @@ using auto_schedular_t = basic_autolock<sheduler_lock_t>;
 using autoremutx_t = basic_autolock<remutex_t>;
 #endif
 
-#if MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_MUTEX
-  using autolock_t = basic_autolock<mutex_t>;
-#elif MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_SPINLOCK
-  using autolock_t = basic_autolock<spinlock_t>;
+#if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
+  using LockType_t = mutex_t;
+#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
+  using LockType_t = binary_semaphore_t;
+#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
+  using LockType_t = counting_semaphore_t;
 #endif
+
+using autolock_t = basic_autolock<LockType_t>;
 
 #endif

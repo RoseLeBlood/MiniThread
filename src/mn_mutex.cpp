@@ -30,11 +30,7 @@ int basic_mutex::create() {
   if (m_pmutex != NULL)
     return ERR_MUTEX_ALREADYINIT;
 
-#if MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_BINARY_SEMAPHORE 
-  m_pmutex = xSemaphoreCreateBinary();
-#elif MN_THREAD_CONFIG_MUTEX_CLASS == MN_THREAD_CONFIG_MUTEX 
   m_pmutex = xSemaphoreCreateMutex();
-#endif
 
   if (m_pmutex) {
     unlock();

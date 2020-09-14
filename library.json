@@ -1,7 +1,7 @@
 {
     "name": "mini Thread",
     "keywords": ["esp32", "thread", "mutex", "queue", "convar", "group", "signal", "workqueue"],
-    "description": "Mini Thread class for C++. For easy crating threads with conditional variable support, mutex, recusive_mutex, spinlocks and queues on ESP32",
+    "description": "Mini Thread is a library for creating secure threads for the esp32 microcontroller.  With variable condition support if required. And many other useful wrappers for the esp32 - mutex, semaphores and workqueues and etc",
     "authors":
     {
         "name": "RoseLeBlood",

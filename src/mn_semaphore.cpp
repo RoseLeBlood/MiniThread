@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License 
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "mn_spinlock.hpp"
+#include "mn_semaphore.hpp"
 #include "mn_error.hpp"
 
 #include "freertos/FreeRTOS.h"

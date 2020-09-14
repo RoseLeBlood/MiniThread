@@ -21,7 +21,7 @@
 #include "freertos/FreeRTOS.h"
 
 #define MN_THREAD_MAJOR_VERSION 1
-#define MN_THREAD_MINOR_VERSION 5
+#define MN_THREAD_MINOR_VERSION 6
 #define MN_THREAD_DEBUG_VERSION 0
 
 #define MN_THREAD_CONFIG_MUTEX                1
@@ -31,21 +31,25 @@
 #define MN_THREAD_CONFIG_YES        1
 #define MN_THREAD_CONFIG_NO         2
 
+#define MN_THREAD_CONFIG_CORE_NO    -1
+#define MN_THREAD_CONFIG_CORE_ONE   0
+#define MN_THREAD_CONFIG_CORE2_TWO  1
 
-/**
- * MN_THREAD_CONFIG_BINARY_SEMAPHORE  mutex created with "xSemaphoreCreateBinary" (default)
- * MN_THREAD_CONFIG_MUTEX mutex created with  "xSemaphoreCreateMutex" 
- * default: MN_THREAD_CONFIG_MUTEX 
- */
-#define MN_THREAD_CONFIG_MUTEX_CLASS MN_THREAD_CONFIG_MUTEX   
+//CONFIG_PTHREAD_TASK_CORE_DEFAULT
 
-/**
+#define MN_THREAD_CONFIG_MAX_CPUS                   2 
+#define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_NO
+#define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE2_TWO   
+
+
+ /**
  * Default lock type using in the thread class 
  * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
+ * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
  * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
- * default: MN_THREAD_CONFIG_MUTEX 
+ * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
  */
-#define MN_THREAD_CONFIG_AUTOLOCK MN_THREAD_CONFIG_MUTEX
+#define MN_THREAD_CONFIG_LOCK_TYPE MN_THREAD_CONFIG_BINARY_SEMAPHORE
 
 /**
  * Condition variable support for this libary
@@ -73,13 +77,6 @@
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================
  */
-
-/**
- * Usind Thread Lock Type
- * @note Don't edit
- * default: MN_THREAD_CONFIG_MUTEX 
- */ 
-#define MN_THREAD_CONFIG_THREAD_LOCK MN_THREAD_CONFIG_MUTEX
 
 /**
  * Supported the FeeRTOS RECURSIVE_MUTEXES ?

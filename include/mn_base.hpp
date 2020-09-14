@@ -18,8 +18,6 @@
 #ifndef __LIBMIN_THREAD_H_
 #define __LIBMIN_THREAD_H_
 
-#define LIBMN_CPU_1 0
-#define LIBMN_CPU_2 1
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -31,8 +29,15 @@
 #include "mn_micros.hpp"
 #include "mn_thread.hpp"
 
+#include "mn_convar.hpp"
+#include "mn_convar_thread.hpp"
+
+#include "queue/mn_queue.hpp"
+#include "queue/mn_binaryqueue.hpp"
+#include "queue/mn_deque.hpp"
+#include "queue/mn_workqueue.hpp"
 
 
-void libmn_panic();
+void mn_panic();
 
 #endif

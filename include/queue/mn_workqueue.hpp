@@ -69,7 +69,7 @@ public:
      * @param iCore run on whith core
      * @return TODO
      */
-    int create(int iCore);
+    int create(int iCore = MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE);
 
     /**
      * Destroy the work_queue_t.

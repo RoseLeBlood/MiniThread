@@ -36,12 +36,6 @@
  */
 class  basic_thread {
 public:
-#if MN_THREAD_CONFIG_THREAD_LOCK == MN_THREAD_CONFIG_MUTEX
-  using LockType_t = mutex_t;
-#elif MN_THREAD_CONFIG_THREAD_LOCK == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
-  using LockType_t = counting_semaphore_t;
-#endif
-
   basic_thread() { }
 
   /**
@@ -74,7 +68,7 @@ public:
    * LockObjets, the task is not created, 'ERR_THREAD_ALREADYRUNNING' the Task is allready running and
    * 'ERR_THREAD_CANTSTARTTHREAD' can't create the task
    */
-  int                   create(int uiCore = -1);
+  int                   create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
   /**
    * Destroy and delete the task and call the function 'on_kill'
