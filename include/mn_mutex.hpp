@@ -18,7 +18,7 @@
 #define MINLIB_ESP32_MUTEX_
 
 #include "mn_config.hpp"
-#include "mn_spinlock.hpp"
+#include "mn_semaphore.hpp"
 #include "mn_error.hpp"
 
 /**

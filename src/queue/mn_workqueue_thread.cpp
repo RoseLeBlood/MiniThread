@@ -45,7 +45,7 @@ void* basic_work_queue::work_queue_thread::on_thread() {
                 work_item->destroy();
 
             if (work_item->can_delete()) {
-                delete work; work_item = NULL;
+                delete work_item; work_item = NULL;
             }
         } else {
             break;

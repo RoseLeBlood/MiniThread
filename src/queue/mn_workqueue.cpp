@@ -24,13 +24,13 @@ basic_work_queue::basic_work_queue(const char * strName,
                 uint16_t usStackDepth,
                 unsigned int uiMaxWorkItems) : m_created(false) {
 
-    m_pWorkItemQueue = new queue_t(uiMaxWorkItems, sizeof(WorkItem *));
-    m_pWorker = new work_queue_thread(Name, uiPriority, usStackDepth, this);
+    m_pWorkItemQueue = new queue_t(uiMaxWorkItems, sizeof(work_queue_item_t *));
+    m_pWorker = new work_queue_thread(strName, uiPriority, usStackDepth, this);
 }
 int basic_work_queue::create(int iCore) {
     if(!m_bMutexInit) {
         m_pComplete = new basic_binary_semaphore();
-        m_pRunningMutex = basic_binary_semaphore();
+        m_pRunningMutex = new basic_binary_semaphore();
 
         if(m_pRunningMutex->create() != ERR_MUTEX_OK)
             return ERR_THREAD_CANTINITMUTEX;
