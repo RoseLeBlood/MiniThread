@@ -119,9 +119,12 @@ int basic_thread::create(int uiCore) {
 		return ERR_THREAD_CANTSTARTTHREAD;
   }
 
+
 	m_continuemutex->unlock();
 
+  m_runningMutex->lock();
   on_create();
+  m_runningMutex->unlock();
 
 	return ERR_THREAD_OK;
 }
@@ -137,12 +140,11 @@ int basic_thread::kill() {
 	}
   vTaskDelete(handle); handle = 0;
   m_bRunning = false;
+  on_kill();
 
   m_runningMutex->unlock();
   m_continuemutex->unlock();
-
-  on_kill();
-
+  
 	return ERR_THREAD_OK;
 }
 bool basic_thread::is_running() {

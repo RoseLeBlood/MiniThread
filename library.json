@@ -1,6 +1,6 @@
 {
     "name": "mini Thread",
-    "keywords": ["esp32", "thread", "mutex", "rmutex", "queue", "convar", "group", "signal"],
+    "keywords": ["esp32", "thread", "mutex", "queue", "convar", "group", "signal", "workqueue"],
     "description": "Mini Thread class for C++. For easy crating threads with conditional variable support, mutex, recusive_mutex, spinlocks and queues on ESP32",
     "authors":
     {
@@ -13,8 +13,9 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "1.54",
+    "version": "1.60",
     "frameworks": "espidf",
     "platforms": "espressif32",
+    "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
     "examples": [ "examples/basic.cpp" ]
 }

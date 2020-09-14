@@ -1,7 +1,17 @@
 
 
                               mini Thread ChangeLog
-Version 1.54 September 2020: 
+Version 1.60 September 2020:
+  * add Work queue support (basic_work_queue) Create one or more basic_work_queue
+    to accept work_queue_item. basic_work_queue pull work_queue_item off of a FIFO queue and 
+    run them sequentially.  
+  * add New Config Options to mn_conig.hpp
+      * MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS: How many work items to queue in the work queue engine default is 8
+      * MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE: Default Stak size for the work queue thread. defaultis (configMINIMAL_STACK_SIZE * 2)
+      * MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY Default Priority for the work queue thread. default is (tskIDLE_PRIORITY + 1)
+  * add default informations to the config file 
+
+Version 1.54 September 2020: (unstable)
   * Documentation ready
   * add Licence text to source files
   * remove semaphore_t and spinlock_t

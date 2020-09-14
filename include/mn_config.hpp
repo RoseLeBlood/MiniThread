@@ -34,22 +34,41 @@
 
 /**
  * MN_THREAD_CONFIG_BINARY_SEMAPHORE  mutex created with "xSemaphoreCreateBinary" (default)
- * MN_THREAD_CONFIG_MUTEX mutex created with  "xSemaphoreCreateMutex"
+ * MN_THREAD_CONFIG_MUTEX mutex created with  "xSemaphoreCreateMutex" 
+ * default: MN_THREAD_CONFIG_MUTEX 
  */
 #define MN_THREAD_CONFIG_MUTEX_CLASS MN_THREAD_CONFIG_MUTEX   
 
 /**
- * Default lock type using in the thread class
+ * Default lock type using in the thread class 
  * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
  * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
+ * default: MN_THREAD_CONFIG_MUTEX 
  */
 #define MN_THREAD_CONFIG_AUTOLOCK MN_THREAD_CONFIG_MUTEX
 
 /**
  * Condition variable support for this libary
- *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO'
+ *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
+ * default: MN_THREAD_CONFIG_YES
  */
 #define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
+
+/**
+ * How many work items to queue in the work queue engine 
+ * default: 8
+ */ 
+#define MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS   8
+/**
+ * Stak size for the work queue thread 
+ * default: (configMINIMAL_STACK_SIZE * 2) 
+ */ 
+#define MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE       (configMINIMAL_STACK_SIZE * 2)
+/**
+ * Default Priority for the work queue thread 
+ * default: (tskIDLE_PRIORITY + 1) 
+ */ 
+#define MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY         (tskIDLE_PRIORITY + 1)
 
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================
@@ -58,6 +77,7 @@
 /**
  * Usind Thread Lock Type
  * @note Don't edit
+ * default: MN_THREAD_CONFIG_MUTEX 
  */ 
 #define MN_THREAD_CONFIG_THREAD_LOCK MN_THREAD_CONFIG_MUTEX
 

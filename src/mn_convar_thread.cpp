@@ -30,15 +30,19 @@ void basic_convar_thread::on_create() {
     m_waitSem->create();
 }
 void basic_convar_thread::on_kill() {
- 
+    
 }
 
 void basic_convar_thread::signal() {
+    autolock_t autolock(*m_runningMutex);
     m_waitSem->unlock(); 
     on_signal();
 }
 void basic_convar_thread::signal_all() {
-    signal();
+    autolock_t autolock(*m_runningMutex);
+
+    m_waitSem->unlock(); 
+    on_signal();
 
     basic_convar_thread* __child = (basic_convar_thread*)(m_pChild);
 
@@ -47,13 +51,13 @@ void basic_convar_thread::signal_all() {
 }
 
 int basic_convar_thread::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
-   cv.add_list(this);
-  
+    autolock_t autolock(*m_runningMutex);
+    
+    cv.add_list(this);
+    
     cvl.unlock();
-
-    int timed_out = m_waitSem->lock(timeOut);
-
+    int ret = m_waitSem->lock(timeOut);
     cvl.lock();
 
-    return timed_out; 
+    return ret; 
 }
