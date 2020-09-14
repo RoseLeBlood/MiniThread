@@ -1,4 +1,4 @@
-# Mini Thread 1.60
+# Mini Thread 1.60 alpha
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
