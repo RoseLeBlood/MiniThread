@@ -151,7 +151,10 @@
  * No items in the queue
  */
 #define ERR_QUEUE_PEEK                  -6
-
+/**
+ * Can not create the lock object for the blocking queue
+ */ 
+#define ERR_QUEUE_CANTCREATE_LOCK       -99
 
 /**
  * No Error in one of the Timer function

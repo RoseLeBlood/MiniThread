@@ -1,0 +1,116 @@
+.TH "basic_tasklet" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_tasklet
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_tasklets\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual int \fBcreate\fP (uint32_t parameter, TickType_t timeout=portMAX_DELAY)"
+.br
+.ti -1c
+.RI "virtual int \fBdestroy\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual int \fBon_tasklet\fP (uint32_t arg)"
+.br
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBruntaskletstub\fP (void *parm, uint32_t parameter)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBcounting_semaphore_t\fP \fBm_ssLock\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ A FreeRTOS wrapper for its concept of a Pended Function\&. In Linux, one permutation of this would be a Tasklet, or bottom half processing from an ISR\&.
+.PP
+This is an abstract base class\&. To use this, you need to subclass it\&. All of your Tasklets should be derived from the \fBbasic_tasklet\fP class\&. Then implement the virtual on_tasklet function\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_tasklet::create (uint32_t parameter, TickType_t timeout = \fCportMAX_DELAY\fP)\fC [virtual]\fP"
+Create and schedule this Tasklet to run\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameter\fP Value passed to your on_tasklet method\&. 
+.br
+\fICmdTimeout\fP How long to wait to send this command to the timer daemon\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TASKLET_OK This command will be sent to the timer daemon, ERR_TASKLET_CANTSTART It will not (i\&.e\&. timeout) and ERR_TASKLET_CANTINITLOCKT The Locking Object can't create - tasklet not run
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SS "int basic_tasklet::destroy ()\fC [virtual]\fP"
+Destroy the Tasklet 
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TASKLET_OK Destroyed without any errors 
+.RE
+.PP
+
+.SS "virtual int basic_tasklet::on_tasklet (uint32_t arg)\fC [protected]\fP, \fC [virtual]\fP"
+Implementation of your actual tasklet code\&. You must override this function\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIparameter\fP Value passed to you from the \fBcreate()\fP methods\&. 
+.RE
+.PP
+
+.SS "void basic_tasklet::runtaskletstub (void * parm, uint32_t parameter)\fC [static]\fP, \fC [protected]\fP"
+Adapter function that allows you to write a class specific \fBon_tasklet()\fP function that interfaces with FreeRTOS\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBcounting_semaphore_t\fP basic_tasklet::m_ssLock\fC [protected]\fP"
+Protect against accidental deletion before we were executed\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

@@ -1,0 +1,83 @@
+.TH "basic_deque" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_deque
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_deque\&.hpp>\fP
+.PP
+Inherits \fBbasic_queue\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_deque\fP (unsigned int maxItems, unsigned int itemSize)"
+.br
+.ti -1c
+.RI "virtual int \fBenqueue_front\fP (void *item, unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ A deque class that implements a double ended queue\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_deque::basic_deque (unsigned int maxItems, unsigned int itemSize)\fC [inline]\fP"
+ctor
+.PP
+\fBParameters\fP
+.RS 4
+\fIitemSize\fP Size of an item in a queue\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_deque::enqueue_front (void * item, unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)\fC [virtual]\fP"
+Add an item to the front of the queue\&. This will result in the item being removed first, ahead of all of the items added by the base cal \fBdequeue()\fP function\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The item you are adding\&. 
+.br
+\fITimeout\fP How long to wait to add the item to the queue if the queue is currently full\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' the item was added, 'ERR_QUEUE_ADD' on an error and 'ERR_QUEUE_NOTCREATED' when the queue not created
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

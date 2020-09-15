@@ -1,0 +1,80 @@
+.TH "work_queue_item" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+work_queue_item
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_workqueue_item\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBwork_queue_item\fP (bool deleteAffter=false)"
+.br
+.ti -1c
+.RI "virtual \fB~work_queue_item\fP ()"
+.br
+.ti -1c
+.RI "bool \fBcan_delete\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBon_work\fP ()=0"
+.br
+.ti -1c
+.RI "virtual int \fBcreate\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBdestroy\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "const bool \fBm_bCanDelete\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This class encapsulates the idea of a discrete, non-repeating task\&. Create a \fBwork_queue_item\fP when there is something you need to do on a different Thread, but doesn't have to happen periodically\&. This is a great construct for one off fire and forget tasks\&.
+.PP
+This is an abstract base class\&. To use this, you need to subclass it\&. All of your \fBwork_queue_item\fP should be derived from this class\&. Then implement the virtual on_work function\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "work_queue_item::work_queue_item (bool deleteAffter = \fCfalse\fP)\fC [inline]\fP"
+Our constructor\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIdeleteAffter\fP If you pass in a true, you are requesing the work_queue_t itself to delete this \fBwork_queue_item\fP after it has run it\&. 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+Only set deleteAffter = true if: 1) You dynamically allocated it (i\&.e\&. used 'new') 2) After you call \fBon_work()\fP you promise never to touch this object again\&. 
+.RE
+.PP
+
+.SS "virtual work_queue_item::~work_queue_item ()\fC [inline]\fP, \fC [virtual]\fP"
+Our destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool work_queue_item::can_delete ()\fC [inline]\fP"
+Allows a client to decide if this \fBwork_queue_item\fP is marked for automatic deletion\&. 
+.SS "virtual int work_queue_item::create ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SS "virtual int work_queue_item::destroy ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SS "virtual void work_queue_item::on_work ()\fC [pure virtual]\fP"
+Implementation of your actual \fBwork_queue_item\fP function\&. You must override this function\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "const bool work_queue_item::m_bCanDelete\fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

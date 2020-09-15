@@ -1,0 +1,116 @@
+.TH "mn_micros.hpp" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+mn_micros.hpp
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned long \fBmicros\fP ()"
+.br
+.ti -1c
+.RI "unsigned long \fBmillis\fP ()"
+.br
+.ti -1c
+.RI "unsigned int \fBget_ticks\fP ()"
+.br
+.ti -1c
+.RI "unsigned int \fBticks_to_ms\fP (unsigned int ticks)"
+.br
+.ti -1c
+.RI "unsigned int \fBms_to_ticks\fP (unsigned int ms)"
+.br
+.ti -1c
+.RI "unsigned int \fBseconds_to_ticks\fP (unsigned int ms)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "unsigned int get_ticks ()"
+Get the current tick count or from ISR context - automatic switch 
+.PP
+\fBReturns\fP
+.RS 4
+Current tick count\&. 
+.RE
+.PP
+
+.SS "unsigned long micros ()"
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Get the current micros 
+.PP
+\fBReturns\fP
+.RS 4
+Current micros 
+.RE
+.PP
+
+.SS "unsigned long millis ()"
+Get the current millis or from ISR context - automatic switch 
+.PP
+\fBReturns\fP
+.RS 4
+Current milliseconds 
+.RE
+.PP
+
+.SS "unsigned int ms_to_ticks (unsigned int ms)"
+Convert from ms to ticks\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fImilliseconds\fP milliseconds to convert\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ticks 
+.RE
+.PP
+
+.SS "unsigned int seconds_to_ticks (unsigned int ms)"
+Convert from seconds to ticks\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIseconds\fP seconds to convert\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ticks 
+.RE
+.PP
+
+.SS "unsigned int ticks_to_ms (unsigned int ticks)"
+Convert from ticks to ms\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIticks\fP ticks to convert\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+milliseconds\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

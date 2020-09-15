@@ -1,0 +1,154 @@
+.TH "basic_work_queue" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_work_queue
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_workqueue\&.hpp>\fP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBwork_queue_thread\fP"
+.br
+.in -1c
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_work_queue\fP (const char *strName, unsigned int uiPriority=\fBMN_THREAD_CONFIG_WORK_QUEUE_PRIORITY\fP, uint16_t usStackDepth=\fBMN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE\fP, unsigned int uiMaxWorkItems=\fBMN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS\fP)"
+.br
+.ti -1c
+.RI "\fB~basic_work_queue\fP ()"
+.br
+.ti -1c
+.RI "int \fBcreate\fP (int iCore=\fBMN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE\fP)"
+.br
+.ti -1c
+.RI "void \fBdestroy\fP ()"
+.br
+.ti -1c
+.RI "int \fBqueue\fP (\fBwork_queue_item_t\fP *work)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBwork_queue_thread\fP * \fBm_pWorker\fP"
+.br
+.ti -1c
+.RI "\fBqueue_t\fP * \fBm_pWorkItemQueue\fP"
+.br
+.ti -1c
+.RI "\fBbinary_semaphore_t\fP * \fBm_pComplete\fP"
+.br
+.ti -1c
+.RI "\fBbinary_semaphore_t\fP * \fBm_pRunningSem\fP"
+.br
+.ti -1c
+.RI "bool \fBm_running\fP"
+.br
+.ti -1c
+.RI "bool \fBm_bMutexInit\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ This class is the 'engine' for \fBwork_queue_item\fP\&. Create one or more \fBbasic_work_queue\fP to accept \fBwork_queue_item\fP\&. \fBbasic_work_queue\fP pull \fBwork_queue_item\fP off of a FIFO queue and run them sequentially\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_work_queue::basic_work_queue (const char * strName, unsigned int uiPriority = \fC\fBMN_THREAD_CONFIG_WORK_QUEUE_PRIORITY\fP\fP, uint16_t usStackDepth = \fC\fBMN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE\fP\fP, unsigned int uiMaxWorkItems = \fC\fBMN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS\fP\fP)"
+Our constructor\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIName\fP Name of the thread internal to the WorkQueue\&. 
+.br
+\fIuiPriority\fP FreeRTOS priority of this Thread\&. 
+.br
+\fIusStackDepth\fP Number of 'words' allocated for the Thread stack\&. 
+.br
+\fIuiMaxWorkItems\fP Maximum number of WorkItems this WorkQueue can hold\&.
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SS "basic_work_queue::~basic_work_queue ()"
+Our destructor\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_work_queue::create (int iCore = \fC\fBMN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE\fP\fP)"
+Create the work_queue_t\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIiCore\fP run on whith core 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+TODO 
+.RE
+.PP
+
+.SS "void basic_work_queue::destroy ()"
+Destroy the work_queue_t\&. 
+.SS "int basic_work_queue::queue (\fBwork_queue_item_t\fP * work)"
+Send a work_queue_item_t off to be executed\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIwork\fP Pointer to a work_queue_item_t\&. 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+This function may block if the work_queue_t is presently full\&. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool basic_work_queue::m_bMutexInit\fC [private]\fP"
+
+.SS "\fBbinary_semaphore_t\fP* basic_work_queue::m_pComplete\fC [private]\fP"
+Semaphore to support deconstruction without race conditions\&. 
+.SS "\fBbinary_semaphore_t\fP* basic_work_queue::m_pRunningSem\fC [private]\fP"
+
+.SS "\fBwork_queue_thread\fP* basic_work_queue::m_pWorker\fC [private]\fP"
+Pointer to our WorkerThread\&. 
+.SS "\fBqueue_t\fP* basic_work_queue::m_pWorkItemQueue\fC [private]\fP"
+Pointer to our work queue itself\&. 
+.SS "bool basic_work_queue::m_running\fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

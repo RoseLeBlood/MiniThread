@@ -1,0 +1,520 @@
+.TH "basic_thread" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_thread
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_thread\&.hpp>\fP
+.PP
+Inherited by \fBbasic_work_queue::work_queue_thread\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_thread\fP ()"
+.br
+.ti -1c
+.RI "\fBbasic_thread\fP (char const *strName, unsigned int uiPriority, unsigned short usStackDepth=configMINIMAL_STACK_SIZE)"
+.br
+.ti -1c
+.RI "virtual \fB~basic_thread\fP ()"
+.br
+.ti -1c
+.RI "int \fBcreate\fP (int uiCore=\fBMN_THREAD_CONFIG_DEFAULT_CORE\fP)"
+.br
+.ti -1c
+.RI "int \fBkill\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_running\fP ()"
+.br
+.ti -1c
+.RI "const char * \fBget_name\fP ()"
+.br
+.ti -1c
+.RI "unsigned int \fBget_priority\fP ()"
+.br
+.ti -1c
+.RI "unsigned short \fBget_stackdepth\fP ()"
+.br
+.ti -1c
+.RI "xTaskHandle \fBget_handle\fP ()"
+.br
+.ti -1c
+.RI "void * \fBget_return_value\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBget_time_since_start\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBget_id\fP ()"
+.br
+.ti -1c
+.RI "uint32_t \fBget_on_core\fP ()"
+.br
+.ti -1c
+.RI "void \fBsetPriority\fP (unsigned int uiPriority)"
+.br
+.ti -1c
+.RI "void \fBsuspend\fP ()"
+.br
+.ti -1c
+.RI "void \fBresume\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBon_create\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBon_kill\fP ()"
+.br
+.ti -1c
+.RI "virtual void * \fBon_thread\fP ()=0"
+.br
+.ti -1c
+.RI "virtual void \fBon_cleanup\fP ()"
+.br
+.ti -1c
+.RI "\fBbasic_thread\fP * \fBget_root\fP ()"
+.br
+.ti -1c
+.RI "\fBbasic_thread\fP * \fBget_child\fP ()"
+.br
+.ti -1c
+.RI "bool \fBadd_child_thread\fP (\fBbasic_thread\fP *thread)"
+.br
+.in -1c
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBsuspend\fP (\fBbasic_thread\fP *t)"
+.br
+.ti -1c
+.RI "static void \fBresume\fP (\fBbasic_thread\fP *t)"
+.br
+.ti -1c
+.RI "static void \fByield\fP ()"
+.br
+.ti -1c
+.RI "static void \fBsleep\fP (unsigned int secs)"
+.br
+.ti -1c
+.RI "static void \fBusleep\fP (unsigned int usec)"
+.br
+.ti -1c
+.RI "static void \fBnsleep\fP (const struct timespec *req, struct timespec *rem)"
+.br
+.ti -1c
+.RI "static void \fBlock\fP (\fBbasic_thread\fP *t)"
+.br
+.ti -1c
+.RI "static void \fBunlock\fP (\fBbasic_thread\fP *t)"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBthread_started\fP ()"
+.br
+.in -1c
+.SS "Static Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBruntaskstub\fP (void *parm)"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "xTaskHandle \fBhandle\fP"
+.br
+.ti -1c
+.RI "const char * \fBm_strName\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBm_uiPriority\fP"
+.br
+.ti -1c
+.RI "unsigned short \fBm_usStackDepth\fP"
+.br
+.ti -1c
+.RI "void * \fBm_retval\fP"
+.br
+.ti -1c
+.RI "bool \fBm_bMutexInit\fP"
+.br
+.ti -1c
+.RI "bool \fBm_bRunning\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBm_iID\fP"
+.br
+.ti -1c
+.RI "uint32_t \fBm_iCore\fP"
+.br
+.ti -1c
+.RI "\fBLockType_t\fP * \fBm_runningMutex\fP"
+.br
+.ti -1c
+.RI "\fBLockType_t\fP * \fBm_contextMutext\fP"
+.br
+.ti -1c
+.RI "\fBLockType_t\fP * \fBm_continuemutex\fP"
+.br
+.ti -1c
+.RI "\fBLockType_t\fP * \fBm_continuemutex2\fP"
+.br
+.ti -1c
+.RI "\fBbasic_thread\fP * \fBm_pChild\fP"
+.br
+.ti -1c
+.RI "\fBbasic_thread\fP * \fBm_pParent\fP"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static uint32_t \fBget_new_id\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Wrapper class around FreeRTOS's implementation of a task\&.
+.PP
+This is an abstract base class\&. To use this, you need to subclass it\&. All of your threads should be derived from the \fBbasic_thread\fP class\&. Then implement the virtual on_thread function\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_thread::basic_thread ()\fC [inline]\fP"
+
+.SS "basic_thread::basic_thread (char const * strName, unsigned int uiPriority, unsigned short usStackDepth = \fCconfigMINIMAL_STACK_SIZE\fP)"
+Constructor to create a named thread\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstrName\fP Name of the thread\&. Only useful for debugging\&. 
+.br
+\fIuiPriority\fP FreeRTOS priority of this Thread\&. 
+.br
+\fIusStackDepth\fP Number of 'words' allocated for the Thread stack\&. default configMINIMAL_STACK_SIZE
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SS "basic_thread::~basic_thread ()\fC [virtual]\fP"
+Our destructor\&. Delete the task 
+.SH "Member Function Documentation"
+.PP 
+.SS "bool basic_thread::add_child_thread (\fBbasic_thread\fP * thread)"
+Add a child task to this task\&.
+.PP
+\fBReturns\fP
+.RS 4
+True The child tasx are add and false when not
+.RE
+.PP
+\fBNote\fP
+.RS 4
+For example this task handle the WiFi connection and the child the TCP Connection on signal or broadcast this task, will signal and broadcast the child too\&. 
+.RE
+.PP
+
+.SS "int basic_thread::create (int uiCore = \fC\fBMN_THREAD_CONFIG_DEFAULT_CORE\fP\fP)"
+Create and starts the thread\&.
+.PP
+This is the API call that actually starts the thread running\&. It creates a backing FreeRTOS task\&. By separating object creation from starting the Thread, it solves the pure virtual fuction call failure case\&. Call after creating the Task the function on_create
+.PP
+\fBParameters\fP
+.RS 4
+\fIuiCore\fP on which core run this thread (i\&. e\&. task ), -1 then create with 'xTaskCreate' and all other use 'xTaskCreatePinnedToCore'
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_THREAD_OK The task are creating, 'ERR_THREAD_CANTINITMUTEX' on error creating the using LockObjets, the task is not created, 'ERR_THREAD_ALREADYRUNNING' the Task is allready running and 'ERR_THREAD_CANTSTARTTHREAD' can't create the task 
+.RE
+.PP
+
+.SS "\fBbasic_thread\fP * basic_thread::get_child ()"
+Get the child task of this task
+.PP
+\fBReturns\fP
+.RS 4
+The child task 
+.RE
+.PP
+
+.SS "xTaskHandle basic_thread::get_handle ()"
+Accessor to get the thread's backing task handle\&. There is no setter, on purpose\&.
+.PP
+\fBReturns\fP
+.RS 4
+FreeRTOS task handle\&. 
+.RE
+.PP
+
+.SS "uint32_t basic_thread::get_id ()"
+Get the mini thread id of this thread (i\&. e\&. task)
+.PP
+\fBReturns\fP
+.RS 4
+The mini thread id 
+.RE
+.PP
+
+.SS "const char * basic_thread::get_name ()"
+Get the debug name of this thread (i\&. e\&. task)
+.PP
+\fBReturns\fP
+.RS 4
+The name of this thread (i\&. e\&. task) 
+.RE
+.PP
+
+.SS "uint32_t basic_thread::get_new_id ()\fC [static]\fP, \fC [private]\fP"
+Get a new mini thread id
+.PP
+\fBReturns\fP
+.RS 4
+A new mini thread id 
+.RE
+.PP
+
+.SS "uint32_t basic_thread::get_on_core ()"
+Get the core number of this thread (i\&. e\&. task) run
+.PP
+\fBReturns\fP
+.RS 4
+The core number 
+.RE
+.PP
+
+.SS "unsigned int basic_thread::get_priority ()"
+Get the priority of this thread (i\&. e\&. task)
+.PP
+\fBReturns\fP
+.RS 4
+The priority 
+.RE
+.PP
+
+.SS "void * basic_thread::get_return_value ()"
+Get the return value of this thread (i\&. e\&. task) - after run
+.PP
+\fBReturns\fP
+.RS 4
+The return value 
+.RE
+.PP
+
+.SS "\fBbasic_thread\fP * basic_thread::get_root ()"
+Get the root task of this task list
+.PP
+\fBReturns\fP
+.RS 4
+The root task 
+.RE
+.PP
+
+.SS "unsigned short basic_thread::get_stackdepth ()"
+Get the stack depth of this thread (i\&. e\&. task)
+.PP
+\fBReturns\fP
+.RS 4
+The stack depth 
+.RE
+.PP
+
+.SS "uint32_t basic_thread::get_time_since_start ()"
+Get the time since start of this thread (i\&. e\&. task)
+.PP
+\fBReturns\fP
+.RS 4
+The time since start of this thread (i\&. e\&. task) 
+.RE
+.PP
+
+.SS "bool basic_thread::is_running ()"
+Is the thread (i\&. e\&. task) running?
+.PP
+\fBReturns\fP
+.RS 4
+true If the thread (i\&. e\&. task) running, false If not 
+.RE
+.PP
+
+.SS "int basic_thread::kill ()"
+Destroy and delete the task and call the function 'on_kill'
+.PP
+\fBReturns\fP
+.RS 4
+ERR_THREAD_OK The tasx are destroyed and 'ERR_THREAD_NOTRUNNING' the task is not running 
+.RE
+.PP
+
+.SS "static void basic_thread::lock (\fBbasic_thread\fP * t)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void basic_thread::nsleep (const struct timespec * req, struct timespec * rem)\fC [inline]\fP, \fC [static]\fP"
+pause execution for a specified time 
+.PP
+\fBNote\fP
+.RS 4
+see Linux nanosleep function 
+.RE
+.PP
+
+.SS "virtual void basic_thread::on_cleanup ()\fC [inline]\fP, \fC [virtual]\fP"
+Called on exit from your \fBon_thread()\fP routine\&.
+.PP
+It is optional whether you implement this or not\&.
+.PP
+If you allow your Thread to exit its on_thread method, implementing a on_cleanup method allows you to call your Thread's destructor\&. 
+.SS "virtual void basic_thread::on_create ()\fC [inline]\fP, \fC [virtual]\fP"
+This virtual function call on creating, use for user code 
+.SS "virtual void basic_thread::on_kill ()\fC [inline]\fP, \fC [virtual]\fP"
+This virtual function call on kill, use for user code 
+.SS "virtual void* basic_thread::on_thread ()\fC [pure virtual]\fP"
+Implementation of your actual thread code\&. You must override this function\&.
+.PP
+\fBReturns\fP
+.RS 4
+Your return your task function, get with \fBget_return_value()\fP 
+.RE
+.PP
+
+.PP
+Implemented in \fBbasic_work_queue::work_queue_thread\fP\&.
+.SS "void basic_thread::resume ()"
+Resume a specific thread\&. 
+.SS "static void basic_thread::resume (\fBbasic_thread\fP * t)\fC [inline]\fP, \fC [static]\fP"
+Resume the given thread\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP The given task to resume 
+.RE
+.PP
+
+.SS "void basic_thread::runtaskstub (void * parm)\fC [static]\fP, \fC [protected]\fP"
+Adapter function that allows you to write a class specific on_task() function that interfaces with FreeRTOS\&. 
+.SS "void basic_thread::setPriority (unsigned int uiPriority)"
+Set the priority of this thread\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIuiPriority\fP The thread's new priority\&. 
+.RE
+.PP
+
+.SS "static void basic_thread::sleep (unsigned int secs)\fC [inline]\fP, \fC [static]\fP"
+sleep this thread for n seconds
+.PP
+\fBParameters\fP
+.RS 4
+\fIsecs\fP How long seconds to sleep the thread\&. 
+.RE
+.PP
+
+.SS "void basic_thread::suspend ()"
+Suspend this thread\&.
+.PP
+\fBNote\fP
+.RS 4
+While a Thread can \fBsuspend()\fP itself, it cannot \fBresume()\fP itself, becauseit's suspended\&. 
+.RE
+.PP
+
+.SS "static void basic_thread::suspend (\fBbasic_thread\fP * t)\fC [inline]\fP, \fC [static]\fP"
+Suspend the given thread\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIt\fP The given task to suspend
+.RE
+.PP
+\fBNote\fP
+.RS 4
+While a Thread can \fBsuspend()\fP itself, it cannot \fBresume()\fP itself, becauseit's suspended\&. 
+.RE
+.PP
+
+.SS "void basic_thread::thread_started ()\fC [protected]\fP"
+Internal function 
+.SS "static void basic_thread::unlock (\fBbasic_thread\fP * t)\fC [inline]\fP, \fC [static]\fP"
+
+.SS "static void basic_thread::usleep (unsigned int usec)\fC [inline]\fP, \fC [static]\fP"
+sleep this thread for n micro seconds
+.PP
+\fBParameters\fP
+.RS 4
+\fIsecs\fP How long micro seconds to sleep the thread\&. 
+.RE
+.PP
+
+.SS "static void basic_thread::yield ()\fC [inline]\fP, \fC [static]\fP"
+Yield the scheduler\&. 
+.SH "Member Data Documentation"
+.PP 
+.SS "xTaskHandle basic_thread::handle\fC [protected]\fP"
+Reference to the underlying task handle for this thread\&. Can be obtained from GetHandle()\&. 
+.SS "bool basic_thread::m_bMutexInit\fC [protected]\fP"
+Flag whether or not the LockObject was created\&. 
+.SS "bool basic_thread::m_bRunning\fC [protected]\fP"
+Flag whether or not the Thread was started\&. 
+.SS "\fBLockType_t\fP* basic_thread::m_contextMutext\fC [protected]\fP"
+Lock Objekt for thread safty 
+.SS "\fBLockType_t\fP* basic_thread::m_continuemutex\fC [protected]\fP"
+Lock Objekt for thread safty 
+.SS "\fBLockType_t\fP * basic_thread::m_continuemutex2\fC [protected]\fP"
+
+.SS "uint32_t basic_thread::m_iCore\fC [protected]\fP"
+A saved / cached copy of which core this task is running on 
+.SS "uint32_t basic_thread::m_iID\fC [protected]\fP"
+The mini Thread ID 
+.SS "\fBbasic_thread\fP* basic_thread::m_pChild\fC [protected]\fP"
+The child task pointer 
+.SS "\fBbasic_thread\fP* basic_thread::m_pParent\fC [protected]\fP"
+The parent task pointer of this tas 
+.SS "void* basic_thread::m_retval\fC [protected]\fP"
+The return value from user task routine 
+.SS "\fBLockType_t\fP* basic_thread::m_runningMutex\fC [protected]\fP"
+Lock Objekt for thread safty 
+.SS "const char* basic_thread::m_strName\fC [protected]\fP"
+The name of this thread\&. 
+.SS "unsigned int basic_thread::m_uiPriority\fC [protected]\fP"
+A saved / cached copy of what the Thread's priority is\&. 
+.SS "unsigned short basic_thread::m_usStackDepth\fC [protected]\fP"
+Stack depth of this Thread, in words\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

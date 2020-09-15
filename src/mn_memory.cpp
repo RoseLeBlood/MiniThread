@@ -16,9 +16,7 @@
 **/
 #include "mn_memory.hpp"
 
-using namespace cpp_freertos;
-
-
+/*
 bool basic_memory_pool::calc_valid_aligment() {
     if (m_iAlignment < (int)sizeof(unsigned char *)) {
         m_iAlignment = (int)sizeof(unsigned char *);
@@ -106,4 +104,4 @@ void basic_memory_pool::free(void *item) {
     automutx_t autolock(*m_pLock);
 
     m_plFreeItems.push_back(item);
-}
+}*/

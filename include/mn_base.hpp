@@ -22,6 +22,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 
 #include "mn_config.hpp"
 #include "mn_version.hpp"

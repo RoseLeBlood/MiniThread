@@ -1,0 +1,6 @@
+<map id="basic_queue" name="basic_queue">
+<area shape="rect" id="node1" title=" " alt="" coords="205,5,307,32"/>
+<area shape="rect" id="node2" href="$classbasic__binaryqueue.html" title=" " alt="" coords="5,80,149,107"/>
+<area shape="rect" id="node3" href="$classbasic__blocking__queue.html" title=" " alt="" coords="173,80,339,107"/>
+<area shape="rect" id="node4" href="$classbasic__deque.html" title=" " alt="" coords="363,80,466,107"/>
+</map>

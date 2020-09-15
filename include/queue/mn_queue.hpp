@@ -93,29 +93,29 @@ public:
      *  Is the queue empty?
      *  @return true the queue is empty and false when not
      */
-    bool is_empty();
+    virtual bool is_empty();
     /**
      *  Is the queue full?
      *  @return true the queue is full and false when not
      */
-    bool is_full();
+    virtual bool is_full();
     
     /**
      *  Remove all objects from the queue.
      */
-    int clear();
+    virtual int clear();
 
     /**
      *  How many items are currently in the queue.
      *  @return the number of items in the queue.
      */
-    unsigned int get_num_items();
+    virtual unsigned int get_num_items();
 
     /**
      *  How many empty spaves are currently left in the queue.
      *  @return the number of remaining spaces.
      */
-    unsigned int get_left();
+    virtual unsigned int get_left();
 
     /**
      *  get the FreeRTOS queue handle

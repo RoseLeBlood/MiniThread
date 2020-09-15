@@ -1,0 +1,85 @@
+.TH "basic_binaryqueue" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_binaryqueue
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_binaryqueue\&.hpp>\fP
+.PP
+Inherits \fBbasic_queue\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_binaryqueue\fP (unsigned int itemSize)"
+.br
+.ti -1c
+.RI "virtual int \fBenqueue\fP (void *item, unsigned int timeout=\-1)"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Binary queue with overwrite\&. This queue can only hold one item\&. If sucessive Enqueue operations are called, that item is overwritten with whatever the last item was\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_binaryqueue::basic_binaryqueue (unsigned int itemSize)\fC [inline]\fP, \fC [explicit]\fP"
+ctor
+.PP
+\fBParameters\fP
+.RS 4
+\fIitemSize\fP Size of an item in a queue\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_binaryqueue::enqueue (void * item, unsigned int timeout = \fC\-1\fP)\fC [virtual]\fP"
+Add an item to the queue\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The item you are adding\&. 
+.br
+\fItimeout\fP not use 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' when the item in the queue overwrited and 'ERR_QUEUE_NOTCREATED' the queue not created, please call the function create first
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

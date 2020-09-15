@@ -1,0 +1,230 @@
+.TH "basic_blocking_queue" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_blocking_queue
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_blocking_queue\&.hpp>\fP
+.PP
+Inherits \fBbasic_queue\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_blocking_queue\fP (unsigned int maxItems, unsigned int itemSize)"
+.br
+.ti -1c
+.RI "virtual int \fBcreate\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBdestroy\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBenqueue\fP (void *item, unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "virtual int \fBpeek\fP (void *item, unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "virtual int \fBdequeue\fP (void *item, unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "virtual bool \fBis_empty\fP ()"
+.br
+.ti -1c
+.RI "virtual bool \fBis_full\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBclear\fP ()"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBget_num_items\fP ()"
+.br
+.ti -1c
+.RI "virtual unsigned int \fBget_left\fP ()"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "\fBbinary_semaphore_t\fP \fBm_semp\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Extends the \fBbasic_queue\fP with thread (i\&.e\&. task) satly 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_blocking_queue::basic_blocking_queue (unsigned int maxItems, unsigned int itemSize)"
+ctor
+.PP
+\fBParameters\fP
+.RS 4
+\fImaxItems\fP Maximum number of items this queue can hold\&. 
+.br
+\fIitemSize\fP Size of an item in a queue\&.
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual int basic_blocking_queue::clear ()\fC [inline]\fP, \fC [virtual]\fP"
+Remove all objects from the queue\&. 
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "int basic_blocking_queue::create ()\fC [virtual]\fP"
+Create the queue
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK': the queue was created 'ERR_QUEUE_ALREADYINIT': the queue is allready created 'ERR_QUEUE_CANTCREATE': queue can not created 'ERR_QUEUE_CANTCREATE_LOCK': locx object can't created 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "int basic_blocking_queue::dequeue (void * item, unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)\fC [virtual]\fP"
+Remove an item from the front of the queue\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Where the item you are removing will be returned to\&. 
+.br
+\fItimeout\fP How long to wait to remove an item to the queue\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' the item was removed, 'ERR_QUEUE_REMOVE' on an error and 'ERR_QUEUE_NOTCREATED' when the queue not created 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "int basic_blocking_queue::destroy ()\fC [virtual]\fP"
+Destroy the Queue
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' the queue was destroyed 'ERR_QUEUE_NOTCREATED' the queue is not created 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "int basic_blocking_queue::enqueue (void * item, unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)\fC [virtual]\fP"
+Add an item to the back of the queue\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP The item you are adding\&. 
+.br
+\fItimeout\fP How long to wait to add the item to the queue 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' the item was added, 'ERR_QUEUE_ADD' on an error and 'ERR_QUEUE_NOTCREATED' when the queue not created 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "virtual unsigned int basic_blocking_queue::get_left ()\fC [inline]\fP, \fC [virtual]\fP"
+How many empty spaves are currently left in the queue\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the number of remaining spaces\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "virtual unsigned int basic_blocking_queue::get_num_items ()\fC [inline]\fP, \fC [virtual]\fP"
+How many items are currently in the queue\&. 
+.PP
+\fBReturns\fP
+.RS 4
+the number of items in the queue\&. 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "virtual bool basic_blocking_queue::is_empty ()\fC [inline]\fP, \fC [virtual]\fP"
+Is the queue empty? 
+.PP
+\fBReturns\fP
+.RS 4
+true the queue is empty and false when not 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "virtual bool basic_blocking_queue::is_full ()\fC [inline]\fP, \fC [virtual]\fP"
+Is the queue full? 
+.PP
+\fBReturns\fP
+.RS 4
+true the queue is full and false when not 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SS "int basic_blocking_queue::peek (void * item, unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)\fC [virtual]\fP"
+Make a copy of an item from the front of the queue\&. This will not remove it
+.PP
+\fBParameters\fP
+.RS 4
+\fIitem\fP Where the item you are removing will be returned to\&. 
+.br
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_QUEUE_OK' if an item was copied, 'ERR_QUEUE_PEEK' on error and 'ERR_QUEUE_NOTCREATED' when the queue not created 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_queue\fP\&.
+.SH "Member Data Documentation"
+.PP 
+.SS "\fBbinary_semaphore_t\fP basic_blocking_queue::m_semp\fC [protected]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

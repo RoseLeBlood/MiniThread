@@ -1,0 +1,261 @@
+.TH "basic_timer" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_timer
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_timer\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_timer\fP (const char *strName, unsigned int uiPeriod, bool bIsOneShot=true)"
+.br
+.ti -1c
+.RI "int \fBcreate\fP ()"
+.br
+.ti -1c
+.RI "int \fBdestroy\fP (unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "int \fBactive\fP (unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "int \fBinactive\fP (unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "int \fBreset\fP (unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "bool \fBset_period\fP (unsigned int uiNewPeriod, unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "unsigned int \fBget_period\fP ()"
+.br
+.ti -1c
+.RI "const char * \fBget_name\fP ()"
+.br
+.ti -1c
+.RI "bool \fBis_oneshot\fP ()"
+.br
+.ti -1c
+.RI "void * \fBget_handle\fP ()"
+.br
+.in -1c
+.SS "Protected Member Functions"
+
+.in +1c
+.ti -1c
+.RI "virtual void \fBon_timer\fP ()=0"
+.br
+.in -1c
+.SS "Static Private Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBruntimerstub\fP (void *xTimer)"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "bool \fBm_bIsOneShot\fP"
+.br
+.ti -1c
+.RI "unsigned int \fBm_uiPeriod\fP"
+.br
+.ti -1c
+.RI "const char * \fBm_strName\fP"
+.br
+.ti -1c
+.RI "void * \fBm_pHandle\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2020 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Wrapper class around FreeRTOS's implementation of a timer\&. 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_timer::basic_timer (const char * strName, unsigned int uiPeriod, bool bIsOneShot = \fCtrue\fP)"
+Construct a timer\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIstrName\fP Name of the timer\&. 
+.br
+\fIuiPeriod\fP When does the timer expire and run your Run() method\&. 
+.br
+\fIbIsOneShot\fP true if this is a one shot timer\&. false if the timer expires every PeriodInTicks\&.
+.RE
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2020 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_timer::active (unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)"
+Start the timer\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TIMER_OK All okay, no error ERR_TIMER_NOTCREATED the timer are not created, plaese call \fBcreate()\fP first ERR_TIMER_AKTIVATE if it will not (i\&.e\&. timeout)\&. 
+.RE
+.PP
+
+.SS "int basic_timer::create ()"
+Create the timer
+.PP
+\fBNote\fP
+.RS 4
+Timers are not active after they are created, you need to activate them via active, reset, etc\&.
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TIMER_OK No error, ERR_TIMER_ALREADYINIT The timer are allready created and ERR_TIMER_CANTCREATE on error on create the FreeRTOS Timer 
+.RE
+.PP
+
+.SS "int basic_timer::destroy (unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)"
+destroy the timer
+.PP
+\fBParameters\fP
+.RS 4
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TIMER_OK No error, ERR_TIMER_NOTCREATED the timer are not created, plaese call \fBcreate()\fP first 
+.RE
+.PP
+
+.SS "void* basic_timer::get_handle ()\fC [inline]\fP"
+Get the FreeRTOS handle
+.PP
+\fBReturns\fP
+.RS 4
+the FreeRTOS handle 
+.RE
+.PP
+
+.SS "const char* basic_timer::get_name ()\fC [inline]\fP"
+Get the timer's name
+.PP
+\fBReturns\fP
+.RS 4
+The timer's name 
+.RE
+.PP
+
+.SS "unsigned int basic_timer::get_period ()\fC [inline]\fP"
+Get the timer's period
+.PP
+\fBReturns\fP
+.RS 4
+The timer's period 
+.RE
+.PP
+
+.SS "int basic_timer::inactive (unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)"
+Stop the timer
+.PP
+\fBParameters\fP
+.RS 4
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TIMER_OK All okay, no error ERR_TIMER_NOTCREATED the timer are not created, plaese call \fBcreate()\fP first ERR_TIMER_INAKTIVATE if it will not (i\&.e\&. timeout)\&. 
+.RE
+.PP
+
+.SS "bool basic_timer::is_oneshot ()\fC [inline]\fP"
+Is the timer is one shotted?
+.PP
+\fBReturns\fP
+.RS 4
+true The timer is one shotted and false when not 
+.RE
+.PP
+
+.SS "virtual void basic_timer::on_timer ()\fC [protected]\fP, \fC [pure virtual]\fP"
+Implementation of your actual timer code\&. You must override this function\&. 
+.SS "int basic_timer::reset (unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)"
+Reset the timer
+.PP
+\fBParameters\fP
+.RS 4
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_TIMER_OK All okay, no error ERR_TIMER_NOTCREATED the timer are not created, plaese call \fBcreate()\fP first ERR_TIMER_RESET if it will not (i\&.e\&. timeout)\&. 
+.RE
+.PP
+
+.SS "void basic_timer::runtimerstub (void * xTimer)\fC [static]\fP, \fC [private]\fP"
+Adapter function that allows you to write a class specific \fBon_timer()\fP function that interfaces with FreeRTOS\&. 
+.SS "bool basic_timer::set_period (unsigned int uiNewPeriod, unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)"
+Change a timer's period\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIuiNewPeriod\fP The new period in ticks\&. 
+.br
+\fItimeout\fP How long to wait 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+true no error, false if it will not (i\&.e\&. timeout)\&. 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "bool basic_timer::m_bIsOneShot\fC [private]\fP"
+A saved / cached copy of what the timers's mode is\&. 
+.SS "void* basic_timer::m_pHandle\fC [private]\fP"
+Reference to the underlying timer handle\&. 
+.SS "const char* basic_timer::m_strName\fC [private]\fP"
+A saved / cached copy of what the timers's name is\&. 
+.SS "unsigned int basic_timer::m_uiPeriod\fC [private]\fP"
+A saved / cached copy of what the timers's period is\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

@@ -1,0 +1,71 @@
+.TH "mn_sleep.cpp" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+mn_sleep.cpp
+.SH SYNOPSIS
+.br
+.PP
+\fC#include 'mn_sleep\&.hpp'\fP
+.br
+\fC#include 'freertos/FreeRTOS\&.h'\fP
+.br
+\fC#include 'freertos/task\&.h'\fP
+.br
+\fC#include 'freertos/event_groups\&.h'\fP
+.br
+\fC#include 'esp_log\&.h'\fP
+.br
+\fC#include 'esp_err\&.h'\fP
+.br
+\fC#include 'nvs_flash\&.h'\fP
+.br
+\fC#include 'esp_system\&.h'\fP
+.br
+\fC#include 'esp_spi_flash\&.h'\fP
+.br
+\fC#include 'sdkconfig\&.h'\fP
+.br
+\fC#include 'esp_attr\&.h'\fP
+.br
+\fC#include 'esp_partition\&.h'\fP
+.br
+\fC#include <sys/time\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "unsigned \fBmn_sleep\fP (unsigned int secs)"
+.br
+.ti -1c
+.RI "int \fBmn_usleep\fP (useconds_t usec)"
+.br
+.ti -1c
+.RI "int IRAM_ATTR \fBmn_nsleep\fP (const struct timespec *req, struct timespec *rem)"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "int IRAM_ATTR mn_nsleep (const struct timespec * req, struct timespec * rem)"
+Delay a given task for a given timespec 
+.SS "unsigned mn_sleep (unsigned int secs)"
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SS "int mn_usleep (useconds_t usec)"
+Delay a given task for a given number of micro seconds\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

@@ -1,0 +1,125 @@
+.TH "basic_counting_semaphore" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_counting_semaphore
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_semaphore\&.hpp>\fP
+.PP
+Inherits \fBbasic_semaphore\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_counting_semaphore\fP (int count=1, int maxcount=0x7fffffff)"
+.br
+.ti -1c
+.RI "virtual int \fBcreate\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBdestroy\fP ()"
+.br
+.ti -1c
+.RI "void \fBset_initial_count\fP (int count)"
+.br
+.ti -1c
+.RI "void \fBset_max_count\fP (int count)"
+.br
+.ti -1c
+.RI "int \fBget_count\fP () const"
+.br
+.in -1c
+.SS "Protected Attributes"
+
+.in +1c
+.ti -1c
+.RI "int \fBm_uiCount\fP"
+.br
+.ti -1c
+.RI "int \fBm_uiMaxCount\fP"
+.br
+.in -1c
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_counting_semaphore::basic_counting_semaphore (int count = \fC1\fP, int maxcount = \fC0x7fffffff\fP)"
+Constructor to set the basic properties for this spinlock\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fIcount\fP Must not be greater than maxCount\&. 
+.br
+\fImaxcount\fP Must be greater than 0\&. 
+.RE
+.PP
+
+.SH "Member Function Documentation"
+.PP 
+.SS "int basic_counting_semaphore::create ()\fC [virtual]\fP"
+Create the counting semaphore 
+.br
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_SPINLOCK_OK' the mutex are created, 'ERR_SPINLOCK_ALREADYINIT' the mutex are already created, 'ERR_SPINLOCK_BAD_INITIALCOUNT' when the initial count greater than maxcount is and 'ERR_SPINLOCK_CANTCREATEMUTEX' on error\&. 
+.RE
+.PP
+
+.SS "int basic_counting_semaphore::destroy ()\fC [virtual]\fP"
+Destroyed the counting semaphore
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_SPINLOCK_OK' the mutex are destroyed or ERR_SPINLOCK_NOTINIT when mutex not created 
+.RE
+.PP
+
+.SS "int basic_counting_semaphore::get_count () const"
+Get the current count value\&.
+.PP
+\fBReturns\fP
+.RS 4
+The current count and 0 if the semaphore is not available\&. 
+.RE
+.PP
+
+.SS "void basic_counting_semaphore::set_initial_count (int count)\fC [inline]\fP"
+Set the initial count
+.PP
+\fBParameters\fP
+.RS 4
+\fIcount\fP the new initial count 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+only call befor create, after this have no effect 
+.RE
+.PP
+
+.SS "void basic_counting_semaphore::set_max_count (int count)\fC [inline]\fP"
+Set the max count
+.PP
+\fBParameters\fP
+.RS 4
+\fIcount\fP the new max count 
+.RE
+.PP
+\fBNote\fP
+.RS 4
+only call befor create, after this have no effect 
+.RE
+.PP
+
+.SH "Member Data Documentation"
+.PP 
+.SS "int basic_counting_semaphore::m_uiCount\fC [protected]\fP"
+
+.SS "int basic_counting_semaphore::m_uiMaxCount\fC [protected]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

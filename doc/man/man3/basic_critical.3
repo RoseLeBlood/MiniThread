@@ -1,0 +1,79 @@
+.TH "basic_critical" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_critical
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_critical\&.hpp>\fP
+.SS "Static Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBenter\fP (portMUX_TYPE handle)"
+.br
+.ti -1c
+.RI "static void \fBexit\fP (portMUX_TYPE handle)"
+.br
+.ti -1c
+.RI "static void \fBdisable_interrupts\fP ()"
+.br
+.ti -1c
+.RI "static void \fBenable_interrupts\fP ()"
+.br
+.ti -1c
+.RI "static void \fBstop_scheduler\fP ()"
+.br
+.ti -1c
+.RI "static void \fBresume_scheduler\fP ()"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2020 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Wrapper class around various critical section type synchronization mechanisms within FreeRTOS\&. 
+.SH "Member Function Documentation"
+.PP 
+.SS "void basic_critical::disable_interrupts ()\fC [static]\fP"
+Disable all maskable interrupts\&. 
+.SS "void basic_critical::enable_interrupts ()\fC [static]\fP"
+Enable all maskable interrupts\&. 
+.SS "void basic_critical::enter (portMUX_TYPE h)\fC [static]\fP"
+Disable context switches as well as maskable interrupts\&.
+.PP
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SS "void basic_critical::exit (portMUX_TYPE handle)\fC [static]\fP"
+Re-enable context switches\&. 
+.SS "void basic_critical::resume_scheduler ()\fC [static]\fP"
+Re-enable the scheduler\&. 
+.SS "void basic_critical::stop_scheduler ()\fC [static]\fP"
+Suspend the scheduler without disabling interrupts\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

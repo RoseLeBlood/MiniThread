@@ -1,0 +1,16 @@
+<map id="basic_semaphore::unlock" name="basic_semaphore::unlock">
+<area shape="rect" id="node1" title=" " alt="" coords="963,311,1149,338"/>
+<area shape="rect" id="node2" href="$classbasic__counting__semaphore.html#a0f933048f021dfbc4e6bcad39dfbd3ff" title=" " alt="" coords="710,5,909,47"/>
+<area shape="rect" id="node3" href="$classbasic__tasklet.html#abbc9451d854d5462072bfb33bb28ef06" title=" " alt="" coords="478,71,635,98"/>
+<area shape="rect" id="node4" href="$classbasic__binary__semaphore.html#adeb909ebfc1b7014556736c2da911016" title=" " alt="" coords="465,157,649,199"/>
+<area shape="rect" id="node6" href="$classbasic__work__queue.html#adbc4257c8c917d020578b3133320cfc0" title=" " alt="" coords="5,249,196,275"/>
+<area shape="rect" id="node7" href="$classbasic__thread.html#a3e6015c1f41f5ae5025a05e9d293d6a6" title=" " alt="" coords="249,249,404,275"/>
+<area shape="rect" id="node8" href="$classbasic__blocking__queue.html#a00fe5f9c9e48c8eef116b59402d3d092" title=" " alt="" coords="727,275,892,316"/>
+<area shape="rect" id="node9" href="$classbasic__work__queue.html#af71f5cc64f41ae3c3ffc2355b92d172e" title=" " alt="" coords="457,483,656,510"/>
+<area shape="rect" id="node10" href="$classbasic__thread.html#ac98c71fadf905a66274275c3611bb587" title=" " alt="" coords="743,509,876,535"/>
+<area shape="rect" id="node11" href="$classbasic__tasklet.html#ae56d66fe8376f223b35262d3d2ca7f42" title=" " alt="" coords="704,122,915,149"/>
+<area shape="rect" id="node12" href="$classbasic__thread.html#a994fecb7d772942db9573ed031c43bed" title=" " alt="" coords="461,341,652,367"/>
+<area shape="rect" id="node13" href="$classbasic__thread.html#a6892127bdbb965b071e0bb752a54c794" title=" " alt="" coords="732,392,887,433"/>
+<area shape="rect" id="node14" href="$classbasic__thread.html#aec2288dc0524ec937d6752390af015f6" title=" " alt="" coords="731,610,887,637"/>
+<area shape="rect" id="node5" href="$classbasic__blocking__queue.html#a01d2a5709b71b5f0f63c63d97debfd88" title=" " alt="" coords="244,132,409,173"/>
+</map>

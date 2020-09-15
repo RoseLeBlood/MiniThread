@@ -1,0 +1,51 @@
+.TH "basic_critical_lock" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+basic_critical_lock
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_critical\&.hpp>\fP
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBbasic_critical_lock\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBlock\fP ()"
+.br
+.ti -1c
+.RI "virtual void \fBunlock\fP ()"
+.br
+.in -1c
+.SS "Private Attributes"
+
+.in +1c
+.ti -1c
+.RI "portMUX_TYPE \fBm_pHandle\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Wrapper class to use the critical section lock with autolock guard see auto_critical_t 
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "basic_critical_lock::basic_critical_lock ()"
+
+.SH "Member Function Documentation"
+.PP 
+.SS "virtual void basic_critical_lock::lock ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SS "virtual void basic_critical_lock::unlock ()\fC [inline]\fP, \fC [virtual]\fP"
+
+.SH "Member Data Documentation"
+.PP 
+.SS "portMUX_TYPE basic_critical_lock::m_pHandle\fC [private]\fP"
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.

@@ -1,0 +1,11 @@
+<map id="mn_autolock.hpp" name="mn_autolock.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="302,5,437,32"/>
+<area shape="rect" id="node2" href="$mn__config_8hpp.html" title=" " alt="" coords="197,229,315,256"/>
+<area shape="rect" id="node4" href="$mn__mutex_8hpp.html" title=" " alt="" coords="309,155,429,181"/>
+<area shape="rect" id="node5" href="$mn__semaphore_8hpp.html" title=" " alt="" coords="407,229,558,256"/>
+<area shape="rect" id="node7" href="$mn__critical_8hpp.html" title=" " alt="" coords="79,80,201,107"/>
+<area shape="rect" id="node9" href="$mn__recursive__mutex_8hpp.html" title=" " alt="" coords="276,80,463,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="151,304,302,331"/>
+<area shape="rect" id="node6" href="$mn__error_8hpp.html" title=" " alt="" coords="345,304,453,331"/>
+<area shape="rect" id="node8" title=" " alt="" coords="5,155,123,181"/>
+</map>

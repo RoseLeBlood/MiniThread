@@ -1,0 +1,128 @@
+.TH "recursive_mutex" 3 "Tue Sep 15 2020" "Version 1.6x" "Mini Thread" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+recursive_mutex
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <mn_recursive_mutex\&.hpp>\fP
+.PP
+Inherits \fBbasic_mutex\fP\&.
+.SS "Public Member Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBrecursive_mutex\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBcreate\fP ()"
+.br
+.ti -1c
+.RI "virtual int \fBlock\fP (unsigned int timeout=(unsigned int) 0xffffffffUL)"
+.br
+.ti -1c
+.RI "virtual int \fBunlock\fP ()"
+.br
+.in -1c
+.SS "Additional Inherited Members"
+.SH "Detailed Description"
+.PP 
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ Recursive usage Mutex\&.
+.PP
+By default calls to Lock these objects block forever, but this can be changed by simply passing in a argument to the \fBlock()\fP method\&. These objects are recursively acquirable\&. Calling \fBlock()\fP twice from the same Thread (i\&.e\&. task) works fine\&. The caller just needs to be sure to call \fBunlock()\fP as many times as \fBlock()\fP\&.
+.PP
+\fBNote\fP
+.RS 4
+Recursive mutexes use more resources than standard mutexes\&. You should be sure that you actually need this type of synchronization before using it\&. 
+.RE
+.PP
+
+.SH "Constructor & Destructor Documentation"
+.PP 
+.SS "recursive_mutex::recursive_mutex ()"
+This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread )\&. Copyright (c) 2018 Amber-Sophia Schroeck
+.PP
+The Mini Thread Library is free software; you can redistribute it and/or modify 
+.br
+ it under the terms of the GNU Lesser General Public License as published by 
+.br
+ the Free Software Foundation, version 3, or (at your option) any later version\&.
+.PP
+The Mini Thread Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE\&. See the GNU General Public License for more details\&.
+.PP
+You should have received a copy of the GNU Lesser General Public License along with the Mini Thread Library; if not, see https://www.gnu.org/licenses/\&. 
+.br
+ 
+.SH "Member Function Documentation"
+.PP 
+.SS "int recursive_mutex::create ()\fC [virtual]\fP"
+Create the Mutex
+.PP
+\fBReturns\fP
+.RS 4
+'ERR_MUTEX_OK' the mutex are created, 'ERR_MUTEX_ALREADYINIT' the mutex are already created and 'ERR_MUTEX_CANTCREATEMUTEX' on error\&.
+.RE
+.PP
+\fBNote\fP
+.RS 4
+create the mutex with 'xSemaphoreCreateRecursiveMutex' 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_mutex\fP\&.
+.SS "int recursive_mutex::lock (unsigned int timeout = \fC(unsigned int) 0xffffffffUL\fP)\fC [virtual]\fP"
+Lock the Mutex\&.
+.PP
+\fBParameters\fP
+.RS 4
+\fITimeout\fP How long to wait to get the Lock until giving up\&. (default = 0xffffffffUL) 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+ERR_MUTEX_OK if the Lock was acquired, ERR_MUTEX_LOCK if it timed out\&. or ERR_MUTEX_NOTINIT when mutex not created
+.RE
+.PP
+\fBNote\fP
+.RS 4
+use 'xSemaphoreTakeRecursiveFromISR' in ISR context or 'xSemaphoreTakeRecursive' in all other 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_mutex\fP\&.
+.SS "int recursive_mutex::unlock ()\fC [virtual]\fP"
+Unlock the Mutex\&.
+.PP
+\fBReturns\fP
+.RS 4
+ERR_MUTEX_OK if the Lock was released, ERR_MUTEX_UNLOCK if it failed\&. or ERR_MUTEX_NOTINIT when mutex not created
+.RE
+.PP
+\fBNote\fP
+.RS 4
+use 'xSemaphoreGiveRecursiveFromISR' in ISR context or 'xSemaphoreGiveRecursive' in all other 
+.RE
+.PP
+
+.PP
+Reimplemented from \fBbasic_mutex\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Mini Thread from the source code\&.
