@@ -1,9 +1,0 @@
-<map id="mn_critical.hpp" name="mn_critical.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="325,5,447,32"/>
-<area shape="rect" id="node2" href="$mn__mutex_8hpp.html" title=" " alt="" coords="182,80,302,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="257,229,408,256"/>
-<area shape="rect" id="node7" title=" " alt="" coords="423,80,541,107"/>
-<area shape="rect" id="node3" href="$mn__config_8hpp.html" title=" " alt="" coords="231,155,349,181"/>
-<area shape="rect" id="node5" href="$mn__semaphore_8hpp.html" title=" " alt="" coords="5,155,156,181"/>
-<area shape="rect" id="node6" href="$mn__error_8hpp.html" title=" " alt="" coords="97,229,205,256"/>
-</map>

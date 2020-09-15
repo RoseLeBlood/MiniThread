@@ -1,8 +1,0 @@
-<map id="basic_tasklet::create" name="basic_tasklet::create">
-<area shape="rect" id="node1" title=" " alt="" coords="5,97,163,123"/>
-<area shape="rect" id="node2" href="$classbasic__counting__semaphore.html#a0f933048f021dfbc4e6bcad39dfbd3ff" title=" " alt="" coords="217,5,415,47"/>
-<area shape="rect" id="node3" href="$classbasic__semaphore.html#ad1eed14bc4c271923e2ac0a4ff3dc572" title=" " alt="" coords="469,71,656,98"/>
-<area shape="rect" id="node4" href="$classbasic__semaphore.html#ad9e109f5a87d768334cb49ff7712e2a5" title=" " alt="" coords="231,122,401,149"/>
-<area shape="rect" id="node5" href="$classbasic__tasklet.html#ae56d66fe8376f223b35262d3d2ca7f42" title=" " alt="" coords="211,173,421,199"/>
-<area shape="rect" id="node6" href="$classbasic__tasklet.html#a3c6e9a2baf4c11b03e2ce270b02f8346" title=" " alt="" coords="471,173,655,199"/>
-</map>

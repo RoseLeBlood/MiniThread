@@ -37,6 +37,9 @@
 .vscode
 .vscode/*
 
+doc/html/*
+doc/man/*
+
 platformio.ini
 update pio.sh
 sdkconfig
