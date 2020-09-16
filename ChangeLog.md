@@ -1,8 +1,7 @@
 # Changelog
 
 Version 1.60 September 2020: (unstable nightly)
-  * add Work queue support (basic_work_queue) Create one or more basic_work_queue
-    to accept work_queue_item. basic_work_queue pull work_queue_item off of a FIFO queue and 
+  * add Work queue support (basic_work_queue) basic_work_queue pull work_queue_item off of a FIFO queue and 
     run them sequentially.  
   * add New Config Options to mn_conig.hpp
       * MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS: How many work items to queue in the work queue engine default is 8
@@ -19,6 +18,8 @@ Version 1.60 September 2020: (unstable nightly)
   * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
   * basic_mutex extends basic_semaphore
   * add a blocking queue, start emply a Threahpool and memory mamagment classes
+  * The basic_thread ID is now the FreeRTOS Task number and remove the mini Thread ID's 
+  * add foreign_thread for mini Thread foregin thread and current Thread handling
 
 Version 1.54 September 2020: (unstable)
   * Documentation ready

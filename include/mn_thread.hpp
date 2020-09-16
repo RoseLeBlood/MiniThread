@@ -39,7 +39,7 @@ public:
   basic_thread() { }
 
   /**
-   *  Constructor to create a named thread.
+   *  Constructor for this thread.
    *
    *  @param strName Name of the thread. Only useful for debugging.
    *  @param uiPriority FreeRTOS priority of this Thread.
@@ -47,6 +47,7 @@ public:
    */
   basic_thread(char const* strName, unsigned int uiPriority,
        unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
+  
   
   /**
    *  Our destructor. Delete the task 
@@ -68,7 +69,7 @@ public:
    * LockObjets, the task is not created, 'ERR_THREAD_ALREADYRUNNING' the Task is allready running and
    * 'ERR_THREAD_CANTSTARTTHREAD' can't create the task
    */
-  int                   create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
+  virtual int                   create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
   /**
    * Destroy and delete the task and call the function 'on_kill'
@@ -122,9 +123,9 @@ public:
    */ 
   uint32_t              get_time_since_start();
   /**
-   * Get the mini thread id of this thread (i. e. task) 
+   * Get the FreeRTOS Thread Numberid of this thread (i. e. task) 
    * 
-   * @return The mini thread id 
+   * @return The FreeRTOS Thread (i. e. task)  Number
    */ 
   uint32_t              get_id();
   /**
@@ -248,6 +249,7 @@ public:
 
   static void lock(basic_thread * t)    { t->m_runningMutex->lock(); }
   static void unlock(basic_thread * t)    { t->m_runningMutex->unlock(); }
+
 protected:
   /**
    *  Adapter function that allows you to write a class
@@ -258,13 +260,7 @@ protected:
    * Internal function 
    */ 
 	void thread_started();
-private:
-  /**
-   * Get a new mini thread id
-   *
-   * @return A new mini thread id
-   */ 
-  static uint32_t get_new_id();
+
 protected:
   /**
    *  Reference to the underlying task handle for this thread.
@@ -297,7 +293,7 @@ protected:
    */
   bool m_bRunning;
   /**
-   * The mini Thread ID
+   * The FreeRTOS Thread Number
    */ 
   uint32_t m_iID;
   /**
@@ -327,6 +323,38 @@ protected:
   basic_thread *m_pParent;
 };
 
+
+/**
+ * Wrapper class around FreeRTOS's implementation of a task, 
+ * for foreign miniThread Threads 
+ */
+class foreign_thread : public basic_thread {
+public:
+  /**
+   * Constructor - the current thread
+   * @note please call create, for creating the usings Locktyps
+   */ 
+  foreign_thread();
+  /**
+   * Constructor - from a FreeRTOS handle
+   * @note please call create, for creating the usings Locktyps
+   */ 
+  foreign_thread(void* t);
+
+  /**
+   * Create and set the usings Semaphores and informations
+   */ 
+  int                   create(int uiCore = -1);
+
+protected:
+  /**
+   * Override - Do nothings and never call
+   * @return NULL
+   */
+  void*         on_thread() { return NULL; }
+};
+
 using thread_t = basic_thread;
+using foreign_thread_t = foreign_thread;
 
 #endif

@@ -34,10 +34,10 @@ basic_thread::~basic_thread() {
 
   if(!m_bRunning) { 
 
-    m_runningMutex->destroy();
-    m_contextMutext->destroy();
-    m_continuemutex->destroy();
-    m_continuemutex2->destroy();
+    if(m_runningMutex != NULL) m_runningMutex->destroy();
+    if(m_runningMutex != NULL) m_contextMutext->destroy();
+    if(m_runningMutex != NULL) m_continuemutex->destroy();
+    if(m_runningMutex != NULL) m_continuemutex2->destroy();
 
     m_bMutexInit =false; 
   }
@@ -53,7 +53,7 @@ basic_thread*  basic_thread::get_root() {
   return root;
 }
 basic_thread*  basic_thread::get_child() {
-  autolock_t autolock(*m_contextMutext);
+  autolock_t autolock(*m_runningMutex);
 
   basic_thread* child = 0;
   child = m_pChild;
@@ -61,7 +61,7 @@ basic_thread*  basic_thread::get_child() {
 }
 
 bool basic_thread::add_child_thread(basic_thread* thread) {
-  autolock_t autolock(*m_contextMutext);
+  autolock_t autolock(*m_runningMutex);
 
   bool ret = true;
    thread->m_pParent = this;
@@ -112,19 +112,19 @@ int basic_thread::create(int uiCore) {
                 this, m_uiPriority, &handle, uiCore);
 
   }
-  m_iCore = uiCore;
-  m_iID = get_new_id();
+
+ 
 
 	if (handle == 0) {
     m_continuemutex->unlock();
 		return ERR_THREAD_CANTSTARTTHREAD;
   }
 
-
-	m_continuemutex->unlock();
-
   m_runningMutex->lock();
+  m_iCore = uiCore;
+  m_iID = uxTaskGetTaskNumber(handle); //get_new_id(); uxTaskGetTaskNumber
   on_create();
+  m_continuemutex->unlock();
   m_runningMutex->unlock();
 
 	return ERR_THREAD_OK;
@@ -162,6 +162,7 @@ uint32_t basic_thread::get_on_core() {
 }
 const char* basic_thread::get_name() {
   autolock_t autolock(*m_runningMutex);
+
 	return m_strName;
 }
 unsigned int basic_thread::get_priority() {
@@ -202,6 +203,7 @@ void basic_thread::resume() {
   autolock_t autolock(*m_runningMutex);
   vTaskResume(handle);
 }
+
 void basic_thread::runtaskstub(void* parm) {
   basic_thread *esp_thread;
 	void *ret;
@@ -231,8 +233,65 @@ void basic_thread::runtaskstub(void* parm) {
 void basic_thread::thread_started() {
   m_continuemutex2->unlock();
 }
-uint32_t __internal_id_base__ = 0;
 
-uint32_t basic_thread::get_new_id() {
-  return __internal_id_base__++;
+
+foreign_thread::foreign_thread() 
+  : foreign_thread(xTaskGetCurrentTaskHandle()) { 
+
+  m_strName = "current_foreign_thread";
+}
+
+foreign_thread::foreign_thread(void* t)
+  : basic_thread() { 
+  
+  handle = t;
+
+  m_strName = "foreign_thread";
+  m_iCore = xPortGetCoreID();
+  m_iID = uxTaskGetTaskNumber(handle);
+  m_usStackDepth = 0;
+  m_bMutexInit = false;
+
+  
+
+  if (xPortInIsrContext()) {
+    m_uiPriority = uxTaskPriorityGetFromISR(handle);
+  } else {
+	  m_uiPriority = uxTaskPriorityGet(handle);
+  }
+  m_pChild = NULL;
+  m_pParent = NULL;
+}
+
+int foreign_thread::create(int uiCore) {
+   if(!m_bMutexInit) {
+    m_runningMutex = new LockType_t();
+    m_contextMutext = new LockType_t();
+
+    m_continuemutex = new LockType_t();
+    m_continuemutex2 = new LockType_t();
+
+
+    if(m_runningMutex->create() != ERR_MUTEX_OK)
+      return ERR_THREAD_CANTINITMUTEX;
+    if(m_contextMutext->create() != ERR_MUTEX_OK)
+      return ERR_THREAD_CANTINITMUTEX;
+
+    if(m_continuemutex->create() != ERR_MUTEX_OK)
+      return ERR_THREAD_CANTINITMUTEX;
+    if(m_continuemutex2->create() != ERR_MUTEX_OK)
+      return ERR_THREAD_CANTINITMUTEX;
+
+    m_bMutexInit = true;
+    
+  }
+  m_continuemutex->lock();
+
+	if (handle == 0) {
+    m_continuemutex->unlock();
+		return ERR_THREAD_CANTSTARTTHREAD;
+  }
+  m_continuemutex->unlock();
+
+	return ERR_THREAD_OK;
 }
