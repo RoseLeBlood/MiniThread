@@ -18,7 +18,6 @@ Version 1.60 September 2020: (unstable nightly)
   * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
   * basic_mutex extends basic_semaphore
   * add a blocking queue, start emply a Threahpool and memory mamagment classes
-  * The basic_thread ID is now the FreeRTOS Task number and remove the mini Thread ID's 
   * add foreign_thread for mini Thread foregin thread and current Thread handling
 
 Version 1.54 September 2020: (unstable)
