@@ -61,7 +61,6 @@ public:
      */
     virtual void on_work() = 0;
 
-    //TODO: ADD this two functions - destroy ready
     virtual int create() { return 0; }
     virtual int destroy() { return 0; }
 private:

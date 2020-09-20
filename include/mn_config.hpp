@@ -31,16 +31,42 @@
 #define MN_THREAD_CONFIG_YES        1
 #define MN_THREAD_CONFIG_NO         2
 
-#define MN_THREAD_CONFIG_CORE_NO    -1
+#define MN_THREAD_CONFIG_CORE_IFNO  -1
 #define MN_THREAD_CONFIG_CORE_ONE   0
-#define MN_THREAD_CONFIG_CORE2_TWO  1
+#define MN_THREAD_CONFIG_CORE_TWO   1
 
-//CONFIG_PTHREAD_TASK_CORE_DEFAULT
+  
 
 #define MN_THREAD_CONFIG_MAX_CPUS                   2 
 #define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_NO
 #define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE2_TWO   
 
+/**
+ * default  (unsigned int) 0xffffffffUL   
+ */ 
+#define MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT  (unsigned int) 0xffffffffUL             
+
+// Counting Semaphore Default Config
+/**
+ * default  1  
+ */ 
+#define MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT       1  
+/**
+ * default  0x7fffffff  
+ */   
+#define MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT       0x7fffffff
+/**
+ * default  (unsigned int) 0xffffffffUL)   
+ */   
+#define MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT      (unsigned int) 0xffffffffUL)  
+/**
+ * default  (unsigned int) 0xffffffffUL)   
+ */   
+#define MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT      (unsigned int) 0xffffffffUL)  
+/**
+ * default  (unsigned int) 0xffffffffUL)   
+ */   
+#define MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT    (unsigned int) 0xffffffffUL) 
 
  /**
  * Default lock type using in the thread class 
@@ -73,6 +99,12 @@
  * default: (tskIDLE_PRIORITY + 1) 
  */ 
 #define MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY         (tskIDLE_PRIORITY + 1)
+
+
+#define MN_THREAD_CONFIG_THREAD_POOL_PRIORITY        (tskIDLE_PRIORITY + 1)
+#define MN_THREAD_CONFIG_THREAD_POOL_STACK_SIZE      (configMINIMAL_STACK_SIZE * 2)
+#define MN_THREAD_CONFIG_THREAD_POOL_MAX_JOBS         16
+#define MN_THREAD_CONFIG_THREAD_POOL_WORKERS          4
 
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================

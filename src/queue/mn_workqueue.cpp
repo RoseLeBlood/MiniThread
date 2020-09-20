@@ -31,7 +31,7 @@ int basic_work_queue::create(int iCore) {
     if(!m_bMutexInit) {
         m_pComplete = new basic_binary_semaphore();
         m_pRunningSem = new basic_binary_semaphore();
-
+ 
         if(m_pRunningSem->create() != ERR_MUTEX_OK)
             return ERR_THREAD_CANTINITMUTEX;
 

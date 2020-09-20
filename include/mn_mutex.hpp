@@ -59,7 +59,7 @@ public:
    *  @return ERR_MUTEX_OK if the Lock was acquired, ERR_MUTEX_LOCK if it timed out.
    *  or ERR_MUTEX_NOTINIT when mutex not created
    */
-	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
+	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT);
 
   /**
    *  Unlock the Mutex.

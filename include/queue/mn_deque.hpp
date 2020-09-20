@@ -44,7 +44,7 @@ public:
      *  @return 'ERR_QUEUE_OK' the item was added, 'ERR_QUEUE_ADD' on an error
      *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
-    virtual int enqueue_front(void* item, unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int enqueue_front(void* item, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 };
 
 using deque_t = basic_deque;

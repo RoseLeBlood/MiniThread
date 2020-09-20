@@ -63,7 +63,7 @@ public:
      *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
     virtual int enqueue(void *item, 
-                    unsigned int timeout = (unsigned int) 0xffffffffUL);
+                    unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 
 
     /**
@@ -76,7 +76,7 @@ public:
      *  and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
     virtual int peek(void *item,
-                    unsigned int timeout = (unsigned int) 0xffffffffUL);
+                    unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 
     /**
      *  Remove an item from the front of the queue.
@@ -87,7 +87,7 @@ public:
      *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
      */
     virtual int dequeue(void *item, 
-                       unsigned int timeout = (unsigned int) 0xffffffffUL);
+                       unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 
     /**
      *  Is the queue empty?

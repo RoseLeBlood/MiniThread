@@ -29,7 +29,7 @@
  */
 class basic_work_queue {
     /**
-     * An internal derived Thread class, in which we do our real work.
+     * An internal derived basic_thread class, in which we do our real work.
      */
     class work_queue_thread : public basic_thread {
 
@@ -73,6 +73,7 @@ public:
                 uint16_t usStackDepth = MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE,
                 unsigned int uiMaxWorkItems = MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS);
 
+    basic_work_queue(const basic_work_queue* rev) = delete;
     /**
      * Our destructor.
      */

@@ -26,7 +26,7 @@
  */
 class basic_semaphore {
 public:
-  basic_semaphore();
+  basic_semaphore(); 
   /**
    *  Aquire (take) a semaphore.
    *
@@ -39,7 +39,7 @@ public:
    *  @param timeout How long to wait to get the Lock until giving up.
    *  @return ERR_SPINLOCK_OK if the Semaphore was acquired, ERR_SPINLOCK_LOCK if it timed out.
    */
-	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
+	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT);
 
   /**
    *  Release (give) a semaphore.
@@ -86,7 +86,8 @@ public:
    *  @param count Must not be greater than maxCount.
    *  @param maxcount Must be greater than 0.
    */
-  basic_counting_semaphore(int count = 1, int maxcount = 0x7fffffff);
+  basic_counting_semaphore(int count = MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT, 
+                           int maxcount = MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT);
 
   /**
    * Create the counting semaphore  

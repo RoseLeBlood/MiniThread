@@ -28,6 +28,7 @@ basic_convar_thread::basic_convar_thread(char const* strName, unsigned int uiPri
 void basic_convar_thread::on_create() {
     m_waitSem = new basic_binary_semaphore();
     m_waitSem->create();
+    m_waitSem->lock();
 }
 void basic_convar_thread::on_kill() {
     

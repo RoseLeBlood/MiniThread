@@ -48,7 +48,7 @@ public:
      *           ERR_TASKLET_CANTSTART It will not (i.e. timeout) and
      *           ERR_TASKLET_CANTINITLOCKT The Locking Object can't create - tasklet not run
      */
-    virtual int create(uint32_t parameter, TickType_t timeout = portMAX_DELAY);
+    virtual int create(uint32_t parameter, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT);
     /**
      * Destroy the Tasklet
      * @returns ERR_TASKLET_OK Destroyed without any errors

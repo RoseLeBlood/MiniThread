@@ -55,7 +55,7 @@ public:
    * 
    *  @note use 'xSemaphoreTakeRecursiveFromISR' in ISR context or 'xSemaphoreTakeRecursive' in all other
    */
-	virtual int lock(unsigned int timeout = (unsigned int) 0xffffffffUL);
+	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT);
 
   /**
    *  Unlock the Mutex.
