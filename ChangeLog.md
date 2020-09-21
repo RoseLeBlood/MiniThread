@@ -1,5 +1,11 @@
 # Changelog
 
+
+Version 1.71 September 2020: (stable 2.0beta)
+  * add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 
+     (TODO Optional add a Workqueues ) and add configand error defines, with doku
+  * This is the preview version of 2.0.0
+  
 Version 1.60 September 2020: (unstable nightly)
   * add Work queue support (basic_work_queue) basic_work_queue pull work_queue_item off of a FIFO queue and 
     run them sequentially.  
@@ -17,7 +23,6 @@ Version 1.60 September 2020: (unstable nightly)
   * rename libmn.hpp to mn_base.hpp and add missing headers 
   * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
   * basic_mutex extends basic_semaphore
-  * add a blocking queue, start emply a Threahpool and memory mamagment classes
   * add foreign_thread for mini Thread foregin thread and current Thread handling
 
 Version 1.54 September 2020: (unstable)

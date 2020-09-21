@@ -1,19 +1,20 @@
-/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2018 Amber-Sophia Schroeck
- * 
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, version 3, or (at your option) any later version.
- *
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- * General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
-**/
+/*
+*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*
+*The Mini Thread Library is free software; you can redistribute it and/or modify  
+*it under the terms of the GNU Lesser General Public License as published by  
+*the Free Software Foundation, version 3, or (at your option) any later version.
+
+*The Mini Thread Library is distributed in the hope that it will be useful, but 
+*WITHOUT ANY WARRANTY; without even the implied warranty of 
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*General Public License for more details.
+*
+*You should have received a copy of the GNU Lesser General Public
+*License along with the Mini Thread  Library; if not, see
+*<https://www.gnu.org/licenses/>.  
+*/
 
 #ifndef __MINLIB_MNTHREAD_CONFIG_H__
 #define __MINLIB_MNTHREAD_CONFIG_H__
@@ -38,8 +39,67 @@
   
 
 #define MN_THREAD_CONFIG_MAX_CPUS                   2 
-#define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_NO
-#define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE2_TWO   
+#define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_ONE
+#define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO   
+
+
+
+ /**
+ * Default lock type using in the thread class 
+ * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
+ * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
+ * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
+ * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
+ */
+#define MN_THREAD_CONFIG_LOCK_TYPE MN_THREAD_CONFIG_BINARY_SEMAPHORE
+
+/**
+ * Condition variable support for this libary
+ *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
+ * default: MN_THREAD_CONFIG_YES
+ */
+#define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
+
+
+#define MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT  512
+/**
+ * How many work items to queue in the workqueue single-threaded
+ * default: 8
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_MAXITEMS      8
+/**
+ * Stak size for the workqueue single-threaded thread 
+ * default: (configMINIMAL_STACK_SIZE * 2) 
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
+/**
+ * Default Priority for the workqueue single-threaded thread 
+ * default: (tskIDLE_PRIORITY + 1) 
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      (tskIDLE_PRIORITY + 1)
+
+
+/**
+ * How many worker threads run in the workqueue multi-threaded
+ * default: 4
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER         4
+/**
+ * How many work items to queue in the workqueue multi-threaded
+ * default: 16
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS      8
+/**
+ * Stak size for the workqueue multi-threaded for all worked thread 
+ * default: (configMINIMAL_STACK_SIZE * 2) 
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
+/**
+ * Default Priority for the workqueue multi-threaded for all worked thread 
+ * default: (tskIDLE_PRIORITY + 1) 
+ */ 
+#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      (tskIDLE_PRIORITY + 1)
+
 
 /**
  * default  (unsigned int) 0xffffffffUL   
@@ -58,53 +118,15 @@
 /**
  * default  (unsigned int) 0xffffffffUL)   
  */   
-#define MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT      (unsigned int) 0xffffffffUL)  
+#define MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT      (unsigned int) 0xffffffffUL  
 /**
  * default  (unsigned int) 0xffffffffUL)   
  */   
-#define MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT      (unsigned int) 0xffffffffUL)  
+#define MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT      (unsigned int) 0xffffffffUL  
 /**
  * default  (unsigned int) 0xffffffffUL)   
  */   
-#define MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT    (unsigned int) 0xffffffffUL) 
-
- /**
- * Default lock type using in the thread class 
- * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
- * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
- * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
- * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
- */
-#define MN_THREAD_CONFIG_LOCK_TYPE MN_THREAD_CONFIG_BINARY_SEMAPHORE
-
-/**
- * Condition variable support for this libary
- *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
- * default: MN_THREAD_CONFIG_YES
- */
-#define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
-
-/**
- * How many work items to queue in the work queue engine 
- * default: 8
- */ 
-#define MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS   8
-/**
- * Stak size for the work queue thread 
- * default: (configMINIMAL_STACK_SIZE * 2) 
- */ 
-#define MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE       (configMINIMAL_STACK_SIZE * 2)
-/**
- * Default Priority for the work queue thread 
- * default: (tskIDLE_PRIORITY + 1) 
- */ 
-#define MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY         (tskIDLE_PRIORITY + 1)
-
-
-#define MN_THREAD_CONFIG_THREAD_POOL_PRIORITY        (tskIDLE_PRIORITY + 1)
-#define MN_THREAD_CONFIG_THREAD_POOL_STACK_SIZE      (configMINIMAL_STACK_SIZE * 2)
-#define MN_THREAD_CONFIG_THREAD_POOL_MAX_JOBS         16
-#define MN_THREAD_CONFIG_THREAD_POOL_WORKERS          4
+#define MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT    (unsigned int) 0xffffffffUL 
 
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================

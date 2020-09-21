@@ -1,19 +1,19 @@
 /*
-  This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-  Copyright (c) 2018 Amber-Sophia Schroeck
-  
-  The Mini Thread Library is free software; you can redistribute it and/or modify  
-  it under the terms of the GNU Lesser General Public License as published by  
-  the Free Software Foundation, version 3, or (at your option) any later version.
- 
-  The Mini Thread Library is distributed in the hope that it will be useful, but 
-  WITHOUT ANY WARRANTY; without even the implied warranty of 
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-  General Public License for more details.
- 
-  You should have received a copy of the GNU Lesser General Public
-  License along with the Mini Thread  Library; if not, see
-  <https://www.gnu.org/licenses/>.  
+*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*
+*The Mini Thread Library is free software; you can redistribute it and/or modify  
+*it under the terms of the GNU Lesser General Public License as published by  
+*the Free Software Foundation, version 3, or (at your option) any later version.
+
+*The Mini Thread Library is distributed in the hope that it will be useful, but 
+*WITHOUT ANY WARRANTY; without even the implied warranty of 
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*General Public License for more details.
+*
+*You should have received a copy of the GNU Lesser General Public
+*License along with the Mini Thread  Library; if not, see
+*<https://www.gnu.org/licenses/>.  
 */
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
@@ -63,8 +63,7 @@ public:
    *  from starting the Thread, it solves the pure virtual fuction call 
    *  failure case. Call after creating the Task the function on_create
    * 
-   * @param uiCore on which core run this thread (i. e. task ), -1 then create with 'xTaskCreate' and
-   * all other use 'xTaskCreatePinnedToCore'
+   * @param uiCore on which core run this thread (i. e. task ), -1 for current core
    * 
    * @return ERR_THREAD_OK The task are creating, 'ERR_THREAD_CANTINITMUTEX' on error creating the using 
    * LockObjets, the task is not created, 'ERR_THREAD_ALREADYRUNNING' the Task is allready running and
@@ -319,7 +318,7 @@ protected:
    */ 
   basic_thread *m_pChild;
   /**
-   * The parent task pointer of this tas
+   * The parent task pointer of this task
    */
   basic_thread *m_pParent;
 };

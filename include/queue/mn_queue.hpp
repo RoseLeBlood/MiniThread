@@ -1,21 +1,24 @@
-/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2018 Amber-Sophia Schroeck
- * 
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, version 3, or (at your option) any later version.
- *
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- * General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
-**/
+/*
+*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+*Copyright (c) 2020 Amber-Sophia Schroeck
+*
+*The Mini Thread Library is free software; you can redistribute it and/or modify  
+*it under the terms of the GNU Lesser General Public License as published by  
+*the Free Software Foundation, version 3, or (at your option) any later version.
+
+*The Mini Thread Library is distributed in the hope that it will be useful, but 
+*WITHOUT ANY WARRANTY; without even the implied warranty of 
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*General Public License for more details.
+*
+*You should have received a copy of the GNU Lesser General Public
+*License along with the Mini Thread  Library; if not, see
+*<https://www.gnu.org/licenses/>.  
+*/
 #ifndef MINLIB_ESP32_QUEUE_
 #define MINLIB_ESP32_QUEUE_
+
+#include "mn_config.hpp"
 
 /**
  *  Queue class wrapper for FreeRTOS queues
@@ -121,12 +124,12 @@ public:
      *  get the FreeRTOS queue handle
      *  @return the FreeRTOS handle
      */
-    QueueHandle_t  get_handle() { return m_pHandle; }
+    void*  get_handle() { return m_pHandle; }
 protected:
     /**
      *  FreeRTOS queue handle.
      */
-    QueueHandle_t  m_pHandle;
+    void*  m_pHandle;
 
     unsigned int m_imaxItems;
     unsigned int m_iitemSize;

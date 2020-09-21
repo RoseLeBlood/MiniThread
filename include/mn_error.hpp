@@ -1,19 +1,20 @@
-/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2018 Amber-Sophia Schroeck
- * 
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, version 3, or (at your option) any later version.
- *
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- * General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
-**/
+/*
+*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*
+*The Mini Thread Library is free software; you can redistribute it and/or modify  
+*it under the terms of the GNU Lesser General Public License as published by  
+*the Free Software Foundation, version 3, or (at your option) any later version.
+
+*The Mini Thread Library is distributed in the hope that it will be useful, but 
+*WITHOUT ANY WARRANTY; without even the implied warranty of 
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*General Public License for more details.
+*
+*You should have received a copy of the GNU Lesser General Public
+*License along with the Mini Thread  Library; if not, see
+*<https://www.gnu.org/licenses/>.  
+*/
 #ifndef MINLIB_ESP32_ERROR_
 #define MINLIB_ESP32_ERROR_
 
@@ -184,4 +185,34 @@
  * The timer can not reset
  */
 #define ERR_TIMER_RESET                 -4
+
+/**
+ * No Error in one of the workqueue function
+ */
+#define ERR_WORKQUEUE_OK                    NO_ERROR
+/**
+ * The workqueue is allready Created
+ */
+#define ERR_WORKQUEUE_ALREADYINIT			-1
+/**
+ * The workqueue can't created
+ */
+#define ERR_WORKQUEUE_CANTCREATE			-2
+/**
+ * Warning 
+ */
+#define ERR_WORKQUEUE_WARNING               -3
+/**
+ * The mutex are not 
+ */
+#define ERR_WORKQUEUE_CANTINITMUTEX         -4
+/**
+ * The item can not add to the workqueue
+ */
+#define ERR_WORKQUEUE_ADD                   -5
+
+
+
+
+
 #endif

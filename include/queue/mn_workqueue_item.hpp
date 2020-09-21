@@ -18,15 +18,10 @@
 #define MINLIB_ESP32_WORK_ITEM_QUEUE_
 
 /**
- *  This class encapsulates the idea of a discrete, non-repeating task.
- *  Create a work_queue_item when there is something you need to do on a different
- *  Thread, but doesn't have to happen periodically. This is a great 
- *  construct for one off fire and forget tasks.
- *
- *  This is an abstract base class.
- *  To use this, you need to subclass it. All of your work_queue_item should
- *  be derived from this class. Then implement the virtual on_work
- *  function.
+ * This is an abstract base class.
+ * To use this, you need to subclass it. All of your work_queue_item should
+ * be derived from this class. Then implement the virtual on_work
+ * function.
  */
 class work_queue_item {
 public:
@@ -59,10 +54,7 @@ public:
      *  Implementation of your actual work_queue_item function.
      *  You must override this function.
      */
-    virtual void on_work() = 0;
-
-    virtual int create() { return 0; }
-    virtual int destroy() { return 0; }
+    virtual bool on_work() = 0;
 private:
     const bool m_bCanDelete;
 };

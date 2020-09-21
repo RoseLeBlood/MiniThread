@@ -1,126 +1,164 @@
-/** This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2018 Amber-Sophia Schroeck
- * 
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, version 3, or (at your option) any later version.
- *
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
- * General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
-**/
-#ifndef MINLIB_ESP32_WORK_QUEUE_
-#define MINLIB_ESP32_WORK_QUEUE_
+/*
+*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+*Copyright (c) 2020 Amber-Sophia Schroeck
+*
+*The Mini Thread Library is free software; you can redistribute it and/or modify  
+*it under the terms of the GNU Lesser General Public License as published by  
+*the Free Software Foundation, version 3, or (at your option) any later version.
 
+*The Mini Thread Library is distributed in the hope that it will be useful, but 
+*WITHOUT ANY WARRANTY; without even the implied warranty of 
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*General Public License for more details.
+*
+*You should have received a copy of the GNU Lesser General Public
+*License along with the Mini Thread  Library; if not, see
+*<https://www.gnu.org/licenses/>.  
+*/
+
+#ifndef MINLIB_ESP32_WORK_QUEUE_BASE_
+#define MINLIB_ESP32_WORK_QUEUE_BASE_
+
+#include "mn_queue.hpp"
 #include "mn_workqueue_item.hpp"
-
-
-//using work_queue_item_t = work_queue_item;
+#include "mn_workqueue_thread.hpp"
 
 /**
- *  This class is the "engine" for work_queue_item. Create one or more basic_work_queue
- *  to accept work_queue_item. basic_work_queue pull work_queue_item off of a FIFO queue and 
- *  run them sequentially.
+ * This abstract class is the base "engine" class  for all work_queues.
+ * basic_work_queue pull work_queue_item off of a FIFO queue and 
+ * run them sequentially.
+ * 
+ * This is an abstract base class.
+ * To use this, you need to subclass it. All of your basic_work_queue should
+ * be derived from the basic_work_queue class. Then implement the virtual on_create
+ * and on_destroy functions.
  */
 class basic_work_queue {
-    /**
-     * An internal derived basic_thread class, in which we do our real work.
-     */
-    class work_queue_thread : public basic_thread {
-
-        public:
-            work_queue_thread(char const* strName, unsigned int uiPriority,
-                              unsigned short  usStackDepth, basic_work_queue *parent);
-
-            virtual ~work_queue_thread();
-
-            /**
-             * Get number of worked items, after run
-             * 
-             * @return The number of worked items, after run
-             * @note When the thread are running then return only 0;
-             */ 
-            unsigned int get_num_works() { 
-                void* val = get_return_value();
-                return *((unsigned int *)val);
-            }
-        protected:
-            /**
-             * Implementation of your actual work queue working code ( Omg ...)
-             * @return The pointer of m_uiNumWorks - @see get_num_works()
-             */ 
-            virtual void* on_thread();
-
-        private:
-            const basic_work_queue *m_parentWorkQueue;
-            unsigned int m_uiNumWorks;
-    };
+    friend class work_queue_thread;
 public:
     /**
      * Our constructor.
      * @param Name Name of the thread internal to the WorkQueue. 
      * @param uiPriority FreeRTOS priority of this Thread.
      * @param usStackDepth Number of "words" allocated for the Thread stack.
-     * @param uiMaxWorkItems Maximum number of WorkItems this WorkQueue can hold.
      */
-    basic_work_queue(const char * strName,
-                unsigned int uiPriority = MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY,
-                uint16_t usStackDepth = MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE,
-                unsigned int uiMaxWorkItems = MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS);
+    basic_work_queue(unsigned int uiPriority,
+                     uint16_t usStackDepth,
+                     uint8_t uiMaxWorkItems);
 
-    basic_work_queue(const basic_work_queue* rev) = delete;
     /**
      * Our destructor.
      */
-    ~basic_work_queue();
+    virtual ~basic_work_queue();
 
     /**
-     * Create the work_queue_t.
-     *
-     * @param iCore run on whith core
-     * @return TODO
-     */
-    int create(int iCore = MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE);
-
+     * Create and start the work queue engine
+     * 
+     * @return 'ERR_WORKQUEUE_OK' The workqueue are created,
+     *         'ERR_WORKQUEUE_ALREADYINIT' the workqueue was allready created,
+     *         'ERR_WORKQUEUE_CANTCREATE' error to create the workqueue and
+     *         'ERR_WORKQUEUE_WARNING' not all threads are created in the multi engine workqueue
+     * 
+     * @note call internal on_create, for your real engine creating
+     */ 
+    virtual int create(int iCore = MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE);
     /**
-     * Destroy the work_queue_t.
-     */
-    void destroy();
+     * Destroy and set the running flag to false
+     * @note call internal on_destroy, for your real engine creating
+     */ 
+    virtual void destroy();
 
     /**
      * Send a work_queue_item_t off to be executed.
      *
      * @param work Pointer to a work_queue_item_t.
-     * @note This function may block if the work_queue_t is presently full.
+     * @note This function may block if the basic_work_queue is presently full.
+     * 
+     * @return ERR_WORKQUEUE_OK The work_queue_item_t are added and ERR_WORKQUEUE_ADD If not
      */ 
-    int queue(work_queue_item_t *work);
-private:
-    /**
-     *  Pointer to our WorkerThread.
-     */
-    work_queue_thread *m_pWorker;
+    virtual int queue(work_queue_item_t *work,
+                      unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 
     /**
-     *  Pointer to our work queue itself.
-     */
-    queue_t *m_pWorkItemQueue;
+     * Is the workqueue running?
+     * 
+     * @return true If the workqueue running, false If not
+     */ 
+    volatile bool& running() { return m_bRunning; }
 
     /**
-     *  Semaphore to support deconstruction without race conditions.
+     * How many items / jobs are sucessfull worked
+     */ 
+    uint8_t get_num_items_worked();
+    /**
+     * How many items/jobs are not sucessfull worked
+     */ 
+    uint8_t get_num_items_error();
+
+    /**
+     * Is the workqueue ready, all jobs/items are worked?
+     * 
+     * @return true If workqueue is ready, false If not
+     */ 
+    bool is_ready();
+protected:
+    /**
+     * Get the next item / job from queue
+     * 
+     * @param timeout How long to wait to get an item / job from the queue.
+     * @return The next item / job from list and NULL when list empty or timeout
+     */ 
+    virtual work_queue_item* get_next_item(unsigned int timeout);
+
+    /**
+     * Implementation of your actual create code.
+     * You must override this function.
+     *
+     * @param iCore uiCore on which core run this thread (i. e. task ), -1 for current core
+     * 
+     * @note Don't forget to set the running flag to true
      */
-    binary_semaphore_t *m_pComplete;
-    binary_semaphore_t *m_pRunningSem;
+    virtual int on_create(int iCore) = 0;
+    /**
+     * Implementation of your actual destroy code.
+     * You must override this function.
+     */ 
+    virtual void on_destroy() = 0;
+protected:
+    /**
+     * The job queue for all workqueues
+     */ 
+    queue_t* m_pWorkItemQueue;
+    /**
+     * Lock Objekt for thread safty
+     * Mutex lock for status and flags changes
+     */ 
+    mutex_t  m_ThreadStatus;
+    /**
+     * Lock Objekt for thread safty
+     * Mutex lock for the job queue
+     */ 
+	mutex_t  m_ThreadJob;
     
-    bool m_running;
-
+    uint32_t m_uiPriority ;
+    uint16_t m_usStackDepth; 
+    uint8_t m_uiMaxWorkItems;
+    /**
+     *  Flag whether or not the LockObject was created.
+     */ 
     bool m_bMutexInit;
+    /**
+     * Holder of num works are successfull run
+     */ 
+    volatile uint8_t m_uiNumWorks;
+    /**
+     * Holder of num works are not successfull run
+     */ 
+    volatile uint8_t m_uiErrorsNumWorks;
+    /**
+     * Flag whether or not the workqueue was started.
+     */ 
+	volatile bool m_bRunning;
 };
-
-using work_queue_t = basic_work_queue;
 
 #endif

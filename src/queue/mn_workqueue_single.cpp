@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -16,34 +16,29 @@
 *<https://www.gnu.org/licenses/>.  
 */
 #include "mn_config.hpp"
-#include "mn_version.hpp"
+#include "queue/mn_workqueue_single.hpp"
 
-#include <stdio.h>
+basic_work_queue_single::basic_work_queue_single( unsigned int uiPriority,
+                                                  uint16_t usStackDepth, uint8_t uiMaxWorkItems) 
 
-libmnVersion* libmnVersion::m_pInstance = NULL;
+    : basic_work_queue(uiPriority, usStackDepth, uiMaxWorkItems) {
 
-libmnVersion::libmnVersion()
-{
-	m_major = MN_THREAD_MAJOR_VERSION;
-	m_minor = MN_THREAD_MINOR_VERSION;
-	m_debug = MN_THREAD_DEBUG_VERSION;
-	m_license = std::string("LGPL");
+    m_pWorker = new work_queue_thread("single_workqueue_thread", uiPriority, usStackDepth, this);
+}
 
-#if MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_MUTEX
-	m_extras = std::string("MX");
-#elif MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_SPINLOCK
-	m_extras = std::string("SL");
-#else
-	m_extras = std::string("??");
-#endif
+int basic_work_queue_single::on_create(int iCore) {
+    automutx_t lock(m_ThreadStatus);
+
+    if(m_bRunning) { 
+        return ERR_WORKQUEUE_ALREADYINIT;
+    }
+    m_bRunning = true;
+
+    return (m_pWorker->create(iCore) == NO_ERROR) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_CANTCREATE;
 
 }
 
-libmnVersion::~libmnVersion() { }
-
-std::string libmnVersion::to_string() const {
-	char str[32];
-	snprintf(str, 32, "%d.%d.%d - %s (%s)", m_major, m_minor, m_debug, 
-		m_license.c_str(), m_extras.c_str() );
-	return std::string(str);
+void basic_work_queue_single::on_destroy() {
+    m_pWorker->kill();
 }
+

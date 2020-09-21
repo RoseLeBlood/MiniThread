@@ -1,11 +1,12 @@
-# Mini Thread 1.60 alpha
+# Mini Thread 1.61 (2.0.0 preview)
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
    +  Mutex (recursive and standard)
    +  Semaphore (binary and counting)
    +  Queues (deque, binary-queue and the standard queue)
-   + workqueues
+   +  workqueues (multithreaded and singlethreaded workqueues)
+   +  Timers, Protothreads and event groups
 
 For more detailed information about the library, please refer to the library documentation (https://roseleblood.github.io/mnthread-docs/) and Examples you find in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples)
 
@@ -51,16 +52,21 @@ extern "C" void app_main() {
 
 ## TODO's for Version 2.0
 - [ ] Add event group class 
-- [ ] Add timer and other usefull FreeRTOS Wrapper
-- [ ] Completed the documentation
-- [ ] Write more examles 
-- [ ] Optional add a Thread (i. e. Task) Pool class
+- [ ] Add timer and other usefull FreeRTOS Wrapper (50%)
+- [X] Completed the documentation
+- [ ] Write more examles (after 1.9 complited ) 
+- [X] add a Workqueues 
+
 
 ## ChangeLog
 
+Version 1.71 September 2020: (stable 2.0beta)
+  * add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 
+     (TODO Optional add a Workqueues ) and add configand error defines, with doku
+  * This is the preview version of 2.0.0
+  
 Version 1.60 September 2020: (unstable nightly)
-  * add Work queue support (basic_work_queue) Create one or more basic_work_queue
-    to accept work_queue_item. basic_work_queue pull work_queue_item off of a FIFO queue and 
+  * add Work queue support (basic_work_queue) basic_work_queue pull work_queue_item off of a FIFO queue and 
     run them sequentially.  
   * add New Config Options to mn_conig.hpp
       * MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS: How many work items to queue in the work queue engine default is 8
@@ -76,7 +82,7 @@ Version 1.60 September 2020: (unstable nightly)
   * rename libmn.hpp to mn_base.hpp and add missing headers 
   * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
   * basic_mutex extends basic_semaphore
-  * add a blocking queue, start emply a Threahpool and memory mamagment classes
+  * add foreign_thread for mini Thread foregin thread and current Thread handling
 
 Version 1.54 September 2020: (unstable)
   * Documentation ready
@@ -89,16 +95,6 @@ Version 1.53 September 2020:
   * add eaxample
   * add Documentation add (https://roseleblood.github.io/mnthread-docs/)
   * rename Project from mnthread to Mini Thread
-
-Version 1.43 September 2020:  (stable)
-  * move convar function from basic_thread to basic_convar_thread 
-  * add basic_convar_thread when "MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES"is and update basic_condition_variable
-  * remove errors - (sorry, ... )
-  * add a deque class that implements a double ended queue. (deque_t = basic_deque)
-                    
-Version 1.42 August 2020: (non-stable)
-  * add queue wrapper (queue/mn_queue.hpp) queue_t
-  * add binary queue (queue/mn_binaryqueue.hpp) binaryqueue_t
 
 For more see [ChangeLog](ChangeLog.md)
 
