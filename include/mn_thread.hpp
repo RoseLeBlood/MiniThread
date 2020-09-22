@@ -27,6 +27,7 @@
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
  
+
 /**
  *  Wrapper class around FreeRTOS's implementation of a task.
  *
@@ -37,6 +38,33 @@
  */
 class  basic_thread {
 public:
+  enum priority {
+    /**
+     * no Real Time operation - idle task
+     */ 
+    Idle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,
+    /**
+     * No critical operation
+     */ 
+    Low = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,
+    /**
+     * Normal user programm
+     */ 
+    Normal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,
+    /**
+     * Half critical, this task have deadlines - not a lot of processings
+     */ 
+    HalfCritical = MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT,
+    /**
+     * Urgent critical, this task have short deadlines and a lot of processings
+     */ 
+    Urgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,
+    /**
+     * Critical, the highest priority - Do NOW!!
+     */ 
+    Critical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL
+  };
+public:
   basic_thread() { }
 
   /**
@@ -46,7 +74,7 @@ public:
    *  @param uiPriority FreeRTOS priority of this Thread.
    *  @param usStackDepth Number of "words" allocated for the Thread stack. default configMINIMAL_STACK_SIZE
    */
-  basic_thread(char const* strName, unsigned int uiPriority,
+  basic_thread(char const* strName, basic_thread::priority uiPriority,
        unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
   
   
@@ -96,7 +124,7 @@ public:
    * 
    * @return The priority
    */ 
-  unsigned int          get_priority();
+  basic_thread::priority get_priority();
   /**
    * Get the stack depth of this thread (i. e. task) 
    * 
@@ -140,7 +168,7 @@ public:
    *
    *  @param uiPriority The thread's new priority.
    */
-  void                  setPriority(unsigned int uiPriority);
+  void                  set_priority(basic_thread::priority uiPriority);
 
   /**
    *  Suspend this thread.
@@ -274,7 +302,7 @@ protected:
   /**
    *  A saved / cached copy of what the Thread's priority is.
    */
-  unsigned int m_uiPriority;
+  basic_thread::priority m_uiPriority;
   /**
    *  Stack depth of this Thread, in words.
    */
@@ -327,31 +355,59 @@ protected:
 /**
  * Wrapper class around FreeRTOS's implementation of a task, 
  * for foreign miniThread Threads 
+ * 
+ * @note using foreign_thread::create_from
  */
 class foreign_thread : public basic_thread {
-public:
+private:
   /**
    * Constructor - the current thread
-   * @note please call create, for creating the usings Locktyps
    */ 
   foreign_thread();
   /**
    * Constructor - from a FreeRTOS handle
-   * @note please call create, for creating the usings Locktyps
    */ 
   foreign_thread(void* t);
+public:
+  /**
+   *  Override - do nothings
+   */ 
+  int                   create(int uiCore = -1) { return 0; }
+public:
+  /**
+   * Get the foreign_thread of idle task for the current CPU.
+   *
+   * @return The foreign_thread of the idle task.
+   */
+  static foreign_thread* get_idle_task();
+  /**
+   * Get the foreign_thread of idle task for the given CPU.
+   * 
+   * @param cpuid The CPU to get the foreign_thread for
+   *
+   * @return Idle foreign_thread of a given cpu.
+   */
+  static foreign_thread* get_idle_task(UBaseType_t cpuid);
 
   /**
-   * Create and set the usings Semaphores and informations
+   * Helper function to create a foreign_thread from a FreeRTOS handle
+   * 
+   * @param foreign_handle The FreeRTOS handle
+   * @param ret_error optional pointer for creating error code
    */ 
-  int                   create(int uiCore = -1);
-
+  static foreign_thread* create_from(void* foreign_handle, int* ret_error = NULL);
 protected:
   /**
    * Override - Do nothings and never call
    * @return NULL
    */
   void*         on_thread() { return NULL; }
+private:
+  /**
+   * Internal functions to create all usings locktypes
+   * its call from create_from
+   */ 
+  int           __internal_create_usings_types();
 };
 
 using thread_t = basic_thread;

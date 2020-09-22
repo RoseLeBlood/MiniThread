@@ -19,7 +19,7 @@
 #include <stdio.h>
 
 
-basic_thread::basic_thread(char const* strName, unsigned int uiPriority,
+basic_thread::basic_thread(char const* strName, basic_thread::priority uiPriority,
      unsigned short  usStackDepth) {
   m_strName = strName;
   m_uiPriority = uiPriority;
@@ -106,11 +106,11 @@ int basic_thread::create(int uiCore) {
   if(uiCore == -1) {
     xTaskCreate(&runtaskstub, m_strName,
                  m_usStackDepth,
-                this, m_uiPriority, &handle);
+                this, (int)m_uiPriority, &handle);
   } else {
     xTaskCreatePinnedToCore(&runtaskstub, m_strName,
                 m_usStackDepth,
-                this, m_uiPriority, &handle, uiCore);
+                this, (int)m_uiPriority, &handle, uiCore);
 
   }
 
@@ -166,13 +166,15 @@ const char* basic_thread::get_name() {
 
 	return m_strName;
 }
-unsigned int basic_thread::get_priority() {
+basic_thread::priority basic_thread::get_priority() {
   autolock_t autolock(*m_runningMutex);
+  
+  if(handle == NULL) return m_uiPriority;
 
   if (xPortInIsrContext()) {
-    return uxTaskPriorityGetFromISR(handle);
+    return (basic_thread::priority)uxTaskPriorityGetFromISR(handle);
   } else {
-	  return uxTaskPriorityGet(handle);
+	  return (basic_thread::priority)uxTaskPriorityGet(handle);
   }
 }
 unsigned short basic_thread::get_stackdepth() {
@@ -191,10 +193,11 @@ uint32_t basic_thread::get_time_since_start() {
   autolock_t autolock(*m_runningMutex);
 	return (uint32_t)(xTaskGetTickCount()*portTICK_PERIOD_MS);
 }
-void  basic_thread::setPriority(unsigned int uiPriority) {
+void  basic_thread::set_priority(unsigned int uiPriority) {
   autolock_t autolock(*m_runningMutex);
   m_uiPriority = uiPriority;
-  vTaskPrioritySet(handle, uiPriority);
+  if(handle != NULL)
+    vTaskPrioritySet(handle, uiPriority);
 }
 void basic_thread::suspend() {
   autolock_t autolock(*m_runningMutex);
@@ -264,7 +267,7 @@ foreign_thread::foreign_thread(void* t)
   m_pParent = NULL;
 }
 
-int foreign_thread::create(int uiCore) {
+int foreign_thread::__internal_create_usings_types() {
    if(!m_bMutexInit) {
     m_runningMutex = new LockType_t();
     m_contextMutext = new LockType_t();
@@ -296,3 +299,29 @@ int foreign_thread::create(int uiCore) {
 
 	return ERR_THREAD_OK;
 }
+
+foreign_thread* foreign_thread::get_idle_task() {
+  void* rawHandle = xTaskGetIdleTaskHandle();
+
+  return foreign_thread::create_from(rawHandle);
+}
+foreign_thread* foreign_thread::get_idle_task(UBaseType_t cpuid) {
+  void* rawHandle = xTaskGetIdleTaskHandleForCPU(cpuid);
+
+  foreign_thread* thread = foreign_thread::create_from(rawHandle);
+
+  if(thread) thread->m_iCore = cpuid;
+  
+  return thread;
+}
+foreign_thread* foreign_thread::create_from(void* foreign_handle, int* ret_error = NULL) {
+    if(foreign_handle == NULL) return NULL;
+
+    int _error_ret = 0;
+    foreign_thread* newThread = new foreign_thread(foreign_handle);
+
+    _error_ret = newThread->__internal_create_usings_types();
+    if(ret_error) *ret_error = _error_ret;
+
+    return foreign_thread;
+  }
