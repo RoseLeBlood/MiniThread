@@ -16,30 +16,4 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
-#ifndef __LIBMIN_THREAD_H_
-#define __LIBMIN_THREAD_H_
-
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-
-#include "mn_config.hpp"
-#include "mn_version.hpp"
-#include "mn_autolock.hpp"
-#include "mn_micros.hpp"
-#include "mn_thread.hpp"
-
-#include "mn_convar.hpp"
-#include "mn_convar_thread.hpp"
-
-#include "queue/mn_queue.hpp"
-#include "queue/mn_binaryqueue.hpp"
-#include "queue/mn_deque.hpp"
-#include "queue/mn_workqueue.hpp"
-
-
-void mn_panic();
-
-#endif
+#include "mn_task_utils.hpp"

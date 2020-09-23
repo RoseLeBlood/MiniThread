@@ -18,7 +18,7 @@
 #ifndef _MINLIB_CRITICAL_H_
 #define _MINLIB_CRITICAL_H_
 
-#include "mn_mutex.hpp"
+#include "mn_lock.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -59,12 +59,14 @@ public:
 /**
  * Wrapper class to use the critical section lock with autolock guard see auto_critical_t
  */ 
-class basic_critical_lock {
+class basic_critical_lock : public ILockObject {
 public:
     basic_critical_lock();
 
-    virtual void lock() { basic_critical::enter(m_pHandle);  }
-    virtual void unlock() { basic_critical::exit(m_pHandle);  }
+    virtual int lock() { basic_critical::enter(m_pHandle); return 0;  }
+    virtual int unlock() { basic_critical::exit(m_pHandle); return 0; }
+
+    virtual bool is_initialized() const { return true; }
 private:
     portMUX_TYPE m_pHandle;
 };
@@ -72,19 +74,23 @@ private:
 /**
  * Wrapper class to use the interrupts lock with autolock guard see auto_interrupt_t
  */
-class basic_interrupts_lock { 
+class basic_interrupts_lock : public ILockObject { 
 public:
-    virtual void lock() { basic_critical::disable_interrupts();  }
-    virtual void unlock() { basic_critical::enable_interrupts();  }
+    virtual int lock() { basic_critical::disable_interrupts(); return 0; }
+    virtual int unlock() { basic_critical::enable_interrupts(); return 0;  }
+
+    virtual bool is_initialized() const { return true; }
 };
 
 /**
  * Wrapper class to use the scheduler lock with autolock guard see auto_schedular_t
  */
-class basic_scheduler_lock { 
+class basic_scheduler_lock : public ILockObject { 
 public:
-    virtual void lock() { basic_critical::stop_scheduler();  }
-    virtual void unlock() { basic_critical::resume_scheduler();  }
+    virtual int lock() { basic_critical::stop_scheduler(); return 0; }
+    virtual int unlock() { basic_critical::resume_scheduler(); return 0; }
+
+    virtual bool is_initialized() const { return true; }
 };
 
 using critical_t = basic_critical;

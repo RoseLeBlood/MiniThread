@@ -32,11 +32,12 @@
  *  bottom half processing from an ISR.
  *
  *  This is an abstract base class.
- *  To use this, you need to subclass it. All of your basic_tasklet should
- *  be derived from the basic_tasklet class. Then implement the virtual on_tasklet
+ *  To use this, you need to subclass it. All of your coroutines should
+ *  be derived from the basic_coroutine class. Then implement the virtual on_coroutine
  *  function.
  */
-class basic_tasklet {
+
+class basic_coroutine {
 public:
 
     /**
@@ -45,14 +46,14 @@ public:
      *  @param parameter Value passed to your on_tasklet method.
      *  @param CmdTimeout How long to wait to send this command to the
      *         timer daemon.
-     *  @returns ERR_TASKLET_OK This command will be sent to the timer daemon,
-     *           ERR_TASKLET_CANTSTART It will not (i.e. timeout) and
-     *           ERR_TASKLET_CANTINITLOCKT The Locking Object can't create - tasklet not run
+     *  @returns ERR_COROUTINE_OK This command will be sent to the timer daemon,
+     *           ERR_COROUTINE_CANTSTART It will not (i.e. timeout) and
+     *           ERR_COROUTINE_CANTINITLOCKT The Locking Object can't create - tasklet not run
      */
-    virtual int create(uint32_t parameter, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT);
+    virtual int create(uint32_t parameter, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT);
     /**
      * Destroy the Tasklet
-     * @returns ERR_TASKLET_OK Destroyed without any errors
+     * @returns ERR_COROUTINE_OK Destroyed without any errors
      */
     virtual int destroy();
 protected:
@@ -62,13 +63,13 @@ protected:
      *
      *  @param parameter Value passed to you from the create() methods.
      */
-    virtual int on_tasklet(uint32_t arg);
+    virtual int on_coroutine(uint32_t arg);
 protected:
     /**
      *  Adapter function that allows you to write a class
      *  specific on_tasklet() function that interfaces with FreeRTOS.
      */
-  static void runtaskletstub(void* parm, uint32_t parameter);
+  static void runcorostub(void* parm, uint32_t parameter);
 protected:
     /**
      *  Protect against accidental deletion before we were executed.
@@ -76,6 +77,6 @@ protected:
     counting_semaphore_t   m_ssLock;
 };
 
-using tasklet_t = basic_tasklet;
+using coro_t = basic_coroutine;
 
 #endif

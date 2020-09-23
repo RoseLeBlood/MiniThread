@@ -18,15 +18,15 @@
 #include "mn_config.hpp"
 #include "queue/mn_workqueue_single.hpp"
 
-basic_work_queue_single::basic_work_queue_single( unsigned int uiPriority,
+basic_work_queue_single::basic_work_queue_single( basic_task::priority uiPriority,
                                                   uint16_t usStackDepth, uint8_t uiMaxWorkItems) 
 
     : basic_work_queue(uiPriority, usStackDepth, uiMaxWorkItems) {
 
-    m_pWorker = new work_queue_thread("single_workqueue_thread", uiPriority, usStackDepth, this);
+    m_pWorker = new work_queue_task("single_workqueue_thread", uiPriority, usStackDepth, this);
 }
 
-int basic_work_queue_single::on_create(int iCore) {
+int basic_work_queue_single::create_engine(int iCore) {
     automutx_t lock(m_ThreadStatus);
 
     if(m_bRunning) { 
@@ -38,7 +38,7 @@ int basic_work_queue_single::on_create(int iCore) {
 
 }
 
-void basic_work_queue_single::on_destroy() {
+void basic_work_queue_single::destroy_engine() {
     m_pWorker->kill();
 }
 

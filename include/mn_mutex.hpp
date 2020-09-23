@@ -19,7 +19,7 @@
 #define MINLIB_ESP32_MUTEX_
 
 #include "mn_config.hpp"
-#include "mn_semaphore.hpp"
+#include "mn_basic_semaphore.hpp"
 #include "mn_error.hpp"
 
 /**
@@ -33,6 +33,9 @@ public:
    * The Ctor 
    */
   basic_mutex();
+
+  virtual ~basic_mutex() { destroy(); }
+  
   /**
    * Create the Mutex 
    * 

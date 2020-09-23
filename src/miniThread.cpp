@@ -15,10 +15,12 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef MINLIB_ESP32_SEMAPHORE_
-#define MINLIB_ESP32_SEMAPHORE_
+#include "miniThread.hpp"
+#include <stdio.h>
 
-#include "mn_counting_semaphore.hpp"
-#include "mn_binary_semaphore.hpp"
+void mn_panic() {
+  printf("MiniThread-PANIC!!!");
+  for(;;) {
 
-#endif
+  }
+}

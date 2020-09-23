@@ -21,7 +21,7 @@
 
 #include "mn_queue.hpp"
 #include "mn_workqueue_item.hpp"
-#include "mn_workqueue_thread.hpp"
+#include "mn_workqueue_task.hpp"
 
 /**
  * This abstract class is the base "engine" class  for all work_queues.
@@ -30,19 +30,19 @@
  * 
  * This is an abstract base class.
  * To use this, you need to subclass it. All of your basic_work_queue should
- * be derived from the basic_work_queue class. Then implement the virtual on_create
- * and on_destroy functions.
+ * be derived from the basic_work_queue class. Then implement the virtual create_engine
+ * and destroy_engine functions.
  */
 class basic_work_queue {
-    friend class work_queue_thread;
+    friend class work_queue_task;
 public:
     /**
      * Our constructor.
-     * @param Name Name of the thread internal to the WorkQueue. 
-     * @param uiPriority FreeRTOS priority of this Thread.
-     * @param usStackDepth Number of "words" allocated for the Thread stack.
+     * @param Name Name of the task internal to the WorkQueue. 
+     * @param uiPriority FreeRTOS priority of this WorkQueue task.
+     * @param usStackDepth Number of "words" allocated for the WorkQueue task stack.
      */
-    basic_work_queue(unsigned int uiPriority,
+    basic_work_queue(basic_task::priority uiPriority,
                      uint16_t usStackDepth,
                      uint8_t uiMaxWorkItems);
 
@@ -118,12 +118,12 @@ protected:
      * 
      * @note Don't forget to set the running flag to true
      */
-    virtual int on_create(int iCore) = 0;
+    virtual int create_engine(int iCore) = 0;
     /**
      * Implementation of your actual destroy code.
      * You must override this function.
      */ 
-    virtual void on_destroy() = 0;
+    virtual void destroy_engine() = 0;
 protected:
     /**
      * The job queue for all workqueues
@@ -140,7 +140,7 @@ protected:
      */ 
 	mutex_t  m_ThreadJob;
     
-    uint32_t m_uiPriority ;
+    basic_task::priority m_uiPriority ;
     uint16_t m_usStackDepth; 
     uint8_t m_uiMaxWorkItems;
     /**

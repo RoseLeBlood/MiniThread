@@ -17,13 +17,13 @@
 */
 #include <vector>
 #include "mn_config.hpp"
-#include "mn_thread.hpp"
+#include "mn_task.hpp"
 
 
 
 #include "queue/mn_workqueue.hpp"
 
-basic_work_queue::basic_work_queue(unsigned int uiPriority,
+basic_work_queue::basic_work_queue(basic_task::priority uiPriority,
                     uint16_t usStackDepth,
                     uint8_t uiMaxWorkItems) {
 
@@ -55,7 +55,7 @@ int basic_work_queue::create(int iCore) {
     
     m_ThreadJob.lock();
 
-    int ret = on_create(iCore);
+    int ret = create_engine(iCore);
 
     if( ret != NO_ERROR) {
         m_ThreadJob.unlock();
@@ -73,7 +73,7 @@ void basic_work_queue::destroy() {
     m_bRunning = false;
     m_ThreadStatus.unlock();
 
-    on_destroy();
+    destroy_engine();
 
     if(m_bMutexInit) {
         m_ThreadStatus.destroy();

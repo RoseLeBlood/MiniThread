@@ -22,18 +22,19 @@
 #include <vector>
 
 /**
- * This class is the multi thread "engine" for work_queue_items.
+ * This class is the multi task "engine" for work_queue_items.
  */
 class basic_work_queue_multi : public basic_work_queue {
 public:
     /**
      * Our constructor.
-     * @param Name Name of the thread internal to the WorkQueue. 
-     * @param uiPriority FreeRTOS priority of this Thread.
-     * @param usStackDepth Number of "words" allocated for the Thread stack.
+     * 
+     * @param uiPriority FreeRTOS priority of this task.
+     * @param usStackDepth Number of "words" allocated for the task stack.
      * @param uiMaxWorkItems Maximum number of WorkItems this WorkQueue can hold.
+     * @param uiMaxWorkers How many Worker tasks run with this workqueue
      */
-    basic_work_queue_multi(unsigned int uiPriority = MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY,
+    basic_work_queue_multi(basic_task::priority uiPriority = MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY,
                 uint16_t usStackDepth = MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE,
                 uint8_t uiMaxWorkItems = MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS,
                 uint8_t uiMaxWorkers = MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER);
@@ -44,38 +45,39 @@ public:
     ~basic_work_queue_multi();
 
     /**
-     * Get the real num worker threads for this workqueue engine
+     * Get the real num worker tasks for this workqueue engine
      * @return The real num worker threads for this workqueue engine
      */ 
     uint8_t get_num_worker() const;
     /**
-     * Get the num worker threads for this workqueue engine
+     * Get the num worker tasks for this workqueue engine
      * @return The num worker threads for this workqueue engine
      */ 
     uint8_t get_num_max_worker() const;
     /**
-     * Get tde reference ot all workqueue threads
+     * Get tde reference ot all workqueue tasks
      */ 
-    std::vector<work_queue_thread*>& workers();
+    std::vector<work_queue_task*>& workers();
 protected:
     /**
-     * Create this multi threaded work queue
+     * Create this multi tasked work queue
      *
      * @param iCore run on whith core
-     * @return TODO
+     * @return ERR_WORKQUEUE_OK The engine is created, ERR_WORKQUEUE_WARNING not all worker tasks are created
+     *         ERR_WORKQUEUE_CANTCREATE The engine can not created
      */
-    int on_create(int iCore);
+    int create_engine(int iCore);
 
     /**
-     * Destroy this multi threaded work queue
+     * Destroy this multi tasked work queue
      */
-    void on_destroy();
+    void destroy_engine();
 
 private:
     /**
      * Vector for all workqueue threads
      */ 
-    std::vector<work_queue_thread*> m_Workers;
+    std::vector<work_queue_task*> m_Workers;
     /**
      * Holder of num worker threads for this workqueue engine
      */ 

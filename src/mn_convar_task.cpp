@@ -15,44 +15,45 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "mn_convar_thread.hpp"
+#include "mn_convar_task.hpp"
 
-basic_convar_thread::basic_convar_thread()
-     :  basic_thread() { 
+basic_convar_task::basic_convar_task()
+     :  basic_task() { 
         
 }
-basic_convar_thread::basic_convar_thread(char const* strName, unsigned int uiPriority, unsigned short  usStackDepth) 
-       : basic_thread(strName, uiPriority, usStackDepth) { 
+basic_convar_task::basic_convar_task(char const* strName, basic_task::priority uiPriority, 
+    unsigned short  usStackDepth) 
+       : basic_task(strName, uiPriority, usStackDepth) { 
         
 }
 
-void basic_convar_thread::on_create() {
+void basic_convar_task::on_create() {
     m_waitSem = new basic_binary_semaphore();
     m_waitSem->create();
     m_waitSem->lock();
 }
-void basic_convar_thread::on_kill() {
+void basic_convar_task::on_kill() {
     
 }
 
-void basic_convar_thread::signal() {
+void basic_convar_task::signal() {
     autolock_t autolock(*m_runningMutex);
     m_waitSem->unlock(); 
     on_signal();
 }
-void basic_convar_thread::signal_all() {
+void basic_convar_task::signal_all() {
     autolock_t autolock(*m_runningMutex);
 
     m_waitSem->unlock(); 
     on_signal();
 
-    basic_convar_thread* __child = (basic_convar_thread*)(m_pChild);
+    basic_convar_task* __child = (basic_convar_task*)(m_pChild);
 
     if(__child) 
         __child->signal_all();
 }
 
-int basic_convar_thread::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
+int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
     autolock_t autolock(*m_runningMutex);
     
     cv.add_list(this);

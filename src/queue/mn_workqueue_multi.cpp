@@ -18,44 +18,61 @@
 #include "mn_config.hpp"
 #include "queue/mn_workqueue_multi.hpp"
 
-basic_work_queue_multi::basic_work_queue_multi( unsigned int uiPriority,
+basic_work_queue_multi::basic_work_queue_multi( basic_task::priority uiPriority,
                 uint16_t usStackDepth, uint8_t uiMaxWorkItems, uint8_t uiMaxWorkers) 
 
     : basic_work_queue(uiPriority, usStackDepth, uiMaxWorkItems) {
 
     m_uiMaxWorkers = uiMaxWorkers;
-}
-int basic_work_queue_multi::on_create(int iCore) {
-    automutx_t lock(m_ThreadStatus);
-
-    if(m_bRunning) { 
-        return ERR_WORKQUEUE_ALREADYINIT;
-    }
-    
-    m_bRunning = true;
 
     char name[32];
 
     for (int i = 0; i < m_uiMaxWorkers; i++) {
         sprintf(name, "work_multi_%d", i);
 
-        work_queue_thread *pWorker = new work_queue_thread(name,
-                                                            m_uiPriority, 
-                                                            m_usStackDepth, 
-                                                            this);
-        if(pWorker) { 
-            pWorker->create(iCore);
-            m_Workers.push_back(pWorker);
+        work_queue_task *pWorker = new work_queue_task(name,
+                                                        m_uiPriority, 
+                                                        m_usStackDepth, 
+                                                        this);
+
+        if(pWorker)
+            m_Workers.push_back(pWorker);  
+    }
+}
+int basic_work_queue_multi::create_engine(int iCore) {
+    automutx_t lock(m_ThreadStatus);
+
+    bool _errorOnCreate = false;
+    bool _oneNoError = false;
+
+    if(m_bRunning) { 
+        return ERR_WORKQUEUE_ALREADYINIT;
+    }
+
+    m_bRunning = true;
+
+    for(int i = 0; i < get_num_worker(); i++) {
+        if(m_Workers[i]->create(iCore) != ERR_TASK_OK) {
+            _errorOnCreate = true;
         } else {
-            return get_num_worker() != 0 ? ERR_WORKQUEUE_CANTCREATE : ERR_WORKQUEUE_WARNING;
+            _oneNoError = true;
         }
     }
-    return ERR_WORKQUEUE_OK;
+    if( (_errorOnCreate && _oneNoError) || 
+        (_oneNoError && get_num_worker() == 1) ) {
+        return ERR_WORKQUEUE_WARNING;
+    }
+    else if( (_errorOnCreate && !_oneNoError) || 
+             (!_errorOnCreate && !_oneNoError)) {
+        return ERR_WORKQUEUE_CANTCREATE;
+    }
+     
+    return ( m_uiMaxWorkers == get_num_worker() ) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_WARNING;
 }
 
-void basic_work_queue_multi::on_destroy() {
-    for(work_queue_thread *pWorker : m_Workers) {
-        pWorker->kill();
+void basic_work_queue_multi::destroy_engine() {
+    for(int i = 0; i < get_num_worker(); i++) {
+        m_Workers[i]->kill();
     }
     m_Workers.clear();
     
@@ -67,6 +84,6 @@ uint8_t basic_work_queue_multi::get_num_worker() const  {
 uint8_t basic_work_queue_multi::get_num_max_worker() const   {
     return m_uiMaxWorkers;
 }
-std::vector<work_queue_thread*>& basic_work_queue_multi::workers() {
+std::vector<work_queue_task*>& basic_work_queue_multi::workers() {
     return m_Workers;
 }

@@ -15,12 +15,31 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "mn_base.hpp"
-#include <stdio.h>
+#ifndef MINLIB_ESP32_THREAD_UTILS_
+#define MINLIB_ESP32_THREAD_UTILS_
 
-void mn_panic() {
-  printf("MiniThread-PANIC!!!");
-  for(;;) {
+#include "mn_task.hpp"
+#include "mn_autolock.hpp"
 
+class basic_task_lock : public ILockObject {
+public:
+  basic_task_lock(task_t* task) : m_pTask(task) { }
+
+  virtual int lock(int timeout = 0) { 
+    basic_task::lock(m_pTask); return 0;
   }
-}
+  virtual int unlock(int timeout = 0) { 
+    basic_task::unlock(m_pTask); return 0;
+  }
+private: 
+  task_t*  m_pTask;
+};
+
+/**
+ * A autolock type for a task_t objects
+ * 
+ * @note lock the running mutex
+ */
+using autotask_t = basic_autolock<basic_task_lock>;
+
+#endif

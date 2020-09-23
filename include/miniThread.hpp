@@ -15,49 +15,37 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
+
+#ifndef __LIBMIN_THREAD_H_
+#define __LIBMIN_THREAD_H_
+
 #include "mn_config.hpp"
+
+#define configUSE_IDLE_HOOK 1
+#define configUSE_DAEMON_TASK_STARTUP_HOOK 1
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+
+
+#include "mn_version.hpp"
+#include "mn_autolock.hpp"
+#include "mn_micros.hpp"
+#include "mn_task.hpp"
 
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 #include "mn_convar.hpp"
 #include "mn_convar_task.hpp"
+#endif
 
-basic_condition_variable::basic_condition_variable() 
-    : m_waitList() {
-    m_mutex.create();
-}
-
-void basic_condition_variable::add_list(basic_convar_task *thread) {
-    automutx_t autolock(m_mutex);
-
-    m_waitList.push_back(thread);
-}
-void basic_condition_variable::signal(bool with_child_thread) {
-    automutx_t autolock(m_mutex);
-
-    if ( !m_waitList.empty() ) {
-        basic_convar_task *thr = m_waitList.front();
-        m_waitList.pop_front();
-
-        if(with_child_thread)
-            thr->signal_all();
-        else
-            thr->signal();
-    }
-}
-void basic_condition_variable::broadcast(bool with_child_thread) {
-    automutx_t autolock(m_mutex);
-
-    while ( !m_waitList.empty() ) {
-        basic_convar_task *thr = m_waitList.front();
-        m_waitList.pop_front();
-        
-        if(with_child_thread)
-            thr->signal_all();
-        else
-            thr->signal();
-    }
-}
+#include "queue/mn_queue.hpp"
+#include "queue/mn_binaryqueue.hpp"
+#include "queue/mn_deque.hpp"
+#include "queue/mn_workqueue.hpp"
 
 
+void mn_panic();
 
 #endif

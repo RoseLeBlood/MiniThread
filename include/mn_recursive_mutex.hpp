@@ -36,7 +36,7 @@
 class recursive_mutex : public basic_mutex {
 public:
   recursive_mutex();
-
+  virtual ~recursive_mutex() { destroy(); }
   /**
    * Create the Mutex 
    * 

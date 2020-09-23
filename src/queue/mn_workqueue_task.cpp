@@ -16,26 +16,26 @@
 *<https://www.gnu.org/licenses/>.  
 */
 #include "mn_config.hpp"
-#include "mn_thread.hpp"
+#include "mn_task.hpp"
 #include "queue/mn_queue.hpp"
 
-#include "queue/mn_workqueue_thread.hpp"
+#include "queue/mn_workqueue_task.hpp"
 #include "queue/mn_workqueue.hpp"
 
 
-work_queue_thread::work_queue_thread(char const* strName, 
-                                    unsigned int uiPriority,
+work_queue_task::work_queue_task(char const* strName, 
+                                    basic_task::priority uiPriority,
                                     unsigned short  usStackDepth, 
                                     basic_work_queue* parent)
 
-    : basic_thread(strName, uiPriority, usStackDepth), m_parentWorkQueue(parent) { 
+    : basic_task(strName, uiPriority, usStackDepth), m_parentWorkQueue(parent) { 
 
 }
-work_queue_thread::~work_queue_thread() { }
+work_queue_task::~work_queue_task() { }
 
 
-void* work_queue_thread::on_thread() {
-    basic_thread::on_thread();
+void* work_queue_task::on_task() {
+    basic_task::on_task();
 
     work_queue_item *work_item = NULL;
 

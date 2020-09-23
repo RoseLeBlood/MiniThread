@@ -25,22 +25,24 @@
  */
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 
-#include "mn_thread.hpp"
+#include "mn_task.hpp"
 #include "mn_convar.hpp"
 
 /**
  * Extension of the basic thread with condition variable support
+ * 
+ * 
  */ 
-class basic_convar_thread : public basic_thread {
+class basic_convar_task : public basic_task {
     /**
      *  The Thread class and the basic_condition_variable class are interdependent.
      *  If we allow the basic_condition_variable class to access the internals of 
-     *  the basic_convar_thread class, we can reduce the public interface, which is a
+     *  the basic_convar_task class, we can reduce the public interface, which is a
      *  good thing.
      */
     friend class basic_condition_variable;
 public:
-    basic_convar_thread();
+    basic_convar_task();
     /**
      *  Constructor to create a named thread.
      *
@@ -48,7 +50,7 @@ public:
      *  @param uiPriority FreeRTOS priority of this Thread.
      *  @param usStackDepth Number of "words" allocated for the Thread stack. default configMINIMAL_STACK_SIZE
      */
-    basic_convar_thread(char const* strName, unsigned int uiPriority,
+    basic_convar_task(char const* strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
 
     /**
@@ -97,7 +99,7 @@ private:
     binary_semaphore_t* m_waitSem;
 };
 
-using convar_thread_t = basic_convar_thread;
+using convar_task_t = basic_convar_task;
 #endif
 
 

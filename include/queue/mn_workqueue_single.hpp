@@ -22,18 +22,18 @@
 
 
 /**
- * This class is the single thread "engine" for work_queue_items.
+ * This class is the single tasked "engine" for work_queue_items.
  */
 class basic_work_queue_single : public basic_work_queue {
 public:
     /**
      * Our constructor.
-     * @param Name Name of the thread internal to the WorkQueue. 
+     * 
      * @param uiPriority FreeRTOS priority of this Thread.
      * @param usStackDepth Number of "words" allocated for the Thread stack.
      * @param uiMaxWorkItems Maximum number of WorkItems this WorkQueue can hold.
      */
-    basic_work_queue_single(unsigned int uiPriority = MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY,
+    basic_work_queue_single(basic_task::priority uiPriority = MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY,
                 uint16_t usStackDepth = MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE,
                 uint8_t uiMaxWorkItems = MN_THREAD_CONFIG_WORKQUEUE_SINGLE_MAXITEMS);
 
@@ -46,19 +46,20 @@ protected:
      * Create the work_queue_t.
      *
      * @param iCore run on whith core
-     * @return TODO
+     * @return ERR_WORKQUEUE_OK The engine is created, ERR_WORKQUEUE_ALREADYINIT The engine allready created,
+     *         ERR_WORKQUEUE_CANTCREATE Error on created the engine
      */
-    int on_create(int iCore);
+    int create_engine(int iCore);
 
     /**
      * Destroy the work_queue_t.
      */
-    void on_destroy();
+    void destroy_engine();
 private:
     /**
      *  Pointer to our WorkerThread.
      */
-    work_queue_thread *m_pWorker;
+    work_queue_task *m_pWorker;
 };
 
 using single_engine_workqueue_t = basic_work_queue_single;

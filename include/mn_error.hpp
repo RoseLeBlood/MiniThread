@@ -85,42 +85,42 @@
 /**
  * No Error in one of the Thread function
  */
-#define ERR_THREAD_OK                   NO_ERROR
+#define ERR_TASK_OK                   NO_ERROR
 /**
  * The Lock objects are maked error 
  */ 
-#define ERR_THREAD_CANTINITMUTEX		-4
+#define ERR_TASK_CANTINITMUTEX		-4
 /**
  * The thread (i.e. task) can not start unknown error
  */
-#define ERR_THREAD_CANTSTARTTHREAD		-5
+#define ERR_TASK_CANTSTARTTHREAD		-5
 /**
  * The threah function is null
  */
-#define ERR_THREAD_THREADFUNCNOTSET		-6
+#define ERR_TASK_THREADFUNCNOTSET		-6
 /**
  * The thread is not running
  */
-#define ERR_THREAD_NOTRUNNING			-7
+#define ERR_TASK_NOTRUNNING			-7
 /**
  * The thread can not start, becourse the thread is allready started
  */
-#define ERR_THREAD_ALREADYRUNNING		-8
+#define ERR_TASK_ALREADYRUNNING		-8
 
 // --------------------------------
 
 /**
  * No Error in one of the Tasklet function
  */
-#define ERR_TASKLET_OK                   NO_ERROR
+#define ERR_COROUTINE_OK                   NO_ERROR
 /**
  * Can not create the lock object for the tasklet, tasklet not created
  */
-#define ERR_TASKLET_CANTINITLOCKT  		-4
+#define ERR_COROUTINE_CANTINITLOCKT  		-4
 /**
  * Tasklet can not created 
  */ 
-#define ERR_TASKLET_CANTSTART   		-5
+#define ERR_COROUTINE_CANTSTART   		-5
 
 // --------------------------------
 

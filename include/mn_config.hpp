@@ -23,7 +23,7 @@
 
 #define MN_THREAD_MAJOR_VERSION 1
 #define MN_THREAD_MINOR_VERSION 6
-#define MN_THREAD_DEBUG_VERSION 0
+#define MN_THREAD_DEBUG_VERSION 1
 
 #define MN_THREAD_CONFIG_MUTEX                1
 #define MN_THREAD_CONFIG_COUNTING_SEMAPHORE   2
@@ -32,14 +32,13 @@
 #define MN_THREAD_CONFIG_YES        1
 #define MN_THREAD_CONFIG_NO         2
 
-#define MN_THREAD_CONFIG_CORE_IFNO  -1
+#define MN_THREAD_CONFIG_CORE_IFNO  tskNO_AFFINITY
 #define MN_THREAD_CONFIG_CORE_ONE   0
 #define MN_THREAD_CONFIG_CORE_TWO   1
-
+#define MN_THREAD_CONFIG_CORE_MAX   (portNUM_PROCESSORS - 1)
   
 
-#define MN_THREAD_CONFIG_MAX_CPUS                   2 
-#define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_ONE
+#define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_IFNO
 #define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO   
 
 #ifndef configMAX_PRIORITIES 
@@ -72,6 +71,15 @@ enum tt { test = ( 1UL | portPRIVILEGE_BIT ) };
  */
 #define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
 
+/**
+ * Foreign support for this libary. When MN_THREAD_CONFIG_YES then 
+ * can with the class foreign_thread_t foreign tasks handled
+ *  
+ *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
+ * default: MN_THREAD_CONFIG_YES
+ */
+#define MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT MN_THREAD_CONFIG_YES
+
 
 #define MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT  512
 /**
@@ -86,9 +94,9 @@ enum tt { test = ( 1UL | portPRIVILEGE_BIT ) };
 #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 /**
  * Default Priority for the workqueue single-threaded thread 
- * default: (tskIDLE_PRIORITY + 1) 
+ * default: basic_thread::PriorityLow 
  */ 
-#define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      (tskIDLE_PRIORITY + 1)
+#define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      basic_task::PriorityLow
 
 
 /**
@@ -108,9 +116,9 @@ enum tt { test = ( 1UL | portPRIVILEGE_BIT ) };
 #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 /**
  * Default Priority for the workqueue multi-threaded for all worked thread 
- * default: (tskIDLE_PRIORITY + 1) 
+ * default: basic_thread::PriorityLow
  */ 
-#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      (tskIDLE_PRIORITY + 1)
+#define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      basic_task::PriorityLow
 
 
 /**
@@ -138,7 +146,7 @@ enum tt { test = ( 1UL | portPRIVILEGE_BIT ) };
 /**
  * default  (unsigned int) 0xffffffffUL)   
  */   
-#define MN_THREAD_CONFIG_TIMEOUT_TASKLET_DEFAULT    (unsigned int) 0xffffffffUL 
+#define MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT  (unsigned int) 0xffffffffUL 
 
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================

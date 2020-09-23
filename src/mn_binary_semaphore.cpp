@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2018 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -15,10 +15,32 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef MINLIB_ESP32_SEMAPHORE_
-#define MINLIB_ESP32_SEMAPHORE_
 
-#include "mn_counting_semaphore.hpp"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
+
 #include "mn_binary_semaphore.hpp"
 
-#endif
+basic_binary_semaphore::basic_binary_semaphore() : basic_semaphore() { }
+
+
+int basic_binary_semaphore::create() {
+  if (m_pSpinlock != NULL)
+    return ERR_SPINLOCK_ALREADYINIT;
+
+  m_pSpinlock = xSemaphoreCreateBinary();
+
+
+  if (m_pSpinlock) {
+    unlock();
+    return ERR_SPINLOCK_OK;
+  }
+  return ERR_SPINLOCK_CANTCREATESPINLOCK;
+}
+
+int basic_binary_semaphore::destroy() {
+  vSemaphoreDelete(m_pSpinlock);
+  m_pSpinlock = NULL;
+
+  return ERR_SPINLOCK_OK;
+}

@@ -30,9 +30,9 @@
 
 //
 //  Forward declaration. We need to prevent a circular dependency
-//  between the basic_convar_thread class and the basic_condition_variable class.
+//  between the basic_convar_task class and the basic_condition_variable class.
 //
-class basic_convar_thread;
+class basic_convar_task;
 
 /**
  *  Class implementation of condition variable 
@@ -40,17 +40,17 @@ class basic_convar_thread;
  *  A condition variable isn't really a variable. It's a list
  *  of threads.
  *
- *  The design here is that a basic_convar_thread "waits", and a condition_variable
+ *  The design here is that a basic_convar_task "waits", and a condition_variable
  *  "signals". This affects where the public interfaces reside.
  */
 class basic_condition_variable {
     /**
-     *  The basic_convar_thread class and the basic_condition_variable class are interdependent.
-     *  If we allow the basic_convar_thread class to access the internals of the
+     *  The basic_convar_task class and the basic_condition_variable class are interdependent.
+     *  If we allow the basic_convar_task class to access the internals of the
      *  basic_condition_variable, we can reduce the public interface which is a
      *  good thing.
      */
-    friend class basic_convar_thread;
+    friend class basic_convar_task;
 public:
     /**
      *  Constructor to create a condition variable.
@@ -77,12 +77,12 @@ public:
 
 private:
     /**
-     *  Internal helper function to queue a basic_convar_thread to 
+     *  Internal helper function to queue a basic_convar_task to 
      *  this condition_variable's wait list.
      * 
-     * @param thread The basic_convar_thread to add to the waiting list
+     * @param thread The basic_convar_task to add to the waiting list
      */
-    void add_list(basic_convar_thread *thread);
+    void add_list(basic_convar_task *thread);
 protected:
     /**
      *  Protect the internal condition_variable state.
@@ -91,7 +91,7 @@ protected:
     /**
      *  Implementation of a wait list of Threads.
      */
-    std::list<basic_convar_thread*>    m_waitList;
+    std::list<basic_convar_task*>    m_waitList;
 };
 
 using convar_t = basic_condition_variable;
