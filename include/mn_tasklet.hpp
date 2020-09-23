@@ -33,11 +33,11 @@
  *
  *  This is an abstract base class.
  *  To use this, you need to subclass it. All of your coroutines should
- *  be derived from the basic_coroutine class. Then implement the virtual on_coroutine
+ *  be derived from the basic_tasklet class. Then implement the virtual on_coroutine
  *  function.
  */
 
-class basic_coroutine {
+class basic_tasklet {
 public:
 
     /**
@@ -62,8 +62,10 @@ protected:
      *  You must override this function.
      *
      *  @param parameter Value passed to you from the create() methods.
+     * 
+     * @return false to end the coroutine and true when run 
      */
-    virtual int on_coroutine(uint32_t arg);
+    virtual bool on_coroutine(uint32_t arg) = 0;
 protected:
     /**
      *  Adapter function that allows you to write a class
@@ -77,6 +79,6 @@ protected:
     counting_semaphore_t   m_ssLock;
 };
 
-using coro_t = basic_coroutine;
+using tasklet_t = basic_tasklet;
 
 #endif

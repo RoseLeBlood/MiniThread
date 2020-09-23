@@ -34,6 +34,8 @@
 #include "mn_autolock.hpp"
 #include "mn_micros.hpp"
 #include "mn_task.hpp"
+#include "mn_tasklet.hpp"
+#include "mn_eventgroup.hpp"
 
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 #include "mn_convar.hpp"

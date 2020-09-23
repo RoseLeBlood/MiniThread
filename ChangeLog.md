@@ -1,16 +1,22 @@
 # Changelog
 
 
-## Version 1.71 September 2020: (stable 2.0beta)
-* add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 
-    (TODO Optional add a Workqueues ) and add configand error defines, with doku
+## Version 1.9.0 September 2020: (stable 2.0beta)
 * add a eventgroup wrapper
-* rename basic_thread to basic_task and the other threads to task - with error codes
-* ramame tasklet to coroutine
+* rename basic_thread to basic_task and the other threads to task - with error codes and 
+  rename on_thread to on_task
 * add in confg:
     * MN_THREAD_CONFIG_CORE_MAX   (portNUM_PROCESSORS - 1)
-    * add prority enum to task and coroutine
+    * add prority enum to task
 * rename mn_base.hpp to miniThread.hpp
+* remove bugs and errors
+* Strip semaphore classes 
+* add task_utils class for notify
+
+## Version 1.71 September 2020: (unstable 2.0beta)
+* add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 
+    (TODO Optional add a Workqueues ) and add configand error defines, with doku
+* remove bugs and errors
 * This is the preview version of 2.0.0
   
 ## Version 1.60 September 2020: (unstable nightly)

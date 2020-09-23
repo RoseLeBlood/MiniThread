@@ -16,13 +16,12 @@
 *<https://www.gnu.org/licenses/>.  
 */
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/timers.h"
 
-#include "mn_coroutine.hpp"
+#include "mn_tasklet.hpp"
 
 
-int basic_coroutine::create(uint32_t parameter, TickType_t timeout) {
+int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
     BaseType_t success;
 
     if(m_ssLock.create() != NO_ERROR)
@@ -49,16 +48,19 @@ int basic_coroutine::create(uint32_t parameter, TickType_t timeout) {
     m_ssLock.unlock();
     return ERR_COROUTINE_CANTSTART;
 }
-int basic_coroutine::destroy() {
+int basic_tasklet::destroy() {
     m_ssLock.lock( portMAX_DELAY );
     m_ssLock.destroy();
 
     return ERR_COROUTINE_OK;
 }
-void basic_coroutine::runcorostub(void* ref, uint32_t parameter) {
-    basic_coroutine *tasklet = static_cast<basic_coroutine *>(ref);
+void basic_tasklet::runcorostub(void* xHandle, uint32_t parameter) {
+    basic_tasklet *tasklet = static_cast<basic_tasklet *>(xHandle);
 
-    tasklet->on_coroutine(parameter);
+    for(;;) {
+        if (!tasklet->on_coroutine(parameter) )
+            break;
+    } 
 
     tasklet->m_ssLock.unlock();
 }

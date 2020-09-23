@@ -32,8 +32,11 @@ int basic_timer::create() {
                             m_bIsOneShot ? pdFALSE : pdTRUE,
                             this, runtimerstub);
 
+    
     if (m_pHandle == NULL) 
         return ERR_TIMER_CANTCREATE;
+
+    m_iTimerID = ( int32_t )pvTimerGetTimerID(m_pHandle);
 
     return ERR_TIMER_OK;
 }
@@ -117,4 +120,13 @@ void basic_timer::runtimerstub(void* xTimer)
 {
     basic_timer *timer = static_cast<basic_timer *>(pvTimerGetTimerID(xTimer));
     timer->on_timer();
+}
+
+void basic_timer::set_id(int nId) {
+    vTimerSetTimerID(m_pHandle, &nId);
+    m_iTimerID = ( int32_t )pvTimerGetTimerID(m_pHandle);
+}
+
+bool basic_timer::is_running() {
+    return (xTimerIsTimerActive( m_pHandle ) == pdTRUE );
 }

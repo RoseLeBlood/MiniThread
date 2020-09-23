@@ -38,6 +38,7 @@ public:
     basic_timer(const char * strName,
           unsigned int uiPeriod, bool bIsOneShot = true);
 
+    virtual ~basic_timer() { destroy(); }
     /**
      * Create the timer
      * 
@@ -101,28 +102,54 @@ public:
      * 
      * @return The timer's period
      */ 
-    unsigned int get_period() { return m_uiPeriod; }
+    unsigned int get_period()   { return m_uiPeriod; }
 
     /**
      * Get the timer's name
      * 
      * @return The timer's name
      */ 
-    const char* get_name() { return m_strName; }
+    const char* get_name()      { return m_strName; }
 
     /**
      * Is the timer is one shotted?
      * 
      * @return true The timer is one shotted and false when not
      */ 
-    bool is_oneshot() { return m_bIsOneShot; }
+    bool        is_oneshot()    { return m_bIsOneShot; }
 
     /**
-   * Get the FreeRTOS handle
-   * 
-   * @return the FreeRTOS handle
-   */
-  void* get_handle()                      { return m_pHandle; }
+     * Get the FreeRTOS handle
+     * 
+     * @return the FreeRTOS handle
+     */
+    void*       get_handle()    { return m_pHandle; }
+
+    /**
+     * Returns the ID assigned to the timer.
+     * @return The ID assigned to the timer being queried.
+     */ 
+    int         get_id()        { return m_iTimerID; }
+
+    /**
+     * Sets the ID assigned to the timer.
+     *
+     * If the same callback function is assigned to multiple timers then the timer
+     * ID can be used as time specific (timer local) storage.
+     * 
+     * @param nId The ID to assign to the timer.
+     */ 
+    void        set_id(int nId);
+
+    /**
+     * Queries a timer to see if it is active or dormant.
+     * 
+     * @return false will be returned if the timer is dormant.  
+     * And true will be returned if the timer is active.
+     */ 
+    bool        is_running();
+
+    operator bool() { return is_running(); }
 protected:
     /**
      * Implementation of your actual timer code.
@@ -152,6 +179,11 @@ private:
      *  Reference to the underlying timer handle.
      */
     void* m_pHandle;
+
+    /**
+     *  A saved / cached copy of what the timers's ID is.
+     */ 
+    int m_iTimerID;
 };
 
 using mtimer_t = basic_timer;
