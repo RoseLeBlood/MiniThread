@@ -39,30 +39,12 @@
 class  basic_task {
 public:
   enum priority {
-    /**
-     * no Real Time operation - idle task
-     */ 
-    PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,
-    /**
-     * No critical operation
-     */ 
-    PriorityLow = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,
-    /**
-     * Normal user programm
-     */ 
-    PriorityNormal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,
-    /**
-     * Half critical, this task have deadlines - not a lot of processings
-     */ 
-    PriorityHalfCritical = MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT,
-    /**
-     * Urgent critical, this task have short deadlines and a lot of processings
-     */ 
-    PriorityUrgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,
-    /**
-     * Critical, the highest priority 
-     */ 
-    PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL
+    PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
+    PriorityLow = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,             /*!< Priority for low operation  */
+    PriorityNormal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,         /*!< Priority for tasks for normal operatins - user interfaces for example */
+    PriorityHalfCritical = MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT,/*!< Priority for tasks with normal deadlines and not a lot of processings*/
+    PriorityUrgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,       /*!< priority for tasks with short deadlines and a lot of processings */
+    PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
   };
 public:
   basic_task() { }
@@ -74,7 +56,7 @@ public:
    *  @param uiPriority FreeRTOS priority of this Task.
    *  @param usStackDepth Number of "words" allocated for the Task stack. default configMINIMAL_STACK_SIZE
    */
-  basic_task(char const* strName, basic_task::priority uiPriority,
+  explicit basic_task(char const* strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
   
   
@@ -236,8 +218,7 @@ public:
    * @note For example this task handle the WiFi connection and the child the TCP Connection
    * on signal or broadcast this task, will signal and broadcast the child too.
    */ 
-  bool                  add_child_task(basic_task* task);
-
+  bool                  add_child_task(basic_task* task);              
 public:
   /**
    * Suspend the given task.
