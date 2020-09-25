@@ -20,7 +20,7 @@
 
 #include "mn_mempool.hpp"
 
-#if MN_THREAD_CONFIG_PREVIEW_DEV_ACTIVATE == MN_THREAD_CONFIG_YES
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 
 #include <vector>
 #include <set>

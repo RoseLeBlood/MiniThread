@@ -18,7 +18,7 @@
 
 #include "memory/mn_free_list_mempool.hpp"
 #include <stdlib.h>
-#if MN_THREAD_CONFIG_PREVIEW_DEV_ACTIVATE == MN_THREAD_CONFIG_YES
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 #warning("use on your own risk - not for production use")
 
 basic_free_list_mempool::basic_free_list_mempool(unsigned int uiItemSize, 
