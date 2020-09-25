@@ -22,8 +22,8 @@
  * Interface for all lock types in this library
  * This is an abstract base class.
  * To use this, you need to subclass it. All of your LockObjetcs should
- * be derived from the ILockObject class. Then implement the virtual lock
- * and unlock functions.
+ * be derived from the ILockObject class. Then implement the virtual lock,
+ * unlock and is_initialized functions.
  */ 
 class ILockObject {
 public:
