@@ -26,22 +26,23 @@
 #include <set>
 #include <list>
 
+#include "../mn_mutex.hpp"
+
+// Move in the future to mn_config.h
+#define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START   0x6d //109
+#define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END     0xa8 //168 
+
+// Move in the future to mn_error.h
+#define ERR_MEMPOOL_OK                    NO_ERROR
+#define ERR_MEMPOOL_ALREADYINIT           -1
+#define ERR_MEMPOOL_UNKNOW                -2
 /** 
- * A free list mempool, based of the xy mempool toturial
+ * A free list mempool, based of a mempool toturial
  * 
  * @note the block sizes can be determined by the user based on approximating 
  * the sizes of object types used in the application 
  * The MemoryPool can be initialised partially or completely , based on the 
  * need and the frequency of occurence of certain types of object; 
- * each block shall contain 4 extra bytes to store metadata information 
- * One such information is that indicating whether this block is free 
- * or not. Another tentative information could be guard bytes which detect 
- * heap memory corruption , ie , when someone writes beyond the boundary 
- * of an object accidentally via  memcpy or memset functions.In our 
- * implementation everyblock is guarded by 4 bytes.The secound two 
- * bytes of these four are marked with  special characters 0x6d,0xa8.
- * The next byte will contain the size of block and the 
- * of the byte shall indicate wheteher this block is free or available.
  */
 class basic_free_list_mempool : public IMemPool {
     /**
@@ -50,18 +51,35 @@ class basic_free_list_mempool : public IMemPool {
     struct memObject {
         union {
             struct {
-                char* memBlock; //(uiItemSize) + char
-                char guardStart; //0xde;
-                char guardEnd; //0xad;
-                char sizeofBlock;
-                char blockAvaible : 1;
+                /**
+                 * The real memory
+                 */ 
+                char* memBlock; 
+                /**
+                 * The two guard bytes for detect heap memory corruption, ie,  when someone 
+                 * writes beyond the boundary via  memcpy or memset functions
+                 */ 
+                char[2] memGuard; //0xde 0xad; 
+                /**
+                 * The size of the memBlock
+                 */ 
+                char sizeofBlock; 
+                /**
+                 * This byte shall indicate wheteher this block is free or not
+                 */ 
+                char blockAvaible : 1; 
             };
-            void* raw_memObject;
+            void* raw_memObject; 
         };
     };
-
 public:
-    basic_free_list_mempool() { }
+    /**
+     * 
+     * @param nItemSize The size of a 
+     */ 
+    basic_free_list_mempool(unsigned int nItemSize, unsigned int nElements, unsigned int uiAlignment);
+    basic_free_list_mempool(const basic_free_list_mempool&) = delete;
+    
     /**
      *  To correctly delete a Memory Pool, we'd have to guarantee that
      *  all allocations had been returned to us. We side step this issue
@@ -70,33 +88,33 @@ public:
      */
     ~basic_free_list_mempool() = delete;
 
-    basic_free_list_mempool(unsigned int nItemSize, unsigned int nElements);
-
     virtual int create();
 
-    virtual int add_memory(unsigned int nItemSize, unsigned int nElements);
+    virtual int add_memory(unsigned int nElements);
     virtual int add_memory(void* preMemory, unsigned int nSize);
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty or the size too big
      */ 
-    virtual void* allocate(unsigned int size);
+    virtual void* allocate();
     /**
-     * Returns the item back to the pool.
+     * Free the memory
      * 
-     * @note There is no checking that the item is actually
-     *  valid to be returned to this pool.
-     * 
-     * @return true if The item back to it's pool, false If not
+     * @return true Free the memory, false If not
      */ 
     virtual bool  free(void* mem);
+
+    int           get_size();
+    bool          is_empty();
+
 private:
-    unsigned int m_uiItemSize;
-    unsigned int m_uiElements;
-    unsigned int m_uiSizeOver;
+    unsigned int              m_uiAlignment
 
     std::list<memObject*>     m_lBytePtrList;
     std::vector<void*>        m_vMemoryPoolList;
+
+    mutex_t                   m_nMutex;
+    bool                      m_bCreated;
 };
 #endif
 
