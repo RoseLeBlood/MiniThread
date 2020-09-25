@@ -26,16 +26,18 @@
  * Interface for all mempools in this library
  * This is an abstract base class.
  * To use this, you need to subclass it. All of your MemPools should
- * be derived from the ILockObject class. Then implement the virtual lock,
- * unlock and is_initialized functions.
+ * be derived from the ILockObject class. Then implement the virtual allocate
+ * and free functions.
  */ 
 class IMemPool {
 public:
+    IMemPool(unsigned int nItemSize, unsigned int nElements)
+        : m_uiItemSize(nItemSize), m_uiElements(nElements) { }
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
      */ 
-    virtual void* allocate(unsigned int size) = 0;
+    virtual void* allocate() = 0;
     /**
      * Returns the item back to the pool.
      * 
@@ -45,6 +47,9 @@ public:
      * @return true if The item back to it's pool, false If not
      */ 
     virtual bool  free(void* mem) = 0;
+protected:
+    unsigned int m_uiItemSize;
+    unsigned int m_uiElements;
 };
 #endif
 
