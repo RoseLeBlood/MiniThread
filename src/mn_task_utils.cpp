@@ -44,7 +44,7 @@ bool task_utils::notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils:
 }
 
 
-bool task_utils::notify_give(basic_task* pTaskToNotify) {
+bool task_utils::notify_unlock(basic_task* pTaskToNotify) {
     BaseType_t success = pdTRUE;
 
     if (xPortInIsrContext()) {
@@ -62,7 +62,7 @@ bool task_utils::notify_give(basic_task* pTaskToNotify) {
   return success == pdTRUE;
 }
 
-uint32_t task_utils::notify_take(bool bClearCountOnExit, TickType_t xTicksToWait) {
+uint32_t task_utils::notify_lock(bool bClearCountOnExit, TickType_t xTicksToWait) {
      return ulTaskNotifyTake( bClearCountOnExit ? pdTRUE : pdFALSE, 
                               xTicksToWait );
 }

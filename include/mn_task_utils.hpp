@@ -48,23 +48,27 @@ public:
   static bool notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils::action eAction);
 
   /**
-   * Simplified macro for sending task notification.
-   *
-   * @param pTaskToNotify The task being notified.
-   * 
-   * @return true if give and alse if not 
-   */
-  static bool notify_give(basic_task* pTaskToNotify);
-
-  /**
    * Simplified macro for receiving task notification.
+   * 
+   *  lock = take
    * 
    * @param bClearCountOnExit if is false then the task's
    * notification value is decremented when the function exits.
    * If true then the task's notification value is cleared to zero when the
    * function exits.
    */ 
-  static uint32_t notify_take(bool bClearCountOnExit, TickType_t xTicksToWait);
+  static uint32_t notify_lock(bool bClearCountOnExit, TickType_t xTicksToWait); 
+
+  /**
+   * Simplified macro for sending task notification.
+   *
+   * unlock = give
+   * 
+   * @param pTaskToNotify The task being notified.
+   * 
+   * @return true if give and else if not 
+   */
+  static bool notify_unlock(basic_task* pTaskToNotify);
 
   /**
    * Wait for task notification
