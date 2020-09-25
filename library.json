@@ -8,12 +8,12 @@
 		"email": "ambersophia.schroeck@outlook.com",
 		"maintainer": true
     },
-    "repository":
+    "repository": 
     {
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "1.9.0",
+    "version": "1.90.48",
     "frameworks": "espidf",
     "platforms": "espressif32",
     "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
