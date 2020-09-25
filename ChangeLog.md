@@ -12,6 +12,10 @@
 * remove bugs and errors
 * Strip semaphore classes 
 * add task_utils class for notify
+* add MN_THREAD_CONFIG_PREVIEW_FUTURE config item for next major version future (not for product use), not activate
+* all config items can you now override in the sdkconfig file
+* in the future version add free_list_memory pool and mempool support
+* update config with new items, please cheack 
 
 ## Version 1.71 September 2020: (unstable 2.0beta)
 * add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 

@@ -1,4 +1,4 @@
-# Mini Thread 1.61 (2.0.0 preview)
+# Mini Thread 1.90-beta2.0 (2.0.0 preview)
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
