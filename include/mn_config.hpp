@@ -27,8 +27,16 @@
 #include "freertos/FreeRTOS.h"
 
 #define MN_THREAD_MAJOR_VERSION 1
-#define MN_THREAD_MINOR_VERSION 9
-#define MN_THREAD_DEBUG_VERSION 0
+#define MN_THREAD_MINOR_VERSION 90
+#define MN_THREAD_DEBUG_VERSION 048
+
+#define MN_THREAD_VERSION_STRING          "1.90-048"
+
+#define MN_THREAD_BETA_MAJOR_VERSION 2
+#define MN_THREAD_BETA_MINOR_VERSION 0
+
+#define MN_THREAD_BETA_VERSION_STRING    "-beta2.0"
+
 
 #define MN_THREAD_CONFIG_MUTEX                1
 #define MN_THREAD_CONFIG_COUNTING_SEMAPHORE   2
@@ -234,13 +242,13 @@ Start the config part
 #endif
 
 /**
- * Whenn MN_THREAD_CONFIG_YES then activate develop unsafe classes, 
- * preview to next version - not for production use
+ * Whenn MN_THREAD_CONFIG_YES then activate develop unsafe future for next major version 
+ * not for production use
  * 
  * default  MN_THREAD_CONFIG_NO  
  */
-#ifndef MN_THREAD_CONFIG_PREVIEW_DEV_ACTIVATE
-    #define MN_THREAD_CONFIG_PREVIEW_DEV_ACTIVATE         MN_THREAD_CONFIG_YES
+#ifndef MN_THREAD_CONFIG_PREVIEW_FUTURE
+    #define MN_THREAD_CONFIG_PREVIEW_FUTURE              MN_THREAD_CONFIG_YES
 #endif
 
 /**

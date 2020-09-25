@@ -27,23 +27,34 @@ libmnVersion::libmnVersion()
 	m_major = MN_THREAD_MAJOR_VERSION;
 	m_minor = MN_THREAD_MINOR_VERSION;
 	m_debug = MN_THREAD_DEBUG_VERSION;
-	m_license = std::string("LGPL");
 
-#if MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_MUTEX
-	m_extras = std::string("MX");
-#elif MN_THREAD_CONFIG_AUTOLOCK == MN_THREAD_CONFIG_SPINLOCK
-	m_extras = std::string("SL");
-#else
-	m_extras = std::string("??");
+	m_license = std::string("-LGPL");
+
+#if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
+  	m_extras = std::string("-MX");
+#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
+  	m_extras = std::string("-BS");
+#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
+  	m_extras = std::string("-CS");
 #endif
-
 }
 
 libmnVersion::~libmnVersion() { }
 
 std::string libmnVersion::to_string() const {
-	char str[32];
-	snprintf(str, 32, "%d.%d.%d - %s (%s)", m_major, m_minor, m_debug, 
-		m_license.c_str(), m_extras.c_str() );
-	return std::string(str);
+	std::string text = std::string(MN_THREAD_VERSION_STRING);
+
+	if(is_beta()) {
+		text += std::string(MN_THREAD_BETA_VERSION_STRING);
+	} 
+	text += m_license + m_extras;
+	return text;
+}
+
+bool libmnVersion::is_beta() {
+	#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+		return true;
+	#else 
+		return false;
+	#endif
 }
