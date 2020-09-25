@@ -15,14 +15,35 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef MINLIB_ESP32_MEMORYPOOL_LIST_
-#define MINLIB_ESP32_MEMORYPOOL_LIST_
+#include "mn_mempool.hpp"
 
 #if MN_THREAD_CONFIG_PREVIEW_DEV_ACTIVATE == MN_THREAD_CONFIG_YES
 #warning("use on your own risk - not for production use")
 
-#include "memory/mn_free_list_mempool.hpp"
+/*
+class IMemObject {
+public:
+    using MemObject_t = void;
 
-#endif
+    inline void* operator new(size_t size) {
+        return m_mempool.allocate(size);
+    }
+    inline void  operator delete(void* object) {
+      m_mempool.free(object);
+    }
+protected:
+    MemObject_t m_mempool;
+};
+*/
+
+class IMempoolObject {
+
+};
+
+class basic_mempool_object_factory {
+
+};
+
+using mempool_factory_t = basic_mempool_object_factory;
 
 #endif
