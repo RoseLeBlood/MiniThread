@@ -1,6 +1,12 @@
 # Changelog
 
-
+## Version 1.9.1 Oktober 2020: (stable 2.0beta) 
+* for the future version add prototypes: (Not for produtions use!!)
+  * free_list_memory pool and mempool
+  * Shared Object 
+  * Ringbuffer
+  
+  
 ## Version 1.9.0 September 2020: (stable 2.0beta)
 * add a eventgroup wrapper
 * rename basic_thread to basic_task and the other threads to task - with error codes and 
@@ -14,7 +20,6 @@
 * add task_utils class for notify
 * add MN_THREAD_CONFIG_PREVIEW_FUTURE config item for next major version future (not for product use), not activate
 * all config items can you now override in the sdkconfig file
-* in the future version add free_list_memory pool and mempool support
 * update config with new items, please cheack 
 
 ## Version 1.71 September 2020: (unstable 2.0beta)

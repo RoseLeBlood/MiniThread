@@ -18,11 +18,13 @@
 
 #include "mn_critical.hpp"
 
+
 void basic_critical::enter(portMUX_TYPE h) { 
     if (xPortInIsrContext()) 
         portENTER_CRITICAL_ISR(&h);
     else
         vTaskEnterCritical(&h);
+
 }
 
 void basic_critical::exit(portMUX_TYPE h) { 
