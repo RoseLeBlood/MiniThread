@@ -26,34 +26,57 @@
 #include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 
+///@brief Major Version, the first number
 #define MN_THREAD_MAJOR_VERSION 1
-#define MN_THREAD_MINOR_VERSION 90
-#define MN_THREAD_DEBUG_VERSION 048
+/// @brief Minor Version, the 2. number
+#define MN_THREAD_MINOR_VERSION 91
+/// @brief  Prozent for next minor jump
+#define MN_THREAD_DEBUG_VERSION 23 
 
-#define MN_THREAD_VERSION_STRING          "1.90-048"
+/// @brief The mini thread version as string
+#define MN_THREAD_VERSION_STRING          "1.91-23"
 
-#define MN_THREAD_BETA_MAJOR_VERSION 2
-#define MN_THREAD_BETA_MINOR_VERSION 0
-
-#define MN_THREAD_BETA_VERSION_STRING    "-beta2.0"
-
-
+/// @brief Pre defined helper values for config items - Use a mutex
 #define MN_THREAD_CONFIG_MUTEX                1
+/// @brief Pre defined helper value for config items - Use a counting semaphore
 #define MN_THREAD_CONFIG_COUNTING_SEMAPHORE   2
+/// @brief Pre defined values for config items - Use a binary semaphore
 #define MN_THREAD_CONFIG_BINARY_SEMAPHORE     3
 
+/// @brief Pre defined helper values for config items - Use for aktivating
 #define MN_THREAD_CONFIG_YES        1
+/// @brief Pre defined helper values for config items - Use for deaktivating
 #define MN_THREAD_CONFIG_NO         2
 
+/// @brief The max number of usable cores 
 #define MN_THREAD_CONFIG_CORE_MAX   (portNUM_PROCESSORS - 1)
 
+/** 
+ * @brief Pre defined values for config items -
+ * Use for indicating the task has no affinity core 
+ */  
 #define MN_THREAD_CONFIG_CORE_IFNO  tskNO_AFFINITY
+/** 
+ * @brief Pre defined values for config items -
+ * Use for run the config task on core 0
+ */  
 #define MN_THREAD_CONFIG_CORE_ONE   (MN_THREAD_CONFIG_CORE_IFNO + 1)
+/** 
+ * @brief Pre defined values for config items -
+ * Use for run the config task on core 1
+ */ 
 #define MN_THREAD_CONFIG_CORE_TWO   (MN_THREAD_CONFIG_CORE_ONE + 1)
 
   
-
+/** 
+ * @brief Pre defined on which core must run the task, can override in the create 
+ * function
+ */ 
 #define MN_THREAD_CONFIG_DEFAULT_CORE               MN_THREAD_CONFIG_CORE_IFNO
+/** 
+ * @brief Pre defined on which core must run the work queue task, 
+ * can override in the create function
+ */ 
 #define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO   
 
 /*
@@ -61,41 +84,45 @@ Start the config part
 */
 
 #ifndef configMAX_PRIORITIES 
+    /**
+     * The max priority for FreeRTOS Task priority
+     */
     #define configMAX_PRIORITIES 25
 #endif
  
-/**
- * Task priority for basic_task::PriorityIdle 
- */ 
+ 
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_IDLE
+    /**
+     * @brief Task priority for basic_task::PriorityIdle 
+     */
     #define MN_THREAD_CONFIG_CORE_PRIORITY_IDLE     tskIDLE_PRIORITY
 #endif
 /**
- * Task priority for basic_task::PriorityLow 
+ * @brief  Task priority for basic_task::PriorityLow 
  */ 
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_LOW
     #define MN_THREAD_CONFIG_CORE_PRIORITY_LOW      1
 #endif
 /**
- * Task priority for basic_task::PriorityNormal 
+ * @brief  Task priority for basic_task::PriorityNormal 
  */
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_NORM
     #define MN_THREAD_CONFIG_CORE_PRIORITY_NORM     2
 #endif
 /**
- * Task priority for basic_task::PriorityHalfCritical 
+ * @brief Task priority for basic_task::PriorityHalfCritical 
  */ 
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT
     #define MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT  (configMAX_PRIORITIES-1)/2  
 #endif
 /**
- * Task priority for basic_task::PriorityUrgent 
+ * @brief Task priority for basic_task::PriorityUrgent 
  */
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_URGENT  
     #define MN_THREAD_CONFIG_CORE_PRIORITY_URGENT   (configMAX_PRIORITIES-2)
 #endif
 /**
- * Task priority for basic_task::PriorityCritical 
+ * @brief Task priority for basic_task::PriorityCritical 
  */ 
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL
     #define MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL (configMAX_PRIORITIES-1)
@@ -261,6 +288,19 @@ Start the config part
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================
  */
+
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+    /// Use for beta configuration, the preview major version
+    #define MN_THREAD_BETA_MAJOR_VERSION 2
+    /// Use for beta configuration, the preview minor version
+    #define MN_THREAD_BETA_MINOR_VERSION 0
+    /// Use for beta configuration, the preview version as string
+    #define MN_THREAD_BETA_VERSION_STRING    "-beta2.0"
+#else 
+    #define MN_THREAD_BETA_VERSION_STRING  
+    #define MN_THREAD_BETA_MAJOR_VERSION 0
+    #define MN_THREAD_BETA_MINOR_VERSION 0  
+#endif // MN_THREAD_CONFIG_PREVIEW_FUTURE
 
 /**
  * Supported the FeeRTOS RECURSIVE_MUTEXES ?

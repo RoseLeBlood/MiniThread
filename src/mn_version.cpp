@@ -44,9 +44,11 @@ libmnVersion::~libmnVersion() { }
 std::string libmnVersion::to_string() const {
 	std::string text = std::string(MN_THREAD_VERSION_STRING);
 
+
 	if(is_beta()) {
 		text += std::string(MN_THREAD_BETA_VERSION_STRING);
-	} 
+	}
+	 
 	text += m_license + m_extras;
 	return text;
 }
