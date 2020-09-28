@@ -18,9 +18,11 @@
 #ifndef _MINLIB_IMEMPOOL_INTERFACE_H_
 #define _MINLIB_IMEMPOOL_INTERFACE_H_
 
-#include "../mn_config.hpp"
+#include "../mn_config_preview.hpp"
 
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+
+#include "../mn_error_preview.hpp"
 
 /**
  * Interface for all mempools in this library

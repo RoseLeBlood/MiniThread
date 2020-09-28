@@ -23,6 +23,14 @@
 
 #include "mn_autolock.hpp"
 
+#define SAFE_DELETE(ob) if(ob != NULL) { delete ob; ob = NULL; }
+
+#define MEMPOOL_SAFE_DELETE(mO) { \
+    if(blockPtr->addr != NULL) { delete blockPtr->addr; blockPtr->addr = NULL; } \
+    blockPtr->dim = 0; \
+    blockPtr->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED; \
+}
+
 static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) {
 
     if (uiItemSize <= uiAlignment) 
@@ -57,7 +65,7 @@ basic_free_list_mempool::basic_free_list_mempool(unsigned int uiItemSize,
 }
 
 int basic_free_list_mempool::create() {
-    if(m_uiAlignment == 0) return -5;
+    if(m_uiAlignment == 0) return ERR_MEMPOOL_BADALIGNMENT;
 
     m_uiItemSize = __calc_item_size(m_uiItemSize, m_uiAlignment);
 
@@ -79,11 +87,11 @@ int basic_free_list_mempool::create() {
         for (int i = 0; i< m_uiElements; ++i) {
             memObject* __memObject = new memObject();
 
-            __memObject->memBlock = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]);
+            __memObject->addr = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]);
             __memObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
             __memObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
-            __memObject->sizeofBlock = m_uiItemSize;
-            __memObject->blockAvaible = 1;
+            __memObject->dim = m_uiItemSize;
+            __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
             m_nMutex.lock();
                 m_lBytePtrList.push_front(__memObject); 
@@ -94,42 +102,75 @@ int basic_free_list_mempool::create() {
 
     return ERR_MEMPOOL_UNKNOW;
 }
-void* basic_free_list_mempool::allocate() {
 
-    m_nMutex.lock();
-        memObject* blockPtr =  m_lBytePtrList.front();
-    m_nMutex.unlock();
 
-    if(blockPtr == NULL) return NULL;
+void basic_free_list_mempool::destroy() {
+    automutx_t lock(m_nMutex);
 
-    blockPtr->blockAvaible = 0;
+    memObject* blockPtr = NULL;
 
-    m_nMutex.lock();
-        m_lBytePtrList.pop_front();
-    m_nMutex.unlock();
+    for (int i = 0; i< m_uiElements; ++i) { 
+        MEMPOOL_SAFE_DELETE( (m_lBytePtrList[i]) );
+    }
+    m_lBytePtrList.clear();
+
+    for (int i = 0; i< m_uiElements; ++i) { 
+        void* obj = m_vMemoryPoolList[i];
+        delete obj;
+    }
+    m_vMemoryPoolList.clear();
+}
+
+int basic_free_list_mempool::set_alignment(uint8_t uiAlignment) {
+    m_uiAlignment = __calc_alignment(uiAlignment);
+    return m_uiAlignment;
+}
+
+basic_free_list_mempool::memObject* basic_free_list_mempool::get_free_block() {
+    memObject* blockPtr = NULL;
+
+    for (int i = 0; i < m_uiElements; i++) {
+        if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE) {
+            blockPtr = m_lBytePtrList[i];
+            break;
+        }
+    }
 
     return blockPtr;
 }
+void* basic_free_list_mempool::allocate() {
+    automutx_t lock(m_nMutex);
+    
+    memObject* blockPtr =  get_free_block(); 
+    if(blockPtr == NULL) return (intptr_t *)0;
+
+    blockPtr->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED;
+    return (intptr_t *)blockPtr->addr;
+}
+
 bool  basic_free_list_mempool::free(void* object) {
-    automutx_t lock(m_nMutex)
+    automutx_t lock(m_nMutex);
 
-    memObject* init = static_cast<memObject*>(object);
+    for (int i = 0; i < m_uiElements; i++) {
+        if(m_lBytePtrList[i]->addr == object) {
+            if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE) return true;
 
-    if(init == NULL) return false;
+            m_lBytePtrList[i]->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
-    if( (init->memGuard[0] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START) && 
-        (init->memGuard[1] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END)  )
-        return false;
-
-    memset(init->memBlock, 0, m_uiItemSize);
-    init->blockAvaible = 1;
-    init->sizeofBlock = m_uiItemSize;
-
-    m_lBytePtrList.push_back(init);
-
-    object = NULL;
-
-    return true;
+            if(m_lBytePtrList[i]->memGuard[0] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START ||
+               m_lBytePtrList[i]->memGuard[1] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END ) {
+                   #if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
+                    printf("[Info] heap memory corrupted - write over the boundary (%d %d)\n", 
+                           *((int*)object), i);
+                    #endif
+                    m_lBytePtrList[i]->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
+                    m_lBytePtrList[i]->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END; 
+                    m_lBytePtrList[i]->dim = m_uiItemSize;                   
+            }
+            return true;
+        }
+    }
+    return false;
 }
 int basic_free_list_mempool::add_memory(unsigned int nElements) {
     automutx_t lock(m_nMutex);
@@ -140,11 +181,11 @@ int basic_free_list_mempool::add_memory(unsigned int nElements) {
     for (int i = 0; i < nElements; i++) {
         memObject* __memObject = new memObject();
 
-        __memObject->memBlock = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]); 
+        __memObject->addr = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]); 
         __memObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
         __memObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
-        __memObject->sizeofBlock = m_uiItemSize;
-        __memObject->blockAvaible = 1;
+        __memObject->dim = m_uiItemSize;
+        __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
         m_lBytePtrList.push_front(__memObject); 
     }
@@ -163,11 +204,11 @@ int basic_free_list_mempool::add_memory(void* preMemory, unsigned int nSize) {
     for (int i = 0; i < nElements; i++) {
         memObject* __memObject = new memObject();
 
-        __memObject->memBlock = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]); 
+        __memObject->addr = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]); 
         __memObject->guardStart = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
         __memObject->guardEnd = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
-        __memObject->sizeofBlock = m_uiItemSize;
-        __memObject->blockAvaible = 1;
+        __memObject->dim = m_uiItemSize;
+        __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
         m_lBytePtrList.push_front(__memObject); 
     }
@@ -184,6 +225,37 @@ int basic_free_list_mempool::get_size() {
 bool basic_free_list_mempool::is_empty() {
     automutx_t lock(m_nMutex);
 
-    return (m_lBytePtrList.size()) == 0;
+    return ( get_free_items() ) == 0;
+}
+
+unsigned int basic_free_list_mempool::get_free_items() {
+    automutx_t lock(m_nMutex);
+
+    unsigned int np = 0;
+
+    for (int i = 0; i < m_uiElements; i++) {
+        if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE)
+            np++;
+    }
+
+    return np;
+}
+unsigned int basic_free_list_mempool::get_used() {
+    return (get_size() - get_free_items());
+}
+basic_free_list_mempool::memObject basic_free_list_mempool::get_mem_object(void* mObject) {
+    automutx_t lock(m_nMutex);
+
+    memObject object = {
+        .raw_memObject = nullptr;
+    };
+
+    for (int i = 0; i < m_uiElements; i++) {
+        if(m_lBytePtrList[i]->addr == mObject) {
+            object = *(m_lBytePtrList[i]);
+            break;
+        }
+    }
+    return object;
 }
 #endif

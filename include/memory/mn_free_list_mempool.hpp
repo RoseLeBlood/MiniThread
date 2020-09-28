@@ -28,14 +28,6 @@
 
 #include "../mn_mutex.hpp"
 
-// Move in the future to mn_config.h
-#define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START   0x6d //109
-#define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END     0xa8 //168 
-
-// Move in the future to mn_error.h
-#define ERR_MEMPOOL_OK                    NO_ERROR
-#define ERR_MEMPOOL_ALREADYINIT           -1
-#define ERR_MEMPOOL_UNKNOW                -2
 /** 
  * A free list mempool, based of a mempool toturial
  * 
@@ -54,16 +46,16 @@ class basic_free_list_mempool : public IMemPool {
                 /**
                  * The real memory
                  */ 
-                char* memBlock; 
+                char* addr; 
                 /**
-                 * The two guard bytes for detect heap memory corruption, ie,  when someone 
+                 * The two guard bytes for detect heap memory corruption, ie, when someone 
                  * writes beyond the boundary via  memcpy or memset functions
                  */ 
                 char[2] memGuard; //0xde 0xad; 
                 /**
                  * The size of the memBlock
                  */ 
-                char sizeofBlock; 
+                char dim; 
                 /**
                  * This byte shall indicate wheteher this block is free or not
                  */ 
@@ -88,7 +80,20 @@ public:
      */
     ~basic_free_list_mempool() = delete;
 
+    /**
+     * Create the mempool
+     * 
+     * @return 'ERR_MEMPOOL_OK' The pool are created,
+     *         'ERR_MEMPOOL_ALREADYINIT' The pool are already created,
+     *         'ERR_MEMPOOL_BADALIGNMENT' Bad alignment, please updatet it, whit set_alignment()
+     *         'ERR_MEMPOOL_UNKNOW', The Mempool can't create, out of memory or other problem
+     */ 
     virtual int create();
+
+    /**
+     * Deleted all items in the Pool 
+     */ 
+    virtual void destroy();
 
     virtual int add_memory(unsigned int nElements);
     virtual int add_memory(void* preMemory, unsigned int nSize);
@@ -104,9 +109,61 @@ public:
      */ 
     virtual bool  free(void* mem);
 
+    /**
+     * Get the stored n elements of objects in list
+     * 
+     * @return The stored n elements of objects in list
+     */ 
     int           get_size();
+
+    /**
+     * Is the mempool empty
+     * 
+     * @return true If the mempool empty, false If not 
+     */ 
     bool          is_empty();
 
+    /**
+     * How many items / blocks are marked free in this pool
+     * 
+     * @return Number of items / blocks are marked free 
+     */ 
+    unsigned int  get_free_items();
+    /**
+     * How many items / bloks are marked used in this pool
+     * 
+     * @return Number of items / blocks are marked used 
+     */ 
+    unsigned int  get_used();
+
+    #if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
+    /**
+     * Get the memObject from allocated memory object 
+     * 
+     * @param The allocated memory object
+     * @return The memObject from allocated memory object
+     * 
+     * @note Return a object with raw_memObject = NULL, when object in list not found
+     */ 
+    memObject     get_mem_object(void* mem);
+    #endif
+
+    /**
+     * Set the alignment, only used befor the mempool sucessfull created 
+     * and get the real used algnment.
+     * 
+     * @param alignment The new used alignment
+     * 
+     * @return The real used algnment, becourse 0 on error, the given algnment is to small 
+     */ 
+    int set_alignment(uint8_t uiAlignment);
+private:
+    /**
+     * Get the next free item / block from the pool
+     * 
+     * @return The next free item / block
+     */ 
+    memObject*    get_free_block();
 private:
     unsigned int              m_uiAlignment
 
@@ -116,6 +173,8 @@ private:
     mutex_t                   m_nMutex;
     bool                      m_bCreated;
 };
+
+using freelist_mempool_t = basic_free_list_mempool;
 #endif
 
 #endif
