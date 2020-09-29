@@ -23,7 +23,7 @@
  * All cunfig properties can override in your sdkconfig.h 
  */ 
 
-#include "sdkconfig.h"
+#include "sdkconfig"
 #include "freertos/FreeRTOS.h"
 
 ///@brief Major Version, the first number
@@ -97,192 +97,225 @@ Start the config part
      */
     #define MN_THREAD_CONFIG_CORE_PRIORITY_IDLE     tskIDLE_PRIORITY
 #endif
-/**
- * @brief  Task priority for basic_task::PriorityLow 
- */ 
+ 
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_LOW
+    /**
+     * @brief  Task priority for basic_task::PriorityLow 
+     */
     #define MN_THREAD_CONFIG_CORE_PRIORITY_LOW      1
 #endif
-/**
- * @brief  Task priority for basic_task::PriorityNormal 
- */
+
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_NORM
+    /**
+     * @brief  Task priority for basic_task::PriorityNormal 
+     */
     #define MN_THREAD_CONFIG_CORE_PRIORITY_NORM     2
 #endif
-/**
- * @brief Task priority for basic_task::PriorityHalfCritical 
- */ 
+
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT
+    /**
+     * @brief Task priority for basic_task::PriorityHalfCritical 
+     */ 
     #define MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT  (configMAX_PRIORITIES-1)/2  
 #endif
-/**
- * @brief Task priority for basic_task::PriorityUrgent 
- */
+
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_URGENT  
+    /**
+     * @brief Task priority for basic_task::PriorityUrgent 
+     */
     #define MN_THREAD_CONFIG_CORE_PRIORITY_URGENT   (configMAX_PRIORITIES-2)
 #endif
-/**
- * @brief Task priority for basic_task::PriorityCritical 
- */ 
+
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL
+    /**
+     * @brief Task priority for basic_task::PriorityCritical 
+     */ 
     #define MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL (configMAX_PRIORITIES-1)
 #endif
 
 
- /**
- * Default lock type using in the thread class 
- * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
- * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
- * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
- * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
- */
 #ifndef MN_THREAD_CONFIG_LOCK_TYPE
+    /**
+     * Default lock type using in the thread class 
+     * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
+     * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
+     * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
+     * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
+     */
     #define MN_THREAD_CONFIG_LOCK_TYPE MN_THREAD_CONFIG_BINARY_SEMAPHORE
 #endif
-/**
- * Condition variable support for this libary
- *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
- * default: MN_THREAD_CONFIG_YES
- */
+
 #ifndef MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT
+    /**
+     * Condition variable support for this libary
+     *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
+     * default: MN_THREAD_CONFIG_YES
+     */
     #define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
 #endif
-/**
- * Foreign support for this libary. When MN_THREAD_CONFIG_YES then 
- * can with the class foreign_thread_t foreign tasks handled
- *  
- *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
- * default: MN_THREAD_CONFIG_YES
- */
+
+
+#ifndef MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES
+    /**
+     * How many message can stored in the basic_message_task queue - default: 5
+     * 
+     * @note for message task support must be Condition variable support enabled 
+     * @see MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT
+     */ 
+    #define MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES   5
+#endif
+
+
 #ifndef MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT
+    /**
+     * Foreign support for this libary. When MN_THREAD_CONFIG_YES then 
+     * can with the class foreign_thread_t foreign tasks handled
+     *  
+     *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
+    * default: MN_THREAD_CONFIG_YES
+    */
     #define MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT MN_THREAD_CONFIG_YES
 #endif
 
-/**
- * Very Importend !!! 
- * Handled the timeout for get_next_job timeout in the work queue 
- * Only in this config medificated
- */ 
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT
+    /**
+     * Very Importend !!! 
+     * Handled the timeout for get_next_job timeout in the work queue 
+     * Only in this config medificated
+     */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT  512
 #endif
-/**
- * How many work items to queue in the workqueue single-threaded
- * default: 8
- */ 
+ 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_MAXITEMS
+    /**
+     * How many work items to queue in the workqueue single-threaded default: 8
+     */
     #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_MAXITEMS      8
 #endif
-/**
- * Stak size for the workqueue single-threaded thread 
- * default: (configMINIMAL_STACK_SIZE * 2) 
- */ 
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE
+    /**
+     * Stak size for the workqueue single-threaded thread 
+     * default: (configMINIMAL_STACK_SIZE * 2) 
+     */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 #endif
-/**
- * Default Priority for the workqueue single-threaded thread 
- * default: basic_thread::PriorityLow 
- */ 
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY
+    /**
+     * Default Priority for the workqueue single-threaded thread 
+     * default: basic_thread::PriorityLow 
+     */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      basic_task::PriorityLow
 #endif
 
 
-/**
- * How many worker threads run in the workqueue multi-threaded
- * default: 4
- */ 
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER
+    /**
+     * How many worker threads run in the workqueue multi-threaded
+     * default: 4
+     */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER         4
 #endif
-/**
- * How many work items to queue in the workqueue multi-threaded
- * default: 16
- */ 
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS
+    /**
+     * How many work items to queue in the workqueue multi-threaded
+     * default: 16
+     */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS      8
 #endif
-/**
- * Stak size for the workqueue multi-threaded for all worked thread 
- * default: (configMINIMAL_STACK_SIZE * 2) 
- */
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE
+    /**
+     * Stak size for the workqueue multi-threaded for all worked thread 
+     * default: (configMINIMAL_STACK_SIZE * 2) 
+     */
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 #endif
-/**
- * Default Priority for the workqueue multi-threaded for all worked thread 
- * default: basic_thread::PriorityLow
- */
+
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY
+    /**
+     * Default Priority for the workqueue multi-threaded for all worked thread 
+     * default: basic_thread::PriorityLow
+     */
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      basic_task::PriorityLow
 #endif
 
 
-/**
- * The default initial timeout for semaphore lock (counting semaphore and binary semaphore)
- * Can override
- * default  (unsigned int) 0xffffffffUL   
- */ 
+
 #ifndef MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT
+    /**
+     * The default initial timeout for semaphore lock (counting semaphore and binary semaphore)
+     * Can override
+     * default  (unsigned int) 0xffffffffUL   
+     */ 
     #define MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT  (unsigned int) 0xffffffffUL   
 #endif          
 
 
-/**
- * Default min initial count for counting semaphore, can override in constuctor
- * default  1  
- */ 
+
 #ifndef MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT
+    /**
+     * Default min initial count for counting semaphore, can override in constuctor default  1  
+     */ 
     #define MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT       1  
 #endif
-/**
- * Default max initial count for counting semaphore, can override in constuctor
- * default  0x7fffffff  
- */  
+ 
 #ifndef MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT
+    /**
+     * Default max initial count for counting semaphore, can override in constuctor
+     * default  0x7fffffff  
+     */ 
     #define MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT       0x7fffffff
 #endif
-/**
- * The default initial timeout for mutex lock (recursive and normal)
- * Can override
- * default  (unsigned int) 0xffffffffUL)   
- */  
+ 
 #ifndef MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT
+    /**
+     * The default initial timeout for mutex lock (recursive and normal)
+     * Can override
+     * default  (unsigned int) 0xffffffffUL)   
+     */ 
     #define MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT      (unsigned int) 0xffffffffUL 
 #endif 
-/**
- * The default initial timeout for all queues 
- * Can override
- * default  (unsigned int) 0xffffffffUL)   
- */ 
+
 #ifndef MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT
+    /**
+     * The default initial timeout for all queues 
+     * Can override
+     * default  (unsigned int) 0xffffffffUL)   
+     */ 
     #define MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT      (unsigned int) 0xffffffffUL  
 #endif
-/**
- * The default initial timeout for coroutine (recursive and normal)
- * Can override
- * default  (unsigned int) 0xffffffffUL)   
- */ 
+
 #ifndef MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT  
+    /**
+     * The default initial timeout for coroutine (recursive and normal)
+     * Can override
+     * default  (unsigned int) 0xffffffffUL)   
+     */ 
     #define MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT  (unsigned int) 0xffffffffUL 
 #endif
 
-/**
- * Whenn MN_THREAD_CONFIG_YES then activate develop unsafe future for next major version 
- * not for production use
- * 
- * default  MN_THREAD_CONFIG_NO  
- */
+
 #ifndef MN_THREAD_CONFIG_PREVIEW_FUTURE
+    /**
+     * Whenn MN_THREAD_CONFIG_YES then activate develop unsafe future for next major version 
+     * not for production use
+     * 
+     * default  MN_THREAD_CONFIG_NO  
+     */
     #define MN_THREAD_CONFIG_PREVIEW_FUTURE              MN_THREAD_CONFIG_YES
 #endif
 
-/**
- * When MN_THREAD_CONFIG_YES then cheaking for recursive mutex
- * and when FreeRTOS recursive mutex supported then can you use thes
- */ 
+
 #ifndef MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING
+    /**
+     * When MN_THREAD_CONFIG_YES then cheaking for recursive mutex
+     * and when FreeRTOS recursive mutex supported then can you use thes
+     */ 
     #define MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING     MN_THREAD_CONFIG_YES   
 #endif
 /** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
@@ -308,14 +341,14 @@ Start the config part
  */
 #if (configUSE_RECURSIVE_MUTEXES == 1) 
     #if (MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING == MN_THREAD_CONFIG_YES)
-        /**
-         * Enabled Build with RECURSIVE_MUTEXES support
-         */ 
+            /**
+             * Enabled Build with RECURSIVE_MUTEXES support
+             */ 
             #define MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_YES
         #else 
-        /**
-         * Diabled Build with RECURSIVE_MUTEXES support
-         */ 
+            /**
+             * Diabled Build with RECURSIVE_MUTEXES support
+             */ 
             #define MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_NO
             #warning ("recursive mutex are not supported")
     #endif

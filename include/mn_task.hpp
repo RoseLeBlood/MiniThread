@@ -47,19 +47,26 @@ public:
     PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
   };
 public:
-  basic_task() { }
+   /**
+   * Basic Constructor for this task.
+   * The priority is PriorityNormal and use 2048 for the stack size
+   */
+  basic_task() 
+    : basic_task(" ", PriorityNormal, 2048) { }
 
   /**
-   *  Constructor for this task.
+   * Constructor for this task.
    *
-   *  @param strName Name of the Task. Only useful for debugging.
-   *  @param uiPriority FreeRTOS priority of this Task.
-   *  @param usStackDepth Number of "words" allocated for the Task stack. default configMINIMAL_STACK_SIZE
+   * @param strName Name of the Task. Only useful for debugging.
+   * @param uiPriority FreeRTOS priority of this Task.
+   * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
    */
-  explicit basic_task(char const* strName, basic_task::priority uiPriority,
-       unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
+  explicit basic_task(char const* strName, basic_task::priority uiPriority = PriorityNormal,
+       unsigned short  usStackDepth = 2048);
   
-  
+  basic_task(const basic_task&) = delete;
+  basic_task& operator=(const basic_task&) = delete;
+
   /**
    *  Our destructor. Delete the task 
    */
@@ -84,7 +91,7 @@ public:
    * LockObjets, the task is not created, 'ERR_TASK_ALREADYRUNNING' the Task is allready running and
    * 'ERR_TASK_CANTSTARTTHREAD' can't create the task
    */
-  virtual int                   create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
+  virtual int           create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
   /**
    * Destroy and delete the task and call the function 'on_kill'

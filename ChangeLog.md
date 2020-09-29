@@ -5,6 +5,9 @@
   * free_list_memory pool and mempool
   * Shared Object 
   * Ringbuffer
+* Add class to extends the basic_convar_task with a message queue support - basic_message_task
+  * Add new config item, to handle the maximal messages in the message queue (MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES)
+  * For message queue support must be conditional variable support marked as enable
   
   
 ## Version 1.9.0 September 2020: (stable 2.0beta)
