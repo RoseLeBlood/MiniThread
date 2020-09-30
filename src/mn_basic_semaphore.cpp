@@ -26,11 +26,16 @@
 
 #include "esp_attr.h"
 
-
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_semaphore::basic_semaphore() : m_pSpinlock(NULL) {
 
 }
 
+//-----------------------------------
+//  lock
+//-----------------------------------
 int basic_semaphore::lock(unsigned int timeout) {
   BaseType_t success;
 
@@ -47,6 +52,10 @@ int basic_semaphore::lock(unsigned int timeout) {
    }
    return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_LOCK;
 }
+
+//-----------------------------------
+//  unlock
+//-----------------------------------
 int basic_semaphore::unlock() {
   BaseType_t success;
 
@@ -63,10 +72,17 @@ int basic_semaphore::unlock() {
   }
   return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_UNLOCK;
 }
+
+//-----------------------------------
+//  try_lock
+//-----------------------------------
 bool basic_semaphore::try_lock() {
   return (lock( 0 ) == ERR_SPINLOCK_OK);
 }
 
+//-----------------------------------
+//  is_initialized
+//-----------------------------------
 bool basic_semaphore::is_initialized() const { 
   return m_pSpinlock != NULL;
 }

@@ -18,7 +18,9 @@
 
 #include "mn_critical.hpp"
 
-
+//-----------------------------------
+//  enter
+//-----------------------------------
 void basic_critical::enter(portMUX_TYPE h) { 
     if (xPortInIsrContext()) 
         portENTER_CRITICAL_ISR(&h);
@@ -27,6 +29,9 @@ void basic_critical::enter(portMUX_TYPE h) {
 
 }
 
+//-----------------------------------
+//  exit
+//-----------------------------------
 void basic_critical::exit(portMUX_TYPE h) { 
     if (xPortInIsrContext()) 
         portEXIT_CRITICAL_ISR(&h);
@@ -34,21 +39,37 @@ void basic_critical::exit(portMUX_TYPE h) {
         vTaskExitCritical(&h);
 }
 
+//-----------------------------------
+//  disable_interrupts
+//-----------------------------------
 void basic_critical::disable_interrupts() {
     taskDISABLE_INTERRUPTS();
 }
+
+//-----------------------------------
+//  enable_interrupts
+//-----------------------------------
 void basic_critical::enable_interrupts() {
     taskENABLE_INTERRUPTS();
 }
 
+//-----------------------------------
+//  stop_scheduler
+//-----------------------------------
 void basic_critical::stop_scheduler() {
     vTaskSuspendAll();
 }
+
+//-----------------------------------
+//  resume_scheduler
+//-----------------------------------
 void basic_critical::resume_scheduler() {
     xTaskResumeAll();
 }
 
-
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_critical_lock::basic_critical_lock() {
     m_pHandle = portMUX_INITIALIZER_UNLOCKED;
 }

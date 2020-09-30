@@ -21,10 +21,16 @@
 #include "mn_error.hpp"
 #include "mn_timer.hpp"
 
+//-----------------------------------
+//  constructor
+//-----------------------------------
 basic_timer::basic_timer(const char * strName, unsigned int uiPeriod, bool bIsOneShot)
    : m_bIsOneShot(bIsOneShot), m_uiPeriod(uiPeriod), m_strName(strName), m_pHandle(NULL)  { }
 
 
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_timer::create() {
     if(m_pHandle != 0) return ERR_TIMER_ALREADYINIT;
 
@@ -40,6 +46,10 @@ int basic_timer::create() {
 
     return ERR_TIMER_OK;
 }
+
+//-----------------------------------
+//  destroy
+//-----------------------------------
 int basic_timer::destroy(unsigned int timeout) {
     if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
 
@@ -48,6 +58,9 @@ int basic_timer::destroy(unsigned int timeout) {
     return ERR_TIMER_OK;
 }
 
+//-----------------------------------
+//  active
+//-----------------------------------
 int basic_timer::active(unsigned int timeout) {
     if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
     
@@ -65,6 +78,9 @@ int basic_timer::active(unsigned int timeout) {
   return success == pdTRUE ? ERR_TIMER_OK : ERR_TIMER_AKTIVATE;
 }
 
+//-----------------------------------
+//  inactive
+//-----------------------------------
 int basic_timer::inactive(unsigned int timeout) {
     if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
     
@@ -82,6 +98,9 @@ int basic_timer::inactive(unsigned int timeout) {
   return success == pdTRUE ? ERR_TIMER_OK : ERR_TIMER_INAKTIVATE;
 }
 
+//-----------------------------------
+//  reset
+//-----------------------------------
 int basic_timer::reset(unsigned int timeout) {
     if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
     
@@ -99,6 +118,9 @@ int basic_timer::reset(unsigned int timeout) {
   return success == pdTRUE ? ERR_TIMER_OK : ERR_TIMER_RESET;
 }
 
+//-----------------------------------
+//  set_period
+//-----------------------------------
 bool basic_timer::set_period(unsigned int uiNewPeriod, unsigned int timeout) {
     if (m_pHandle == NULL) return false;
 
@@ -116,17 +138,26 @@ bool basic_timer::set_period(unsigned int uiNewPeriod, unsigned int timeout) {
   return success == pdTRUE ;
 }
 
+//-----------------------------------
+//  runtimerstub
+//-----------------------------------
 void basic_timer::runtimerstub(void* xTimer)
 {
     basic_timer *timer = static_cast<basic_timer *>(pvTimerGetTimerID(xTimer));
     timer->on_timer();
 }
 
+//-----------------------------------
+//  set_id
+//-----------------------------------
 void basic_timer::set_id(int nId) {
     vTimerSetTimerID(m_pHandle, &nId);
     m_iTimerID = ( int32_t )pvTimerGetTimerID(m_pHandle);
 }
 
+//-----------------------------------
+//  is_running
+//-----------------------------------
 bool basic_timer::is_running() {
     return (xTimerIsTimerActive( m_pHandle ) == pdTRUE );
 }

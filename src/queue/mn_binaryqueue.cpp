@@ -21,6 +21,9 @@
 #include "queue/mn_binaryqueue.hpp"
 #include "mn_error.hpp"
 
+//-----------------------------------
+//  enqueue
+//-----------------------------------
 int basic_binaryqueue::enqueue(void *item, unsigned int timeout) {
     (void)timeout;
 

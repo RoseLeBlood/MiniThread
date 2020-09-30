@@ -20,8 +20,14 @@
 
 #include <stdio.h>
 
+//-----------------------------------
+//  m_pInstance
+//-----------------------------------
 libmnVersion* libmnVersion::m_pInstance = NULL;
 
+//-----------------------------------
+//  constructor
+//-----------------------------------
 libmnVersion::libmnVersion()
 {
 	m_major = MN_THREAD_MAJOR_VERSION;
@@ -39,8 +45,14 @@ libmnVersion::libmnVersion()
 #endif
 }
 
+//-----------------------------------
+//  deconstructor
+//-----------------------------------
 libmnVersion::~libmnVersion() { }
 
+//-----------------------------------
+//  to_string
+//-----------------------------------
 std::string libmnVersion::to_string() const {
 	std::string text = std::string(MN_THREAD_VERSION_STRING);
 
@@ -53,6 +65,9 @@ std::string libmnVersion::to_string() const {
 	return text;
 }
 
+//-----------------------------------
+//  is_beta
+//-----------------------------------
 bool libmnVersion::is_beta() {
 	#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 		return true;

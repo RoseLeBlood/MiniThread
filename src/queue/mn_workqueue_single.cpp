@@ -18,6 +18,9 @@
 #include "mn_config.hpp"
 #include "queue/mn_workqueue_single.hpp"
 
+//-----------------------------------
+//  constructor
+//-----------------------------------
 basic_work_queue_single::basic_work_queue_single( basic_task::priority uiPriority,
                                                   uint16_t usStackDepth, uint8_t uiMaxWorkItems) 
 
@@ -26,6 +29,9 @@ basic_work_queue_single::basic_work_queue_single( basic_task::priority uiPriorit
     m_pWorker = new work_queue_task("single_workqueue_thread", uiPriority, usStackDepth, this);
 }
 
+//-----------------------------------
+//  create_engine
+//-----------------------------------
 int basic_work_queue_single::create_engine(int iCore) {
     automutx_t lock(m_ThreadStatus);
 
@@ -38,6 +44,9 @@ int basic_work_queue_single::create_engine(int iCore) {
 
 }
 
+//-----------------------------------
+//  destroy_engine
+//-----------------------------------
 void basic_work_queue_single::destroy_engine() {
     m_pWorker->kill();
 }

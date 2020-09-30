@@ -25,8 +25,14 @@
 
 #include "esp_attr.h"
 
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_mutex::basic_mutex() : basic_semaphore() { }
 
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_mutex::create() { 
   if (m_pSpinlock != NULL)
     return ERR_MUTEX_ALREADYINIT;
@@ -40,6 +46,10 @@ int basic_mutex::create() {
 
   return ERR_MUTEX_CANTCREATEMUTEX;
 }
+
+//-----------------------------------
+//  destroy
+//-----------------------------------
 int basic_mutex::destroy() {
   if (m_pSpinlock == NULL)
     return ERR_MUTEX_NOTINIT;
@@ -48,6 +58,10 @@ int basic_mutex::destroy() {
 
   return ERR_MUTEX_OK;
 }
+
+//-----------------------------------
+//  lock
+//-----------------------------------
 int basic_mutex::lock(unsigned int timeout) {
   BaseType_t success;
 
@@ -65,6 +79,10 @@ int basic_mutex::lock(unsigned int timeout) {
 
   return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_LOCK;
 }
+
+//-----------------------------------
+//  unlock
+//-----------------------------------
 int basic_mutex::unlock() {
   BaseType_t success;
 
@@ -81,6 +99,10 @@ int basic_mutex::unlock() {
   }
   return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_UNLOCK;
 }
+
+//-----------------------------------
+//  try_lock
+//-----------------------------------
 bool basic_mutex::try_lock() {
   return (lock(0) == ERR_MUTEX_OK);
 }

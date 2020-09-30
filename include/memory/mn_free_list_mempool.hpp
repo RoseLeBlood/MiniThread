@@ -67,18 +67,18 @@ class basic_free_list_mempool : public IMemPool {
 public:
     /**
      * 
-     * @param nItemSize The size of a 
+     * @param nItemSize The maximum size of the stored item
+     * @param nElements The maximum number of items stored in the pool
+     * @param uiAlignment Power of 2 value denoting on which address boundary the memory will be aligned to.
      */ 
     basic_free_list_mempool(unsigned int nItemSize, unsigned int nElements, unsigned int uiAlignment);
-    basic_free_list_mempool(const basic_free_list_mempool&) = delete;
     
     /**
-     *  To correctly delete a Memory Pool, we'd have to guarantee that
-     *  all allocations had been returned to us. We side step this issue
-     *  as well as all the associated overhead with supporting this by
-     *  not allowing destructors.
-     */
-    ~basic_free_list_mempool() = delete;
+     * Our Destrutor
+     */ 
+    ~basic_free_list_mempool()  {
+        destroy();
+    }
 
     /**
      * Create the mempool
@@ -91,7 +91,7 @@ public:
     virtual int create();
 
     /**
-     * Deleted all items in the Pool 
+     * Deleted all memory in the pool
      */ 
     virtual void destroy();
 
@@ -157,6 +157,9 @@ public:
      * @return The real used algnment, becourse 0 on error, the given algnment is to small 
      */ 
     int set_alignment(uint8_t uiAlignment);
+
+    basic_free_list_mempool(const basic_free_list_mempool&) = delete;
+    basic_free_list_mempool& operator=(const basic_free_list_mempool&) = delete;
 private:
     /**
      * Get the next free item / block from the pool

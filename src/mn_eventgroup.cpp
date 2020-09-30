@@ -18,25 +18,42 @@
 
 #include "mn_eventgroup.hpp"
 
-void basic_event_group::destroy() {
-    
-}
+
+
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_event_group::basic_event_group() {
     m_pHandle = xEventGroupCreate();
 }
+
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_event_group::basic_event_group(EventGroupHandle_t handle) 
     : m_pHandle(handle) { }
 
+//-----------------------------------
+//  deconstrutor
+//-----------------------------------
 basic_event_group::~basic_event_group() {
     if(m_pHandle != NULL) {
         vEventGroupDelete(m_pHandle);
     }
 }
+
+//-----------------------------------
+//  sync
+//-----------------------------------
 EventBits_t basic_event_group::sync( const EventBits_t bitstoset, const EventBits_t bitstowaitfor,
                                      TickType_t timeout) {
     
     return xEventGroupSync( m_pHandle, bitstoset, bitstowaitfor, timeout);
 }
+
+//-----------------------------------
+//  wait
+//-----------------------------------
 EventBits_t basic_event_group::wait( const EventBits_t uxBitsToWaitFor,
                                      bool xClearOnExit, bool xWaitForAllBits, uint32_t timeout) {
     
@@ -46,6 +63,10 @@ EventBits_t basic_event_group::wait( const EventBits_t uxBitsToWaitFor,
                                 xWaitForAllBits ? pdTRUE : pdFALSE,
                                 timeout);
 }
+
+//-----------------------------------
+//  clear
+//-----------------------------------
 EventBits_t basic_event_group::clear(const EventBits_t uxBitsToClear) {
     if(xPortInIsrContext()) {
         return xEventGroupClearBitsFromISR(m_pHandle, uxBitsToClear);
@@ -53,6 +74,10 @@ EventBits_t basic_event_group::clear(const EventBits_t uxBitsToClear) {
         return xEventGroupClearBits(m_pHandle, uxBitsToClear);
     }
 }
+
+//-----------------------------------
+//  get
+//-----------------------------------
 EventBits_t basic_event_group::get() {
     if(xPortInIsrContext()) {
         return xEventGroupGetBitsFromISR(m_pHandle);
@@ -60,6 +85,10 @@ EventBits_t basic_event_group::get() {
         return xEventGroupGetBits(m_pHandle);
     }
 }
+
+//-----------------------------------
+//  set
+//-----------------------------------
 EventBits_t basic_event_group::set(const EventBits_t uxBitsToSet) {
     EventBits_t success;
 

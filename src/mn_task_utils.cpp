@@ -20,6 +20,9 @@
 
 #include "mn_task_utils.hpp"
 
+//-----------------------------------
+//  notify
+//-----------------------------------
 bool task_utils::notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils::action action) {
     BaseType_t success;
 
@@ -43,7 +46,9 @@ bool task_utils::notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils:
   return success == pdTRUE;
 }
 
-
+//-----------------------------------
+//  notify_unlock
+//-----------------------------------
 bool task_utils::notify_unlock(basic_task* pTaskToNotify) {
     BaseType_t success = pdTRUE;
 
@@ -62,10 +67,17 @@ bool task_utils::notify_unlock(basic_task* pTaskToNotify) {
   return success == pdTRUE;
 }
 
+//-----------------------------------
+//  notify_lock
+//-----------------------------------
 uint32_t task_utils::notify_lock(bool bClearCountOnExit, TickType_t xTicksToWait) {
      return ulTaskNotifyTake( bClearCountOnExit ? pdTRUE : pdFALSE, 
                               xTicksToWait );
 }
+
+//-----------------------------------
+//  notify_wait
+//-----------------------------------
 bool task_utils::notify_wait(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit,
                  uint32_t *pulNotificationValue, TickType_t xTicksToWait ) {
 

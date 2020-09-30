@@ -30,12 +30,16 @@
 
 #include "mn_recursive_mutex.hpp"
 
-
+//-----------------------------------
+//  construtor
+//-----------------------------------
 recursive_mutex::recursive_mutex() : basic_mutex() {
 
 }
 
-
+//-----------------------------------
+//  create
+//-----------------------------------
 int recursive_mutex::create()  {
     if (m_pSpinlock != NULL)
         return ERR_MUTEX_ALREADYINIT;
@@ -50,6 +54,10 @@ int recursive_mutex::create()  {
         return ERR_MUTEX_CANTCREATEMUTEX;
     }
 }
+
+//-----------------------------------
+//  lock
+//-----------------------------------
 int recursive_mutex::lock(unsigned int timeout) {
     BaseType_t success;
 
@@ -60,6 +68,10 @@ int recursive_mutex::lock(unsigned int timeout) {
 
     return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_LOCK;
 }
+
+//-----------------------------------
+//  unlock
+//-----------------------------------
 int recursive_mutex::unlock() {
     BaseType_t success;
 

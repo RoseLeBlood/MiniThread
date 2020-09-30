@@ -18,9 +18,10 @@
 #include "miniThread.hpp"
 #include <stdio.h>
 
+//-----------------------------------
+//  mn_panic
+//-----------------------------------
 void mn_panic() {
   printf("MiniThread-PANIC!!!");
-  for(;;) {
-
-  }
+  for(;;) { }
 }

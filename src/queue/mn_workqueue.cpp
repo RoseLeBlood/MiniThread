@@ -23,6 +23,9 @@
 
 #include "queue/mn_workqueue.hpp"
 
+//-----------------------------------
+//  constructor
+//-----------------------------------
 basic_work_queue::basic_work_queue(basic_task::priority uiPriority,
                     uint16_t usStackDepth,
                     uint8_t uiMaxWorkItems) {
@@ -38,10 +41,16 @@ basic_work_queue::basic_work_queue(basic_task::priority uiPriority,
     
 }
 
+//-----------------------------------
+//  deconstructor
+//-----------------------------------
 basic_work_queue::~basic_work_queue() {
     destroy();
 }
 
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_work_queue::create(int iCore) {
     if(!m_bMutexInit) {
         if(m_ThreadStatus.create() != ERR_MUTEX_OK)
@@ -68,6 +77,9 @@ int basic_work_queue::create(int iCore) {
     return ERR_WORKQUEUE_OK;
 }
 
+//-----------------------------------
+//  destroy
+//-----------------------------------
 void basic_work_queue::destroy() {
     m_ThreadStatus.lock();
     m_bRunning = false;
@@ -83,6 +95,9 @@ void basic_work_queue::destroy() {
     }
 }
 
+//-----------------------------------
+//  queue
+//-----------------------------------
 int basic_work_queue::queue(work_queue_item_t *work, unsigned int timeout) {
     automutx_t lock(m_ThreadJob);
 
@@ -91,6 +106,9 @@ int basic_work_queue::queue(work_queue_item_t *work, unsigned int timeout) {
     return ret == 0 ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_ADD;
 }
 
+//-----------------------------------
+//  get_next_item
+//-----------------------------------
 work_queue_item* basic_work_queue::get_next_item(unsigned int timeout) {
     automutx_t lock(m_ThreadJob);
 
@@ -103,16 +121,27 @@ work_queue_item* basic_work_queue::get_next_item(unsigned int timeout) {
     return job;
 }
 
+//-----------------------------------
+//  get_num_items_worked
+//-----------------------------------
 uint8_t basic_work_queue::get_num_items_worked() { 
     automutx_t lock(m_ThreadStatus);
 
     return m_uiNumWorks; 
 }
+
+//-----------------------------------
+//  get_num_items_error
+//-----------------------------------
 uint8_t basic_work_queue::get_num_items_error() { 
     automutx_t lock(m_ThreadStatus);
 
     return m_uiErrorsNumWorks;
 }
+
+//-----------------------------------
+//  is_ready
+//-----------------------------------
 bool basic_work_queue::is_ready() {
     automutx_t lock(m_ThreadStatus);
 

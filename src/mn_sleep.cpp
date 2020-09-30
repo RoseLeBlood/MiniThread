@@ -31,17 +31,25 @@
 #include "esp_partition.h"
 #include <sys/time.h>
 
-
-
+//-----------------------------------
+//  mn_sleep
+//-----------------------------------
 unsigned mn_sleep(unsigned int secs) {
 	vTaskDelay( (secs * 1000) / ((TickType_t) 1000 / configTICK_RATE_HZ));
 	return 0;
 }
+
+//-----------------------------------
+//  mn_usleep
+//-----------------------------------
 int mn_usleep(useconds_t usec) {
 	vTaskDelay(usec / ((TickType_t) 1000000 / configTICK_RATE_HZ));
 	return 0; 
 }
 
+//-----------------------------------
+//  mn_nsleep
+//-----------------------------------
 int IRAM_ATTR mn_nsleep(const struct timespec *req, struct timespec *rem) {
 	struct timeval start, end;
 

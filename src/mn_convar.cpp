@@ -21,16 +21,26 @@
 #include "mn_convar.hpp"
 #include "mn_convar_task.hpp"
 
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_condition_variable::basic_condition_variable() 
     : m_waitList() {
     m_mutex.create();
 }
 
+//-----------------------------------
+//  add_list
+//-----------------------------------
 void basic_condition_variable::add_list(basic_convar_task *thread) {
     automutx_t autolock(m_mutex);
 
     m_waitList.push_back(thread);
 }
+
+//-----------------------------------
+//  signal
+//-----------------------------------
 void basic_condition_variable::signal(bool with_child_thread) {
     automutx_t autolock(m_mutex);
 
@@ -44,6 +54,10 @@ void basic_condition_variable::signal(bool with_child_thread) {
             thr->signal();
     }
 }
+
+//-----------------------------------
+//  broadcast
+//-----------------------------------
 void basic_condition_variable::broadcast(bool with_child_thread) {
     automutx_t autolock(m_mutex);
 

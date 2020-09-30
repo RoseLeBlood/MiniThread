@@ -20,11 +20,17 @@
 
 #include "mn_counting_semaphore.hpp"
 
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount) 
   : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
     
 }
 
+//-----------------------------------
+//  destroy
+//-----------------------------------
 int basic_counting_semaphore::destroy() {
   vSemaphoreDelete(m_pSpinlock);
   m_pSpinlock = NULL;
@@ -32,6 +38,9 @@ int basic_counting_semaphore::destroy() {
   return ERR_SPINLOCK_OK;
 }
 
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_counting_semaphore::create() {
   if (m_pSpinlock != NULL)
     return ERR_SPINLOCK_ALREADYINIT;
@@ -52,6 +61,9 @@ int basic_counting_semaphore::create() {
   return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }
 
+//-----------------------------------
+//  get_count
+//-----------------------------------
 int basic_counting_semaphore::get_count() const {
    return uxQueueMessagesWaiting(m_pSpinlock);
 }

@@ -75,7 +75,7 @@ public:
      * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
      */
     explicit basic_message_task(char const* strName, basic_task::priority uiPriority,
-       unsigned short  usStackDepth = configMINIMAL_STACK_SIZE);
+       unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
     /**
      * Add a pre-created task message to the task queue

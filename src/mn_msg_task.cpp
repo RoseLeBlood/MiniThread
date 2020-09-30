@@ -20,6 +20,9 @@
 
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 
+//-----------------------------------
+//  basic_message_task
+//-----------------------------------
 basic_message_task::basic_message_task(char const* strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth)
     : basic_convar_task(strName, uiPriority, usStackDepth),  
@@ -31,12 +34,18 @@ basic_message_task::basic_message_task(char const* strName, basic_task::priority
         m_ltMessageQueueLock.create();
 }
 
+//-----------------------------------
+//  post_msg
+//-----------------------------------
 void basic_message_task::post_msg(task_message* msg, unsigned int timeout) {
     autolock_t lock(m_ltMessageQueueLock);
     m_qeMessageQueue.enqueue(msg, timeout);
     m_cvMessage.signal(false);
 }
 
+//-----------------------------------
+//  on_task
+//-----------------------------------
 void* basic_message_task::on_task() {
     bool m_bRunning = true;
     task_message *msg;

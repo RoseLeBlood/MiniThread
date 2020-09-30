@@ -18,6 +18,9 @@
 #include "mn_config.hpp"
 #include "queue/mn_workqueue_multi.hpp"
 
+//-----------------------------------
+//  constructor
+//-----------------------------------
 basic_work_queue_multi::basic_work_queue_multi( basic_task::priority uiPriority,
                 uint16_t usStackDepth, uint8_t uiMaxWorkItems, uint8_t uiMaxWorkers) 
 
@@ -39,6 +42,10 @@ basic_work_queue_multi::basic_work_queue_multi( basic_task::priority uiPriority,
             m_Workers.push_back(pWorker);  
     }
 }
+
+//-----------------------------------
+//  create_engine
+//-----------------------------------
 int basic_work_queue_multi::create_engine(int iCore) {
     automutx_t lock(m_ThreadStatus);
 
@@ -70,6 +77,9 @@ int basic_work_queue_multi::create_engine(int iCore) {
     return ( m_uiMaxWorkers == get_num_worker() ) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_WARNING;
 }
 
+//-----------------------------------
+//  destroy_engine
+//-----------------------------------
 void basic_work_queue_multi::destroy_engine() {
     for(int i = 0; i < get_num_worker(); i++) {
         m_Workers[i]->kill();
@@ -78,12 +88,23 @@ void basic_work_queue_multi::destroy_engine() {
     
 }
 
+//-----------------------------------
+//  get_num_worker
+//-----------------------------------
 uint8_t basic_work_queue_multi::get_num_worker() const  {
    return m_Workers.size();
 }
+
+//-----------------------------------
+//  get_num_max_worker
+//-----------------------------------
 uint8_t basic_work_queue_multi::get_num_max_worker() const   {
     return m_uiMaxWorkers;
 }
+
+//-----------------------------------
+//  workers
+//-----------------------------------
 std::vector<work_queue_task*>& basic_work_queue_multi::workers() {
     return m_Workers;
 }

@@ -21,6 +21,9 @@
 #include "queue/mn_deque.hpp"
 #include "mn_error.hpp"
 
+//-----------------------------------
+//  enqueue_front
+//-----------------------------------
 int basic_deque::enqueue_front(void* item, unsigned int timeout) {
     if(m_pHandle == NULL) return ERR_QUEUE_NOTCREATED;
 

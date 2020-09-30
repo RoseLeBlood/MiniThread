@@ -26,6 +26,9 @@
 #include "sdkconfig"
 #include "freertos/FreeRTOS.h"
 
+//Start helper section - do not edit!
+//==================================
+
 ///@brief Major Version, the first number
 #define MN_THREAD_MAJOR_VERSION 1
 /// @brief Minor Version, the 2. number
@@ -79,9 +82,8 @@
  */ 
 #define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO   
 
-/*
-Start the config part
-*/
+//Start Config section
+//==================================
 
 #ifndef configMAX_PRIORITIES 
     /**
@@ -136,11 +138,11 @@ Start the config part
 
 #ifndef MN_THREAD_CONFIG_LOCK_TYPE
     /**
-     * Default lock type using in the thread class 
+     * @note default: lock type using in the thread class 
      * MN_THREAD_CONFIG_MUTEX:      using the mutex as default lock type
      * MN_THREAD_CONFIG_BINARY_SEMAPHORE using the binary semaphore as default lock type
      * MN_THREAD_CONFIG_COUNTING_SEMAPHORE: using the counting semaphore as default lock type
-     * default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
+     * @note default: MN_THREAD_CONFIG_BINARY_SEMAPHORE 
      */
     #define MN_THREAD_CONFIG_LOCK_TYPE MN_THREAD_CONFIG_BINARY_SEMAPHORE
 #endif
@@ -149,11 +151,20 @@ Start the config part
     /**
      * Condition variable support for this libary
      *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
-     * default: MN_THREAD_CONFIG_YES
+     * @note default: MN_THREAD_CONFIG_YES
      */
     #define MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT  MN_THREAD_CONFIG_YES
 #endif
 
+
+#ifndef MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
+    /**
+     * The minimal stack size for a mn task
+     * @note default: (configMINIMAL_STACK_SIZE + 512), 
+     * without apptrace 1280 and with 2560
+     */ 
+    #define MN_THREAD_CONFIG_MINIMAL_STACK_SIZE		(configMINIMAL_STACK_SIZE + 512)
+#endif   
 
 #ifndef MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES
     /**
@@ -172,7 +183,7 @@ Start the config part
      * can with the class foreign_thread_t foreign tasks handled
      *  
      *'MN_THREAD_CONFIG_YES' or 'MN_THREAD_CONFIG_NO' 
-    * default: MN_THREAD_CONFIG_YES
+    * @note default: MN_THREAD_CONFIG_YES
     */
     #define MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT MN_THREAD_CONFIG_YES
 #endif
@@ -197,15 +208,15 @@ Start the config part
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE
     /**
      * Stak size for the workqueue single-threaded thread 
-     * default: (configMINIMAL_STACK_SIZE * 2) 
+     * @note default: (configMINIMAL_STACK_SIZE * 2) 
      */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 #endif
 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY
     /**
-     * Default Priority for the workqueue single-threaded thread 
-     * default: basic_thread::PriorityLow 
+     * @note default: Priority for the workqueue single-threaded thread 
+     * @note default: basic_thread::PriorityLow 
      */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      basic_task::PriorityLow
 #endif
@@ -215,7 +226,7 @@ Start the config part
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER
     /**
      * How many worker threads run in the workqueue multi-threaded
-     * default: 4
+     * @note default: 4
      */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER         4
 #endif
@@ -223,7 +234,7 @@ Start the config part
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS
     /**
      * How many work items to queue in the workqueue multi-threaded
-     * default: 16
+     * @note default: 16
      */ 
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_MAXITEMS      8
 #endif
@@ -231,15 +242,15 @@ Start the config part
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE
     /**
      * Stak size for the workqueue multi-threaded for all worked thread 
-     * default: (configMINIMAL_STACK_SIZE * 2) 
+     * @note default: (configMINIMAL_STACK_SIZE * 2) 
      */
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
 #endif
 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY
     /**
-     * Default Priority for the workqueue multi-threaded for all worked thread 
-     * default: basic_thread::PriorityLow
+     * @note default: Priority for the workqueue multi-threaded for all worked thread 
+     * @note default: basic_thread::PriorityLow
      */
     #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      basic_task::PriorityLow
 #endif
@@ -250,7 +261,7 @@ Start the config part
     /**
      * The default initial timeout for semaphore lock (counting semaphore and binary semaphore)
      * Can override
-     * default  (unsigned int) 0xffffffffUL   
+     * @note default:  (unsigned int) 0xffffffffUL   
      */ 
     #define MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT  (unsigned int) 0xffffffffUL   
 #endif          
@@ -259,15 +270,15 @@ Start the config part
 
 #ifndef MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT
     /**
-     * Default min initial count for counting semaphore, can override in constuctor default  1  
+     * @note default: min initial count for counting semaphore, can override in constuctor default  1  
      */ 
     #define MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT       1  
 #endif
  
 #ifndef MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT
     /**
-     * Default max initial count for counting semaphore, can override in constuctor
-     * default  0x7fffffff  
+     * @note default: max initial count for counting semaphore, can override in constuctor
+     * @note default:  0x7fffffff  
      */ 
     #define MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT       0x7fffffff
 #endif
@@ -276,7 +287,7 @@ Start the config part
     /**
      * The default initial timeout for mutex lock (recursive and normal)
      * Can override
-     * default  (unsigned int) 0xffffffffUL)   
+     * @note default:  (unsigned int) 0xffffffffUL)   
      */ 
     #define MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT      (unsigned int) 0xffffffffUL 
 #endif 
@@ -285,7 +296,7 @@ Start the config part
     /**
      * The default initial timeout for all queues 
      * Can override
-     * default  (unsigned int) 0xffffffffUL)   
+     * @note default:  (unsigned int) 0xffffffffUL)   
      */ 
     #define MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT      (unsigned int) 0xffffffffUL  
 #endif
@@ -294,7 +305,7 @@ Start the config part
     /**
      * The default initial timeout for coroutine (recursive and normal)
      * Can override
-     * default  (unsigned int) 0xffffffffUL)   
+     * @note default:  (unsigned int) 0xffffffffUL)   
      */ 
     #define MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT  (unsigned int) 0xffffffffUL 
 #endif
@@ -305,7 +316,7 @@ Start the config part
      * Whenn MN_THREAD_CONFIG_YES then activate develop unsafe future for next major version 
      * not for production use
      * 
-     * default  MN_THREAD_CONFIG_NO  
+     * @note default:  MN_THREAD_CONFIG_NO  
      */
     #define MN_THREAD_CONFIG_PREVIEW_FUTURE              MN_THREAD_CONFIG_YES
 #endif

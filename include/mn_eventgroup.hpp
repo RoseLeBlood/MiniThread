@@ -50,9 +50,6 @@ public:
      */
     virtual ~basic_event_group();
 
-    
-    virtual void destroy();
-
     /**
      *  Allow two or more tasks to use an event group to sync each other.
      *

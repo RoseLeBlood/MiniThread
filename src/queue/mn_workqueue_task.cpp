@@ -22,7 +22,9 @@
 #include "queue/mn_workqueue_task.hpp"
 #include "queue/mn_workqueue.hpp"
 
-
+//-----------------------------------
+//  constructor
+//-----------------------------------
 work_queue_task::work_queue_task(char const* strName, 
                                     basic_task::priority uiPriority,
                                     unsigned short  usStackDepth, 
@@ -31,9 +33,14 @@ work_queue_task::work_queue_task(char const* strName,
     : basic_task(strName, uiPriority, usStackDepth), m_parentWorkQueue(parent) { 
 
 }
+//-----------------------------------
+//  deconstructor
+//-----------------------------------
 work_queue_task::~work_queue_task() { }
 
-
+//-----------------------------------
+//  on_task
+//-----------------------------------
 void* work_queue_task::on_task() {
     basic_task::on_task();
 

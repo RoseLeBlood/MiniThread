@@ -23,14 +23,23 @@
 #if MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT == MN_THREAD_CONFIG_YES
 
 /**
+ * Get the idle task for the current CPU.
+ */ 
+#define FT_IDLE_TASK            foreign_task::get_idle_task()
+/**
+ * Get the idle task for the given CPU.
+ */ 
+#define FT_IDLE_TASK_ON(CPUID)  foreign_task::get_idle_task(CPUID)
+
+/**
  * Wrapper class around FreeRTOS's implementation of a task, 
- * for foreign miniThread Threads 
+ * for foreign miniThread Task 
  * 
  * @note using foreign_task::create_from to create all using LockObjects 
  * objects
  */
-class foreign_task: public basic_task {
-private:
+class foreign_task : public basic_task {
+private: 
   /**
    * Constructor - the current thread
    */ 

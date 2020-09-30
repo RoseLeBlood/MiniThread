@@ -19,13 +19,18 @@
 
 #if MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT == MN_THREAD_CONFIG_YES
 
-
+//-----------------------------------
+//  construtor
+//-----------------------------------
 foreign_task::foreign_task() 
   : foreign_task(xTaskGetCurrentTaskHandle()) { 
 
   m_strName = "current_foreign_task";
 }
 
+//-----------------------------------
+//  construtor
+//-----------------------------------
 foreign_task::foreign_task(void* t)
   : basic_task() { 
   
@@ -48,6 +53,9 @@ foreign_task::foreign_task(void* t)
   m_pParent = NULL;
 }
 
+//-----------------------------------
+//  __internal_create_usings_types
+//-----------------------------------
 int foreign_task::__internal_create_usings_types() {
    if(!m_bMutexInit) {
     m_runningMutex = new LockType_t();
@@ -81,11 +89,18 @@ int foreign_task::__internal_create_usings_types() {
 	return ERR_TASK_OK;
 }
 
+//-----------------------------------
+//  get_idle_task
+//-----------------------------------
 foreign_task* foreign_task::get_idle_task() {
   void* rawHandle = xTaskGetIdleTaskHandle();
 
   return foreign_task::create_from(rawHandle);
 }
+
+//-----------------------------------
+//  get_idle_task
+//-----------------------------------
 foreign_task* foreign_task::get_idle_task(UBaseType_t cpuid) {
   void* rawHandle = xTaskGetIdleTaskHandleForCPU(cpuid);
 
@@ -95,6 +110,10 @@ foreign_task* foreign_task::get_idle_task(UBaseType_t cpuid) {
   
   return thread;
 }
+
+//-----------------------------------
+//  create_from
+//-----------------------------------
 foreign_task* foreign_task::create_from(void* foreign_handle, int* ret_error ) {
     if(foreign_handle == NULL) return NULL;
 

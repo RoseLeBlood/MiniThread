@@ -20,7 +20,9 @@
 
 #include "mn_tasklet.hpp"
 
-
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
     BaseType_t success;
 
@@ -48,12 +50,20 @@ int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
     m_ssLock.unlock();
     return ERR_COROUTINE_CANTSTART;
 }
+
+//-----------------------------------
+//  destroy
+//-----------------------------------
 int basic_tasklet::destroy() {
     m_ssLock.lock( portMAX_DELAY );
     m_ssLock.destroy();
 
     return ERR_COROUTINE_OK;
 }
+
+//-----------------------------------
+//  runcorostub
+//-----------------------------------
 void basic_tasklet::runcorostub(void* xHandle, uint32_t parameter) {
     basic_tasklet *tasklet = static_cast<basic_tasklet *>(xHandle);
 

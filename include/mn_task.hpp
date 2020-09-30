@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
@@ -26,7 +26,7 @@
 #include "mn_error.hpp"
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
- 
+
 
 /**
  *  Wrapper class around FreeRTOS's implementation of a task.
@@ -38,6 +38,7 @@
  */
 class  basic_task {
 public:
+  /** Task priority */
   enum priority {
     PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
     PriorityLow = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,             /*!< Priority for low operation  */
@@ -46,13 +47,21 @@ public:
     PriorityUrgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,       /*!< priority for tasks with short deadlines and a lot of processings */
     PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
   };
+
+  /** Task states returned by get_state. */
+  enum state {
+    StateRunning = 0,	  /*!< A task is querying the state of itself, so must be running. */
+    StateReady,			    /*!< The task being queried is in a read or pending ready list. */
+    StateBlocked,		    /*!< The task being queried is in the Blocked state. */
+    StateSuspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
+    StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
+  };
 public:
    /**
    * Basic Constructor for this task.
    * The priority is PriorityNormal and use 2048 for the stack size
    */
-  basic_task() 
-    : basic_task(" ", PriorityNormal, 2048) { }
+  basic_task() : basic_task(" ", PriorityNormal, 2048) { }
 
   /**
    * Constructor for this task.
@@ -62,32 +71,32 @@ public:
    * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
    */
   explicit basic_task(char const* strName, basic_task::priority uiPriority = PriorityNormal,
-       unsigned short  usStackDepth = 2048);
-  
+       unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
+
   basic_task(const basic_task&) = delete;
   basic_task& operator=(const basic_task&) = delete;
 
   /**
-   *  Our destructor. Delete the task 
+   *  Our destructor. Delete the task
    */
 	virtual ~basic_task();
 
   /**
    *  Create and starts the Task.
    *
-   *  This is the API call that actually starts the Task running. 
-   *  It creates a backing FreeRTOS task. By separating object creation 
-   *  from starting the Task, it solves the pure virtual fuction call 
+   *  This is the API call that actually starts the Task running.
+   *  It creates a backing FreeRTOS task. By separating object creation
+   *  from starting the Task, it solves the pure virtual fuction call
    *  failure case. Call after creating the Task the function on_create
-   * 
+   *
    * @param uiCore If the value is MN_THREAD_CONFIG_CORE_IFNO, the created task is not
    * pinned to any CPU, and the scheduler can run it on any core available.
    * Other values indicate the index number of the CPU which the task should
    * be pinned to. Specifying values larger than (portNUM_PROCESSORS - 1) will
    * cause the function to fail.
-   * 
-   * 
-   * @return ERR_TASK_OK The task are creating, 'ERR_TASK_CANTINITMUTEX' on error creating the using 
+   *
+   *
+   * @return ERR_TASK_OK The task are creating, 'ERR_TASK_CANTINITMUTEX' on error creating the using
    * LockObjets, the task is not created, 'ERR_TASK_ALREADYRUNNING' the Task is allready running and
    * 'ERR_TASK_CANTSTARTTHREAD' can't create the task
    */
@@ -95,66 +104,66 @@ public:
 
   /**
    * Destroy and delete the task and call the function 'on_kill'
-   * 
+   *
    * @return ERR_TASK_OK The tasx are destroyed and 'ERR_TASK_NOTRUNNING' the task is not running
-   */ 
+   */
   int                   kill();
 
   /**
    * Is the Task  running?
-   * 
+   *
    * @return true If the task  running, false If not
-   */ 
+   */
   bool                  is_running();
 
   /**
-   * Get the debug name of this task  
-   * 
-   * @return The name of this task  
-   */ 
+   * Get the debug name of this task
+   *
+   * @return The name of this task
+   */
   const char*           get_name();
   /**
-   * Get the priority of this task  
-   * 
+   * Get the priority of this task
+   *
    * @return The priority
-   */ 
+   */
   basic_task::priority get_priority();
   /**
-   * Get the stack depth of this task  
-   * 
+   * Get the stack depth of this task
+   *
    * @return The stack depth
-   */ 
+   */
   unsigned short        get_stackdepth();
   /**
    * Accessor to get the task's backing task handle.
    * There is no setter, on purpose.
-   * 
+   *
    * @return FreeRTOS task handle.
-   */ 
+   */
   xTaskHandle           get_handle();
   /**
-   * Get the return value of this task  - after run 
-   * 
-   * @return The return value 
+   * Get the return value of this task  - after run
+   *
+   * @return The return value
    */
   void*                 get_return_value();
   /**
-   * Get the time since start of this task  
-   * 
-   * @return The time since start of this task  
-   */ 
+   * Get the time since start of this task
+   *
+   * @return The time since start of this task
+   */
   uint32_t              get_time_since_start();
   /**
-   * Get the FreeRTOS task Numberid of this task  
-   * 
+   * Get the FreeRTOS task Numberid of this task
+   *
    * @return The FreeRTOS task   Number
-   */ 
+   */
   uint32_t              get_id();
   /**
    * Get the core number of this task  run
-   * 
+   *
    * @return The core number
-   */ 
+   */
   uint32_t              get_on_core();
 
   /**
@@ -167,7 +176,7 @@ public:
   /**
    *  Suspend this task.
    *
-   *  @note While a task can suspend() itself, it cannot resume() 
+   *  @note While a task can suspend() itself, it cannot resume()
    *  itself, becauseit's suspended.
    */
   void                  suspend();
@@ -179,60 +188,67 @@ public:
   /**
    * This virtual function call on creating, use for user code
    * It is optional whether you implement this or not.
-   */ 
+   */
   virtual void          on_create() {  }
   /**
    * This virtual function call on kill, use for user code
    * It is optional whether you implement this or not.
-   */ 
+   */
   virtual void          on_kill()   {  }
 
   /**
    * Implementation of your actual task code.
    * You must override this function.
-   * 
+   *
    * @return Your return your task function, get with get_return_value()
    */
   virtual void*         on_task() = 0;
 
   /**
-   *  Called on exit from your on_task() routine. 
-   *  
+   *  Called on exit from your on_task() routine.
+   *
    *  It is optional whether you implement this or not.
    *
-   *  If you allow your task to exit its on_task method, 
-   */ 
+   *  If you allow your task to exit its on_task method,
+   */
   virtual void          on_cleanup() { }
 
   /**
    * Get the root task of this task list
-   * 
+   *
    * @return The root task
-   */ 
+   */
   basic_task*         get_root();
   /**
    * Get the child task of this task
-   * 
+   *
    * @return The child task
-   */ 
+   */
   basic_task*         get_child();
 
   /**
-   * Add a child task to this task. 
+   * Get the state of the task
    * 
+   * @return The state of the task at the time the function was called.
+   */ 
+  state               get_state();
+
+  /**
+   * Add a child task to this task.
+   *
    * @return True The child tasx are add and false when not
-   * 
+   *
    * @note For example this task handle the WiFi connection and the child the TCP Connection
    * on signal or broadcast this task, will signal and broadcast the child too.
-   */ 
-  bool                  add_child_task(basic_task* task);              
+   */
+  bool                  add_child_task(basic_task* task);
 public:
   /**
    * Suspend the given task.
    *
    * @param t The given task to suspend
-   * 
-   * @note While a task can suspend() itself, it cannot resume() 
+   *
+   * @note While a task can suspend() itself, it cannot resume()
    * itself, becauseit's suspended.
    */
   static void suspend(basic_task *t)  { t->suspend(); }
@@ -271,6 +287,15 @@ public:
   static void lock(basic_task * t)    { t->m_runningMutex->lock(); }
   static void unlock(basic_task * t)    { t->m_runningMutex->unlock(); }
 
+  /**
+   * Get current number of tasks
+   * 
+   * @return The number of tasks that the real time kernel is currently managing.
+   * This includes all ready, blocked and suspended tasks.  A task that
+   * has been deleted but not yet freed by the idle task will also be
+   * included in the count.
+   */ 
+  static uint32_t get_tasks();
 protected:
   /**
    *  Adapter function that allows you to write a class
@@ -278,8 +303,8 @@ protected:
    */
   static void runtaskstub(void* parm);
   /**
-   * Internal function 
-   */ 
+   * Internal function
+   */
 	void task_started();
 
 protected:
@@ -302,7 +327,7 @@ protected:
   unsigned short m_usStackDepth;
   /**
    * The return value from user task routine
-   */ 
+   */
   void* m_retval;
 
   /**
@@ -315,28 +340,28 @@ protected:
   bool m_bRunning;
   /**
    * The FreeRTOS task Number
-   */ 
+   */
   uint32_t m_iID;
   /**
    * A saved / cached copy of which core this task is running on
-   */ 
+   */
   uint32_t m_iCore;
   /**
    * Lock Objekt for task safty
-   */ 
+   */
   LockType_t *m_runningMutex;
   /**
    * Lock Objekt for task safty
-   */ 
+   */
   LockType_t *m_contextMutext;
   /**
    * Lock Objekt for task safty
-   */ 
+   */
   LockType_t *m_continuemutex, *m_continuemutex2;
 
   /**
    * The child task pointer
-   */ 
+   */
   basic_task *m_pChild;
   /**
    * The parent task pointer of this task

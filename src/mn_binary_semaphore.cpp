@@ -21,9 +21,14 @@
 
 #include "mn_binary_semaphore.hpp"
 
+//-----------------------------------
+//  construtor
+//-----------------------------------
 basic_binary_semaphore::basic_binary_semaphore() : basic_semaphore() { }
 
-
+//-----------------------------------
+//  create
+//-----------------------------------
 int basic_binary_semaphore::create() {
   if (m_pSpinlock != NULL)
     return ERR_SPINLOCK_ALREADYINIT;
@@ -38,6 +43,9 @@ int basic_binary_semaphore::create() {
   return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }
 
+//-----------------------------------
+//  destroy
+//-----------------------------------
 int basic_binary_semaphore::destroy() {
   vSemaphoreDelete(m_pSpinlock);
   m_pSpinlock = NULL;
