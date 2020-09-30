@@ -230,6 +230,22 @@ xTaskHandle basic_task::get_handle() {
 }
 
 //-----------------------------------
+//  get_tasks
+//-----------------------------------
+uint32_t basic_task::get_tasks() {
+  autolock_t autolock(*m_runningMutex);
+  return uxTaskGetNumberOfTasks();
+}
+
+//-----------------------------------
+//  get_state
+//-----------------------------------
+basic_task::state basic_task::get_state() {
+  autolock_t autolock(*m_runningMutex);
+  return eTaskGetState(handle);
+}
+
+//-----------------------------------
 //  get_return_value
 //-----------------------------------
 void *basic_task::get_return_value() {
@@ -308,15 +324,3 @@ void basic_task::task_started() {
   m_continuemutex2->unlock();
 }
 
-//-----------------------------------
-//  get_tasks
-//-----------------------------------
-uint32_t basic_task::get_tasks() {
-  autolock_t autolock(*m_runningMutex);
-  return uxTaskGetNumberOfTasks();
-}
-
-basic_task::state basic_task::get_state() {
-  autolock_t autolock(*m_runningMutex);
-  return eTaskGetState(handle);
-}

@@ -52,11 +52,25 @@ extern "C" void app_main() {
 
 ## TODO's for Version 2.0
 - [X] Add event group class 
-- [X] Add timer and other usefull FreeRTOS Wrapper (50%)
+- [X] Add timer, events and other usefull FreeRTOS Wrapper
+  - [X] timer
+  - [ ] events
+  - [ ] coroutine
+  - [ ] MPU tasks???
+  - [ ] ...
 - [X] Completed the documentation
-- [ ] Write more examles (after 1.9 complited ) 
+- [ ] Write more examles (after 1.9 ready ) 
 - [X] add a Workqueues 
-- [ ] add Memory Manager class
+- [X] add Memory Manager class
+- [ ] uxTaskGetStackHighWaterMark add to task class
+  - [ ]  get stackpointer and other things
+- [ ] task Local Storage
+  
+
+### New Value Added
++ In Timers, add OnStop / OnStart / mutex sync with these methods?
++ Priority queues
++ Tick Hooks - option to round robin hooks, one per tick
 
 
 ## ChangeLog

@@ -4,13 +4,17 @@
 + for the future version add prototypes: (Not for produtions use!!)
   + free_list_memory pool and mempool
   + Shared Object 
-  + Ringbuffer
 + Add class to extends the basic_convar_task with a message queue support - basic_message_task
   + Add new config item, to handle the maximal messages in the message queue (MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES)
   + For message queue support must be conditional variable support marked as enable
-+ Add new helper defines: FT_IDLE_TASK  (foreign_task::get_idle_task()) and FT_IDLE_TASK_ON(CPUID
-  foreign_task::get_idle_task(CPUID)
-+ update source code order  
++ Add new defines: 
+  + in mn_foreign_task.hpp:
+    + FT_IDLE_TASK  (foreign_task::get_idle_task()) 
+    + FT_IDLE_TASK_ON(CPUID foreign_task::get_idle_task(CPUID) 
+  + in mn_config.hpp:
+    + MN_THREAD_CONFIG_MINIMAL_STACK_SIZE set the default minimal stack size for a task 
++ add in basic_task get_state() to get the current state and static function get_tasks() to get the number of tasks
+
 
   
   
