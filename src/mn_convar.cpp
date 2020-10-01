@@ -25,8 +25,7 @@
 //  construtor
 //-----------------------------------
 basic_condition_variable::basic_condition_variable() 
-    : m_waitList() {
-    m_mutex.create();
+    : m_mutex(), m_waitList() {
 }
 
 //-----------------------------------

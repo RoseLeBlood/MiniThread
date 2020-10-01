@@ -40,7 +40,7 @@ basic_convar_task::basic_convar_task(char const* strName, basic_task::priority u
 //-----------------------------------
 void basic_convar_task::signal() {
     autolock_t autolock(m_runningMutex);
-    m_waitSem->unlock(); 
+    m_waitSem.unlock(); 
     on_signal();
 }
 
@@ -50,7 +50,7 @@ void basic_convar_task::signal() {
 void basic_convar_task::signal_all() {
     autolock_t autolock(m_runningMutex);
 
-    m_waitSem->unlock(); 
+    m_waitSem.unlock(); 
     on_signal();
 
     basic_convar_task* __child = (basic_convar_task*)(m_pChild);
@@ -68,7 +68,7 @@ int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
     cv.add_list(this);
     
     cvl.unlock();
-    int ret = m_waitSem->lock(timeOut);
+    int ret = m_waitSem.lock(timeOut);
     cvl.lock();
 
     return ret; 

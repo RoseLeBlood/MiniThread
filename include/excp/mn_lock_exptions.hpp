@@ -52,7 +52,7 @@ public:
      * @return The C-style character string describing the general cause
      * of the current error.
      */
-    virtual const char* what() const;
+    virtual std::string to_string();
 private:
   int m_iCode;
   int m_iLine;

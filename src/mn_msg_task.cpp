@@ -25,20 +25,19 @@
 //-----------------------------------
 basic_message_task::basic_message_task(char const* strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth)
-    : basic_convar_task(strName, uiPriority, usStackDepth),  
-    m_qeMessageQueue(MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES, sizeof(message_t)),
-    m_ltMessageQueueLock(),
+    : basic_convar_task(strName, uiPriority, usStackDepth), 
+    m_ltMessageQueueLock(), 
+    m_qeMessageQueue(MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES, sizeof(task_message*)),
     m_cvMessage() { 
 
-        m_qeMessageQueue.create(); 
-        m_ltMessageQueueLock.create();
+    m_qeMessageQueue.create(); 
 }
 
 //-----------------------------------
 //  post_msg
 //-----------------------------------
 void basic_message_task::post_msg(task_message* msg, unsigned int timeout) {
-    autolock_t lock(m_ltMessageQueueLock);
+    automutx_t lock(m_ltMessageQueueLock);
     m_qeMessageQueue.enqueue(msg, timeout);
     m_cvMessage.signal(false);
 }
@@ -57,7 +56,7 @@ void* basic_message_task::on_task() {
             m_ltMessageQueueLock.lock();
 
             while (m_qeMessageQueue.is_empty())
-                wait(m_cv, m_ltMessageQueueLock);
+                wait(m_cvMessage, m_ltMessageQueueLock);
 
             if(m_qeMessageQueue.is_empty())
                 continue;
@@ -87,6 +86,8 @@ void* basic_message_task::on_task() {
             }; //switch (msg->id)
         } // if(msg)
     } //while(m_bRunning)
+
+    return NULL;
 }
 
 #endif

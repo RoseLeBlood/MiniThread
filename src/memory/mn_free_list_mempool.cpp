@@ -19,7 +19,6 @@
 #include "memory/mn_free_list_mempool.hpp"
 #include <stdlib.h>
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
-#warning("use on your own risk - not for production use")
 
 #include "mn_autolock.hpp"
 
@@ -37,13 +36,13 @@
 static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) {
 
     if (uiItemSize <= uiAlignment) 
-        return (2//  uiAlignment);
+        return (2 * uiAlignment);
     
     int iCount = uiItemSize / uiAlignment;
 
     return (uiItemSize % uiAlignment != 0) ? 
-        ( (iCount + 2)//  uiAlignment ) : 
-        ( (iCount + 1)//  uiAlignment );
+        ( (iCount + 2) *  uiAlignment ) : 
+        ( (iCount + 1) *  uiAlignment );
 }
 
 //-----------------------------------
@@ -59,7 +58,8 @@ static int __calc_alignment(unsigned int uiAlignment) {
             return uiAlignment;
         }
         bit <<= 1; 
-    }  
+    } 
+    return 0; 
 }
 
 //-----------------------------------
@@ -68,7 +68,7 @@ static int __calc_alignment(unsigned int uiAlignment) {
 basic_free_list_mempool::basic_free_list_mempool(unsigned int uiItemSize, 
                                                  unsigned int uiElements,
                                                  unsigned int uiAlignment)
-    : IMemPool(uiItemSize, uiElements) 
+    : IMemPool(uiItemSize, uiElements), m_nMutex() 
 { 
     m_uiAlignment = __calc_alignment(uiAlignment);
     m_bCreated = false;
@@ -82,8 +82,6 @@ int basic_free_list_mempool::create() {
 
     m_uiItemSize = __calc_item_size(m_uiItemSize, m_uiAlignment);
 
-    m_nMutex.create();
-
     m_nMutex.lock();
     if(m_bCreated) { 
         m_nMutex.unlock();
@@ -93,21 +91,21 @@ int basic_free_list_mempool::create() {
     m_nMutex.unlock();
     
     if(m_lBytePtrList.empty())  {
-        void* pMemObject = new char [m_uiItemSize//  m_uiElements];
+        void* pMemObject = new char [m_uiItemSize *  m_uiElements];
         m_vMemoryPoolList.push_back(pMemObject);
 
         //initialise byte list
         for (int i = 0; i< m_uiElements; ++i) {
             memObject* __memObject = new memObject();
 
-            __memObject->addr = &(static_cast<char*>(pMemObject)[i//  m_uiItemSize]);
+            __memObject->addr = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]);
             __memObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
             __memObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
             __memObject->dim = m_uiItemSize;
             __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
             m_nMutex.lock();
-                m_lBytePtrList.push_front(__memObject); 
+                m_lBytePtrList.push_back(__memObject); 
             m_nMutex.unlock();
         }
         return ERR_MEMPOOL_OK;
@@ -129,10 +127,6 @@ void basic_free_list_mempool::destroy() {
     }
     m_lBytePtrList.clear();
 
-    for (int i = 0; i< m_uiElements; ++i) { 
-        void* obj = m_vMemoryPoolList[i];
-        delete obj;
-    }
     m_vMemoryPoolList.clear();
 }
 
@@ -182,7 +176,7 @@ bool  basic_free_list_mempool::free(void* object) {
     automutx_t lock(m_nMutex);
 
     for (int i = 0; i < m_uiElements; i++) {
-        if(m_lBytePtrList[i]->addr == object) {
+        if( (m_lBytePtrList[i]->addr == object) ) {
             if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE) return true;
 
             m_lBytePtrList[i]->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
@@ -209,19 +203,19 @@ bool  basic_free_list_mempool::free(void* object) {
 int basic_free_list_mempool::add_memory(unsigned int nElements) {
     automutx_t lock(m_nMutex);
 
-    void* pMemObject = new char [m_uiItemSize//  nElements];
+    void* pMemObject = new char [m_uiItemSize * nElements];
     m_vMemoryPoolList.push_back(pMemObject);
 
     for (int i = 0; i < nElements; i++) {
         memObject* __memObject = new memObject();
 
-        __memObject->addr = &(static_cast<char*>(pMemObject)[i//  m_uiItemSize]); 
+        __memObject->addr = &(static_cast<char*>(pMemObject)[i * m_uiItemSize]); 
         __memObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
         __memObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
         __memObject->dim = m_uiItemSize;
         __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
-        m_lBytePtrList.push_front(__memObject); 
+        m_lBytePtrList.push_back(__memObject); 
     }
 
     m_uiElements += nElements;
@@ -242,13 +236,13 @@ int basic_free_list_mempool::add_memory(void* preMemory, unsigned int nSize) {
     for (int i = 0; i < nElements; i++) {
         memObject* __memObject = new memObject();
 
-        __memObject->addr = &(static_cast<char*>(pMemObject)[i//  m_uiItemSize]); 
-        __memObject->guardStart = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
-        __memObject->guardEnd = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
+        __memObject->addr = &(static_cast<char*>(preMemory)[i *  m_uiItemSize]); 
+        __memObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
+        __memObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END;
         __memObject->dim = m_uiItemSize;
         __memObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
 
-        m_lBytePtrList.push_front(__memObject); 
+        m_lBytePtrList.push_back(__memObject); 
     }
 
     m_uiElements += nElements;
@@ -305,7 +299,7 @@ basic_free_list_mempool::memObject basic_free_list_mempool::get_mem_object(void*
     automutx_t lock(m_nMutex);
 
     memObject object = {
-        .raw_memObject = nullptr;
+        .raw_memObject = nullptr
     };
 
     for (int i = 0; i < m_uiElements; i++) {

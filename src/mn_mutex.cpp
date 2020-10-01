@@ -41,7 +41,7 @@ basic_mutex::basic_mutex() : basic_semaphore() {
 //-----------------------------------
 //  deconstrutor
 //-----------------------------------
-void basic_mutex::~basic_mutex() {
+basic_mutex::~basic_mutex() {
   if (m_pSpinlock != NULL)
     vSemaphoreDelete(m_pSpinlock);
 }

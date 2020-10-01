@@ -21,13 +21,16 @@
 #include "mn_tasklet.hpp"
 
 //-----------------------------------
+//  Construtor
+//-----------------------------------
+basic_tasklet::basic_tasklet() 
+    : m_ssLock() { }
+
+//-----------------------------------
 //  create
 //-----------------------------------
 int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
     BaseType_t success;
-
-    if(m_ssLock.create() != NO_ERROR)
-        return ERR_COROUTINE_CANTINITLOCKT;
 
     m_ssLock.lock(); 
 
@@ -55,9 +58,6 @@ int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
 //  destroy
 //-----------------------------------
 int basic_tasklet::destroy() {
-    m_ssLock.lock( portMAX_DELAY );
-    m_ssLock.destroy();
-
     return ERR_COROUTINE_OK;
 }
 

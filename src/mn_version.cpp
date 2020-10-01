@@ -57,21 +57,10 @@ std::string libmnVersion::to_string() const {
 	std::string text = std::string(MN_THREAD_VERSION_STRING);
 
 
-	if(is_beta()) {
-		text += std::string(MN_THREAD_BETA_VERSION_STRING);
-	}
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+	text += std::string(MN_THREAD_BETA_VERSION_STRING);
+#endif
 	 
 	text += m_license + m_extras;
 	return text;
-}
-
-//-----------------------------------
-//  is_beta
-//-----------------------------------
-bool libmnVersion::is_beta() {
-	#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
-		return true;
-	#else 
-		return false;
-	#endif
 }

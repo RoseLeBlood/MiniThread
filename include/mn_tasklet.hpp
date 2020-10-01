@@ -39,7 +39,8 @@
 
 class basic_tasklet {
 public:
-
+    basic_tasklet();
+    
     /**
      *  Create and schedule this Tasklet to run.
      *

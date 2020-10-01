@@ -59,7 +59,7 @@ int basic_work_queue_multi::create_engine(int iCore) {
     m_bRunning = true;
 
     for(int i = 0; i < get_num_worker(); i++) {
-        if(m_Workers[i]->create(iCore) != ERR_TASK_OK) {
+        if(m_Workers[i]->start(iCore) != ERR_TASK_OK) {
             _errorOnCreate = true;
         } else {
             _oneNoError = true;

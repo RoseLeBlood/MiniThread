@@ -284,8 +284,8 @@ public:
     ::mn_nsleep(req, rem);
   }
 
-  static void lock(basic_task * t)    { t->m_runningMutex->lock(); }
-  static void unlock(basic_task * t)    { t->m_runningMutex->unlock(); }
+  static void lock(basic_task& t)    { t.m_runningMutex.lock(); }
+  static void unlock(basic_task& t)    { t.m_runningMutex.unlock(); }
 
   /**
    * Get current number of tasks

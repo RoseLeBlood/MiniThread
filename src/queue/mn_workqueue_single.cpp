@@ -40,7 +40,7 @@ int basic_work_queue_single::create_engine(int iCore) {
     }
     m_bRunning = true;
 
-    return (m_pWorker->create(iCore) == NO_ERROR) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_CANTCREATE;
+    return (m_pWorker->start(iCore) == NO_ERROR) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_CANTCREATE;
 
 }
 

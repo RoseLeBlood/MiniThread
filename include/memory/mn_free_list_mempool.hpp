@@ -51,7 +51,7 @@ class basic_free_list_mempool : public IMemPool {
                  * The two guard bytes for detect heap memory corruption, ie, when someone 
                  * writes beyond the boundary via  memcpy or memset functions
                  */ 
-                char[2] memGuard; //0xde 0xad; 
+                char memGuard[2]; //0xde 0xad; 
                 /**
                  * The size of the memBlock
                  */ 
@@ -168,12 +168,14 @@ private:
      */ 
     memObject*    get_free_block();
 private:
-    unsigned int              m_uiAlignment
+    mutex_t                   m_nMutex;
+    
+    unsigned int              m_uiAlignment;
 
-    std::list<memObject*>     m_lBytePtrList;
+    std::vector<memObject*>   m_lBytePtrList;
     std::vector<void*>        m_vMemoryPoolList;
 
-    mutex_t                   m_nMutex;
+    
     bool                      m_bCreated;
 };
 

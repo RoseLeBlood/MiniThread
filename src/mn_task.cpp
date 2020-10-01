@@ -27,7 +27,7 @@ basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
         m_contextMutext(), 
         m_continuemutex(),
         m_continuemutex2(),
-        m_strName(name), 
+        m_strName(strName), 
         m_uiPriority(uiPriority),
         m_usStackDepth(usStackDepth), 
         m_retval(NULL),
@@ -211,7 +211,6 @@ xTaskHandle basic_task::get_handle() {
 //  get_tasks
 //-----------------------------------
 uint32_t basic_task::get_tasks() {
-  autolock_t autolock(m_runningMutex);
   return uxTaskGetNumberOfTasks();
 }
 
@@ -220,7 +219,7 @@ uint32_t basic_task::get_tasks() {
 //-----------------------------------
 basic_task::state basic_task::get_state() {
   autolock_t autolock(m_runningMutex);
-  return eTaskGetState(m_pHandle);
+  return (basic_task::state) eTaskGetState(m_pHandle);
 }
 
 //-----------------------------------

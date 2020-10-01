@@ -64,13 +64,6 @@ public:
 		if(m_pInstance == NULL) m_pInstance = new libmnVersion();
 		return *m_pInstance;
 	}
-
-	/**
-	 * Is this the beta version - preview future in config activated?
-	 * 
-	 * @return true The 
-	 */ 
-	bool is_beta();
 private:
 	/**
 	 * The Sigleton Object holder

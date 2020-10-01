@@ -28,17 +28,18 @@
 //-----------------------------------
 basic_work_queue::basic_work_queue(basic_task::priority uiPriority,
                     uint16_t usStackDepth,
-                    uint8_t uiMaxWorkItems) {
+                    uint8_t uiMaxWorkItems) :
+    m_pWorkItemQueue(NULL),
+    m_ThreadStatus(),
+    m_ThreadJob(),
+    m_uiPriority(uiPriority),
+    m_usStackDepth(usStackDepth),
+    m_uiMaxWorkItems(uiMaxWorkItems),
+    m_uiNumWorks(0),
+    m_uiErrorsNumWorks(0),
+    m_bRunning(false) { 
 
     m_pWorkItemQueue = new queue_t(uiMaxWorkItems, sizeof(work_queue_item_t *));
-    m_uiPriority = uiPriority;
-    m_usStackDepth = usStackDepth;
-    m_bRunning = false;
-    m_bMutexInit = false;
-    m_uiNumWorks = 0;
-    m_uiErrorsNumWorks = 0;
-    m_uiMaxWorkItems = uiMaxWorkItems;
-    
 }
 
 //-----------------------------------
@@ -52,16 +53,6 @@ basic_work_queue::~basic_work_queue() {
 //  create
 //-----------------------------------
 int basic_work_queue::create(int iCore) {
-    if(!m_bMutexInit) {
-        if(m_ThreadStatus.create() != ERR_MUTEX_OK)
-            return ERR_WORKQUEUE_CANTINITMUTEX;
-
-        if(m_ThreadJob.create() != ERR_MUTEX_OK)
-            return ERR_WORKQUEUE_CANTINITMUTEX;
-
-        m_bMutexInit = true;
-    }
-    
     m_ThreadJob.lock();
 
     int ret = create_engine(iCore);
@@ -86,13 +77,6 @@ void basic_work_queue::destroy() {
     m_ThreadStatus.unlock();
 
     destroy_engine();
-
-    if(m_bMutexInit) {
-        m_ThreadStatus.destroy();
-        m_ThreadJob.destroy();
-        
-        m_bMutexInit = false;
-    }
 }
 
 //-----------------------------------

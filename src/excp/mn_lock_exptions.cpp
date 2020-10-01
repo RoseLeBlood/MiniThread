@@ -21,23 +21,21 @@
 //  Constructor
 //-----------------------------------
 lockcreate_exception::lockcreate_exception(int code) 
-    : m_iCode(code), m_iLine(0), m_iFile("nofile")  { }
+    : m_iCode(code), m_iLine(0), m_strFile("nofile")  { }
 
 //-----------------------------------
 //  Constructor - debug
 //-----------------------------------
-lockcreate_exception::lockcreate_exception(int code. int line, const char* file) 
-        : m_iCode(code), m_iLine(line), m_iFile(file) { }
+lockcreate_exception::lockcreate_exception(int code, int line, const char* file) 
+        : m_iCode(code), m_iLine(line), m_strFile(file) { }
 
 //-----------------------------------
-//  what
+//  to_string
 //-----------------------------------
-const char* lockcreate_exception::what() {
-    std::string __text = std::string("Error on creating the lock object, on ");
-                __text += std::string(m_iLine) + std::string(" at ") + std::string(m_iFile);
-                __text += std::string(" with code ") + std::string(m_iCode);
+std::string lockcreate_exception::to_string() {
+    /*std::string __text = std::string("Error on creating the lock object, on ");
+                __text += std::string(m_iLine) + std::string(" at ") + std::string(m_strFile);
+                __text += std::string(" with code ") + std::string(m_iCode);*/
     
-    return __text.c_str();
+    return "__text";
 }
-
-#endif

@@ -143,10 +143,7 @@ protected:
     basic_task::priority m_uiPriority ;
     uint16_t m_usStackDepth; 
     uint8_t m_uiMaxWorkItems;
-    /**
-     *  Flag whether or not the LockObject was created.
-     */ 
-    bool m_bMutexInit;
+
     /**
      * Holder of num works are successfull run
      */ 

@@ -65,12 +65,12 @@
  * @brief Pre defined values for config items -
  * Use for run the config task on core 0
  */  
-#define MN_THREAD_CONFIG_CORE_ONE   (MN_THREAD_CONFIG_CORE_IFNO + 1)
+#define MN_THREAD_CONFIG_CORE_ONE   0
 /** 
  * @brief Pre defined values for config items -
  * Use for run the config task on core 1
  */ 
-#define MN_THREAD_CONFIG_CORE_TWO   (MN_THREAD_CONFIG_CORE_ONE + 1)
+#define MN_THREAD_CONFIG_CORE_TWO   1
 
   
 /** 
@@ -86,13 +86,6 @@
 
 //Start Config section
 //==================================
-
-#ifndef configMAX_PRIORITIES 
-    /**
-     * The max priority for FreeRTOS Task priority
-     */
-    #define configMAX_PRIORITIES 25
-#endif
 
 #ifndef MN_THREAD_CONFIG_USE_EXCEPTIONS 
     /**

@@ -93,7 +93,7 @@ public:
      * @param timeout How long to wait to add the item to the queue 
      */ 
     void post_msg(message_id msg_id, unsigned int timeout) {
-        post_msg(new (msg_id, NULL), timeout );
+        post_msg(new task_message(msg_id, NULL), timeout );
     }
     /**
      * Create the task message and add the message to the task queue, 
@@ -104,7 +104,7 @@ public:
      * @param timeout How long to wait to add the item to the queue 
      */ 
     void post_msg(message_id msg_id, void* message_data, unsigned int timeout) {
-        post_msg(new (msg_id, message_data), timeout );
+        post_msg(new task_message(msg_id, message_data), timeout );
     }
 
     /**
@@ -151,8 +151,9 @@ private:
     basic_message_task(const basic_message_task&) = delete;
     basic_message_task& operator=(const basic_message_task&) = delete;
 
+protected:
+    mutex_t m_ltMessageQueueLock;
     queue_t m_qeMessageQueue;
-    LockType_t m_ltMessageQueueLock;
     convar_t m_cvMessage;
 };
 

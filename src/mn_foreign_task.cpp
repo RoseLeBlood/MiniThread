@@ -40,9 +40,6 @@ foreign_task::foreign_task(void* t)
   m_iCore = xPortGetCoreID();
   m_iID = uxTaskGetTaskNumber(m_pHandle);
   m_usStackDepth = 0;
-  m_bMutexInit = false;
-
-  
 
   if (xPortInIsrContext()) {
     m_uiPriority = (basic_task::priority)uxTaskPriorityGetFromISR(m_pHandle);
