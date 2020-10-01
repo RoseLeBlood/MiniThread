@@ -88,10 +88,4 @@ bool basic_semaphore::try_lock() {
   return (lock( 0 ) == NO_ERROR);
 }
 
-//-----------------------------------
-//  is_initialized
-//-----------------------------------
-bool basic_semaphore::is_initialized() const { 
-  return m_pSpinlock != NULL;
-}
 

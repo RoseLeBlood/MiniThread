@@ -32,6 +32,8 @@
  * To use this, you need to subclass it. All of your basic_work_queue should
  * be derived from the basic_work_queue class. Then implement the virtual create_engine
  * and destroy_engine functions.
+ * 
+ * @ingroup queue
  */
 class basic_work_queue {
     friend class work_queue_task;

@@ -23,6 +23,8 @@
 
 /**
  * This class is the single tasked "engine" for work_queue_items.
+ * 
+ * @ingroup queue
  */
 class basic_work_queue_single : public basic_work_queue {
 public:

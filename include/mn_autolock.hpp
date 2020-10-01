@@ -23,6 +23,22 @@
 #include "mn_semaphore.hpp"
 #include "mn_critical.hpp"
 
+/**
+ * Macro for locked sections
+ * 
+ * @param LOCK The typ of lock class
+ * @param OBJECT The lock object
+ * 
+ * @example @code 
+ * mutex_t mutex;
+ * LOCKED_SECTION(mutex_t, mutex) {
+ *  locked
+ * }
+ * unlocked
+ * 
+ * @ingroup lock
+ */ 
+#define LOCKED_SECTION(LOCK, OBJECT) if( (basic_autolock<LOCK> lock(OBJECT)) )
 
 /**
  *  Synchronization helper class that leverages the C++ language to help
@@ -31,6 +47,9 @@
  *  Locking and Unlocking to behave following an RAII style. 
  *  The constructor of this helper object locks the LockObject. 
  *  The destructor unlocks the LockObject. 
+ * 
+ * @ingroup semaphore
+ * @ingroup lock
  */
 template <class LOCK = basic_mutex>
 class  basic_autolock {
@@ -56,14 +75,14 @@ public:
    * Helper for lock sections, see example
    * 
    * @example @code
-   * mutex_t mutex; mutex.create();
+   * LockType_t mutex;
    * 
-   * if( (basic_autolock<mutex_t>(mutex) lk) ) {
+   * if( (autolock_t lock(mutex)) ) {
    *   locked
    * }
    * unlocked
    */ 
-  explicit operator bool() { return m_ref_lock.is_initialized(); }
+  explicit operator bool() { return true; }
 
    /**
      *  We do not want a copy constructor.

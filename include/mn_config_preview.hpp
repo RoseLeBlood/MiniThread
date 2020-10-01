@@ -16,6 +16,11 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
+/**
+ * config items for next major version
+ * @ingroup preview
+ */
+
 #ifndef __MINLIB_MNTHREAD_PREVIEW_CONFIG_H__
 #define __MINLIB_MNTHREAD_PREVIEW_CONFIG_H__
 

@@ -32,6 +32,9 @@
  *  @note Recursive mutexes use more resources than standard mutexes. You
  *        should be sure that you actually need this type of synchronization
  *        before using it.
+ * 
+ * @ingroup mutex
+ * @ingroup lock
  */
 class recursive_mutex : public basic_mutex {
 public:

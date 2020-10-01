@@ -27,6 +27,7 @@
 
 /** 
  * Template class used to protect a shared resource with a Mutex.
+ * @ingroup preview
  */
 template <class TOBJECT>
 class basic_shared_object {

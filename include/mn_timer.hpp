@@ -22,6 +22,8 @@
 
 /**
  *  Wrapper class around FreeRTOS's implementation of a timer.
+ * 
+ * @ingroup base
  */
 class basic_timer {
 public:

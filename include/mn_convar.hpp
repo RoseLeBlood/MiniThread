@@ -28,10 +28,12 @@
 #include <list>
 #include "mn_mutex.hpp"
 
-//
-//  Forward declaration. We need to prevent a circular dependency
-//  between the basic_convar_task class and the basic_condition_variable class.
-//
+/**
+ * Forward declaration. We need to prevent a circular dependency
+ * between the basic_convar_task class and the basic_condition_variable class.
+ * 
+ * @ingroup condition-varible
+ */
 class basic_convar_task;
 
 /**

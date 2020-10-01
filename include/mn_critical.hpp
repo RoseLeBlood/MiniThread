@@ -25,6 +25,12 @@
 /**
  *  Wrapper class around various critical section type
  *  synchronization mechanisms within FreeRTOS.
+ * 
+ * @note In next major vision ar re implated
+ * 
+ * @ingroup obsolet
+ * @ingroup lock
+ * 
  */
 class basic_critical {
 public:

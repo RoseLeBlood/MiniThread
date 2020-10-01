@@ -24,28 +24,37 @@
 
 #include "excp/mn_lock_exptions.hpp"
 
-#if MN_THREAD_CONFIG_USE_LOCK_CREATE ==  MN_THREAD_CONFIG_YES
+#if MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES
     #if MN_THREAD_CONFIG_DEBUG  == MN_THREAD_CONFIG_YES
         /**
-         * Helper util to throw the lockcreate_exception exception, debug version
+         * Macro to throw the lockcreate_exception exception, debug version
          */ 
         #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE, __LINE__, __FILE__); 
+        #define THROW_LOCK_EXP(CODE, RET) throw lockcreate_exception(CODE, __LINE__, __FILE__);
     #else
         /**
-         * Helper util to throw the lockcreate_exception exception, only the code
+         * Macro to throw the lockcreate_exception exception, only the code
          */ 
         #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE); 
+        #define THROW_LOCK_EXP(CODE, RET) throw lockcreate_exception(CODE);
     #endif // MN_THREAD_CONFIG_DEBUG
 #else
     /**
-     * This THROW_LOCK_EXP util set only the error code
+     * This Macro util set only the error code
      */ 
     #define THROW_LOCK_EXP(CODE) set_error(CODE); 
-#endif //MN_THREAD_CONFIG_USE_LOCK_CREATE
+    /**
+     * This Macro util set only the error code, and return setted return code
+     */ 
+    #define THROW_LOCK_EXP(CODE, RET)  { set_error(CODE); return RET; }
+#endif //MN_THREAD_CONFIG_USE_EXCEPTIONS
 
 /**
  *
  *  Base wrapper class around FreeRTOS's implementation of semaphores.
+ * 
+ * @ingroup semaphore
+ * @ingroup lock
  */
 class basic_semaphore : public ILockObject {
 public:
@@ -80,13 +89,6 @@ public:
    * @return true if the Lock was acquired, false when not
    */
   virtual bool try_lock();
-
-  /**
-   * Is the spinlock created (initialized) ?
-   * 
-   * @return true if the spinlock created (initialized) and false when not
-   */
-  bool is_initialized() const;
 
   /**
    * Get the FreeRTOS handle

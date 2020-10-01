@@ -37,6 +37,8 @@
  * 
  * @note using foreign_task::create_from to create all using LockObjects 
  * objects
+ * 
+ * @ingroup task
  */
 class foreign_task : public basic_task {
 private: 

@@ -23,6 +23,8 @@
 /**
  *  Queue class wrapper for FreeRTOS queues
  *  @note can use at the ISR Context, too. This wrapper switch automatic 
+ * 
+ * @ingroup queue
  */
 class basic_queue {
 public:

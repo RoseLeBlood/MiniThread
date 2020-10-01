@@ -25,10 +25,10 @@ public:
   /**
    * Create the binary semaphore
    * 
-   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+   * @note When enabled the config item MN_THREAD_CONFIG_USE_EXCEPTIONS then throw on error
    * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
    * enabled, then with debug informations.
-   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
+   * When the config item MN_THREAD_CONFIG_USE_EXCEPTIONS disabled then get the created error code
    * with basic_semaphore::get_error()
    */
   basic_binary_semaphore();

@@ -35,6 +35,8 @@
  * the sizes of object types used in the application 
  * The MemoryPool can be initialised partially or completely , based on the 
  * need and the frequency of occurence of certain types of object; 
+ * 
+ * @ingroup preview-memory
  */
 class basic_free_list_mempool : public IMemPool {
     /**

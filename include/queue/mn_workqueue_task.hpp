@@ -25,6 +25,8 @@ class basic_work_queue;
 
 /**
  * The basic worker task for single task and multi task workqueue engines
+ * 
+ * @ingroup queue
  */ 
 class work_queue_task : public basic_task {
     public:

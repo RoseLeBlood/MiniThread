@@ -22,6 +22,8 @@
 
 /**
  *  A deque class that implements a double ended queue.
+ * 
+ * @ingroup queue
  */
 class basic_deque : public basic_queue {
 public:

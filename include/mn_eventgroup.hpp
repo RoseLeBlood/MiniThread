@@ -23,6 +23,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 
+/**
+ * @ingroup base
+ */ 
 class basic_event_group {
 public:
     /**

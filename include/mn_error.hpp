@@ -19,6 +19,10 @@
 #define MINLIB_ESP32_ERROR_
 
 /**
+ * @ingroup base
+ */
+
+/**
  * No Error
  */
 #define NO_ERROR                        0

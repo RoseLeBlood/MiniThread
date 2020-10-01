@@ -23,6 +23,9 @@
 
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 
+/**
+ * @ingroup preview
+ */ 
 class basic_ringbuffer {
 
 };

@@ -22,6 +22,8 @@
  * To use this, you need to subclass it. All of your work_queue_item should
  * be derived from this class. Then implement the virtual on_work
  * function.
+ * 
+ * @ingroup queue
  */
 class work_queue_item {
 public:

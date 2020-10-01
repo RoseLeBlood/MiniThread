@@ -28,6 +28,10 @@
 #include <sys/signal.h>
 
 /**
+ * @ingroup base
+ */
+
+/**
  * Delay a given task for a given number of seconds.  
  */ 
 unsigned mn_sleep(unsigned int secs);

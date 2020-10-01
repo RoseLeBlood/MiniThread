@@ -25,6 +25,9 @@
  *  Base wrapper class around FreeRTOS's implementation of mutexes.
  *  These objects are not recursively acquirable. Calling lock() twice from
  *  the same Thread (i.e. task) will deadlock.
+ * 
+ * @ingroup mutex
+ * @ingroup lock
  */
 class basic_mutex : public basic_semaphore {
 public:

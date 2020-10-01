@@ -34,6 +34,8 @@
  * To use this, you need to subclass it. All of your task should
  * be derived from the basic_task class. Then implement the virtual on_message
  * function.
+ * 
+ * @ingroup task
  */
 class basic_message_task : public basic_convar_task  {
 public:

@@ -31,7 +31,7 @@
 /**
  * Extension of the basic thread with condition variable support
  * 
- * 
+ * @ingroup condition-varible
  */ 
 class basic_convar_task : public basic_task {
     /**

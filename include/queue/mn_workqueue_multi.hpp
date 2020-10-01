@@ -23,6 +23,8 @@
 
 /**
  * This class is the multi task "engine" for work_queue_items.
+ * 
+ * @ingroup queue
  */
 class basic_work_queue_multi : public basic_work_queue {
 public:

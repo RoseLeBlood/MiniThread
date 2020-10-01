@@ -24,6 +24,8 @@
  *  Binary queue with overwrite. This queue can only hold one item.
  *  If sucessive Enqueue operations are called, that item is overwritten
  *  with whatever the last item was.
+ * 
+ * @ingroup queue
  */
 class basic_binaryqueue : public basic_queue {
 public:

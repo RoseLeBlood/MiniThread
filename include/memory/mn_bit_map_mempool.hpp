@@ -26,6 +26,9 @@
 #include <set>
 #include <list>
 
+/**
+ * @ingroup preview-memory
+ */
 class basic_bitmap_mempool : public IMemPool {
     
 };

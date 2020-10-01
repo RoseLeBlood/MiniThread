@@ -18,6 +18,11 @@
 #ifndef MINLIB_ESP32_ERROR_PREVIEW_
 #define MINLIB_ESP32_ERROR_PREVIEW_
 
+/**
+ * Error codes for next major version
+ * @ingroup preview
+ */
+
 #include "mn_error.hpp"
 
 #define ERR_MEMPOOL_OK                    NO_ERROR

@@ -30,6 +30,8 @@
  * To use this, you need to subclass it. All of your MemPools should
  * be derived from the ILockObject class. Then implement the virtual allocate
  * and free functions.
+ * 
+ * @ingroup preview-memory
  */ 
 class IMemPool {
 public:

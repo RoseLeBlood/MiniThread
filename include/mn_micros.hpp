@@ -19,6 +19,10 @@
 #define _MNTHREAD_MICROS_H_
 
 /**
+ * @ingroup base
+ */
+
+/**
  * Get the current micros 
  * @return Current micros
  */

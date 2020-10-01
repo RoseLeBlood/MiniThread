@@ -22,6 +22,8 @@
 
 /**
  * Version wrapper for this library
+ * 
+ * @ingroup base
  */ 
 class libmnVersion {
 private:

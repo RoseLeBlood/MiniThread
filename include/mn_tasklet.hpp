@@ -35,6 +35,8 @@
  *  To use this, you need to subclass it. All of your coroutines should
  *  be derived from the basic_tasklet class. Then implement the virtual on_coroutine
  *  function.
+ * 
+ * @ingroup task
  */
 
 class basic_tasklet {

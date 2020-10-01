@@ -20,6 +20,10 @@
 #define __MINLIB_MNTHREAD_CONFIG_H__
 
 /**
+ * @ingroup base
+ */
+
+/**
  * All cunfig properties can override in your sdkconfig.h 
  */ 
 #ifdef ESP_BUILD_WITH_SDKCONFIG

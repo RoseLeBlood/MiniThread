@@ -35,6 +35,8 @@
  *  To use this, you need to subclass it. All of your task should
  *  be derived from the basic_task class. Then implement the virtual on_task
  *  function.
+ * 
+ * @ingroup task
  */
 class  basic_task {
 public:

@@ -20,6 +20,10 @@
 
 #include "mn_basic_semaphore.hpp"
 
+/**
+ * @ingroup semaphore
+ * @ingroup lock
+ */ 
 class basic_counting_semaphore : public basic_semaphore {
 public:
   /**
