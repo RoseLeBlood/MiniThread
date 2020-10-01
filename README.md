@@ -1,4 +1,4 @@
-# Mini Thread 1.90-beta2.0 (2.0.0 preview)
+# Mini Thread 1.91-beta2.0 (2.0.0 preview)
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
@@ -8,21 +8,20 @@ And wrappers for:
    +  workqueues (multithreaded and singlethreaded workqueues)
    +  Timers, Protothreads and event groups
 
-For more detailed information about the library, please refer to the library documentation (https://roseleblood.github.io/mnthread-docs/) and Examples you find in the extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples)
-
 The license that applies to the library is the LGPL.The license texts of these
 licenses can be found in the files [LICENSE](LICENSE.md) of the
 source code archive.
 
-## Workspace 
-<table>
-<tr>  <td>Directory</td> <td>Info</td> </tr>
-<tr>  <td>/.</td> <td>all basics: task, semaphores. timer ... </td> </tr>
-<tr>  <td>/memory</td> <td>mempool handling</td> </tr>
-<tr>  
-  <td>/queue</td> <td>FreeRTOS queue's and workqueue-engines</td> </tr>
-<tr>  <td>/slock</td> <td>System interrupt, schedular and ...  autolock helper</td> </tr>
-</table>
+## Folder Strutur
+- include and src: 
+  - / : all basics: task, semaphores. timer ...
+  - memory: mempool handling
+  - queue: FreeRTOS queue's and workqueue-engines
+  - slock: ystem interrupt, schedular and ...  autolock helper 
+- doc: Files to create the docu with doxygen 
+  - The online pre builded version: https://roseleblood.github.io/mnthread-docs/
+- example; The basic's example, and for more see extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples)
+
 
 ## Simple Example
 ```cpp
