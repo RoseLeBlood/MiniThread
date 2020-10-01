@@ -33,8 +33,7 @@
  *  The destructor unlocks the LockObject. 
  */
 template <class LOCK = basic_mutex>
-class  basic_autolock
-{
+class  basic_autolock {
 public:
   /**
    *  Create a basic_autolock with a specific LockType.
@@ -51,12 +50,26 @@ public:
    */
 	~basic_autolock() {
      m_ref_lock.unlock();
-   }
+  }
+
+  /**
+   * Helper for lock sections, see example
+   * 
+   * @example @code
+   * mutex_t mutex; mutex.create();
+   * 
+   * if( (basic_autolock<mutex_t>(mutex) lk) ) {
+   *   locked
+   * }
+   * unlocked
+   */ 
+  explicit operator bool() { return m_ref_lock.is_initialized(); }
 
    /**
      *  We do not want a copy constructor.
      */
    basic_autolock(const basic_autolock&) = delete;
+   basic_autolock& operator=(const basic_autolock&) = delete;
 private:
   /**
    *  Reference to the LockObject we locked, so it can be unlocked

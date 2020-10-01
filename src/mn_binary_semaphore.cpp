@@ -24,31 +24,23 @@
 //-----------------------------------
 //  construtor
 //-----------------------------------
-basic_binary_semaphore::basic_binary_semaphore() : basic_semaphore() { }
-
-//-----------------------------------
-//  create
-//-----------------------------------
-int basic_binary_semaphore::create() {
-  if (m_pSpinlock != NULL)
-    return ERR_SPINLOCK_ALREADYINIT;
-
+basic_binary_semaphore::basic_binary_semaphore() 
+  : basic_semaphore() { 
+  
   m_pSpinlock = xSemaphoreCreateBinary();
-
 
   if (m_pSpinlock) {
     unlock();
-    return ERR_SPINLOCK_OK;
+  } else {
+    THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
   }
-  return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }
 
 //-----------------------------------
-//  destroy
+//  deconstrutor
 //-----------------------------------
-int basic_binary_semaphore::destroy() {
-  vSemaphoreDelete(m_pSpinlock);
-  m_pSpinlock = NULL;
-
-  return ERR_SPINLOCK_OK;
+basic_binary_semaphore::~basic_binary_semaphore() {
+  if(m_pSpinlock != NULL) {
+    vSemaphoreDelete(m_pSpinlock);
+  }
 }

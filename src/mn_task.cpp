@@ -22,39 +22,35 @@
 //  construtor
 //-----------------------------------
 basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
-     unsigned short  usStackDepth) {
-  m_strName = strName;
-  m_uiPriority = uiPriority;
-  m_usStackDepth = usStackDepth;
-  m_bMutexInit = false;
-  m_bRunning = false;
-
-  m_pChild = NULL;
-  m_pParent = NULL;
-}
+     unsigned short  usStackDepth) 
+      : m_runningMutex(), 
+        m_contextMutext(), 
+        m_continuemutex(),
+        m_continuemutex2(),
+        m_strName(name), 
+        m_uiPriority(uiPriority),
+        m_usStackDepth(usStackDepth), 
+        m_retval(NULL),
+        m_bRunning(false),
+        m_iID(0), 
+        m_iCore(-1), 
+        m_pHandle(NULL),
+        m_pChild(NULL),
+        m_pParent(NULL) { }
 
 //-----------------------------------
 //  deconstrutor
 //-----------------------------------
 basic_task::~basic_task() {
-  vTaskDelete(handle); 
-
-  if(!m_bRunning) { 
-
-    if(m_runningMutex != NULL) m_runningMutex->destroy();
-    if(m_runningMutex != NULL) m_contextMutext->destroy();
-    if(m_runningMutex != NULL) m_continuemutex->destroy();
-    if(m_runningMutex != NULL) m_continuemutex2->destroy();
-
-    m_bMutexInit =false; 
-  }
+  if(m_pHandle != NULL)
+    vTaskDelete(m_pHandle); 
 }
 
 //-----------------------------------
 //  get_root
 //-----------------------------------
 basic_task*  basic_task::get_root() {
-  autolock_t autolock(*m_contextMutext);
+  autolock_t autolock(m_contextMutext);
 
   basic_task* root = 0;
 
@@ -68,7 +64,7 @@ basic_task*  basic_task::get_root() {
 //  get_child
 //-----------------------------------
 basic_task*  basic_task::get_child() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
 
   basic_task* child = 0;
   child = m_pChild;
@@ -79,7 +75,7 @@ basic_task*  basic_task::get_child() {
 //  add_child_task
 //-----------------------------------
 bool basic_task::add_child_task(basic_task* task) {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
 
   bool ret = true;
    task->m_pParent = this;
@@ -90,54 +86,36 @@ bool basic_task::add_child_task(basic_task* task) {
 }
 
 //-----------------------------------
-//  create
+//  start
 //-----------------------------------
-int basic_task::create(int uiCore) {
-  if(!m_bMutexInit) {
-    m_runningMutex = new LockType_t();
-    m_contextMutext = new LockType_t();
+int basic_task::start(int iCore) {
+  m_iCore = iCore;
 
-    m_continuemutex = new LockType_t();
-    m_continuemutex2 = new LockType_t();
-
-
-    if(m_runningMutex->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-    if(m_contextMutext->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-
-    if(m_continuemutex->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-    if(m_continuemutex2->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-
-    m_bMutexInit = true;
-  }
-  m_continuemutex->lock();
-	m_runningMutex->lock();
+  m_continuemutex.lock();
+	m_runningMutex.lock();
 	if (m_bRunning)
 	{
-		m_runningMutex->unlock();
-		m_continuemutex->unlock();
+		m_runningMutex.unlock();
+		m_continuemutex.unlock();
 		return ERR_TASK_ALREADYRUNNING;
 	}
-	m_runningMutex->unlock();
+	m_runningMutex.unlock();
 
   xTaskCreatePinnedToCore(&runtaskstub, m_strName,
               m_usStackDepth,
-              this, (int)m_uiPriority, &handle, uiCore);
+              this, (int)m_uiPriority, &m_pHandle, m_iCore);
 
-	if (handle == 0) {
-    m_continuemutex->unlock();
+	if (m_pHandle == 0) {
+    m_continuemutex.unlock();
 		return ERR_TASK_CANTSTARTTHREAD;
   }
 
-  m_runningMutex->lock();
-  m_iCore = uiCore;
-  m_iID = uxTaskGetTaskNumber(handle); //get_new_id(); uxTaskGetTaskNumber
-  on_create();
-  m_continuemutex->unlock();
-  m_runningMutex->unlock();
+  m_runningMutex.lock();
+
+  m_iID = uxTaskGetTaskNumber(m_pHandle); //get_new_id();
+  on_start();
+  m_continuemutex.unlock();
+  m_runningMutex.unlock();
 
 	return ERR_TASK_OK;
 }
@@ -146,21 +124,21 @@ int basic_task::create(int uiCore) {
 //  kill
 //-----------------------------------
 int basic_task::kill() {
-  m_continuemutex->lock();
-  m_runningMutex->lock();
+  m_continuemutex.lock();
+  m_runningMutex.lock();
 
 	if (!m_bRunning) {
-    m_runningMutex->unlock();
-    m_continuemutex->unlock();
+    m_runningMutex.unlock();
+    m_continuemutex.unlock();
 
 		return ERR_TASK_NOTRUNNING;
 	}
-  vTaskDelete(handle); handle = 0;
+  vTaskDelete(m_pHandle); m_pHandle = 0;
   m_bRunning = false;
   on_kill();
 
-  m_runningMutex->unlock();
-  m_continuemutex->unlock();
+  m_runningMutex.unlock();
+  m_continuemutex.unlock();
   
 	return ERR_TASK_OK;
 }
@@ -169,23 +147,23 @@ int basic_task::kill() {
 //  is_running
 //-----------------------------------
 bool basic_task::is_running() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
   return m_bRunning;
 }
 
 //-----------------------------------
 //  get_id
 //-----------------------------------
-uint32_t basic_task::get_id() {
-  autolock_t autolock(*m_runningMutex);
+int32_t basic_task::get_id() {
+  autolock_t autolock(m_runningMutex);
 	return m_iID;
 }
 
 //-----------------------------------
 //  get_on_core
 //-----------------------------------
-uint32_t basic_task::get_on_core() {
-  autolock_t autolock(*m_runningMutex);
+int32_t basic_task::get_on_core() {
+  autolock_t autolock(m_runningMutex);
 	return m_iCore;
 }
 
@@ -193,7 +171,7 @@ uint32_t basic_task::get_on_core() {
 //  get_name
 //-----------------------------------
 const char* basic_task::get_name() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
 
 	return m_strName;
 }
@@ -202,14 +180,14 @@ const char* basic_task::get_name() {
 //  get_priority
 //-----------------------------------
 basic_task::priority basic_task::get_priority() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
   
-  if(handle == NULL) return m_uiPriority;
+  if(m_pHandle == NULL) return m_uiPriority;
 
   if (xPortInIsrContext()) {
-    return (basic_task::priority)uxTaskPriorityGetFromISR(handle);
+    return (basic_task::priority)uxTaskPriorityGetFromISR(m_pHandle);
   } else {
-	  return (basic_task::priority)uxTaskPriorityGet(handle);
+	  return (basic_task::priority)uxTaskPriorityGet(m_pHandle);
   }
 }
 
@@ -217,7 +195,7 @@ basic_task::priority basic_task::get_priority() {
 //  get_stackdepth
 //-----------------------------------
 unsigned short basic_task::get_stackdepth() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
 	return m_usStackDepth;
 }
 
@@ -225,15 +203,15 @@ unsigned short basic_task::get_stackdepth() {
 //  get_handle
 //-----------------------------------
 xTaskHandle basic_task::get_handle() {
-  autolock_t autolock(*m_runningMutex);
-	return handle;
+  autolock_t autolock(m_runningMutex);
+	return m_pHandle;
 }
 
 //-----------------------------------
 //  get_tasks
 //-----------------------------------
 uint32_t basic_task::get_tasks() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
   return uxTaskGetNumberOfTasks();
 }
 
@@ -241,15 +219,15 @@ uint32_t basic_task::get_tasks() {
 //  get_state
 //-----------------------------------
 basic_task::state basic_task::get_state() {
-  autolock_t autolock(*m_runningMutex);
-  return eTaskGetState(handle);
+  autolock_t autolock(m_runningMutex);
+  return eTaskGetState(m_pHandle);
 }
 
 //-----------------------------------
 //  get_return_value
 //-----------------------------------
 void *basic_task::get_return_value() {
-	autolock_t autolock(*m_runningMutex);
+	autolock_t autolock(m_runningMutex);
 	return (m_bRunning) ? NULL : m_retval;
 }
 
@@ -257,7 +235,7 @@ void *basic_task::get_return_value() {
 //  get_time_since_start
 //-----------------------------------
 uint32_t basic_task::get_time_since_start() {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
 	return (uint32_t)(xTaskGetTickCount()*portTICK_PERIOD_MS);
 }
 
@@ -265,26 +243,26 @@ uint32_t basic_task::get_time_since_start() {
 //  set_priority
 //-----------------------------------
 void  basic_task::set_priority(basic_task::priority uiPriority) {
-  autolock_t autolock(*m_runningMutex);
+  autolock_t autolock(m_runningMutex);
   m_uiPriority = uiPriority;
-  if(handle != NULL)
-    vTaskPrioritySet(handle, uiPriority);
+  if(m_pHandle != NULL)
+    vTaskPrioritySet(m_pHandle, uiPriority);
 }
 
 //-----------------------------------
 //  suspend
 //-----------------------------------
 void basic_task::suspend() {
-  autolock_t autolock(*m_runningMutex);
-  vTaskSuspend( handle );
+  autolock_t autolock(m_runningMutex);
+  vTaskSuspend( m_pHandle );
 }
 
 //-----------------------------------
 //  resume
 //-----------------------------------
 void basic_task::resume() {
-  autolock_t autolock(*m_runningMutex);
-  vTaskResume(handle);
+  autolock_t autolock(m_runningMutex);
+  vTaskResume(m_pHandle);
 }
 
 //-----------------------------------
@@ -296,31 +274,31 @@ void basic_task::runtaskstub(void* parm) {
 
 	esp_task = (static_cast<basic_task*>(parm));
 
-  esp_task->m_continuemutex2->lock();
-  esp_task->m_runningMutex->lock();
+  esp_task->m_continuemutex2.lock();
+  esp_task->m_runningMutex.lock();
 	esp_task->m_bRunning = true;
-  esp_task->m_runningMutex->unlock();
+  esp_task->m_runningMutex.unlock();
 
-  esp_task->m_continuemutex->lock();
-	esp_task->m_continuemutex->unlock();
+  esp_task->m_continuemutex.lock();
+	esp_task->m_continuemutex.unlock();
 
   esp_task->task_started();
   ret = esp_task->on_task();
   esp_task->on_cleanup();
 
-  esp_task->m_runningMutex->lock();
+  esp_task->m_runningMutex.lock();
 	esp_task->m_bRunning = false;
 	esp_task->m_retval = ret;
-  vTaskDelete(esp_task->handle);
-  esp_task->handle = 0;
+  vTaskDelete(esp_task->m_pHandle);
+  esp_task->m_pHandle = 0;
 
-  esp_task->m_runningMutex->unlock();
+  esp_task->m_runningMutex.unlock();
 }
 
 //-----------------------------------
 //  task_started
 //-----------------------------------
 void basic_task::task_started() {
-  m_continuemutex2->unlock();
+  m_continuemutex2.unlock();
 }
 

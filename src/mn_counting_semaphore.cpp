@@ -26,39 +26,28 @@
 basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount) 
   : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
     
-}
+    if ( (m_uiMaxCount < m_uiCount) && (m_uiMaxCount == 0) ) {
+      THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
+    } else {
+      m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
 
-//-----------------------------------
-//  destroy
-//-----------------------------------
-int basic_counting_semaphore::destroy() {
-  vSemaphoreDelete(m_pSpinlock);
-  m_pSpinlock = NULL;
-
-  return ERR_SPINLOCK_OK;
-}
-
-//-----------------------------------
-//  create
-//-----------------------------------
-int basic_counting_semaphore::create() {
-  if (m_pSpinlock != NULL)
-    return ERR_SPINLOCK_ALREADYINIT;
-
-  if (m_uiMaxCount < m_uiCount)
-    return ERR_SPINLOCK_BAD_INITIALCOUNT;
-
-  if (m_uiMaxCount == 0) {
-    m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
-
-
-
-    if (m_pSpinlock) {
-      unlock();
-      return ERR_SPINLOCK_OK;
+      if (m_pSpinlock) {
+        unlock();
+      } else {
+        THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
+      }
     }
+}
+
+//-----------------------------------
+//  deconstrutor
+//-----------------------------------
+basic_counting_semaphore::~basic_counting_semaphore() {
+  if(m_pSpinlock) {
+    vSemaphoreDelete(m_pSpinlock);
+  } else {
+    THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
   }
-  return ERR_SPINLOCK_CANTCREATESPINLOCK;
 }
 
 //-----------------------------------

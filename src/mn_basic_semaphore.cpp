@@ -29,8 +29,15 @@
 //-----------------------------------
 //  construtor
 //-----------------------------------
-basic_semaphore::basic_semaphore() : m_pSpinlock(NULL) {
+basic_semaphore::basic_semaphore() 
+  : m_pSpinlock(NULL) { }
 
+basic_semaphore::basic_semaphore(const basic_semaphore& other)
+  : m_pSpinlock(other.m_pSpinlock) { 
+
+  if(!is_initialized()) {
+    THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+  }
 }
 
 //-----------------------------------
@@ -38,9 +45,6 @@ basic_semaphore::basic_semaphore() : m_pSpinlock(NULL) {
 //-----------------------------------
 int basic_semaphore::lock(unsigned int timeout) {
   BaseType_t success;
-
-  if (m_pSpinlock == NULL)
-    return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -50,7 +54,10 @@ int basic_semaphore::lock(unsigned int timeout) {
    } else {
     success = xSemaphoreTake(m_pSpinlock, timeout);
    }
-   return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_LOCK;
+   if(success != pdTRUE) {
+     return ERR_SPINLOCK_LOCK;
+   }
+   return ERR_SPINLOCK_OK;
 }
 
 //-----------------------------------
@@ -58,9 +65,6 @@ int basic_semaphore::lock(unsigned int timeout) {
 //-----------------------------------
 int basic_semaphore::unlock() {
   BaseType_t success;
-
-  if (m_pSpinlock == NULL)
-    return ERR_SPINLOCK_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -70,14 +74,18 @@ int basic_semaphore::unlock() {
    } else {
 			success = xSemaphoreGive(m_pSpinlock);
   }
-  return success == pdTRUE ? ERR_SPINLOCK_OK : ERR_SPINLOCK_UNLOCK;
+  if(success != pdTRUE) {
+     return ERR_SPINLOCK_UNLOCK;
+  }
+  
+  return ERR_SPINLOCK_OK;
 }
 
 //-----------------------------------
 //  try_lock
 //-----------------------------------
 bool basic_semaphore::try_lock() {
-  return (lock( 0 ) == ERR_SPINLOCK_OK);
+  return (lock( 0 ) == NO_ERROR);
 }
 
 //-----------------------------------

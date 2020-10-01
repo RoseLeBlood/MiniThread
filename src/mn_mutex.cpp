@@ -28,35 +28,22 @@
 //-----------------------------------
 //  construtor
 //-----------------------------------
-basic_mutex::basic_mutex() : basic_semaphore() { }
-
-//-----------------------------------
-//  create
-//-----------------------------------
-int basic_mutex::create() { 
-  if (m_pSpinlock != NULL)
-    return ERR_MUTEX_ALREADYINIT;
-
+basic_mutex::basic_mutex() : basic_semaphore() { 
   m_pSpinlock = xSemaphoreCreateMutex();
 
   if (m_pSpinlock) {
     unlock();
-    return ERR_MUTEX_OK;
+  } else {
+    THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
   }
-
-  return ERR_MUTEX_CANTCREATEMUTEX;
 }
 
 //-----------------------------------
-//  destroy
+//  deconstrutor
 //-----------------------------------
-int basic_mutex::destroy() {
-  if (m_pSpinlock == NULL)
-    return ERR_MUTEX_NOTINIT;
-
-  vSemaphoreDelete(m_pSpinlock);
-
-  return ERR_MUTEX_OK;
+void basic_mutex::~basic_mutex() {
+  if (m_pSpinlock != NULL)
+    vSemaphoreDelete(m_pSpinlock);
 }
 
 //-----------------------------------
@@ -65,19 +52,19 @@ int basic_mutex::destroy() {
 int basic_mutex::lock(unsigned int timeout) {
   BaseType_t success;
 
-  if (m_pSpinlock == NULL)
-    return ERR_MUTEX_NOTINIT;
-
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
        success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
        if(xHigherPriorityTaskWoken)
          _frxt_setup_switch();
-   } else {
+  } else {
     success = xSemaphoreTake(m_pSpinlock, timeout);
-   }
+  }
 
-  return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_LOCK;
+  if(success != pdTRUE ) {
+    return ERR_MUTEX_LOCK;
+  } 
+  return ERR_MUTEX_OK;
 }
 
 //-----------------------------------
@@ -85,9 +72,6 @@ int basic_mutex::lock(unsigned int timeout) {
 //-----------------------------------
 int basic_mutex::unlock() {
   BaseType_t success;
-
-  if (m_pSpinlock == NULL)
-    return ERR_MUTEX_NOTINIT;
 
   if (xPortInIsrContext()) {
        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -97,7 +81,11 @@ int basic_mutex::unlock() {
    } else {
 			success = xSemaphoreGive(m_pSpinlock);
   }
-  return success == pdTRUE ? ERR_MUTEX_OK : ERR_MUTEX_UNLOCK;
+
+  if(success != pdTRUE ) {
+    return ERR_MUTEX_UNLOCK;
+  } 
+  return ERR_MUTEX_OK;
 }
 
 //-----------------------------------

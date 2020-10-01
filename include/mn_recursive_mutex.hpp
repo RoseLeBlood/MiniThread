@@ -35,17 +35,16 @@
  */
 class recursive_mutex : public basic_mutex {
 public:
-  recursive_mutex();
-  virtual ~recursive_mutex() { destroy(); }
   /**
-   * Create the Mutex 
+   * Create the recursive mutex
    * 
-   * @return 'ERR_MUTEX_OK' the mutex are created, 'ERR_MUTEX_ALREADYINIT' the mutex are already created and
-   *         'ERR_MUTEX_CANTCREATEMUTEX' on error.
-   * 
-   * @note create the mutex with 'xSemaphoreCreateRecursiveMutex'
+   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+   * enabled, then with debug informations.
+   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the error code
+   * with basic_semaphore::get_error()
    */
-  virtual int create();
+  recursive_mutex();
   
   /**
    *  Lock the Mutex.

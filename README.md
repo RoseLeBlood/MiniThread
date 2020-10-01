@@ -14,6 +14,16 @@ The license that applies to the library is the LGPL.The license texts of these
 licenses can be found in the files [LICENSE](LICENSE.md) of the
 source code archive.
 
+## Workspace 
+<table>
+<tr>  <td>Directory</td> <td>Info</td> </tr>
+<tr>  <td>/.</td> <td>all basics: task, semaphores. timer ... </td> </tr>
+<tr>  <td>/memory</td> <td>mempool handling</td> </tr>
+<tr>  
+  <td>/queue</td> <td>FreeRTOS queue's and workqueue-engines</td> </tr>
+<tr>  <td>/slock</td> <td>System interrupt, schedular and ...  autolock helper</td> </tr>
+</table>
+
 ## Simple Example
 ```cpp
 //simple_example.cpp
@@ -65,13 +75,10 @@ extern "C" void app_main() {
 - [ ] uxTaskGetStackHighWaterMark add to task class
   - [ ]  get stackpointer and other things
 - [ ] task Local Storage
+- [ ] Optional:
+  - [ ] In Timers, add OnStop / OnStart / mutex sync with these methods?
+  - [ ] Priority queues
   
-
-### New Value Added
-+ In Timers, add OnStop / OnStart / mutex sync with these methods?
-+ Priority queues
-+ Tick Hooks - option to round robin hooks, one per tick
-
 
 ## ChangeLog
 

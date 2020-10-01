@@ -19,8 +19,29 @@
 #define MINLIB_ESP32_BASE_SEMAPHORE_
 
 #include "mn_error.hpp"
-#include "mn_config.hpp"
+#include "mn_config_preview.hpp"
 #include "mn_lock.hpp"
+
+#include "excp/mn_lock_exptions.hpp"
+
+#if MN_THREAD_CONFIG_USE_LOCK_CREATE ==  MN_THREAD_CONFIG_YES
+    #if MN_THREAD_CONFIG_DEBUG  == MN_THREAD_CONFIG_YES
+        /**
+         * Helper util to throw the lockcreate_exception exception, debug version
+         */ 
+        #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE, __LINE__, __FILE__); 
+    #else
+        /**
+         * Helper util to throw the lockcreate_exception exception, only the code
+         */ 
+        #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE); 
+    #endif // MN_THREAD_CONFIG_DEBUG
+#else
+    /**
+     * This THROW_LOCK_EXP util set only the error code
+     */ 
+    #define THROW_LOCK_EXP(CODE) set_error(CODE); 
+#endif //MN_THREAD_CONFIG_USE_LOCK_CREATE
 
 /**
  *
@@ -28,8 +49,8 @@
  */
 class basic_semaphore : public ILockObject {
 public:
-  basic_semaphore(); 
-  
+  basic_semaphore();
+  basic_semaphore(const basic_semaphore& other);
   /**
    *  Aquire (take) a semaphore.
    *
@@ -73,11 +94,17 @@ public:
    * @return the FreeRTOS handle
    */
   void* get_handle()                      { return m_pSpinlock; }
+
+  int   get_error()                       { return m_iCreateErrorCode; }
+protected:
+  void  set_error(int error)              { m_iCreateErrorCode = error; }
 protected:
   /**
    *  FreeRTOS semaphore handle.
    */
 	void* m_pSpinlock;
+
+  int m_iCreateErrorCode;
   
 };
 

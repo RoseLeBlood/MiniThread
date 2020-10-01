@@ -22,26 +22,17 @@
 
 class basic_binary_semaphore : public basic_semaphore {
 public:
+  /**
+   * Create the binary semaphore
+   * 
+   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+   * enabled, then with debug informations.
+   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
+   * with basic_semaphore::get_error()
+   */
   basic_binary_semaphore();
-  virtual ~basic_binary_semaphore() { destroy(); }
-
-  /**
-   * Create the binary semaphore  
-   * 
-   * @return 'ERR_SPINLOCK_OK' the mutex are created, 'ERR_SPINLOCK_ALREADYINIT' the mutex are already created,
-   *         'ERR_SPINLOCK_BAD_INITIALCOUNT' when the initial count greater than maxcount is and 
-   *         'ERR_SPINLOCK_CANTCREATEMUTEX' on error.
-   * 
-   */
-  virtual int create();
-
-  /**
-   * Destroyed the binary semaphore
-   * 
-   * @return 'ERR_SPINLOCK_OK' the mutex are destroyed 
-   * or ERR_SPINLOCK_NOTINIT when mutex not created
-   */
-  virtual int destroy();
+  virtual ~basic_binary_semaphore();
 };
 
 using binary_semaphore_t = basic_binary_semaphore;

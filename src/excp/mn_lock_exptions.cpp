@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -15,56 +15,29 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "mn_config.hpp"
-
-#if (configUSE_RECURSIVE_MUTEXES == 1)
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "freertos/task.h"
-#include <stdio.h>
-
-#include "freertos/FreeRTOS.h"
-#include "esp_attr.h"
-
-
-#include "mn_recursive_mutex.hpp"
+#include "excp/mn_lock_exptions.hpp"
 
 //-----------------------------------
-//  construtor
+//  Constructor
 //-----------------------------------
-recursive_mutex::recursive_mutex() 
-    : basic_mutex() {
+lockcreate_exception::lockcreate_exception(int code) 
+    : m_iCode(code), m_iLine(0), m_iFile("nofile")  { }
 
-    m_pSpinlock = xSemaphoreCreateRecursiveMutex();
+//-----------------------------------
+//  Constructor - debug
+//-----------------------------------
+lockcreate_exception::lockcreate_exception(int code. int line, const char* file) 
+        : m_iCode(code), m_iLine(line), m_iFile(file) { }
 
-    if (m_pSpinlock) {
-        unlock();
-    } else {
-        THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
-    }
-}
 //-----------------------------------
-//  lock
+//  what
 //-----------------------------------
-int recursive_mutex::lock(unsigned int timeout) {
+const char* lockcreate_exception::what() {
+    std::string __text = std::string("Error on creating the lock object, on ");
+                __text += std::string(m_iLine) + std::string(" at ") + std::string(m_iFile);
+                __text += std::string(" with code ") + std::string(m_iCode);
     
-    if(xSemaphoreTakeRecursive(m_pSpinlock, timeout) != pdTRUE) {
-        return ERR_MUTEX_LOCK;
-    } 
-    return ERR_MUTEX_OK; 
+    return __text.c_str();
 }
-
-//-----------------------------------
-//  unlock
-//-----------------------------------
-int recursive_mutex::unlock() {
-
-    if(xSemaphoreGiveRecursive(m_pSpinlock) != pdTRUE) {
-        return ERR_MUTEX_UNLOCK;
-    } 
-    return ERR_MUTEX_OK; 
-}
-
 
 #endif

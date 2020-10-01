@@ -23,7 +23,14 @@
 class basic_counting_semaphore : public basic_semaphore {
 public:
   /**
-   *  Constructor to set the basic properties for this spinlock.
+   * Create the counting semaphore
+   * 
+   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+   * enabled, then with debug informations.
+   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
+   * with basic_semaphore::get_error()
+   *
    * 
    *  @param count Must not be greater than maxCount.
    *  @param maxcount Must be greater than 0.
@@ -31,24 +38,7 @@ public:
   basic_counting_semaphore(int count = MN_THREAD_CONFIG_CSEMAPHORE_MIN_COUNT, 
                            int maxcount = MN_THREAD_CONFIG_CSEMAPHORE_MAX_COUNT);
 
-  virtual ~basic_counting_semaphore() { destroy(); }
-  /**
-   * Create the counting semaphore  
-   * 
-   * @return 'ERR_SPINLOCK_OK' the mutex are created, 'ERR_SPINLOCK_ALREADYINIT' the mutex are already created,
-   *         'ERR_SPINLOCK_BAD_INITIALCOUNT' when the initial count greater than maxcount is and 
-   *         'ERR_SPINLOCK_CANTCREATEMUTEX' on error.
-   * 
-   */
-  virtual int create(); 
-
-  /**
-   * Destroyed the counting semaphore
-   * 
-   * @return 'ERR_SPINLOCK_OK' the mutex are destroyed 
-   * or ERR_SPINLOCK_NOTINIT when mutex not created
-   */
-  virtual int destroy();
+  virtual ~basic_counting_semaphore();
 
   /**
    * Set the initial count

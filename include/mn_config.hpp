@@ -22,9 +22,11 @@
 /**
  * All cunfig properties can override in your sdkconfig.h 
  */ 
+#ifdef ESP_BUILD_WITH_SDKCONFIG
+#include "sdkconfig.h"
+#endif
 
-#include "sdkconfig"
-#include "freertos/FreeRTOS.h"
+//#include "freertos/FreeRTOS.h"
 
 //Start helper section - do not edit!
 //==================================
@@ -91,7 +93,14 @@
      */
     #define configMAX_PRIORITIES 25
 #endif
- 
+
+#ifndef MN_THREAD_CONFIG_USE_EXCEPTIONS 
+    /**
+     * Use for lock objects exceptions?
+     * default: MN_THREAD_CONFIG_NO
+     */ 
+    #define MN_THREAD_CONFIG_USE_EXCEPTIONS MN_THREAD_CONFIG_YES
+#endif
  
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_IDLE
     /**
@@ -329,7 +338,8 @@
      */ 
     #define MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING     MN_THREAD_CONFIG_YES   
 #endif
-/** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
+/** 
+ * Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================
  */
 
@@ -350,7 +360,8 @@
  * Supported the FeeRTOS RECURSIVE_MUTEXES ?
  * @note Don't edit
  */
-#if (configUSE_RECURSIVE_MUTEXES == 1) 
+#if (configUSE_RECURSIVE_MUTEXES == 1)
+
     #if (MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING == MN_THREAD_CONFIG_YES)
             /**
              * Enabled Build with RECURSIVE_MUTEXES support
@@ -362,7 +373,8 @@
              */ 
             #define MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_NO
             #warning ("recursive mutex are not supported")
-    #endif
-#endif
+    #endif // (MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING == MN_THREAD_CONFIG_YES)
 
-#endif
+#endif //configUSE_RECURSIVE_MUTEXES
+
+#endif //__MINLIB_MNTHREAD_CONFIG_H__

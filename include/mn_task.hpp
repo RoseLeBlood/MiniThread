@@ -87,7 +87,7 @@ public:
    *  This is the API call that actually starts the Task running.
    *  It creates a backing FreeRTOS task. By separating object creation
    *  from starting the Task, it solves the pure virtual fuction call
-   *  failure case. Call after creating the Task the function on_create
+   *  failure case. Call after creating the Task the function on_start
    *
    * @param uiCore If the value is MN_THREAD_CONFIG_CORE_IFNO, the created task is not
    * pinned to any CPU, and the scheduler can run it on any core available.
@@ -100,7 +100,7 @@ public:
    * LockObjets, the task is not created, 'ERR_TASK_ALREADYRUNNING' the Task is allready running and
    * 'ERR_TASK_CANTSTARTTHREAD' can't create the task
    */
-  virtual int           create(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
+  virtual int           start(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
   /**
    * Destroy and delete the task and call the function 'on_kill'
@@ -158,13 +158,13 @@ public:
    *
    * @return The FreeRTOS task   Number
    */
-  uint32_t              get_id();
+  int32_t              get_id();
   /**
    * Get the core number of this task  run
    *
    * @return The core number
    */
-  uint32_t              get_on_core();
+  int32_t              get_on_core();
 
   /**
    *  Set the priority of this task.
@@ -189,7 +189,7 @@ public:
    * This virtual function call on creating, use for user code
    * It is optional whether you implement this or not.
    */
-  virtual void          on_create() {  }
+  virtual void          on_start() {  }
   /**
    * This virtual function call on kill, use for user code
    * It is optional whether you implement this or not.
@@ -238,14 +238,14 @@ public:
    *
    * @return True The child tasx are add and false when not
    *
-   * @note For example this task handle the WiFi connection and the child the TCP Connection
+   * @note For example this task for the WiFi connection and the child the TCP Connection
    * on signal or broadcast this task, will signal and broadcast the child too.
    */
   bool                  add_child_task(basic_task* task);
 public:
   /**
    * Suspend the given task.
-   *
+   * 
    * @param t The given task to suspend
    *
    * @note While a task can suspend() itself, it cannot resume()
@@ -306,13 +306,13 @@ protected:
    * Internal function
    */
 	void task_started();
-
 protected:
   /**
-   *  Reference to the underlying task handle for this task.
-   *  Can be obtained from GetHandle().
+   * Lock Objekt for task safty
    */
-  xTaskHandle handle;
+  LockType_t m_runningMutex, m_contextMutext, 
+             m_continuemutex, m_continuemutex2;
+protected:
   /**
    *  The name of this task.
    */
@@ -329,11 +329,6 @@ protected:
    * The return value from user task routine
    */
   void* m_retval;
-
-  /**
-   *  Flag whether or not the LockObject was created.
-   */
-  bool m_bMutexInit;
   /**
    *  Flag whether or not the task was started.
    */
@@ -341,30 +336,26 @@ protected:
   /**
    * The FreeRTOS task Number
    */
-  uint32_t m_iID;
+  int32_t m_iID;
   /**
    * A saved / cached copy of which core this task is running on
    */
-  uint32_t m_iCore;
-  /**
-   * Lock Objekt for task safty
-   */
-  LockType_t *m_runningMutex;
-  /**
-   * Lock Objekt for task safty
-   */
-  LockType_t *m_contextMutext;
-  /**
-   * Lock Objekt for task safty
-   */
-  LockType_t *m_continuemutex, *m_continuemutex2;
-
+  int32_t m_iCore;
   /**
    * The child task pointer
    */
+  /**
+   *  Reference to the underlying task handle for this task.
+   *  Can be obtained from get_handle().
+   */
+  xTaskHandle m_pHandle;
+
+  /**
+   * The child task pointer 
+   */
   basic_task *m_pChild;
   /**
-   * The parent task pointer of this task
+   * The parent task pointer 
    */
   basic_task *m_pParent;
 };

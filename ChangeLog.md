@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.1 Oktober 2020: (stable 2.0beta) 
+## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)
   + free_list_memory pool and mempool
   + Shared Object 
@@ -14,7 +14,8 @@
   + in mn_config.hpp:
     + MN_THREAD_CONFIG_MINIMAL_STACK_SIZE set the default minimal stack size for a task 
 + add in basic_task get_state() to get the current state and static function get_tasks() to get the number of tasks
-
++ remove create and destroy from all mutex and semaphore objects and add exceptins handling 
++ rename create and on_create to start and on_start
 
   
   

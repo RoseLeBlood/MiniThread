@@ -18,7 +18,6 @@
 #ifndef MINLIB_ESP32_MUTEX_
 #define MINLIB_ESP32_MUTEX_
 
-#include "mn_config.hpp"
 #include "mn_basic_semaphore.hpp"
 #include "mn_error.hpp"
 
@@ -30,31 +29,19 @@
 class basic_mutex : public basic_semaphore {
 public:
   /**
-   * The Ctor 
+   * Create the mutex
+   * 
+   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+   * enabled, then with debug informations.
+   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
+   * with basic_semaphore::get_error()
    */
   basic_mutex();
-
-  virtual ~basic_mutex() { destroy(); }
-  
   /**
-   * Create the Mutex 
-   * 
-   * @return 'ERR_MUTEX_OK' the mutex are created, 'ERR_MUTEX_ALREADYINIT' the mutex are already created and
-   *         'ERR_MUTEX_CANTCREATEMUTEX' on error.
-   * 
-   * @note When in config "MN_THREAD_CONFIG_MUTEX_CLASS" with MN_THREAD_CONFIG_BINARY_SEMAPHORE 
-   *       then create the mutex with 'xSemaphoreCreateBinary' (esp32 online guids basic) and
-   *       with 'MN_THREAD_CONFIG_MUTEX_CLASS' create the mutex with 'xSemaphoreCreateMutex'
-   */
-  virtual int create();
-
-  /**
-   * Destroyed the Mutex
-   * 
-   * @return 'ERR_MUTEX_OK' the mutex are destroyed 
-   * or ERR_MUTEX_NOTINIT when mutex not created
-   */
-  virtual int destroy();
+   * Destrutor - destroy the mutex
+   */ 
+  virtual ~basic_mutex();
 
   /**
    *  Lock the Mutex.

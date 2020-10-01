@@ -52,7 +52,7 @@ public:
   /**
    *  Override - do nothings
    */ 
-  int                   create(int uiCore = -1) { return 0; }
+  int                   start(int uiCore = -1) { return 0; }
 public:
   /**
    * Get the foreign_task of idle task for the current CPU.

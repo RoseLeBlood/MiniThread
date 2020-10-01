@@ -30,31 +30,16 @@ basic_convar_task::basic_convar_task()
 //-----------------------------------
 basic_convar_task::basic_convar_task(char const* strName, basic_task::priority uiPriority, 
     unsigned short  usStackDepth) 
-       : basic_task(strName, uiPriority, usStackDepth) { 
-        
-}
+       : basic_task(strName, uiPriority, usStackDepth), m_waitSem() { 
 
-//-----------------------------------
-//  on_create
-//-----------------------------------
-void basic_convar_task::on_create() {
-    m_waitSem = new basic_binary_semaphore();
-    m_waitSem->create();
-    m_waitSem->lock();
-}
-
-//-----------------------------------
-//  on_kill
-//-----------------------------------
-void basic_convar_task::on_kill() {
-    
+     m_waitSem.lock();    
 }
 
 //-----------------------------------
 //  signal
 //-----------------------------------
 void basic_convar_task::signal() {
-    autolock_t autolock(*m_runningMutex);
+    autolock_t autolock(m_runningMutex);
     m_waitSem->unlock(); 
     on_signal();
 }
@@ -63,7 +48,7 @@ void basic_convar_task::signal() {
 //  signal_all
 //-----------------------------------
 void basic_convar_task::signal_all() {
-    autolock_t autolock(*m_runningMutex);
+    autolock_t autolock(m_runningMutex);
 
     m_waitSem->unlock(); 
     on_signal();
@@ -78,7 +63,7 @@ void basic_convar_task::signal_all() {
 //  wait
 //-----------------------------------
 int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
-    autolock_t autolock(*m_runningMutex);
+    autolock_t autolock(m_runningMutex);
     
     cv.add_list(this);
     

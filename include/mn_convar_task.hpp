@@ -54,15 +54,6 @@ public:
        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
     /**
-     * Override and at creating the m_waitSem semaphore
-     */ 
-    virtual void           on_create();
-    /**
-     * Override and at destroy the m_waitSem semaphore
-     */ 
-    virtual void           on_kill();
-
-    /**
      *  helper function to signal this thread.
      */
 	virtual void          signal();
@@ -96,7 +87,7 @@ private:
      *  Because a semaphore maintains state, this solves the race
      *  condition between dropping the CvLock and waiting.
      */
-    binary_semaphore_t* m_waitSem;
+    binary_semaphore_t m_waitSem;
 };
 
 using convar_task_t = basic_convar_task;

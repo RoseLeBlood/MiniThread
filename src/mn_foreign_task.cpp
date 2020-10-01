@@ -34,20 +34,20 @@ foreign_task::foreign_task()
 foreign_task::foreign_task(void* t)
   : basic_task() { 
   
-  handle = t;
+  m_pHandle = t;
 
   m_strName = "foreign_task";
   m_iCore = xPortGetCoreID();
-  m_iID = uxTaskGetTaskNumber(handle);
+  m_iID = uxTaskGetTaskNumber(m_pHandle);
   m_usStackDepth = 0;
   m_bMutexInit = false;
 
   
 
   if (xPortInIsrContext()) {
-    m_uiPriority = (basic_task::priority)uxTaskPriorityGetFromISR(handle);
+    m_uiPriority = (basic_task::priority)uxTaskPriorityGetFromISR(m_pHandle);
   } else {
-	  m_uiPriority = (basic_task::priority)uxTaskPriorityGet(handle);
+	  m_uiPriority = (basic_task::priority)uxTaskPriorityGet(m_pHandle);
   }
   m_pChild = NULL;
   m_pParent = NULL;
@@ -57,34 +57,13 @@ foreign_task::foreign_task(void* t)
 //  __internal_create_usings_types
 //-----------------------------------
 int foreign_task::__internal_create_usings_types() {
-   if(!m_bMutexInit) {
-    m_runningMutex = new LockType_t();
-    m_contextMutext = new LockType_t();
+  m_continuemutex.lock();
 
-    m_continuemutex = new LockType_t();
-    m_continuemutex2 = new LockType_t();
-
-
-    if(m_runningMutex->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-    if(m_contextMutext->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-
-    if(m_continuemutex->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-    if(m_continuemutex2->create() != ERR_MUTEX_OK)
-      return ERR_TASK_CANTINITMUTEX;
-
-    m_bMutexInit = true;
-    
-  }
-  m_continuemutex->lock();
-
-	if (handle == 0) {
-    m_continuemutex->unlock();
+	if (m_pHandle == 0) {
+    m_continuemutex.unlock();
 		return ERR_TASK_CANTSTARTTHREAD;
   }
-  m_continuemutex->unlock();
+  m_continuemutex.unlock();
 
 	return ERR_TASK_OK;
 }
