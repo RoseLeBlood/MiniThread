@@ -92,7 +92,7 @@
      * Use for lock objects exceptions?
      * default: MN_THREAD_CONFIG_NO
      */ 
-    #define MN_THREAD_CONFIG_USE_EXCEPTIONS MN_THREAD_CONFIG_YES
+    #define MN_THREAD_CONFIG_USE_EXCEPTIONS MN_THREAD_CONFIG_NO
 #endif
  
 #ifndef MN_THREAD_CONFIG_CORE_PRIORITY_IDLE
@@ -320,7 +320,7 @@
      * 
      * @note default:  MN_THREAD_CONFIG_NO  
      */
-    #define MN_THREAD_CONFIG_PREVIEW_FUTURE              MN_THREAD_CONFIG_YES
+    #define MN_THREAD_CONFIG_PREVIEW_FUTURE              MN_THREAD_CONFIG_NO
 #endif
 
 

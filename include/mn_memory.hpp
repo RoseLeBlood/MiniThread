@@ -18,6 +18,8 @@
 #ifndef MINLIB_ESP32_MEMORYPOOL_LIST_
 #define MINLIB_ESP32_MEMORYPOOL_LIST_
 
+#include "mn_config_preview.hpp"
+
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 #warning("use on your own risk - not for production use")
 
