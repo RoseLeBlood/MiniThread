@@ -48,7 +48,7 @@
     /**
      * This Macro util set only the error code, and return setted return code
      */ 
-    #define THROW_LOCK_EXP(CODE, RET)  { set_error(CODE); return RET; }
+    #define THROW_LOCK_EXP2(CODE, RET)  { set_error(CODE); return RET; }
 #endif //MN_THREAD_CONFIG_USE_EXCEPTIONS
 
 /**
@@ -92,15 +92,6 @@ public:
 	virtual int unlock();
 
   /**
-   * Try to lock the spinlock
-   * 
-   * @note call lock with timeout from 0
-   * 
-   * @return true if the Lock was acquired, false when not
-   */
-  virtual bool try_lock();
-
-  /**
    * Get the FreeRTOS handle
    * 
    * @return the FreeRTOS handle
@@ -108,6 +99,8 @@ public:
   void* get_handle()                      { return m_pSpinlock; }
 
   int   get_error()                       { return m_iCreateErrorCode; }
+
+  virtual bool is_initialized() const     { return m_pSpinlock != NULL; }
 public:
   bool operator == (const basic_semaphore &r) const {
     return m_pSpinlock == r.m_pSpinlock;

@@ -242,7 +242,7 @@ public:
    *
    * @return Your return your task function, get with get_return_value()
    */
-  virtual void*         on_task() = 0;
+  virtual void*         on_task() { return NULL; }
 
   /**
    *  Called on exit from your on_task() routine.
@@ -355,7 +355,7 @@ public:
    * 
    */ 
   static bool is_current(basic_task* task) {
-    return basic_task::get_current()->m_pHandle == task->m_pHandle;
+    return basic_task::get_self()->m_pHandle == task->m_pHandle;
   }
 
   /**

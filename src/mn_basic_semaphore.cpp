@@ -84,13 +84,6 @@ int basic_semaphore::unlock() {
 }
 
 //-----------------------------------
-//  try_lock
-//-----------------------------------
-bool basic_semaphore::try_lock() {
-  return (lock( 0 ) == NO_ERROR);
-}
-
-//-----------------------------------
 //  lock(const struct timespec *abs_time)
 //-----------------------------------
 int basic_semaphore::lock(const struct timeval *abs_time) {

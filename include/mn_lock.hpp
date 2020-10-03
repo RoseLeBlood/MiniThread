@@ -36,7 +36,7 @@ public:
      *  lock (take) a LokObject
      *  @param timeout How long to wait to get the Lock until giving up.
      */
-	virtual int lock(unsigned int timeout) = 0;
+	virtual int lock(unsigned int timeout = 0) = 0;
 
     virtual int lock(const struct timeval *abs_time) = 0;
     /**
@@ -52,7 +52,7 @@ public:
      * @return true if the Lock was acquired, false when not
      */
     virtual bool try_lock() {
-        return (lock(0) == 0);
+        return (lock() == 0);
     }
 
     /**
