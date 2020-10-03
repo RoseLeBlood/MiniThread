@@ -27,6 +27,7 @@
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
 
+#include "mn_eventgroup.hpp"
 
 /**
  *  Wrapper class around FreeRTOS's implementation of a task.
@@ -58,6 +59,12 @@ public:
     StateSuspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
     StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
   };
+
+  enum event { 
+    EventStarted = 1 << 24,     /*!< Event for task started */ 
+    EventJoin = 1 << 25         /*!< Event for task joined */ 
+  };
+
 public:
    /**
    * Basic Constructor for this task.
@@ -112,11 +119,42 @@ public:
   int                   kill();
 
   /**
+   * join the task
+   * Wait in a other task to end this task 
+   * 
+   * @param timeval The maximum amount of time to wait.
+   * 
+   * @note call never in this task, then wait this task to end this task
+   */ 
+  void                  join(const struct timeval *abs_time);
+
+  /**
+   * join the task
+   * Wait in a other task to end this task 
+   * 
+   * @param timeval The maximum amount of time (specified in 'ticks') to wait.
+   * 
+   * @note call never in this task, then wait this task to end this task
+   */
+  void                  join(unsigned int timeout = portMAX_DELAY);
+
+  /**
    * Is the Task  running?
    *
    * @return true If the task  running, false If not
    */
   bool                  is_running();
+
+  /**
+   * Wait for start the task
+   * @param timeval The maximum amount of time to wait.
+   */ 
+  void                  wait(unsigned int timeout);
+  /**
+   * Wait for start the task
+   * @param timeval The maximum amount of time to wait.
+   */ 
+  void                  wait(const struct timeval *abs_time);
 
   /**
    * Get the debug name of this task
@@ -245,6 +283,22 @@ public:
    */
   bool                  add_child_task(basic_task* task);
 public:
+  bool operator == (const basic_task &r) const {
+    return m_pHandle == r.m_pHandle;
+  }
+
+  bool operator != (const basic_task &r) const {
+    return !operator==(r);
+  }
+
+  bool operator < (const basic_task &r) const {
+    return m_pHandle < r.m_pHandle;
+  }
+
+  bool operator > (const basic_task &r) const {
+    return m_pHandle > r.m_pHandle;
+  }
+public:
   /**
    * Suspend the given task.
    * 
@@ -286,9 +340,6 @@ public:
     ::mn_nsleep(req, rem);
   }
 
-  static void lock(basic_task& t)    { t.m_runningMutex.lock(); }
-  static void unlock(basic_task& t)    { t.m_runningMutex.unlock(); }
-
   /**
    * Get current number of tasks
    * 
@@ -298,6 +349,21 @@ public:
    * included in the count.
    */ 
   static uint32_t get_tasks();
+
+  /**
+   * Is the given task the current running task ?
+   * 
+   */ 
+  static bool is_current(basic_task* task) {
+    return basic_task::get_current()->m_pHandle == task->m_pHandle;
+  }
+
+  /**
+   * Get the current task
+   * 
+   * @return The current task
+   */ 
+  static basic_task* get_self();
 protected:
   /**
    *  Adapter function that allows you to write a class
@@ -313,7 +379,7 @@ protected:
    * Lock Objekt for task safty
    */
   LockType_t m_runningMutex, m_contextMutext, 
-             m_continuemutex, m_continuemutex2;
+             m_continuemutex;
 protected:
   /**
    *  The name of this task.
@@ -344,9 +410,6 @@ protected:
    */
   int32_t m_iCore;
   /**
-   * The child task pointer
-   */
-  /**
    *  Reference to the underlying task handle for this task.
    *  Can be obtained from get_handle().
    */
@@ -360,6 +423,12 @@ protected:
    * The parent task pointer 
    */
   basic_task *m_pParent;
+
+  /**
+   * The event group for this task 
+   * used or wait() and join()
+   */ 
+  event_group_t m_event;
 };
 
 using task_t = basic_task;

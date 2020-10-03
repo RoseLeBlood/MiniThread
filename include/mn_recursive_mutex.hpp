@@ -20,6 +20,7 @@
 
 #include "mn_mutex.hpp"
 
+#if MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES
 /**
  *  Recursive usage Mutex.
  *
@@ -73,4 +74,6 @@ public:
 
 using remutex_t = recursive_mutex;
 
-#endif
+#endif // MN_THREAD_CONFIG_RECURSIVE_MUTEX MN_THREAD_CONFIG_YES
+
+#endif // MINLIB_ESP32_REC_MUTEX_

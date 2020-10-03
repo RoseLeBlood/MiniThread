@@ -26,6 +26,8 @@
 
 #include "esp_attr.h"
 
+#include "mn_micros.hpp"
+
 //-----------------------------------
 //  construtor
 //-----------------------------------
@@ -88,4 +90,15 @@ bool basic_semaphore::try_lock() {
   return (lock( 0 ) == NO_ERROR);
 }
 
+//-----------------------------------
+//  lock(const struct timespec *abs_time)
+//-----------------------------------
+int basic_semaphore::lock(const struct timeval *abs_time) {
+  struct timeval now;
+  gettimeofday(&now, NULL);
+
+  auto _time = (*abs_time) - now;
+
+  return lock(time_to_ticks(&_time));
+}
 

@@ -26,7 +26,6 @@ basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
       : m_runningMutex(), 
         m_contextMutext(), 
         m_continuemutex(),
-        m_continuemutex2(),
         m_strName(strName), 
         m_uiPriority(uiPriority),
         m_usStackDepth(usStackDepth), 
@@ -36,7 +35,8 @@ basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
         m_iCore(-1), 
         m_pHandle(NULL),
         m_pChild(NULL),
-        m_pParent(NULL) { }
+        m_pParent(NULL),
+        m_event() { }
 
 //-----------------------------------
 //  deconstrutor
@@ -120,6 +120,44 @@ int basic_task::start(int iCore) {
 	return ERR_TASK_OK;
 }
 
+//-----------------------------------
+//  join
+//-----------------------------------
+void basic_task::join(unsigned int timeout) {
+  while(m_event.wait(EventJoin | EventStarted, false, true, timeout) == 0) { 
+
+  }
+}
+//-----------------------------------
+//  join
+//-----------------------------------
+void basic_task::join(const struct timeval *abs_time) {
+  struct timeval now, _time;
+  gettimeofday(&now, NULL);
+
+  _time = (*abs_time) - now;
+
+  join(time_to_ticks(&_time));
+}
+//-----------------------------------
+//  wait
+//-----------------------------------
+void basic_task::wait(unsigned int timeout) {
+  while(m_event.wait(EventJoin | EventStarted, false, true, timeout) == 0) { 
+
+  }
+}
+//-----------------------------------
+//  wait
+//-----------------------------------
+void basic_task::wait(const struct timeval *abs_time) {
+  struct timeval now, _time;
+  gettimeofday(&now, NULL);
+
+  _time = (*abs_time) - now;
+
+  wait(time_to_ticks(&_time));
+}
 //-----------------------------------
 //  kill
 //-----------------------------------
@@ -239,6 +277,24 @@ uint32_t basic_task::get_time_since_start() {
 }
 
 //-----------------------------------
+//  get_self
+//-----------------------------------
+basic_task* basic_task::get_self() {
+  auto _pHandle = xTaskGetCurrentTaskHandle();
+
+  if (_pHandle == 0) return NULL;
+  
+  basic_task* _task = new basic_task();
+
+  _task->m_runningMutex.lock();
+  _task->m_iID = uxTaskGetTaskNumber(_pHandle);
+  _task->m_pHandle = _pHandle;
+  _task->m_runningMutex.unlock();
+
+  return _task;
+}
+
+//-----------------------------------
 //  set_priority
 //-----------------------------------
 void  basic_task::set_priority(basic_task::priority uiPriority) {
@@ -273,7 +329,8 @@ void basic_task::runtaskstub(void* parm) {
 
 	esp_task = (static_cast<basic_task*>(parm));
 
-  esp_task->m_continuemutex2.lock();
+  esp_task->m_event.set(EventStarted); 
+
   esp_task->m_runningMutex.lock();
 	esp_task->m_bRunning = true;
   esp_task->m_runningMutex.unlock();
@@ -281,7 +338,7 @@ void basic_task::runtaskstub(void* parm) {
   esp_task->m_continuemutex.lock();
 	esp_task->m_continuemutex.unlock();
 
-  esp_task->task_started();
+  
   ret = esp_task->on_task();
   esp_task->on_cleanup();
 
@@ -292,12 +349,6 @@ void basic_task::runtaskstub(void* parm) {
   esp_task->m_pHandle = 0;
 
   esp_task->m_runningMutex.unlock();
-}
 
-//-----------------------------------
-//  task_started
-//-----------------------------------
-void basic_task::task_started() {
-  m_continuemutex2.unlock();
+  esp_task->m_event.set(EventJoin);
 }
-

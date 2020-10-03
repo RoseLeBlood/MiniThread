@@ -18,6 +18,8 @@
 #ifndef _MINLIB_ILOCK_INTERFACE_H_
 #define _MINLIB_ILOCK_INTERFACE_H_
 
+#include "mn_micros.hpp"
+
 /**
  * Interface for all lock types in this library
  * This is an abstract base class.
@@ -31,19 +33,14 @@
 class ILockObject {
 public:
     /**
-     *  Aquire (take) a LokObject
-     *
-     *  Example of blocking indefinitely:
-     *      LockObject.Take();
-     *
-     *  Example of blocking for 100 ticks:
-     *      LockObject.Take(100);
-     *
+     *  lock (take) a LokObject
      *  @param timeout How long to wait to get the Lock until giving up.
      */
 	virtual int lock(unsigned int timeout) = 0;
+
+    virtual int lock(const struct timeval *abs_time) = 0;
     /**
-     *  Release (give) a semaphore.
+     *  unlock (give) a semaphore.
      */
 	virtual int unlock() = 0;
 

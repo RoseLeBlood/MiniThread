@@ -91,3 +91,24 @@ unsigned int ms_to_ticks(unsigned int ms) {
 unsigned int seconds_to_ticks(unsigned int sec) {
   return (sec * 1000) / portTICK_PERIOD_MS;
 }
+
+//-----------------------------------
+//  time_to_ms
+//-----------------------------------
+unsigned int time_to_ms(const struct timeval* time) {
+  uint32_t msecs;
+
+	msecs  = time->tv_sec * 1000;
+	msecs += (time->tv_usec + 999999) / 1000000;
+
+  return msecs;
+}
+
+//-----------------------------------
+//  time_to_ms
+//-----------------------------------
+unsigned int time_to_ticks(const struct timeval* time) {
+  unsigned int msecs = time_to_ms(time);
+
+  return ms_to_ticks(msecs);
+}

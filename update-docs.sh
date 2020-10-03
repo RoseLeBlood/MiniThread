@@ -1,4 +1,5 @@
 cd doc
+doxygen
 cp --recursive html/* ../../mnthread-docs/docs/.
 cd ../../mnthread-docs/
 

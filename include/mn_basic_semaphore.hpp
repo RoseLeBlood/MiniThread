@@ -24,6 +24,8 @@
 
 #include "excp/mn_lock_exptions.hpp"
 
+#include <sys/time.h>
+
 #if MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES
     #if MN_THREAD_CONFIG_DEBUG  == MN_THREAD_CONFIG_YES
         /**
@@ -60,24 +62,32 @@ class basic_semaphore : public ILockObject {
 public:
   basic_semaphore();
   basic_semaphore(const basic_semaphore& other);
+
   /**
-   *  Aquire (take) a semaphore.
+   * lock (take) a semaphore.
    *
-   *  Example of blocking indefinitely:
-   *      aSemaphore.Take();
-   *
-   *  Example of blocking for 100 ticks:
-   *      aSemaphore.Take(100);
-   *
-   *  @param timeout How long to wait to get the Lock until giving up.
-   *  @return ERR_SPINLOCK_OK if the Semaphore was acquired, ERR_SPINLOCK_LOCK if it timed out.
+   * @param timeout How long to wait to get the lock until giving up.
+   * @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
+   * 
+   * @example
+   * basic_semaphore sem = basic_semaphore();
+   * sem.lock(100);
    */
 	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT);
 
   /**
-   *  Release (give) a semaphore.
+   *  lock (take) a semaphore.
+   * 
+   *  @param abs_time How long to wait to get the lock until giving up.
+   * 
+   *  @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
+   */
+  virtual int lock(const struct timeval *abs_time);
+
+  /**
+   *  unlock (give) a semaphore.
    *
-   *  @return ERR_SPINLOCK_OK if the Semaphore was released, ERR_SPINLOCK_UNLOCK if it failed.
+   *  @return ERR_SPINLOCK_OK if the Semaphore was unlocked, ERR_SPINLOCK_UNLOCK if it failed.
    */
 	virtual int unlock();
 
@@ -98,6 +108,22 @@ public:
   void* get_handle()                      { return m_pSpinlock; }
 
   int   get_error()                       { return m_iCreateErrorCode; }
+public:
+  bool operator == (const basic_semaphore &r) const {
+    return m_pSpinlock == r.m_pSpinlock;
+  }
+
+  bool operator != (const basic_semaphore &r) const {
+    return !operator==(r);
+  }
+
+  bool operator < (const basic_semaphore &r) const {
+    return m_pSpinlock < r.m_pSpinlock;
+  }
+
+  bool operator > (const basic_semaphore &r) const {
+    return m_pSpinlock > r.m_pSpinlock;
+  }
 protected:
   void  set_error(int error)              { m_iCreateErrorCode = error; }
 protected:

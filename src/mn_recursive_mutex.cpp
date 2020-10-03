@@ -17,7 +17,7 @@
 */
 #include "mn_config.hpp"
 
-#if (configUSE_RECURSIVE_MUTEXES == 1)
+#if MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"

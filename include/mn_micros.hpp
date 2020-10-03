@@ -18,6 +18,7 @@
 #ifndef _MNTHREAD_MICROS_H_
 #define _MNTHREAD_MICROS_H_
 
+#include <sys/time.h
 /**
  * @ingroup base
  */
@@ -63,4 +64,45 @@ unsigned int ms_to_ticks(unsigned int ms);
  */
 unsigned int seconds_to_ticks(unsigned int ms);
 
+/**
+ * Convert timeval to milliseconds
+ * 
+ * @param time The timeval to convert
+ * @return the timeval in milliseconds
+ */ 
+unsigned int time_to_ms(const struct timeval* time);
+
+/**
+ * Convert timeval to ticks
+ * 
+ * @param time The timeval to convert
+ * @return the timeval in ticks
+ */ 
+unsigned int time_to_ticks(const struct timeval* time);
+
+/**
+ * Operator to sub two timevals
+ * 
+ * @param lhs The left operater timeval
+ * @param rhs The right operater timeval
+ */ 
+static inline struct timeval operator - (const struct timeval &lhs, const struct timeval &rhs) {
+    int32_t s = lhs.tv_sec - rhs.tv_sec;
+    int32_t ns = lhs.tv_usec - rhs.tv_usec * 1000;
+
+    return timeval{s, ns};
+}
+
+/**
+ * Operator to add two timevals
+ * 
+ * @param lhs The left operater timeval
+ * @param rhs The right operater timeval
+ */ 
+static inline struct timeval operator + (const struct timeval &lhs, const struct timeval &rhs) {
+    int32_t s = lhs.tv_sec - rhs.tv_sec;
+    int32_t ns = lhs.tv_usec - rhs.tv_usec * 1000;
+
+    return timeval{s, ns};
+}
 #endif
