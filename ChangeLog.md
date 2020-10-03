@@ -17,7 +17,7 @@
 + remove create and destroy from all mutex and semaphore objects and add exceptins handling 
 + rename create and on_create to start and on_start
 + Add timed lock type 
-+ add to the basic_task: join(), wait() and get_self() functions
++ add to the basic_task: join(), wait() and get_self() functions - basic_task remove abstract 
 + remove the m_contextMutext2 LockObject 
 
   
