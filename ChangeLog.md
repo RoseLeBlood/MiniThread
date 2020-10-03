@@ -16,6 +16,9 @@
 + add in basic_task get_state() to get the current state and static function get_tasks() to get the number of tasks
 + remove create and destroy from all mutex and semaphore objects and add exceptins handling 
 + rename create and on_create to start and on_start
++ Add timed lock type 
++ add to the basic_task: join(), wait() and get_self() functions
++ remove the m_contextMutext2 LockObject 
 
   
   
