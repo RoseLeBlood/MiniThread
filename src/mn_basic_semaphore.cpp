@@ -86,7 +86,7 @@ int basic_semaphore::unlock() {
 //-----------------------------------
 //  lock(const struct timespec *abs_time)
 //-----------------------------------
-int basic_semaphore::lock(const struct timeval *abs_time) {
+int basic_semaphore::time_lock(const struct timeval *abs_time) {
   struct timeval now;
   gettimeofday(&now, NULL);
 

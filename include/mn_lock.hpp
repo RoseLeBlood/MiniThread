@@ -38,7 +38,7 @@ public:
      */
 	virtual int lock(unsigned int timeout = 0) = 0;
 
-    virtual int lock(const struct timeval *abs_time) = 0;
+    virtual int time_lock(const struct timeval *abs_time) = 0;
     /**
      *  unlock (give) a semaphore.
      */
@@ -52,7 +52,7 @@ public:
      * @return true if the Lock was acquired, false when not
      */
     virtual bool try_lock() {
-        return (lock() == 0);
+        return (lock(0) == 0);
     }
 
     /**

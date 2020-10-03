@@ -82,7 +82,7 @@ public:
    * 
    *  @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
    */
-  virtual int lock(const struct timeval *abs_time);
+  virtual int time_lock(const struct timeval *abs_time);
 
   /**
    *  unlock (give) a semaphore.

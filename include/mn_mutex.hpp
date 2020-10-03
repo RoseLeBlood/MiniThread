@@ -62,15 +62,6 @@ public:
    *  or ERR_MUTEX_NOTINIT when mutex not created
    */
 	virtual int unlock();
-
-  /**
-   * Try to lock the mutex
-   * 
-   * @note call lock with timeout from 0
-   * 
-   * @return true if the Lock was acquired, false when not
-   */
-  virtual bool try_lock();
 };
 
 

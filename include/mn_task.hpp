@@ -377,8 +377,7 @@ protected:
   /**
    * Lock Objekt for task safty
    */
-  LockType_t m_runningMutex, m_contextMutext, 
-             m_continuemutex;
+  LockType_t m_runningMutex, m_contextMutext, m_continuemutex;
 protected:
   /**
    *  The name of this task.

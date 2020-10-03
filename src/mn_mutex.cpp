@@ -87,10 +87,3 @@ int basic_mutex::unlock() {
   } 
   return ERR_MUTEX_OK;
 }
-
-//-----------------------------------
-//  try_lock
-//-----------------------------------
-bool basic_mutex::try_lock() {
-  return (lock(0) == ERR_MUTEX_OK);
-}
