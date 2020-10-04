@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -16,35 +16,30 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
-#include "mn_critical.hpp"
 
-/*
-//-----------------------------------
-//  disable_interrupts
-//-----------------------------------
-void basic_critical::disable_interrupts() {
-    taskDISABLE_INTERRUPTS();
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
+#include "slock/mn_criticalsection.hpp"
+
+#include "mn_error.hpp"
+
+basic_critical_section::basic_critical_section() {
+    m_pHandle = portMUX_INITIALIZER_UNLOCKED;
+}
+basic_critical_section::basic_critical_section(portMUX_TYPE type) {
+    m_pHandle = type;
 }
 
-//-----------------------------------
-//  enable_interrupts
-//-----------------------------------
-void basic_critical::enable_interrupts() {
-    taskENABLE_INTERRUPTS();
-}
+int basic_critical_section::lock(unsigned int timeout) {
+    ((void)timeout);
 
-//-----------------------------------
-//  stop_scheduler
-//-----------------------------------
-void basic_critical::stop_scheduler() {
-    vTaskSuspendAll();
-}
+    portENTER_CRITICAL_SAFE(&m_pHandle);
 
-//-----------------------------------
-//  resume_scheduler
-//-----------------------------------
-void basic_critical::resume_scheduler() {
-    xTaskResumeAll();
+    return NO_ERROR;
 }
+int basic_critical_section::unlock() {
+    portEXIT_CRITICAL_SAFE(&m_pHandle);
 
-}*/
+    return NO_ERROR;
+}

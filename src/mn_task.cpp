@@ -43,7 +43,7 @@ basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
 //-----------------------------------
 basic_task::~basic_task() {
   if(m_pHandle != NULL)
-    vTaskDelete(m_pHandle); 
+    vTaskDelete(m_pHandle);
 }
 
 //-----------------------------------

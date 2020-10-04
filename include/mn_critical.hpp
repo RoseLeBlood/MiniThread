@@ -15,95 +15,26 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINLIB_CRITICAL_H_
+#ifndef _MINLIB_CRITICAL_H_ 
 #define _MINLIB_CRITICAL_H_
 
-#include "mn_lock.hpp"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "mn_error.hpp"
+#include "mn_micros.hpp"
+#include "mn_autolock.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
+
+#include "slock/mn_criticalsection.hpp"
 
 /**
- *  Wrapper class around various critical section type
- *  synchronization mechanisms within FreeRTOS.
+ * A autolock type for basic_critical_lock objects
  * 
- * @note In next major vision ar re implated
- * 
- * @ingroup obsolet
- * @ingroup lock
- * 
+ * @note lock enter in the critial section and with unlock leave the critical section
  */
-class basic_critical {
-public:
-    /**
-     *  Disable context switches as well as maskable interrupts.
-     */
-    static void enter(portMUX_TYPE handle);
-    /**
-     *  Re-enable context switches.
-     */
-    static void exit(portMUX_TYPE handle);
+using auto_critical_t = basic_autolock<basic_critical_section>;
 
-    /**
-     *  Disable all maskable interrupts.
-     */
-    static void disable_interrupts();
-    /**
-     *  Enable all maskable interrupts.
-     */
-    static void enable_interrupts();
-
-    /**
-     *  Suspend the scheduler without disabling interrupts.
-     */
-    static void stop_scheduler();
-    /**
-     *  Re-enable the scheduler.
-     */
-    static void resume_scheduler();
-};
-
-/**
- * Wrapper class to use the critical section lock with autolock guard see auto_critical_t
- */ 
-class basic_critical_lock : public ILockObject {
-public:
-    basic_critical_lock();
-
-    virtual int lock() { basic_critical::enter(m_pHandle); return 0;  }
-    virtual int unlock() { basic_critical::exit(m_pHandle); return 0; }
-
-    virtual bool is_initialized() const { return true; }
-private:
-    portMUX_TYPE m_pHandle;
-};
-
-/**
- * Wrapper class to use the interrupts lock with autolock guard see auto_interrupt_t
- */
-class basic_interrupts_lock : public ILockObject { 
-public:
-    virtual int lock() { basic_critical::disable_interrupts(); return 0; }
-    virtual int unlock() { basic_critical::enable_interrupts(); return 0;  }
-
-    virtual bool is_initialized() const { return true; }
-};
-
-/**
- * Wrapper class to use the scheduler lock with autolock guard see auto_schedular_t
- */
-class basic_scheduler_lock : public ILockObject { 
-public:
-    virtual int lock() { basic_critical::stop_scheduler(); return 0; }
-    virtual int unlock() { basic_critical::resume_scheduler(); return 0; }
-
-    virtual bool is_initialized() const { return true; }
-};
-
-using critical_t = basic_critical;
-
-using critical_lock_t = basic_critical_lock;
-using interrupts_lock_t = basic_interrupts_lock;
-using sheduler_lock_t = basic_scheduler_lock;
 
 
 #endif

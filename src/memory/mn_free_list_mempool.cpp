@@ -39,7 +39,7 @@ static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) 
         return (2 * uiAlignment);
     
     int iCount = uiItemSize / uiAlignment;
-
+ 
     return (uiItemSize % uiAlignment != 0) ? 
         ( (iCount + 2) *  uiAlignment ) : 
         ( (iCount + 1) *  uiAlignment );
@@ -49,7 +49,7 @@ static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) 
 //  __calc_alignment
 //-----------------------------------
 static int __calc_alignment(unsigned int uiAlignment) {
-
+    //portBYTE_ALIGNMENT
     if (uiAlignment < (int)sizeof(unsigned char *))
         return (int)sizeof(unsigned char *);
     

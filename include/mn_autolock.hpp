@@ -21,7 +21,6 @@
 #include "mn_config.hpp"
 #include "mn_mutex.hpp"
 #include "mn_semaphore.hpp"
-#include "mn_critical.hpp"
 
 /**
  * Macro for locked sections
@@ -35,6 +34,7 @@
  *  locked
  * }
  * unlocked
+ * @endcode
  * 
  * @ingroup lock
  */ 
@@ -43,10 +43,10 @@
 /**
  *  Synchronization helper class that leverages the C++ language to help
  *  prevent deadlocks.
- *  This is a C++11 feature that allows LockObject 
+ *  This is a C++11 feature that allows ILockObject 
  *  Locking and Unlocking to behave following an RAII style. 
- *  The constructor of this helper object locks the LockObject. 
- *  The destructor unlocks the LockObject. 
+ *  The constructor of this helper object locks the ILockObject. 
+ *  The destructor unlocks the ILockObject. 
  * 
  * @ingroup semaphore
  * @ingroup lock
@@ -81,6 +81,7 @@ public:
    *   locked
    * }
    * unlocked
+   * @endcode
    */ 
   explicit operator bool() { return true; }
 
@@ -111,30 +112,6 @@ using autobinsemp_t = basic_autolock<binary_semaphore_t>;
  * A autolock type for mutex_t objects
  */
 using automutx_t = basic_autolock<mutex_t>;
-
-
-/**
- * A autolock type for basic_critical_lock objects
- * 
- * @note lock enter in the critial section and with unlock leave the critical section
- */
-using auto_critical_t = basic_autolock<basic_critical_lock>;
-
-/**
- * A autolock type for interrupts_lock_t objects
- * 
- * @note the lock disabled the interrupts and save the state, 
- * with unlock the interrupts are enabled and set the olt states  
- */
-using auto_interrupt_t = basic_autolock<interrupts_lock_t>;
-
-/**
- * A autolock type for sheduler_lock_t objects
- * 
- * @note lock disable the shedular and unlock enabled it
- */
-using auto_schedular_t = basic_autolock<sheduler_lock_t>;
-
 
 #if (MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES)
 #include "mn_recursive_mutex.hpp"
