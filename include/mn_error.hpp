@@ -217,6 +217,10 @@
 
 
 
+#define ERR_SYSTEM_OK                         NO_ERROR
 
+#define ERR_SYSTEM_LOCK                       -1
+
+#define ERR_SYSTEM_NO_RETURN                  -99
 
 #endif

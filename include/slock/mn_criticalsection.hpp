@@ -18,30 +18,19 @@
 #ifndef _MINLIB_CITCALLOCK_NEW_H_
 #define _MINLIB_CITCALLOCK_NEW_H_
 
+#ifndef _MINLIB_CRITICAL_H_ 
+#error ("Don't include this file directiely - use #include "mn_critical.hpp")
+#endif
+
 #include "mn_system_lock.hpp"
 
-/**
- * Macro for critical sections
- * 
- * 
- * @example @code 
- * critical_section_t criticalSection;
- * CRITICAL_SECTION(criticalSection) {
- *  //locked
- * }
- * //unlocked
- * @endcode
- * 
- * @ingroup lock
- */ 
-#define CRITICAL_SECTION(OBJECT) if( (bool)(auto_critical_t lock(OBJECT)) )
+
 
 /**
- * FreeRTOS miniTask lockk-wrapper for critical sections
+ * Wrapper class around FreeRTOS's implementation of a critical sections.
  * Can you use im ISR Context
  * 
- * @ingroup Interface
- * @ingroup lock
+ * @note Use the follow FreeRTOS macros:  portENTER_CRITICAL_SAFE and portEXIT_CRITICAL_SAFE
  */ 
 class basic_critical_section : public ISystemLockObject {
 public:
@@ -63,11 +52,70 @@ public:
 protected:
     portMUX_TYPE m_pHandle;
 };
+/**
+ * Wrapper class around FreeRTOS's implementation of a critical sections.
+ * Acquire a portmux spinlock with a timeout
+ * 
+ * @note Use the follow FreeRTOS functions:  
+ * vPortCPUAcquireMutexTimeout and vPortCPUReleaseMutex
+ */ 
+class basic_critical_section_timedout : public ISystemLockObject { 
+public:
+    /**
+     * Construtor initialize the cpu mutex 
+     * use the FreeRTOS : vPortCPUInitializeMutex function
+     */ 
+    basic_critical_section_timedout();
+    /**
+     * enter the critical section
+     * @param timeout How long to wait (in ticks) to get the lock until giving up.
+     * By a given UINT_MAX then then use no timeout
+     * 
+     * @return ERR_SYSTEM_OK if enter in the critical section and ERR_SYSTEM_LOCK if it timed out.
+     */
+	virtual int lock(unsigned int timeout = UINT_MAX);
 
-using critical_section_t = basic_critical_section;
+     /**
+     * enter the critical section
+     * @param abs_time How long to wait (in timeval) to get the lock until giving up.
+     * 
+     * @return ERR_SYSTEM_OK if enter in the critical section and ERR_SYSTEM_LOCK if it timed out.
+     */
+    virtual int time_lock(const struct timeval *abs_time);
+    /**
+     * leave the critical section
+     * @return Return ERR_SYSTEM_NO_RETURN only
+     */
+	virtual int unlock();
+    /**
+     * try to enter the critical section
+     * true if the Lock was acquired, false when not
+     */ 
+    virtual bool try_lock();
+protected:
+    portMUX_TYPE m_pHandle;
+}; 
 
-
-
-
+/**
+ * Wrapper class around FreeRTOS's implementation of a critical sections nested.
+ */ 
+class basic_critical_section_nested : public ISystemLockObject { 
+public:
+    /**
+     * enter the critical section nested 
+     * @param timeout How long to wait (in ticks) to get the lock until giving up.
+     * By a given UINT_MAX then then use no timeout
+     * 
+     * @return ERR_SYSTEM_OK if enter in the critical section and ERR_SYSTEM_LOCK if it timed out.
+     */
+	virtual int lock(unsigned int timeout = UINT_MAX);
+    /**
+     * leave the critical section nested
+     * @return Return ERR_SYSTEM_NO_RETURN only
+     */
+	virtual int unlock();
+protected:
+    unsigned int m_iState;
+}; 
 
 #endif

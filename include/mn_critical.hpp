@@ -25,16 +25,25 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-
 #include "slock/mn_criticalsection.hpp"
 
-/**
- * A autolock type for basic_critical_lock objects
- * 
- * @note lock enter in the critial section and with unlock leave the critical section
- */
-using auto_critical_t = basic_autolock<basic_critical_section>;
+/** Helper macro's for critical sections */ 
+#define CRITICAL_SECTION(OBJECT) if( (bool)(auto_critical_t lock(OBJECT)) )
+#define CRITICAL_SECTION_TIMEDOUT(OBJECT) if( (bool)(auto_critical_section_timedout_t lock(OBJECT)) )
+#define CRITICAL_SECTION_NESTED(OBJECT) if( (bool)(auto_critical_section_nested_t lock(OBJECT)) )
 
+/** using for the basic_critical_section class, for miniTask type design */
+using critical_section_t = basic_critical_section;
+/** using for the basic_critical_section_timedout class, for miniTask type design */
+using critical_section_timedout_t = basic_critical_section_timedout;
+/** using for the basic_critical_section_nested class, for miniTask type design */
+using critical_section_nested_t = basic_critical_section_nested;
 
+/** A autolock guard type for basic_critical_lock objects */
+using auto_critical_section_t = basic_autolock<basic_critical_section>;
+/** A autolock guard type for critical_section_timedout_t objects */
+using auto_critical_section_timedout_t = basic_autolock<critical_section_timedout_t>;
+/** A autolock guard type for critical_section_nested_t objects */
+using auto_critical_section_nested_t = basic_autolock<critical_section_nested_t>;
 
 #endif

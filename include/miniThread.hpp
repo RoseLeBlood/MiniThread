@@ -37,6 +37,8 @@
 #include "mn_tasklet.hpp"
 #include "mn_eventgroup.hpp"
 
+#include "mn_critical.hpp"
+
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 #include "mn_convar.hpp"
 #include "mn_convar_task.hpp"
@@ -47,6 +49,11 @@
 #include "queue/mn_deque.hpp"
 #include "queue/mn_workqueue.hpp"
 
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+#include "mn_ringbuffer.hpp"
+#include "mn_memory.hpp"
+#include "mn_shared.hpp"
+#endif
 
 void mn_panic();
 
