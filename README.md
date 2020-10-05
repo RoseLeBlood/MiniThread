@@ -64,23 +64,42 @@ extern "C" void app_main() {
 - [X] Add timer, events and other usefull FreeRTOS Wrapper
   - [X] timer
   - [ ] events
-  - [ ] coroutine
-  - [ ] MPU tasks???
-  - [ ] ...
+  - [X] ...
 - [X] Completed the documentation
 - [ ] Write more examles (after 1.9 ready ) 
 - [X] add a Workqueues 
 - [X] add Memory Manager class
-- [ ] uxTaskGetStackHighWaterMark add to task class
-  - [ ]  get stackpointer and other things
+- [ ] add trace support UART and LwIP out
+  - [ ] uxTaskGetStackHighWaterMark add to task class
+  - [ ] get stackpointer and other things
 - [ ] task Local Storage
 - [ ] Optional:
   - [ ] In Timers, add OnStop / OnStart / mutex sync with these methods?
-  - [ ] Priority queues
   
 
 ## ChangeLog
 
+## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
++ for the future version add prototypes: (Not for produtions use!!)
+  + free_list_memory pool = basic_free_list_mempool
+  + Shared Object = basic_shared_object
+  + Ringbuffer = basic_circular_buffer
+  + Add timed lock type = basic_timed_lock
++ Add class to extends the basic_convar_task with a message queue support - basic_message_task
+  + Add new config item, to handle the maximal messages in the message queue (MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES)
+  + For message queue support must be conditional variable support marked as enable
++ Add new defines: 
+  + in mn_foreign_task.hpp:
+    + FT_IDLE_TASK  (foreign_task::get_idle_task()) 
+    + FT_IDLE_TASK_ON(CPUID foreign_task::get_idle_task(CPUID) 
+  + in mn_config.hpp:
+    + MN_THREAD_CONFIG_MINIMAL_STACK_SIZE set the default minimal stack size for a task 
++ add in basic_task get_state() to get the current state and static function get_tasks() to get the number of tasks
++ remove create and destroy from all mutex and semaphore objects and add exceptins handling 
++ rename create and on_create to start and on_start 
++ add to the basic_task: join(), wait() and get_self() functions - basic_task remove abstract 
++ remove the m_contextMutext2 LockObject 
+  
 ## Version 1.9.0 September 2020: (stable 2.0beta)
 * add a eventgroup wrapper
 * rename basic_thread to basic_task and the other threads to task - with error codes and 
@@ -117,14 +136,7 @@ extern "C" void app_main() {
 * rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
 * basic_mutex extends basic_semaphore
 * add foreign_thread for mini Thread foregin thread and current Thread handling
-
-## Version 1.54 September 2020: (unstable)
-* Documentation ready
-* add Licence text to source files
-* remove semaphore_t and spinlock_t
-* add counting_semaphore_t (autocsemp_t) and binary_semaphore_t (autobinsemp_t)  
-please update code semaphore_t = counting_semaphore_t, spinlock_t = binary_semaphore_t
-                          
+                       
 
 For more see [ChangeLog](ChangeLog.md)
 

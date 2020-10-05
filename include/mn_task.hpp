@@ -90,12 +90,12 @@ public:
 	virtual ~basic_task();
 
   /**
-   *  Create and starts the Task.
+   * Create and starts the Task.
    *
-   *  This is the API call that actually starts the Task running.
-   *  It creates a backing FreeRTOS task. By separating object creation
-   *  from starting the Task, it solves the pure virtual fuction call
-   *  failure case. Call after creating the Task the function on_start
+   * This is the API call that actually starts the Task running.
+   * It creates a backing FreeRTOS task. By separating object creation
+   * from starting the Task, it solves the pure virtual fuction call
+   * failure case. Call after creating the Task the function on_start
    *
    * @param uiCore If the value is MN_THREAD_CONFIG_CORE_IFNO, the created task is not
    * pinned to any CPU, and the scheduler can run it on any core available.
@@ -103,10 +103,11 @@ public:
    * be pinned to. Specifying values larger than (portNUM_PROCESSORS - 1) will
    * cause the function to fail.
    *
-   *
-   * @return ERR_TASK_OK The task are creating, 'ERR_TASK_CANTINITMUTEX' on error creating the using
-   * LockObjets, the task is not created, 'ERR_TASK_ALREADYRUNNING' the Task is allready running and
-   * 'ERR_TASK_CANTSTARTTHREAD' can't create the task
+   * @return 
+   *  - ERR_TASK_OK The task are creating, 
+   *  - ERR_TASK_CANTINITMUTEX on error creating the using LockObjets, the task is not created, 
+   *  - ERR_TASK_ALREADYRUNNING the Task is allready running
+   *  - ERR_TASK_CANTSTARTTHREAD can't create the task
    */
   virtual int           start(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 

@@ -2,8 +2,10 @@
 
 ## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)
-  + free_list_memory pool and mempool
-  + Shared Object 
+  + free_list_memory pool = basic_free_list_mempool
+  + Shared Object = basic_shared_object
+  + Ringbuffer = basic_circular_buffer
+  + Add timed lock type = basic_timed_lock
 + Add class to extends the basic_convar_task with a message queue support - basic_message_task
   + Add new config item, to handle the maximal messages in the message queue (MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES)
   + For message queue support must be conditional variable support marked as enable
@@ -15,8 +17,7 @@
     + MN_THREAD_CONFIG_MINIMAL_STACK_SIZE set the default minimal stack size for a task 
 + add in basic_task get_state() to get the current state and static function get_tasks() to get the number of tasks
 + remove create and destroy from all mutex and semaphore objects and add exceptins handling 
-+ rename create and on_create to start and on_start
-+ Add timed lock type 
++ rename create and on_create to start and on_start 
 + add to the basic_task: join(), wait() and get_self() functions - basic_task remove abstract 
 + remove the m_contextMutext2 LockObject 
 
