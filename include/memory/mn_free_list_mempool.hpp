@@ -101,15 +101,20 @@ public:
     virtual int add_memory(void* preMemory, unsigned int nSize);
     /**
      * Allocate an item from the pool.
-     * @return Pointer of the memory or NULL if the pool is empty or the size too big
+     * 
+     * @param xTicksToWait How long to wait to allocate. 
+     * 
+     * @return Pointer of the memory or NULL if the pool is empty or timedout
      */ 
     virtual void* allocate(TickType_t xTicksToWait);
     /**
      * Free the memory
      * 
+     * @param xTicksToWait How long to wait to free the item. 
+     * 
      * @return true Free the memory, false If not
      */ 
-    virtual bool  free(void* mem, TickType_t xTicksToWait);
+    virtual bool  free(void* mem);
 
     /**
      * Get the stored n elements of objects in list
@@ -166,16 +171,17 @@ private:
     /**
      * Get the next free item / block from the pool
      * 
+     * @param xTicksToWait How long to wait to get a new block 
+     * 
      * @return The next free item / block
      */ 
-    memObject*    get_free_block(TickType_t xTicksToWait);
+    memObject    get_free_block(TickType_t xTicksToWait);
 private:
     mutex_t                   m_nMutex;
     
     unsigned int              m_uiAlignment;
 
-    std::vector<memObject*>   m_lBytePtrList;
-    std::vector<void*>        m_vMemoryPoolList;
+    std::vector<memObject>    m_lBytePtrList;
 
     
     bool                      m_bCreated;

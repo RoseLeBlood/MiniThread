@@ -36,8 +36,6 @@ public:
     hello_world_task() : basic_task("HelloWorld", 1) { }
 
     virtual void*  on_task() override { 
-        basic_thread::on_task(); 
-        
         int id = get_id();
         int core = get_on_core();
 
@@ -54,7 +52,8 @@ extern "C" void app_main() {
     for(int i = 0; i < NUMBER_OF_TEST_THREADS; i++) {
         tasks[i].create( i % 2 );
     }
-
+    tasks.join();
+    
     mn_panic();
 }
 ```

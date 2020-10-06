@@ -96,7 +96,7 @@ public:
    * unlocked
    * @endcode
    */ 
-  explicit operator bool() { return true; }
+  explicit operator bool() { return is_locked(); }
 
    /**
      *  We do not want a copy constructor.
@@ -110,6 +110,10 @@ public:
    * @return The locked error code
    */  
   int get_error() { return m_iErrorLock; }
+
+  bool is_locked() {
+    return (m_iErrorLock == NO_ERROR);
+  }
 private:
   /**
    *  Reference to the LockObject we locked, so it can be unlocked
