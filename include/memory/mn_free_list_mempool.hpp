@@ -103,13 +103,13 @@ public:
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty or the size too big
      */ 
-    virtual void* allocate();
+    virtual void* allocate(TickType_t xTicksToWait);
     /**
      * Free the memory
      * 
      * @return true Free the memory, false If not
      */ 
-    virtual bool  free(void* mem);
+    virtual bool  free(void* mem, TickType_t xTicksToWait);
 
     /**
      * Get the stored n elements of objects in list
@@ -168,7 +168,7 @@ private:
      * 
      * @return The next free item / block
      */ 
-    memObject*    get_free_block();
+    memObject*    get_free_block(TickType_t xTicksToWait);
 private:
     mutex_t                   m_nMutex;
     

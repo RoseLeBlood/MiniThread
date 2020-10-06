@@ -41,7 +41,7 @@ public:
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
      */ 
-    virtual void* allocate() = 0;
+    virtual void* allocate(TickType_t xTicksToWait) = 0;
     /**
      * Returns the item back to the pool.
      * 
@@ -50,7 +50,7 @@ public:
      * 
      * @return true if The item back to it's pool, false If not
      */ 
-    virtual bool  free(void* mem) = 0;
+    virtual bool  free(void* mem, TickType_t xTicksToWait) = 0;
 protected:
     unsigned int m_uiItemSize;
     unsigned int m_uiElements;

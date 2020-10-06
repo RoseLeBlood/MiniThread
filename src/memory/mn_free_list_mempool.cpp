@@ -16,11 +16,15 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
+
 #include "memory/mn_free_list_mempool.hpp"
 #include <stdlib.h>
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 
 #include "mn_autolock.hpp"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #define SAFE_DELETE(ob) if(ob != NULL) { delete ob; ob = NULL; }
 
@@ -143,37 +147,74 @@ int basic_free_list_mempool::set_alignment(uint8_t uiAlignment) {
 //-----------------------------------
 //  get_free_block
 //-----------------------------------
-basic_free_list_mempool::memObject* basic_free_list_mempool::get_free_block() {
+basic_free_list_mempool::memObject* basic_free_list_mempool::get_free_block(TickType_t xTicksToWait) {
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+
     memObject* blockPtr = NULL;
 
-    for (int i = 0; i < m_uiElements; i++) {
-        if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE) {
-            blockPtr = m_lBytePtrList[i];
-            break;
+    while(xTicksRemaining <= xTicksToWait) {
+       if(m_nMutex->lock(xTicksRemaining) != NO_ERROR){
+                break;
         }
-    }
 
+        for (int i = 0; i < m_uiElements; i++) {
+            if(m_lBytePtrList[i]->blockAvaible == MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE) {
+                blockPtr = m_lBytePtrList[i];
+
+                m_nMutex->unlock();
+                break;
+            }
+        }
+
+        if (xTicksToWait != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+        m_nMutex->unlock();
+    }
     return blockPtr;
 }
 
 //-----------------------------------
 //  allocate
 //----------------------------------- 
-void* basic_free_list_mempool::allocate() {
-    automutx_t lock(m_nMutex);
-    
-    memObject* blockPtr =  get_free_block(); 
-    if(blockPtr == NULL) return (intptr_t *)0;
+void* basic_free_list_mempool::allocate(TickType_t xTicksToWait) {
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
 
-    blockPtr->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED;
-    return (intptr_t *)blockPtr->addr;
+    char* _blockAddr = (intptr_t *)0;
+
+    while(xTicksRemaining <= xTicksToWait) {
+        if(m_nMutex->lock(xTicksRemaining) != NO_ERROR) {
+            break;
+        }
+    
+        memObject* blockPtr = get_free_block(xTicksRemaining); 
+        
+        if(blockPtr != NULL) {
+            blockPtr->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED;
+            _blockAddr = blockPtr->addr;
+
+            m_nMutex->unlock();
+            break;
+        }
+
+        if (xTicksToWait != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+        m_nMutex->unlock();
+    }
+    
+    return (intptr_t *)_blockAddr;
 }
 
 //-----------------------------------
 //  free
 //----------------------------------- 
-bool  basic_free_list_mempool::free(void* object) {
-    automutx_t lock(m_nMutex);
+bool  basic_free_list_mempool::free(void* object, TickType_t xTicksToWait) {
+    if(m_nMutex->lock(xTicksToWait) != NO_ERROR) {
+        return false;
+    }
 
     for (int i = 0; i < m_uiElements; i++) {
         if( (m_lBytePtrList[i]->addr == object) ) {
@@ -191,6 +232,7 @@ bool  basic_free_list_mempool::free(void* object) {
                     m_lBytePtrList[i]->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END; 
                     m_lBytePtrList[i]->dim = m_uiItemSize;                   
             }
+            m_nMutex->unlock();
             return true;
         }
     }
