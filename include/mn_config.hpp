@@ -166,10 +166,9 @@
 #ifndef MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
     /**
      * The minimal stack size for a mn task
-     * @note default: (configMINIMAL_STACK_SIZE + 512), 
-     * without apptrace 1280 and with 2560
+     * @note default: 3072
      */ 
-    #define MN_THREAD_CONFIG_MINIMAL_STACK_SIZE		(configMINIMAL_STACK_SIZE + 512)
+    #define MN_THREAD_CONFIG_MINIMAL_STACK_SIZE		3072
 #endif   
 
 #ifndef MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES
@@ -214,9 +213,9 @@
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE
     /**
      * Stak size for the workqueue single-threaded thread 
-     * @note default: (configMINIMAL_STACK_SIZE * 2) 
+     * @note default: MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
      */ 
-    #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
+    #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_STACKSIZE     MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
 #endif
 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY
@@ -248,9 +247,9 @@
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE
     /**
      * Stak size for the workqueue multi-threaded for all worked thread 
-     * @note default: (configMINIMAL_STACK_SIZE * 2) 
+     * @note default: MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
      */
-    #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     (configMINIMAL_STACK_SIZE * 2)
+    #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_STACKSIZE     MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
 #endif
 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY
@@ -334,6 +333,13 @@
      * and when FreeRTOS recursive mutex supported then can you use thes
      */ 
     #define MN_THREAD_CONFIG_RECURSIVE_MUTEX_CHEAKING     MN_THREAD_CONFIG_YES   
+#endif
+
+#ifndef MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST
+    /**
+     * Add a Task automatic to basic_task_list?
+     */ 
+    #define MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST          MN_THREAD_CONFIG_NO
 #endif
 /** 
  * Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
