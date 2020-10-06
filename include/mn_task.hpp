@@ -29,6 +29,8 @@
 
 #include "mn_eventgroup.hpp"
 
+#include <string>
+
 /**
  *  Wrapper class around FreeRTOS's implementation of a task.
  *
@@ -78,7 +80,7 @@ public:
    * @param uiPriority FreeRTOS priority of this Task.
    * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
    */
-  explicit basic_task(char const* strName, basic_task::priority uiPriority = PriorityNormal,
+  explicit basic_task(std::string strName, basic_task::priority uiPriority = PriorityNormal,
        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
   basic_task(const basic_task&) = delete;
@@ -161,7 +163,7 @@ public:
    *
    * @return The name of this task
    */
-  const char*           get_name();
+  std::string          get_name();
   /**
    * Get the priority of this task
    *
@@ -383,7 +385,7 @@ protected:
   /**
    *  The name of this task.
    */
-  const char* m_strName;
+  std::string m_strName;
   /**
    *  A saved / cached copy of what the task's priority is.
    */

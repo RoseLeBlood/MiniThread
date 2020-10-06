@@ -23,7 +23,7 @@
 //-----------------------------------
 //  basic_message_task
 //-----------------------------------
-basic_message_task::basic_message_task(char const* strName, basic_task::priority uiPriority,
+basic_message_task::basic_message_task(std::string strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth)
     : basic_convar_task(strName, uiPriority, usStackDepth), 
     m_ltMessageQueueLock(), 

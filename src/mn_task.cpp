@@ -18,10 +18,11 @@
 #include "mn_task.hpp"
 #include <stdio.h>
 
+#include "mn_task_list.hpp"
 //-----------------------------------
 //  construtor
 //-----------------------------------
-basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
+basic_task::basic_task(std::string strName, basic_task::priority uiPriority,
      unsigned short  usStackDepth) 
       : m_runningMutex(), 
         m_contextMutext(), 
@@ -44,6 +45,11 @@ basic_task::basic_task(char const* strName, basic_task::priority uiPriority,
 basic_task::~basic_task() {
   if(m_pHandle != NULL)
     vTaskDelete(m_pHandle);
+  
+
+#if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
+  basic_task_list::instance().remove_task(this);
+#endif
 }
 
 //-----------------------------------
@@ -101,7 +107,7 @@ int basic_task::start(int iCore) {
 	}
 	m_runningMutex.unlock();
 
-  xTaskCreatePinnedToCore(&runtaskstub, m_strName,
+  xTaskCreatePinnedToCore(&runtaskstub, m_strName.c_str(),
               m_usStackDepth,
               this, (int)m_uiPriority, &m_pHandle, m_iCore);
 
@@ -116,9 +122,16 @@ int basic_task::start(int iCore) {
   on_start();
   m_continuemutex.unlock();
   m_runningMutex.unlock();
+  m_iCore = m_iCore == INT_MAX ? xPortGetCoreID() : m_iCore;
+
+#if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
+  basic_task_list::instance().add_task(this);
+#endif
 
 	return ERR_TASK_OK;
 }
+
+
 
 //-----------------------------------
 //  join
@@ -208,7 +221,7 @@ int32_t basic_task::get_on_core() {
 //-----------------------------------
 //  get_name
 //-----------------------------------
-const char* basic_task::get_name() {
+std::string basic_task::get_name() {
   autolock_t autolock(m_runningMutex);
 
 	return m_strName;

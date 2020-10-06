@@ -76,7 +76,7 @@ public:
      * @param uiPriority FreeRTOS priority of this Task.
      * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
      */
-    explicit basic_message_task(char const* strName, basic_task::priority uiPriority,
+    explicit basic_message_task(std::string strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
     /**

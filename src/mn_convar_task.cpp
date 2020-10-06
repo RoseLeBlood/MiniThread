@@ -30,7 +30,7 @@ basic_convar_task::basic_convar_task()
 //-----------------------------------
 //  construtor
 //-----------------------------------
-basic_convar_task::basic_convar_task(char const* strName, basic_task::priority uiPriority, 
+basic_convar_task::basic_convar_task(std::string strName, basic_task::priority uiPriority, 
     unsigned short  usStackDepth) 
        : basic_task(strName, uiPriority, usStackDepth), m_waitSem() { 
 

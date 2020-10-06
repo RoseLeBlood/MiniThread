@@ -50,7 +50,7 @@ public:
      *  @param uiPriority FreeRTOS priority of this Thread.
      *  @param usStackDepth Number of "words" allocated for the Thread stack. default configMINIMAL_STACK_SIZE
      */
-    basic_convar_task(char const* strName, basic_task::priority uiPriority,
+    basic_convar_task(std::string strName, basic_task::priority uiPriority,
        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
     /**
