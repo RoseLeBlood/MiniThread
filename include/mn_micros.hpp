@@ -18,7 +18,9 @@
 #ifndef _MNTHREAD_MICROS_H_
 #define _MNTHREAD_MICROS_H_
 
+#include <sys/time.h>
 #include <time.h>
+
 /**
  * @ingroup base
  */

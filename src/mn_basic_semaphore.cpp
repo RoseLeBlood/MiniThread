@@ -86,12 +86,13 @@ int basic_semaphore::unlock() {
 //-----------------------------------
 //  time_lock(const struct timespec *abs_time)
 //-----------------------------------
-int basic_semaphore::time_lock(const struct timeval *abs_time) {
-  struct timeval now;
-  gettimeofday(&now, NULL);
+int basic_semaphore::time_lock(const struct timespec *timeout) {
+  struct timespec currtime;
+  clock_gettime(CLOCK_REALTIME, &currtime);
 
-  auto _time = (*abs_time) - now;
+  TickType_t _time = ((timeout->tv_sec - currtime.tv_sec)*1000 +
+                     (timeout->tv_nsec - currtime.tv_nsec)/1000000)/portTICK_PERIOD_MS;
 
-  return lock(time_to_ticks(&_time));
+  return lock(_time);
 }
 
