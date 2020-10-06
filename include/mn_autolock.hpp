@@ -55,20 +55,33 @@ template <class LOCK = basic_mutex>
 class  basic_autolock {
 public:
   /**
-   *  Create a basic_autolock with a specific LockType.
+   *  Create a basic_autolock with a specific LockType, without timeout
    *
    *  @post The LockObject will be locked.
    */
-	basic_autolock(LOCK &m) : m_ref_lock(m) {
-    m_ref_lock.lock();
+	basic_autolock(LOCK &m) 
+    : m_ref_lock(m) {
+    m_iErrorLock = m_ref_lock.lock(portMAX_DELAY);
+  }
+  /**
+   * Create a basic_autolock with a specific LockType, with timeout
+   *
+   * @param xTicksToWait How long to wait to get the lock until giving up.
+   * 
+   * @post The LockObject will be locked.
+   */
+	basic_autolock(LOCK &m, TickType_t xTicksToWait) 
+    : m_ref_lock(m) {
+    m_iErrorLock = m_ref_lock.lock(xTicksToWait);
   }
   /**
    *  Destroy a basic_autolock.
    *
-   *  @post The LockObject will be unlocked.
+   *  @post The LockObject will be unlocked, when the lock Object locked
    */
 	~basic_autolock() {
-     m_ref_lock.unlock();
+    if(m_iErrorLock == NO_ERROR)
+      m_ref_lock.unlock();
   }
 
   /**
@@ -88,14 +101,25 @@ public:
    /**
      *  We do not want a copy constructor.
      */
-   basic_autolock(const basic_autolock&) = delete;
-   basic_autolock& operator=(const basic_autolock&) = delete;
+  basic_autolock(const basic_autolock&) = delete;
+  basic_autolock& operator=(const basic_autolock&) = delete;
+
+  /**
+   * Get the locked error code.
+   * 
+   * @return The locked error code
+   */  
+  int get_error() { return m_iErrorLock; }
 private:
   /**
    *  Reference to the LockObject we locked, so it can be unlocked
    *  in the destructor.
    */
 	LOCK &m_ref_lock;
+  /**
+   * A copy fom locked error code 
+   */ 
+  int m_iErrorLock;
 };
 
 /**
@@ -127,6 +151,8 @@ using autoremutx_t = basic_autolock<remutex_t>;
   using LockType_t = binary_semaphore_t;
 #elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
   using LockType_t = counting_semaphore_t;
+//#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_RECURSIVE_MUTEX
+//  using LockType_t = remutex_t;
 #endif
 
 using autolock_t = basic_autolock<LockType_t>;
