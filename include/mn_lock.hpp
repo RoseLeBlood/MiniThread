@@ -18,6 +18,7 @@
 #ifndef _MINLIB_ILOCK_INTERFACE_H_
 #define _MINLIB_ILOCK_INTERFACE_H_
 
+#include <time.h>
 #include "mn_micros.hpp"
 
 /**
@@ -38,7 +39,7 @@ public:
      */
 	virtual int lock(unsigned int timeout = 0) = 0;
 
-    virtual int time_lock(const struct timeval *abs_time) = 0;
+    virtual int time_lock(const struct timespec *timeout) = 0;
     /**
      *  unlock (give) a semaphore.
      */

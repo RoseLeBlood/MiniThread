@@ -16,6 +16,9 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/portmacro.h>
 
 #define _MINLIB_CRITICAL_H_
 #include "slock/mn_criticalsection.hpp"
@@ -72,22 +75,24 @@ int basic_critical_section_timedout::lock(unsigned int timeout) {
     return (_bReturn) ? ERR_SYSTEM_OK : ERR_SYSTEM_LOCK;
 }
 
+#include <time.h>
 //-----------------------------------
-//  basic_critical_section_timedout::time_lock(const struct timespec *abs_time)
+//  basic_critical_section_timedout
 //-----------------------------------
-int basic_critical_section_timedout::time_lock(const struct timeval *abs_time) {
-  struct timeval now;
-  gettimeofday(&now, NULL);
+int basic_critical_section_timedout::time_lock(const struct timespec *timeout) {
+    struct timespec currtime;
+    clock_gettime(CLOCK_REALTIME, &currtime);
 
-  auto _time = (*abs_time) - now;
+    TickType_t _time = ((timeout->tv_sec - currtime.tv_sec)*1000 +
+                        (timeout->tv_nsec - currtime.tv_nsec)/1000000)/portTICK_PERIOD_MS;
 
-  return lock(time_to_ticks(&_time));
-}
+    return lock(_time);
+    }
 //-----------------------------------
 //  basic_critical_section_timedout::try_lock()
 //-----------------------------------
 bool basic_critical_section_timedout::try_lock() {
-    return ( lock(portMUX_TRY_LOCK) == ERR_SYSTEM_OK);
+    return ( lock(portMUX_TRY_LOCK) == ERR_SYSTEM_OK) );
 }
 
 //-----------------------------------

@@ -18,7 +18,7 @@
 #ifndef _MNTHREAD_MICROS_H_
 #define _MNTHREAD_MICROS_H_
 
-#include <sys/time.h
+#include <time.h>
 /**
  * @ingroup base
  */
@@ -87,9 +87,13 @@ unsigned int time_to_ticks(const struct timeval* time);
  * @param rhs The right operater timeval
  */ 
 static inline struct timeval operator - (const struct timeval &lhs, const struct timeval &rhs) {
-    int32_t s = lhs.tv_sec - rhs.tv_sec;
-    int32_t ns = lhs.tv_usec - rhs.tv_usec * 1000;
-
+    int32_t s = lhs.tv_sec - rhs.tv_sec;		
+    int32_t ns = lhs.tv_usec - rhs.tv_usec;	
+    if (ns < 0) {			
+        s--;				
+        ns += 1000000;			
+    }							
+        
     return timeval{s, ns};
 }
 
@@ -100,9 +104,15 @@ static inline struct timeval operator - (const struct timeval &lhs, const struct
  * @param rhs The right operater timeval
  */ 
 static inline struct timeval operator + (const struct timeval &lhs, const struct timeval &rhs) {
-    int32_t s = lhs.tv_sec - rhs.tv_sec;
-    int32_t ns = lhs.tv_usec - rhs.tv_usec * 1000;
-
+    int32_t s = lhs.tv_sec + rhs.tv_sec;		
+    int32_t ns = lhs.tv_usec + rhs.tv_usec;	
+    if (ns >= 1000000) {			
+        s++;				
+        ns -= 1000000;			
+    }							
+        
     return timeval{s, ns};
 }
+
+
 #endif

@@ -38,7 +38,7 @@ public:
      * call lock() 
      * @see lock()
      */
-    virtual int time_lock(const struct timeval *abs_time) { 
+    virtual int time_lock(const struct timespec *timeout) { 
         return lock();
     }
     /**

@@ -18,10 +18,6 @@
 #ifndef _MINLIB_CITCALLOCK_NEW_H_
 #define _MINLIB_CITCALLOCK_NEW_H_
 
-#ifndef _MINLIB_CRITICAL_H_ 
-#error ("Don't include this file directiely - use #include "mn_critical.hpp")
-#endif
-
 #include "mn_system_lock.hpp"
 
 
@@ -81,7 +77,7 @@ public:
      * 
      * @return ERR_SYSTEM_OK if enter in the critical section and ERR_SYSTEM_LOCK if it timed out.
      */
-    virtual int time_lock(const struct timeval *abs_time);
+    virtual int time_lock(const struct timespec *timeout);
     /**
      * leave the critical section
      * @return Return ERR_SYSTEM_NO_RETURN only

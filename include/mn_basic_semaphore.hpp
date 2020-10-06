@@ -24,7 +24,7 @@
 
 #include "excp/mn_lock_exptions.hpp"
 
-#include <sys/time.h>
+#include <time.h>
 
 #if MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES
     #if MN_THREAD_CONFIG_DEBUG  == MN_THREAD_CONFIG_YES
@@ -82,7 +82,7 @@ public:
    * 
    *  @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
    */
-  virtual int time_lock(const struct timeval *abs_time);
+  virtual int time_lock(const struct timespec *timeout);
 
   /**
    *  unlock (give) a semaphore.
