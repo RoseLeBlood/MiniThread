@@ -1,7 +1,18 @@
 h1, .h1, h2, .h2, h3, .h3{
   font-weight: 200 !important;
+  font-size: 2em !important;
+  margin-bottom: 5px !important;
 }
-
+h1, .h1 {
+  font-size: 2em !important; 
+}
+h2.groupheader {
+  border-bottom: unset; 
+  color: #354C7B;
+  padding-top: 2px; 
+  padding-bottom: 2px; 
+  width: 100%; 
+}
 #navrow1, #navrow2, #navrow3, #navrow4, #navrow5{
   border-bottom: 1px solid #EEEEEE;
 }
@@ -13,33 +24,20 @@ font-size: 1.15em !important;
 .navbar{
 border: 0px solid #222 !important;
 }
-table{
-  white-space:pre-wrap !important;
-}
-/*
-===========================
-*/
 
 
-/* Sticky footer styles
--------------------------------------------------- */
 html,
 body {
   height: 100%;
-  /* The html and body elements cannot have any padding or margin. */
 }
 
-/* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
   height: auto;
-  /* Negative indent footer by its height */
   margin: 0 auto -60px;
-  /* Pad bottom by footer height */
   padding: 0 0 60px;
 }
 
-/* Set the fixed height of the footer here */
 #footer {
   font-size: 0.9em;
   padding: 8px 0px;
@@ -99,8 +97,6 @@ body {
   }
 }
 
-/* DOXYGEN Code Styles
------------------------------------ */
 
 
 a.qindex {
@@ -126,7 +122,6 @@ a.codeRef, a.codeRef:visited, a.lineRef, a.lineRef:visited {
   color: #4665A2;
 }
 
-/* @end */
 
 dl.el {
   margin-left: -1cm;
@@ -155,27 +150,12 @@ div.line {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   font-size: 12px;
   min-height: 13px;
-  line-height: 1.0;
-  text-wrap: unrestricted;
-  white-space: -moz-pre-wrap; /* Moz */
-  white-space: -pre-wrap;     /* Opera 4-6 */
-  white-space: -o-pre-wrap;   /* Opera 7 */
-  white-space: pre-wrap;      /* CSS3  */
-  word-wrap: normal;      /* IE 5.5+ */
+  line-height: 1.0;     
+  word-wrap: normal;      
   text-indent: -53px;
   padding-left: 53px;
   padding-bottom: 0px;
   margin: 0px;
-  -webkit-transition-property: background-color, box-shadow;
-  -webkit-transition-duration: 0.5s;
-  -moz-transition-property: background-color, box-shadow;
-  -moz-transition-duration: 0.5s;
-  -ms-transition-property: background-color, box-shadow;
-  -ms-transition-duration: 0.5s;
-  -o-transition-property: background-color, box-shadow;
-  -o-transition-duration: 0.5s;
-  transition-property: background-color, box-shadow;
-  transition-duration: 0.5s;
 }
 div.line:hover{
   background-color: #FBFF00;
@@ -218,7 +198,6 @@ div.groupText {
   font-style: italic;
 }
 
-/* @group Code Colorization */
 
 span.keyword {
   color: #008000
@@ -271,7 +250,7 @@ blockquote {
   padding: 0 12px 0 16px;
 }
 
-/*---------------- Search Box */
+
 
 #search-box {
 margin: 10px 0px;
@@ -284,7 +263,6 @@ padding: 6px 12px;
 z-index: 5;
 }
 
-/*---------------- Search results window */
 
 #search-results-window {
 display: none;
@@ -315,7 +293,7 @@ padding-left: 4px;
 display: none;
 }
 
-/* class and file list */
+
 .directory .icona,
 .directory .arrow {
 height: auto;
@@ -344,18 +322,15 @@ line-height: 0;
 white-space: normal;
 }
 
-/* enumerations */
 .panel-body thead > tr {
 background-color: #e0e0e0;
 }
 
-/* todo lists */
 .todoname,
 .todoname a {
 font-weight: bold;
 }
 
-/* Class title */
 .summary {
 margin-top: 25px;
 }
@@ -374,21 +349,81 @@ font-size: 50%;
 }
 
 .memtitle {
-padding: 8px; 
-float: unset; 
-border-top: 0px solid #A8B8D9;
-border-left: 0px solid #A8B8D9;
-border-right: 0px solid #A8B8D9;
-border-top-right-radius: 0px;
-border-top-left-radius: 0px;
-margin-bottom: -1px;
-background-image: url(nav_f.png.old);
-background-repeat: repeat-x;
-background-color: #ffffff00;
-line-height: 1;
-font-size: 150%;
+  border-top-right-radius: 2px !important; 
+  border-top-left-radius: 2px !important;
+  border: transparent;
+  float: left !important;
+  font-size: 24px !important;
+  background-color:transparent;
+}
+
+.memproto, dl.reflist dt {
+   padding: 0px !important;
+  text-shadow: unset !important;
+  box-shadow: unset !important; 
+  border-top-right-radius: 2px !important;
+  -moz-box-shadow: unset !important;
+  -moz-border-radius-topright: 2px !important;
+  -webkit-box-shadow: unset !important;
+  -webkit-border-top-right-radius: 2px !important;
+}
+.memdoc, dl.reflist dt {
+  padding: 0px !important;
+ text-shadow: unset !important; 
+ box-shadow: unset !important;
+ border-top-right-radius: 2px !important; 
+ -moz-box-shadow: unset !important;
+ -moz-border-radius-topright: 2px !important;
+ -webkit-box-shadow: unset !important; 
+ -webkit-border-top-right-radius: 2px !important;
+}
+.memproto, dl.reflist dt {
+  color: #253555;
+  background-color: #ffccfd;
+}
+table.fieldtable {
+  margin-left: 10px;
+  margin-right: 10px;
+  box-shadow: 0 0 black;
+}
+.panel {
+  margin-top: 60px !important;
 }
 .page-header .title {
-  display: inline-block;
-  font-size: 20px;
+  display: inline-block !important;
+  font-size: 20px !important;
+}
+p, dt {
+  margin-top: 0px !important;
+  margin-left: 10px !important;
+}
+dd {
+  margin-top: 0px !important;
+  margin-left: 20px !important;
+}
+.navbar-inverse {
+  background-color: #ab3ea7 !important;
+  border-color: #080808;
+}
+.navbar-inverse .navbar-brand, .navbar {
+  color: white!important;
+}
+.navbar-inverse .navbar-nav>li>a {
+  color: white !important;
+}
+.navbar-inverse:hover .navbar-nav>li>a:hover {
+  color: #f1abf5 !important;;
+}
+
+.navbar-brand:hover,.navbar-brand:focus, .navbar-inverse:hover{
+  color: #f1abf5 !important;
+}
+div.header {
+  border-bottom: none;
+}
+div.directory {
+  border: none !important;
+}
+.panel {
+  border: none !important;
 }

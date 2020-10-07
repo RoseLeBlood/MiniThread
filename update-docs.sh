@@ -1,20 +1,32 @@
+#!/bin/zsh 
+
+DOCSGIT=../../mnthread-docs/docs
+
 cd doc
 doxygen
-rm -r ../../mnthread-docs/docs/
 
-mkdir -p ../../mnthread-docs/docs/css ../../mnthread-docs/docs/js
+# internal use
+#rm -r $DOCSGIT/
+#mkdir -p $DOCSGIT/css $DOCSGIT/js
 
-cp jquery-2.1.1.min.js ../../mnthread-docs/docs/js/.
-cp bootstrap.min.js ../../mnthread-docs/docs/js/.
-cp bootstrap.min.css ../../mnthread-docs/docs/css/.
+# copy jquery and bootstrap (never move - not generated)
+cp jquery-2.1.1.min.js  $DOCSGIT/js/.
+cp bootstrap.min.js     $DOCSGIT/js/.
+cp bootstrap.min.css    $DOCSGIT/css/.
+cp robotslab.css        $DOCSGIT/css/.
 
-mv html/*.css  ../../mnthread-docs/docs/css/.
-mv html/*.js  ../../mnthread-docs/docs/js/.
+# wv css and js files to directoy (generated )
+mv html/*.css           $DOCSGIT/css/.
+mv html/search/*.css    $DOCSGIT/css/.
+mv html/*.js            $DOCSGIT/js/.
+mv html/search/*.js     $DOCSGIT/js/.
 
-cp --recursive html/* ../../mnthread-docs/docs/.
-cd ../../mnthread-docs/
+# copy all other to dos 
+cp --recursive html/* $DOCSGIT/.
+cd $DOCSGIT/..
 
 git add .
 git commit -m "update version"
 #git push
 
+echo $ARG1
