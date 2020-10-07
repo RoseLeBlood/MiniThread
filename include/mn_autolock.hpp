@@ -87,7 +87,7 @@ public:
   /**
    * Helper for lock sections, see example
    * 
-   * @example @code
+   * @code{c}
    * LockType_t mutex;
    * 
    * if( (autolock_t lock(mutex)) ) {

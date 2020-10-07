@@ -1,4 +1,4 @@
-# Mini Thread 1.91-beta2.0 (2.0.0 preview)
+# Mini Thread 1.95-beta.2.0 (2.0.0 preview)
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
@@ -50,34 +50,32 @@ extern "C" void app_main() {
     hello_world_task tasks[NUMBER_OF_TEST_THREADS];
 
     for(int i = 0; i < NUMBER_OF_TEST_THREADS; i++) {
-        tasks[i].create( i % 2 );
+        tasks[i].start( i % 2 );
     }
-    tasks.join();
-    
     mn_panic();
 }
 ```
 
 ## TODO's for Version 2.0
 - [X] Add event group class 
-- [X] Add timer, events and other usefull FreeRTOS Wrapper
-  - [X] timer
-  - [ ] events
-  - [X] ...
+- [X] Add usefull FreeRTOS Wrapper
 - [X] Completed the documentation
 - [ ] Write more examles (after 1.9 ready ) 
 - [X] add a Workqueues 
-- [X] add Memory Manager class
-- [ ] add trace support UART and LwIP out
-  - [ ] uxTaskGetStackHighWaterMark add to task class
-  - [ ] get stackpointer and other things
-- [ ] task Local Storage
-- [ ] Optional:
-  - [ ] In Timers, add OnStop / OnStart / mutex sync with these methods?
+- [~] add Memory Manager class
+- [ ] start to add trace support UART and LwIP out (ready to Version 2.5)
+- [X] task Local Storage in task_utils
   
 
 ## ChangeLog
 
+## Version 1.9.5 Oktober 2020: (unstable 2.0beta) 
++ update error codes
++ merge config_preview with config and error_preview with error
++ add shared, timed and the ringbuffer to main version
++ remove old system locks and add new lock system - old nclude file
++ add new in code example and update the doxygen bootstra output style (not online)
+  
 ## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)
   + free_list_memory pool = basic_free_list_mempool
@@ -116,26 +114,6 @@ extern "C" void app_main() {
     (TODO Optional add a Workqueues ) and add configand error defines, with doku
 * remove bugs and errors
 * This is the preview version of 2.0.0
-  
-## Version 1.60 September 2020: (unstable nightly)
-* add Work queue support (basic_work_queue) basic_work_queue pull work_queue_item off of a FIFO queue and 
-  run them sequentially.  
-* add New Config Options to mn_conig.hpp
-    * MN_THREAD_CONFIG_WORK_QUEUE_MAX_WORK_ITEMS: How many work items to queue in the work queue engine default is 8
-    * MN_THREAD_CONFIG_WORK_QUEUE_STACK_SIZE: Default Stak size for the work queue thread. defaultis (configMINIMAL_STACK_SIZE * 2)
-    * MN_THREAD_CONFIG_WORK_QUEUE_PRIORITY Default Priority for the work queue thread. default is (tskIDLE_PRIORITY + 1)
-    * MN_THREAD_CONFIG_DEFAULT_CORE Default Core to run a new Task (default MN_THREAD_CONFIG_CORE_NO)
-    * MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE On whith core run all Workques an default  cas be override in the create function (default MN_THREAD_CONFIG_CORE2_TWO)
-    * MN_THREAD_CONFIG_LOCK_TYPE This Property change now the Autolock type and the basic LockType_t (default MN_THREAD_CONFIG_BINARY_SEMAPHORE)
-* remane LIB_CPU_0 -> MN_THREAD_CONFIG_CORE2_ONE and LIBMN_CPU_1 -> MN_THREAD_CONFIG_CORE2_TWO
-* rename libmn_panic to mn_panic
-* add default informations to the config file 
-* remove config option MN_THREAD_CONFIG_MUTEX_CLASS. MN_THREAD_CONFIG_MUTEX_CLASS 
-* rename libmn.hpp to mn_base.hpp and add missing headers 
-* rename mn_spinlock.hpp => mn_semaphore.hpp and mn_spinlock.cpp => mn_semaphore.cpp
-* basic_mutex extends basic_semaphore
-* add foreign_thread for mini Thread foregin thread and current Thread handling
-                       
 
 For more see [ChangeLog](ChangeLog.md)
 

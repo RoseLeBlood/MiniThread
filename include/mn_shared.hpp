@@ -21,10 +21,6 @@
 #include "mn_config.hpp"
 #include "mn_autolock.hpp"
 
-#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
-
-#include "mn_config_preview.hpp"
-
 /** 
  * Template class used to protect a shared resource with a Mutex.
  * @ingroup preview
@@ -184,7 +180,5 @@ using shared_wstring_t       = basic_shared_object<std::wstring>;
 
 
 #endif //MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING == MN_THREAD_CONFIG_YES
-
-#endif //MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 
 #endif //MINLIB_ESP32_SHARED_OBJECT_

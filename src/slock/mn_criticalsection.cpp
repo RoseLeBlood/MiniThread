@@ -45,7 +45,7 @@ int basic_critical_section::lock(unsigned int timeout) {
 
     portENTER_CRITICAL_SAFE(&m_pHandle);
 
-    return NO_ERROR;
+    return ERR_SYSTEM_NO_RETURN;
 }
 //-----------------------------------
 //  basic_critical_section::unlock()
@@ -53,7 +53,7 @@ int basic_critical_section::lock(unsigned int timeout) {
 int basic_critical_section::unlock() {
     portEXIT_CRITICAL_SAFE(&m_pHandle);
 
-    return NO_ERROR;
+    return ERR_SYSTEM_NO_RETURN;
 }
 //-----------------------------------
 //  basic_critical_section_timedout::basic_critical_section_timedout()

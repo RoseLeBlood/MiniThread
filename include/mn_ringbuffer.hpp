@@ -21,10 +21,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "mn_config_preview.hpp"
+#include "mn_config.hpp"
 #include "mn_autolock.hpp"
-
-#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 
 /**
  * Template class for a simple circular_buffer
@@ -241,7 +239,5 @@ protected:
 };
 
 using circular_buffer_t = basic_circular_buffer;
-
-#endif //MN_THREAD_CONFIG_PREVIEW_FUTURE
 
 #endif // MINLIB_ESP32_RINGBUFFER_

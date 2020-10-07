@@ -48,8 +48,9 @@ protected:
      * Create the work_queue_t.
      *
      * @param iCore run on whith core
-     * @return ERR_WORKQUEUE_OK The engine is created, ERR_WORKQUEUE_ALREADYINIT The engine allready created,
-     *         ERR_WORKQUEUE_CANTCREATE Error on created the engine
+     * @return - ERR_WORKQUEUE_OK The engine is creat
+     *         - ERR_WORKQUEUE_ALREADYINIT The engine is allready created
+     *         - ERR_WORKQUEUE_CANTCREATE The engine can not creat
      */
     int create_engine(int iCore);
 

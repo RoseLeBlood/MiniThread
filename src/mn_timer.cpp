@@ -141,10 +141,14 @@ bool basic_timer::set_period(unsigned int uiNewPeriod, unsigned int timeout) {
 //-----------------------------------
 //  runtimerstub
 //-----------------------------------
-void basic_timer::runtimerstub(void* xTimer)
-{
+void basic_timer::runtimerstub(void* xTimer) {
+    configASSERT( xTimer );
+
     basic_timer *timer = static_cast<basic_timer *>(pvTimerGetTimerID(xTimer));
+
+    timer->on_enter();
     timer->on_timer();
+    timer->on_exit();
 }
 
 //-----------------------------------

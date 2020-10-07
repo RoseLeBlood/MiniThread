@@ -37,12 +37,12 @@ public:
      * enter the critical section
      * @param timeout Not used
      * 
-     * @return Only NO_ERROR
+     * @return ERR_SYSTEM_NO_RETURN
      */
 	virtual int lock(unsigned int timeout = 0);
     /**
      * leave the critical section
-     * @return Only NO_ERROR
+     * @return ERR_SYSTEM_NO_RETURN
      */
 	virtual int unlock();
 protected:
@@ -80,7 +80,7 @@ public:
     virtual int time_lock(const struct timespec *timeout);
     /**
      * leave the critical section
-     * @return Return ERR_SYSTEM_NO_RETURN only
+     * @return ERR_SYSTEM_NO_RETURN
      */
 	virtual int unlock();
     /**
@@ -107,7 +107,7 @@ public:
 	virtual int lock(unsigned int timeout = UINT_MAX);
     /**
      * leave the critical section nested
-     * @return Return ERR_SYSTEM_NO_RETURN only
+     * @return ERR_SYSTEM_NO_RETURN
      */
 	virtual int unlock();
 protected:

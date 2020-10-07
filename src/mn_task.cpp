@@ -32,7 +32,7 @@ basic_task::basic_task(std::string strName, basic_task::priority uiPriority,
         m_usStackDepth(usStackDepth), 
         m_retval(NULL),
         m_bRunning(false),
-        m_iID(0), 
+        m_iID(0),  
         m_iCore(-1), 
         m_pHandle(NULL),
         m_pChild(NULL),
@@ -122,7 +122,7 @@ int basic_task::start(int iCore) {
   on_start();
   m_continuemutex.unlock();
   m_runningMutex.unlock();
-  m_iCore = m_iCore == INT_MAX ? xPortGetCoreID() : m_iCore;
+  m_iCore = xTaskGetAffinity(m_pHandle) ;
 
 #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
   basic_task_list::instance().add_task(this);

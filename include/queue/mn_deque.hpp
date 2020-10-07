@@ -44,8 +44,10 @@ public:
      *  @param item The item you are adding.
      *  @param Timeout How long to wait to add the item to the queue if
      *         the queue is currently full.
-     *  @return 'ERR_QUEUE_OK' the item was added, 'ERR_QUEUE_ADD' on an error
-     *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
+     *  @return 
+     *      - ERR_QUEUE_OK The item was added 
+     *      - ERR_QUEUE_ADD The item was not added to dequeue
+     *      - ERR_QUEUE_NOTCREATED The queue was not created
      */
     virtual int enqueue_front(void* item, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
 };

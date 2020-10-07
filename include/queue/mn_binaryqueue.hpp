@@ -43,8 +43,9 @@ public:
      *
      *  @param item The item you are adding.
      *  @param timeout not use 
-     *  @return 'ERR_QUEUE_OK' when the item in the queue overwrited and 'ERR_QUEUE_NOTCREATED'
-     *  the queue not created, please call the function create first
+     *  @return 
+     *      - ERR_QUEUE_OK The item in the queue overwrited 
+     *      - ERR_QUEUE_NOTCREATED The queue was not created, please call the function create first
      */
     virtual int enqueue(void *item,  unsigned int timeout = -1);
 };

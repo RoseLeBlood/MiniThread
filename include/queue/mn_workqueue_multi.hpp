@@ -65,8 +65,10 @@ protected:
      * Create this multi tasked work queue
      *
      * @param iCore run on whith core
-     * @return ERR_WORKQUEUE_OK The engine is created, ERR_WORKQUEUE_WARNING not all worker tasks are created
-     *         ERR_WORKQUEUE_CANTCREATE The engine can not created
+     * @return 
+     *   - ERR_WORKQUEUE_OK The engine is created
+     *   - ERR_WORKQUEUE_WARNING Not all worker tasks are created
+     *   - ERR_WORKQUEUE_CANTCREATE The engine can not created
      */
     int create_engine(int iCore);
 

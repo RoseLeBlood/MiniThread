@@ -47,30 +47,32 @@ bool task_utils::notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils:
 }
 
 //-----------------------------------
-//  notify_unlock
+//  notify_give
 //-----------------------------------
-bool task_utils::notify_unlock(basic_task* pTaskToNotify) {
+bool task_utils::notify_give(basic_task* pTaskToNotify) {
+    void* handler = (pTaskToNotify != 0) ? pTaskToNotify->get_handle() : xTaskGetCurrentTaskHandle();
+
     BaseType_t success = pdTRUE;
 
     if (xPortInIsrContext()) {
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-        vTaskNotifyGiveFromISR( pTaskToNotify->get_handle(), &xHigherPriorityTaskWoken );
+        vTaskNotifyGiveFromISR( handler, &xHigherPriorityTaskWoken );
 
         if(xHigherPriorityTaskWoken)
             _frxt_setup_switch();
 
     } else {
-        success = xTaskNotifyGive( pTaskToNotify->get_handle() );
+        success = xTaskNotifyGive( handler );
     }
 
   return success == pdTRUE;
 }
 
 //-----------------------------------
-//  notify_lock
+//  notify_take
 //-----------------------------------
-uint32_t task_utils::notify_lock(bool bClearCountOnExit, TickType_t xTicksToWait) {
+uint32_t task_utils::notify_take(bool bClearCountOnExit, TickType_t xTicksToWait) {
      return ulTaskNotifyTake( bClearCountOnExit ? pdTRUE : pdFALSE, 
                               xTicksToWait );
 }
@@ -84,3 +86,17 @@ bool task_utils::notify_wait(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToCle
     return xTaskNotifyWait( ulBitsToClearOnEntry, ulBitsToClearOnExit,
                             pulNotificationValue, xTicksToWait ) == pdTRUE;
 }
+
+#if( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
+void task_utils::set_storage_pointer(basic_task* task, unsigned short index, void* value) {
+    void* handler = (task != 0) ? task->get_handle() : xTaskGetCurrentTaskHandle();
+
+    vTaskSetThreadLocalStoragePointer( handler, index, value );
+    
+}
+void* task_utils::get_storage_pointer(basic_task* task, unsigned short index) {
+    void* handler = (task != 0) ? task->get_handle() : xTaskGetCurrentTaskHandle();
+
+    return pvTaskGetThreadLocalStoragePointer(handler, index);
+}
+#endif

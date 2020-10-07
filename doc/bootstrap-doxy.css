@@ -1,6 +1,5 @@
 h1, .h1, h2, .h2, h3, .h3{
   font-weight: 200 !important;
-  font-size: 2em !important;
   margin-bottom: 5px !important;
 }
 h1, .h1 {
@@ -41,9 +40,6 @@ body {
 #footer {
   font-size: 0.9em;
   padding: 8px 0px;
-  background-color: #f0f0f0;
-
-  position:absolute;
   bottom: 0;
   width: 100%;
 }
@@ -127,8 +123,11 @@ dl.el {
   margin-left: -1cm;
 }
 
+div.fragment {
+  border: 0px solid #C4CFE5 !important;
+}
 pre.fragment {
-  border: 1px solid #C4CFE5;
+  border: 0px solid #C4CFE5 !important;
   background-color: #FBFCFD;
   padding: 4px 6px;
   margin: 4px 8px 4px 2px;
@@ -137,33 +136,7 @@ pre.fragment {
   font-size:  9pt;
   line-height: 125%;
   font-family: monospace, fixed;
-  font-size: 105%;
-}
-
-div.fragment {
-  padding: 4px 6px;
-  margin: 4px 8px 4px 2px;
-  border: 1px solid #C4CFE5;
-}
-
-div.line {
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 12px;
-  min-height: 13px;
-  line-height: 1.0;     
-  word-wrap: normal;      
-  text-indent: -53px;
-  padding-left: 53px;
-  padding-bottom: 0px;
-  margin: 0px;
-}
-div.line:hover{
-  background-color: #FBFF00;
-}
-
-div.line.glow {
-  background-color: cyan;
-  box-shadow: 0 0 10px cyan;
+  font-size: 100%;
 }
 
 
@@ -183,7 +156,7 @@ span.lineno a {
 }
 
 span.lineno a:hover {
-  background-color: #EFE200;
+  background-color: #ff4be7;
   color: #1e1e1e;
 }
 
@@ -369,13 +342,19 @@ font-size: 50%;
 }
 .memdoc, dl.reflist dt {
   padding: 0px !important;
- text-shadow: unset !important; 
- box-shadow: unset !important;
- border-top-right-radius: 2px !important; 
- -moz-box-shadow: unset !important;
- -moz-border-radius-topright: 2px !important;
- -webkit-box-shadow: unset !important; 
- -webkit-border-top-right-radius: 2px !important;
+  text-shadow: unset !important; 
+  box-shadow: unset !important;
+  border-top-right-radius: 2px !important; 
+  -moz-box-shadow: unset !important;
+  -moz-border-radius-topright: 2px !important;
+  -webkit-box-shadow: unset !important; 
+  -webkit-border-top-right-radius: 2px !important;
+  border-bottom-left-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
+  -moz-border-radius-bottomleft: 2px !important;
+  -moz-border-radius-bottomright: 2px !important;
+  -webkit-border-bottom-left-radius: 2px !important;
+  -webkit-border-bottom-right-radius: 2px !important;
 }
 .memproto, dl.reflist dt {
   color: #253555;
@@ -404,6 +383,7 @@ dd {
 .navbar-inverse {
   background-color: #ab3ea7 !important;
   border-color: #080808;
+  box-shadow: 2px 2px 3px #ab3ea730;
 }
 .navbar-inverse .navbar-brand, .navbar {
   color: white!important;
@@ -420,10 +400,59 @@ dd {
 }
 div.header {
   border-bottom: none;
+  background-color:transparent !important;
 }
 div.directory {
   border: none !important;
 }
 .panel {
   border: none !important;
+  margin-top: 0px !important;
+}
+code {
+  background-color: transparent !important;
+}
+.directory td.desc {
+  width: 100%;
+  border: none !important;
+}
+.directory tr.even {
+	background-color: transparent !important;
+}
+.contents a:visited {
+  color: #ab3ea7 !important;
+}
+a {
+  color: #d14bcd !important;
+}
+span.mlabel {
+  background-color: #ab3ea7 !important;
+  border: 1px solid #ab3ea7 !important;
+  text-shadow: none;
+  color: white;
+  margin-right: 4px;
+  padding: 2px 3px;
+  border-radius: 2px; 
+  white-space: nowrap;
+  vertical-align: middle;
+  font-size: 10px;
+}
+div.dynheader {
+  margin-top: 8px;
+  margin-left: 10px;
+}
+
+div.line {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+  min-height: 13px;
+  line-height: 1.0;     
+  word-wrap: normal;      
+  text-indent: -53px;
+  padding-left: 53px;
+  padding-bottom: 0px;
+  margin: 0px;
+}
+#side-nav {
+  visibility: hidden;
 }

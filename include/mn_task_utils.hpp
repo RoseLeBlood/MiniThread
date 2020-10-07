@@ -24,6 +24,7 @@
 
 class task_utils {
 public:
+  /** Actions that can be performed when task_utils::notify() is called. */
   enum action {
     no_action = eNoAction,				                /*!< Notify the task without updating its notify value. */
     set_bits = eSetBits,					                /*!< Set bits in the task's notification value. */
@@ -48,27 +49,36 @@ public:
   static bool notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils::action eAction);
 
   /**
-   * Simplified macro for receiving task notification.
-   * 
-   *  lock = take
+   * Recive a task notification.
    * 
    * @param bClearCountOnExit if is false then the task's
    * notification value is decremented when the function exits.
    * If true then the task's notification value is cleared to zero when the
    * function exits.
+   * 
+   * @param xTicksToWait The maximum amount of time that the task should wait in
+   * the Blocked state for the task's notification value to be greater than zero,
+   * should the count not already be greater than zero when
+   * notify_take() was called. The task will not consume any processing
+   * time while it is in the Blocked state. This is specified in kernel ticks,
+   * the function ms_to_ticks( value_in_ms ) can be used to convert a time
+   * specified in milliseconds to a time specified in ticks.
+   * 
+   * 
+   * @return The task's notification count before it is either cleared to zero or
+   * decremented 
    */ 
-  static uint32_t notify_lock(bool bClearCountOnExit, TickType_t xTicksToWait); 
+  static uint32_t notify_take(bool bClearCountOnExit, TickType_t xTicksToWait); 
 
   /**
-   * Simplified macro for sending task notification.
+   * Send a task notification.
    *
-   * unlock = give
    * 
    * @param pTaskToNotify The task being notified.
    * 
    * @return true if give and else if not 
    */
-  static bool notify_unlock(basic_task* pTaskToNotify);
+  static bool notify_give(basic_task* pTaskToNotify);
 
   /**
    * Wait for task notification
@@ -99,7 +109,33 @@ public:
    */ 
   static bool notify_wait(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit,
                           uint32_t *pulNotificationValue, TickType_t xTicksToWait );
-  
+
+  #if( configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 )
+  /**
+	 * Set local storage pointer specific to the given task.
+	 *
+	 * The kernel does not use the pointers itself, so the application writer
+	 * can use the pointers for any purpose they wish.
+	 *
+	 * @param task  Task to set thread local storage pointer for
+	 * @param index The index of the pointer to set, from 0 to
+	 *               configNUM_THREAD_LOCAL_STORAGE_POINTERS - 1.
+	 * @param value  Pointer value to set.
+	 */
+  static void set_storage_pointer(basic_task* task, unsigned short index, void* value);
+  /**
+	 * Get local storage pointer specific to the given task.
+   * 
+	 * The kernel does not use the pointers itself, so the application writer
+	 * can use the pointers for any purpose they wish.
+	 *
+	 * @param task  Task to set thread local storage pointer for
+	 * @param index The index of the pointer to set, from 0 to
+	 *               configNUM_THREAD_LOCAL_STORAGE_POINTERS - 1.
+	 * @return  Pointer value
+	 */
+  static void* get_storage_pointer(basic_task* task, unsigned short index); 
+  #endif                       
 };
 
 using task_utils_t = task_utils;

@@ -17,34 +17,3 @@
 */
 
 #include "mn_critical.hpp"
-
-/*
-//-----------------------------------
-//  disable_interrupts
-//-----------------------------------
-void basic_critical::disable_interrupts() {
-    taskDISABLE_INTERRUPTS();
-}
-
-//-----------------------------------
-//  enable_interrupts
-//-----------------------------------
-void basic_critical::enable_interrupts() {
-    taskENABLE_INTERRUPTS();
-}
-
-//-----------------------------------
-//  stop_scheduler
-//-----------------------------------
-void basic_critical::stop_scheduler() {
-    vTaskSuspendAll();
-}
-
-//-----------------------------------
-//  resume_scheduler
-//-----------------------------------
-void basic_critical::resume_scheduler() {
-    xTaskResumeAll();
-}
-
-}*/

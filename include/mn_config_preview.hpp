@@ -26,43 +26,4 @@
 
 #include "mn_config.hpp"
 
-// INFO: Defines for all preeview futures for the next major version
-//=================================================================
-
-#ifndef MN_THREAD_CONFIG_DEBUG
-    #define  MN_THREAD_CONFIG_DEBUG     MN_THREAD_CONFIG_YES
-#endif
-
-#ifndef MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING  
-    /// Using pre defines (usings) for basic types for the shared objects
-    #define MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING MN_THREAD_CONFIG_YES
-#endif //MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING
-
-
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START
-    ///The start magic guard byte for detect heap memory corruption
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START   0x6d //109
-#endif
-
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END
-    ///The end magic guard byte for detect heap memory corruption
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END     0xa8 //168 
-#endif
-
-
-
-/** Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
- * =================================================================
- */
-
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE
-    ///The mempool object is not used
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE 1
-#endif
-
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED
-    ///The mempool object is used, not free
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED 0
-#endif
-
 #endif //__MINLIB_MNTHREAD_PREVIEW_CONFIG_H__

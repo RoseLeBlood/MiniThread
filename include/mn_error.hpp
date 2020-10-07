@@ -25,7 +25,7 @@
 /**
  * No Error
  */
-#define NO_ERROR                        0
+#define NO_ERROR                        0x0000
 
 /**
  * No Error in one of the mutex function
@@ -34,23 +34,23 @@
 /**
  * The mutex allready created
  */ 
-#define ERR_MUTEX_ALREADYINIT			-1
+#define ERR_MUTEX_ALREADYINIT			0x1001
 /**
  * The mutex is not created, please call create first
  */ 
-#define ERR_MUTEX_NOTINIT				-2
+#define ERR_MUTEX_NOTINIT				0x1002
 /**
  * The mutex can't create
  */ 
-#define ERR_MUTEX_CANTCREATEMUTEX		-3
+#define ERR_MUTEX_CANTCREATEMUTEX		0x1003
 /**
  * It timed out on lock the mutex - mutex are not locked
  */ 
-#define ERR_MUTEX_LOCK                  -4
+#define ERR_MUTEX_LOCK                  0x1004
 /**
  * Error to unlock the mutex, call lock first
  */ 
-#define ERR_MUTEX_UNLOCK                -5
+#define ERR_MUTEX_UNLOCK                0x1005
 
 
 // -------------------------------- 
@@ -62,27 +62,27 @@
 /**
  * The spinlock or semaphore allready created
  */ 
-#define ERR_SPINLOCK_ALREADYINIT		-1
+#define ERR_SPINLOCK_ALREADYINIT		0x2001
 /**
  * The spinlock or semaphore is not created, please call create first
  */ 
-#define ERR_SPINLOCK_NOTINIT			-2
+#define ERR_SPINLOCK_NOTINIT			0x2002
 /**
  * The spinlock or semaphore can't create
  */ 
-#define ERR_SPINLOCK_CANTCREATESPINLOCK	-3
+#define ERR_SPINLOCK_CANTCREATESPINLOCK	0x2003
 /**
  * It timed out on lock the spinlock or semaphore - spinlock or semaphore are not locked
  */ 
-#define ERR_SPINLOCK_LOCK               -4
+#define ERR_SPINLOCK_LOCK               0x2004
 /**
  * Error to unlock the spinlock or semaphore, call lock first
  */ 
-#define ERR_SPINLOCK_UNLOCK             -5
+#define ERR_SPINLOCK_UNLOCK             0x2005
 /**
  * Count is bigger are the max count - spinlock not created
  */ 
-#define ERR_SPINLOCK_BAD_INITIALCOUNT   -6
+#define ERR_SPINLOCK_BAD_INITIALCOUNT   0x2006
 
 // --------------------------------
 
@@ -93,23 +93,23 @@
 /**
  * The Lock objects are maked error 
  */ 
-#define ERR_TASK_CANTINITMUTEX		-4
+#define ERR_TASK_CANTINITMUTEX		    0x3001
 /**
  * The thread (i.e. task) can not start unknown error
  */
-#define ERR_TASK_CANTSTARTTHREAD		-5
+#define ERR_TASK_CANTSTARTTHREAD		0x3002
 /**
  * The threah function is null
  */
-#define ERR_TASK_THREADFUNCNOTSET		-6
+#define ERR_TASK_THREADFUNCNOTSET		0x3003
 /**
  * The thread is not running
  */
-#define ERR_TASK_NOTRUNNING			-7
+#define ERR_TASK_NOTRUNNING			    0x3004
 /**
  * The thread can not start, becourse the thread is allready started
  */
-#define ERR_TASK_ALREADYRUNNING		-8
+#define ERR_TASK_ALREADYRUNNING		    0x3005
 
 // --------------------------------
 
@@ -120,11 +120,11 @@
 /**
  * Can not create the lock object for the tasklet, tasklet not created
  */
-#define ERR_COROUTINE_CANTINITLOCKT  		-4
+#define ERR_COROUTINE_CANTINITLOCKT  		0x4001
 /**
  * Tasklet can not created 
  */ 
-#define ERR_COROUTINE_CANTSTART   		-5
+#define ERR_COROUTINE_CANTSTART   		    0x4002
 
 // --------------------------------
 
@@ -135,31 +135,31 @@
 /**
  * The queue is allready Created
  */
-#define ERR_QUEUE_ALREADYINIT			-1
+#define ERR_QUEUE_ALREADYINIT			0x5001
 /**
  * The queue can't created
  */
-#define ERR_QUEUE_CANTCREATE			-2
+#define ERR_QUEUE_CANTCREATE			0x5002
 /**
  * The queue is not created
  */
-#define ERR_QUEUE_NOTCREATED            -3
+#define ERR_QUEUE_NOTCREATED            0x5003
 /**
  * The item can not enqueued in the queue
  */
-#define ERR_QUEUE_ADD                   -4
+#define ERR_QUEUE_ADD                   0x5004
 /**
  * The item can not remove from the queue
  */
-#define ERR_QUEUE_REMOVE                -5
+#define ERR_QUEUE_REMOVE                0x5005
 /**
  * No items in the queue
  */
-#define ERR_QUEUE_PEEK                  -6
+#define ERR_QUEUE_PEEK                  0x5006
 /**
  * Can not create the lock object for the blocking queue
  */ 
-#define ERR_QUEUE_CANTCREATE_LOCK       -99
+#define ERR_QUEUE_CANTCREATE_LOCK       0x5007
 
 /**
  * No Error in one of the Timer function
@@ -168,27 +168,27 @@
 /**
  * The timer is allready Created
  */
-#define ERR_TIMER_ALREADYINIT			-1
+#define ERR_TIMER_ALREADYINIT			0x6001
 /**
  * The timer can't created
  */
-#define ERR_TIMER_CANTCREATE			-2
+#define ERR_TIMER_CANTCREATE			0x6002
 /**
  * The timer is not created
  */
-#define ERR_TIMER_NOTCREATED            -3
+#define ERR_TIMER_NOTCREATED            0x6003
 /**
  * The timer can not start
  */
-#define ERR_TIMER_AKTIVATE              -4
+#define ERR_TIMER_AKTIVATE              0x6004
 /**
  * The timer can not stop
  */
-#define ERR_TIMER_INAKTIVATE            -4
+#define ERR_TIMER_INAKTIVATE            0x6005
 /**
  * The timer can not reset
  */
-#define ERR_TIMER_RESET                 -4
+#define ERR_TIMER_RESET                 0x6006
 
 /**
  * No Error in one of the workqueue function
@@ -197,30 +197,39 @@
 /**
  * The workqueue is allready Created
  */
-#define ERR_WORKQUEUE_ALREADYINIT			-1
+#define ERR_WORKQUEUE_ALREADYINIT			0x7001
 /**
  * The workqueue can't created
  */
-#define ERR_WORKQUEUE_CANTCREATE			-2
+#define ERR_WORKQUEUE_CANTCREATE			0x7002
 /**
  * Warning 
  */
-#define ERR_WORKQUEUE_WARNING               -3
+#define ERR_WORKQUEUE_WARNING               0x7003
 /**
  * The mutex are not 
  */
-#define ERR_WORKQUEUE_CANTINITMUTEX         -4
+#define ERR_WORKQUEUE_CANTINITMUTEX         0x7004
 /**
  * The item can not add to the workqueue
  */
-#define ERR_WORKQUEUE_ADD                   -5
+#define ERR_WORKQUEUE_ADD                   0x7005
 
 
 
 #define ERR_SYSTEM_OK                         NO_ERROR
 
-#define ERR_SYSTEM_LOCK                       -1
+#define ERR_SYSTEM_LOCK                       0x0001
 
-#define ERR_SYSTEM_NO_RETURN                  -99
+#define ERR_SYSTEM_UNLOCK                     0x0002
+
+#define ERR_SYSTEM_NO_RETURN                  0x0003
+
+
+
+#define ERR_MEMPOOL_OK                    NO_ERROR
+#define ERR_MEMPOOL_ALREADYINIT           0x8001
+#define ERR_MEMPOOL_UNKNOW                0x8002
+#define ERR_MEMPOOL_BADALIGNMENT          0x8003
 
 #endif

@@ -76,7 +76,9 @@ public:
      * @param work Pointer to a work_queue_item_t.
      * @note This function may block if the basic_work_queue is presently full.
      * 
-     * @return ERR_WORKQUEUE_OK The work_queue_item_t are added and ERR_WORKQUEUE_ADD If not
+     * @return 
+     *  - ERR_WORKQUEUE_OK The work_queue_item_t are added 
+     *  - ERR_WORKQUEUE_ADD If The work_queue_item_t are not added 
      */ 
     virtual int queue(work_queue_item_t *work,
                       unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);

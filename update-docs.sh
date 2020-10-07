@@ -1,6 +1,28 @@
 #!/bin/zsh 
-
+VERSION="bugfix"
 DOCSGIT=../../mnthread-docs/docs
+
+
+POSITIONAL=()
+while [[ $# -gt 0 ]] do
+
+case $1 in
+    -v|--version)
+    VERSION="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -d|--docsgit)
+    DOCSGIT="$2"
+    shift # past argument
+    shift # past value
+    ;;
+esac
+done
+
+echo "VERSION         = ${VERSION}"
+echo "DOCSGIT         = ${DOCSGIT}"
+
 
 cd doc
 doxygen
@@ -17,16 +39,14 @@ cp robotslab.css        $DOCSGIT/css/.
 
 # wv css and js files to directoy (generated )
 mv html/*.css           $DOCSGIT/css/.
-mv html/search/*.css    $DOCSGIT/css/.
 mv html/*.js            $DOCSGIT/js/.
-mv html/search/*.js     $DOCSGIT/js/.
 
 # copy all other to dos 
 cp --recursive html/* $DOCSGIT/.
 cd $DOCSGIT/..
 
 git add .
-git commit -m "update version"
+git commit -m "update to version ${VERSION}"
 #git push
 
 echo $ARG1

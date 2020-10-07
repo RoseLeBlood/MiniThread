@@ -158,6 +158,15 @@ protected:
      * You must override this function.
      */
     virtual void on_timer() = 0;
+
+    /**
+     * You can override this functions, call befor on_timer
+     */ 
+    virtual void on_enter() { }
+    /**
+     * You can override this functions, call after on_timer
+     */ 
+    virtual void on_exit() { }
 private:
      /**
       * Adapter function that allows you to write a class

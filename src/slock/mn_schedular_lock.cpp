@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -15,15 +15,17 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef MINLIB_ESP32_ERROR_PREVIEW_
-#define MINLIB_ESP32_ERROR_PREVIEW_
 
-/**
- * Error codes for next major version
- * @ingroup preview
- */
-
+#include "slock/mn_schedular_lock.hpp"
 #include "mn_error.hpp"
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
-#endif //MINLIB_ESP32_ERROR_PREVIEW_
+int basic_schedular_lock::lock(unsigned int timeout) {
+    vTaskSuspendAll();
+    return ERR_SYSTEM_NO_RETURN;
+}
+int basic_schedular_lock::unlock() {
+    return xTaskResumeAll() ? ERR_SYSTEM_OK : ERR_SYSTEM_UNLOCK;
+}

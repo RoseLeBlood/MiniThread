@@ -60,7 +60,13 @@
  */
 class basic_semaphore : public ILockObject {
 public:
+  /**
+   * Construtor
+   */ 
   basic_semaphore();
+  /**
+   * Copy Construtor
+   */ 
   basic_semaphore(const basic_semaphore& other);
 
   /**
@@ -98,10 +104,15 @@ public:
    */
   void* get_handle()                      { return m_pSpinlock; }
 
+  /**
+   * Get the error code on creating
+   * @return The error code on creating
+   */ 
   int   get_error()                       { return m_iCreateErrorCode; }
 
   virtual bool is_initialized() const     { return m_pSpinlock != NULL; }
 public:
+  
   bool operator == (const basic_semaphore &r) const {
     return m_pSpinlock == r.m_pSpinlock;
   }
@@ -118,6 +129,7 @@ public:
     return m_pSpinlock > r.m_pSpinlock;
   }
 protected:
+  /** Set the error codes @param error The error code */
   void  set_error(int error)              { m_iCreateErrorCode = error; }
 protected:
   /**
@@ -125,6 +137,9 @@ protected:
    */
 	void* m_pSpinlock;
 
+  /**
+   * A saved / cached copy of error code on creating
+   */ 
   int m_iCreateErrorCode;
   
 };

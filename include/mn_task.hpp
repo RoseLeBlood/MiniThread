@@ -38,7 +38,44 @@
  *  be derived from the basic_task class. Then implement the virtual on_task
  *  function.
  * 
- * @ingroup task
+ * @code{c}
+ * 
+ * #include <miniThread.hpp>
+ * // The number of test tasks
+ * #define NUMBER_OF_TEST_TASK      2
+ * 
+ * // The tost task class
+ * class hello_world_task : public basic_task {
+ * public:
+ *     hello_world_task() : basic_task("HelloWorld", 1) { }
+ * 
+ *     virtual void*  on_task() override { 
+ *         int id = get_id(); // get the task id from this task
+ *         int core = get_on_core(); // get the core on run this task
+ * 
+ *         while(true) { // infinity run
+ *             // print the hello world message to the std output 
+ *             // out on core: 0 and with id: 0: "[0 @ 0] Hello World!" 
+ *             printf("[%d @ %d] Hello World!!\n", id, core );
+ *         }
+ *          
+ *         return NULL; 
+ *     }
+ * };
+ * extern "C" void app_main() {
+ *     hello_world_task tasks[NUMBER_OF_TEST_TASK];
+ * 
+ *     for(int i = 0; i < NUMBER_OF_TEST_TASK; i++) {
+ *         tasks[i].start( i % 2 );
+ *     }
+ *     mn_panic();
+ * }
+ * // Examplo output:
+ * // [0 @ 0] Hello World!
+ * // [1 @ 1] Hello World!
+ * // [0 @ 0] Hello World!
+ * // ...
+ * @endcode
  */
 class  basic_task {
 public:
@@ -52,7 +89,7 @@ public:
     PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
   };
 
-  /** Task states returned by get_state. */
+  /** Task states returned by get_state(). */
   enum state {
     StateRunning = 0,	  /*!< A task is querying the state of itself, so must be running. */
     StateReady,			    /*!< The task being queried is in a read or pending ready list. */
@@ -60,7 +97,7 @@ public:
     StateSuspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
     StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
   };
-
+  /** The using events for wait() and join(). */
   enum event { 
     EventStarted = 1 << 24,     /*!< Event for task started */ 
     EventJoin = 1 << 25         /*!< Event for task joined */ 
@@ -116,7 +153,9 @@ public:
   /**
    * Destroy and delete the task and call the function 'on_kill'
    *
-   * @return ERR_TASK_OK The tasx are destroyed and 'ERR_TASK_NOTRUNNING' the task is not running
+   * @return 
+   *  - ERR_TASK_OK The task are destroyed 
+   *  - ERR_TASK_NOTRUNNING The task was not running
    */
   int                   kill();
 
@@ -372,10 +411,6 @@ protected:
    *  specific on_task() function that interfaces with FreeRTOS.
    */
   static void runtaskstub(void* parm);
-  /**
-   * Internal function
-   */
-	void task_started();
 protected:
   /**
    * Lock Objekt for task safty
