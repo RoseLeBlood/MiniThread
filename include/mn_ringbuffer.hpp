@@ -238,6 +238,7 @@ protected:
 	bool            m_bFull;
 };
 
-using circular_buffer_t = basic_circular_buffer;
+template <class T>
+using circular_buffer_t = basic_circular_buffer<T>;
 
 #endif // MINLIB_ESP32_RINGBUFFER_

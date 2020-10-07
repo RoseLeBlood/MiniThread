@@ -168,10 +168,6 @@ using shared_wstring_t       = basic_shared_object<std::wstring>;
 #endif //_GLIBCXX_USE_WCHAR_T
 
 #if ((__cplusplus >= 201103L) && defined(_GLIBCXX_USE_C99_STDINT_TR1))
-  /// A shared string of @c char16_t
-  using shared_u16string_t   = basic_shared_object<u16string>;
-  /// A shared string of @c char32_t
-  using shared_u32string_t   = basic_shared_object<u32string>;
   /// A shared char of @c char16_t
   using shared_char16_t   = basic_shared_object<char16_t>;
   /// A shared char of @c char32_t
