@@ -385,19 +385,6 @@ dd {
   border-color: #080808;
   box-shadow: 2px 2px 3px #ab3ea730;
 }
-.navbar-inverse .navbar-brand, .navbar {
-  color: white!important;
-}
-.navbar-inverse .navbar-nav>li>a {
-  color: white !important;
-}
-.navbar-inverse:hover .navbar-nav>li>a:hover {
-  color: #f1abf5 !important;;
-}
-
-.navbar-brand:hover,.navbar-brand:focus, .navbar-inverse:hover{
-  color: #f1abf5 !important;
-}
 div.header {
   border-bottom: none;
   background-color:transparent !important;
@@ -419,24 +406,7 @@ code {
 .directory tr.even {
 	background-color: transparent !important;
 }
-.contents a:visited {
-  color: #ab3ea7 !important;
-}
-a {
-  color: #d14bcd !important;
-}
-span.mlabel {
-  background-color: #ab3ea7 !important;
-  border: 1px solid #ab3ea7 !important;
-  text-shadow: none;
-  color: white;
-  margin-right: 4px;
-  padding: 2px 3px;
-  border-radius: 2px; 
-  white-space: nowrap;
-  vertical-align: middle;
-  font-size: 10px;
-}
+
 div.dynheader {
   margin-top: 8px;
   margin-left: 10px;
