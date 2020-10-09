@@ -92,14 +92,15 @@ int basic_critical_section_timedout::time_lock(const struct timespec *timeout) {
 //  basic_critical_section_timedout::try_lock()
 //-----------------------------------
 bool basic_critical_section_timedout::try_lock() {
-    return ( lock(portMUX_TRY_LOCK) == ERR_SYSTEM_OK) );
+    int _rpt = lock(portMUX_TRY_LOCK);
+
+    return ( _rpt == ERR_SYSTEM_OK );
 }
 
 //-----------------------------------
 //  basic_critical_section_timedout::unlock()
 //-----------------------------------
 int basic_critical_section_timedout::unlock() {
-    bool _bReturn = false;
     vPortCPUReleaseMutex(&m_pHandle);
 
     return ERR_SYSTEM_NO_RETURN;

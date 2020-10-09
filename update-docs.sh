@@ -49,6 +49,8 @@ cp popper.min.js        $DOCSGIT/js/.
 cp bootstrap.min.css    $DOCSGIT/css/.
 cp bootstrap-doxy.css   $DOCSGIT/css/.
 
+rm -r html/*
+
 cd $DOCSGIT/..
 git add .
 git commit -m "update to version ${VERSION}"

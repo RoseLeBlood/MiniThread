@@ -1,11 +1,11 @@
 # Changelog
 
-## Version 1.9.5 Oktober 2020: (unstable 2.0beta) 
+## Version 1.9.5 Oktober 2020: (stable 2.0beta) 
 + update error codes
 + merge config_preview with config and error_preview with error
 + add shared, timed and the ringbuffer to main version
 + remove old system locks and add new lock system - old nclude file
-+ add new in code example and update the doxygen bootstra output style (not online)
++ add new in code example and update the doxygen bootstrap output style
 
 ## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)
