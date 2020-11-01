@@ -18,7 +18,7 @@
 #ifndef MINLIB_ESP32_LOCK_EXCEPTION_
 #define MINLIB_ESP32_LOCK_EXCEPTION_
 
-#include "../mn_config_preview.hpp"
+#include "../mn_config.hpp"
 
 #include <exception>
 #include <string>

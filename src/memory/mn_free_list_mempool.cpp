@@ -26,18 +26,26 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#define SAFE_DELETE(ob) if(ob != NULL) { delete ob; ob = NULL; }
+#define SAFE_DELETE(ob)             if(ob != NULL) { delete ob; ob = NULL; }
+#define MEMPOOL_SAFE_DELETE(mO)     __mempool_block_safe_free(m0);
+#define MEMPOOL_ADDR(B)             __mempool_block_addr(B)
 
-#define MEMPOOL_SAFE_DELETE(mO) { \
-    if(blockPtr->addr != NULL) { delete blockPtr->addr; blockPtr->addr = NULL; } \
-    blockPtr->dim = 0; \
-    blockPtr->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED; \
+#define MEMPOOL_CALC_SIZE(mS, mA)   __mempool_block_item_size(mS, mA)
+#define MEMPOOL_CALC_ALIGNMENT(mA)  __mempool_block_alignment(mA) 
+
+inline uint32_t __mempool_block_addr(const char* mem) {
+    return *((uint32_t*)mem);
 }
-
+inline memObject* __mempool_block_safe_free(memObject* mO) {
+    SAFE_DELETE(mO->addr);
+    mO->dim = 0; 
+    mO->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_USED; -
+    return mO;
+}
 //-----------------------------------
 //  __calc_item_size
 //-----------------------------------
-static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) {
+inline int __mempool_block_item_size( unsigned int uiItemSize, unsigned int uiAlignment) {
 
     if (uiItemSize <= uiAlignment) 
         return (2 * uiAlignment);
@@ -52,7 +60,7 @@ static int __calc_item_size( unsigned int uiItemSize, unsigned int uiAlignment) 
 //-----------------------------------
 //  __calc_alignment
 //-----------------------------------
-static int __calc_alignment(unsigned int uiAlignment) {
+inline int __mempool_block_alignment(unsigned int uiAlignment) {
     //portBYTE_ALIGNMENT
     if (uiAlignment < (int)sizeof(unsigned char *))
         return (int)sizeof(unsigned char *);
@@ -74,7 +82,7 @@ basic_free_list_mempool::basic_free_list_mempool(unsigned int uiItemSize,
                                                  unsigned int uiAlignment)
     : IMemPool(uiItemSize, uiElements), m_nMutex() 
 { 
-    m_uiAlignment = __calc_alignment(uiAlignment);
+    m_uiAlignment = MEMPOOL_CALC_ALIGNMENT(uiAlignment);
     m_bCreated = false;
 }
 
@@ -84,7 +92,7 @@ basic_free_list_mempool::basic_free_list_mempool(unsigned int uiItemSize,
 int basic_free_list_mempool::create() {
     if(m_uiAlignment == 0) return ERR_MEMPOOL_BADALIGNMENT;
 
-    m_uiItemSize = __calc_item_size(m_uiItemSize, m_uiAlignment);
+    m_uiItemSize = MEMPOOL_CALC_SIZE(m_uiItemSize, m_uiAlignment);
 
     m_nMutex.lock();
     if(m_bCreated) { 
@@ -174,7 +182,7 @@ void* basic_free_list_mempool::allocate(TickType_t xTicksToWait) {
     while(xTicksRemaining <= xTicksToWait) {
         if(m_nMutex->lock(xTicksRemaining) != NO_ERROR) {
             break;
-        }s 
+        }
         memObject* blockPtr = get_free_block(xTicksRemaining); 
         
         if(blockPtr.raw_memObject != NULL) {
@@ -193,32 +201,32 @@ void* basic_free_list_mempool::allocate(TickType_t xTicksToWait) {
     return (intptr_t *)_blockAddr;
 }
 
+
+
 //-----------------------------------
 //  free
 //----------------------------------- 
 bool  basic_free_list_mempool::free(void* object) {
     bool _retBool = false;
 
-    if( (automutx_t lock(m_nMutex)) ) {
-        for (int i = 0; i < m_uiElements; i++) {
-            if( (m_lBytePtrList[i].addr == object) ) {
-                m_lBytePtrList[i].blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
+    memObject* mObject = get_mem_object(object, 0);
 
-                if(m_lBytePtrList[i].memGuard[0] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START ||
-                m_lBytePtrList[i].memGuard[1] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END ) {
-                    #if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
-                        printf("[Info] heap memory corrupted - write over the boundary (%d %d)\n", 
-                            *((int*)object), i);
-                        #endif
-                        m_lBytePtrList[i].memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
-                        m_lBytePtrList[i].memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END; 
-                        m_lBytePtrList[i].dim = m_uiItemSize;                   
-                }
-                _retBool = true;
-                break;
-            } //if( (m_lBytePtrList[i]->addr == object) )
-        } //for (int i = 0; i < m_uiElements; i++)
-    } // if( (automutx_t lock(m_nMutex)) )
+    if( (automutx_t lock(m_nMutex)) ) {
+        
+        mObject->blockAvaible = MN_THREAD_CONFIG_FREELIST_MEMPOOL_FREE;
+
+        if(mObject->memGuard[0] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START ||
+           mObject->memGuard[1] != MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END ) {
+
+            #if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
+                printf("[Info] heap memory corrupted - write over the boundary (%d)\n", MEMPOOL_ADDR(object));
+            #endif
+                mObject->memGuard[0] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START;
+                mObject->memGuard[1] = MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END; 
+                mObject->dim = m_uiItemSize;                   
+        }
+        _retBool = true;
+    } 
     return _retBool;
 }
 
@@ -310,26 +318,34 @@ unsigned int basic_free_list_mempool::get_free_items() {
 unsigned int basic_free_list_mempool::get_used() {
     return (get_size() - get_free_items());
 }
-#if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
 
 //-----------------------------------
 //  get_mem_object
 //----------------------------------- 
-basic_free_list_mempool::memObject basic_free_list_mempool::get_mem_object(void* mObject) {
-    automutx_t lock(m_nMutex);
+basic_free_list_mempool::memObject* basic_free_list_mempool::get_mem_object(void* mObject, TickType_t xTicksToWait) {
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+    
+    memObject *object = nullptr;
 
-    memObject object = {
-        .raw_memObject = nullptr
-    };
 
-    for (int i = 0; i < m_uiElements; i++) {
-        if(m_lBytePtrList[i].addr == mObject) {
-            object = (m_lBytePtrList[i]);
+    while(xTicksRemaining <= xTicksToWait) {
+        if(m_nMutex->lock(xTicksRemaining) != NO_ERROR) {
             break;
         }
+
+        for (int i = 0; i < m_uiElements; i++) {
+            if( MEMPOOL_ADDR(m_lBytePtrList[i].addr) == MEMPOOL_ADDR(mObject) ) {
+                object = &(m_lBytePtrList[i]);
+                break;
+            }
+        }
+        if (xTicksToWait != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+        m_nMutex->unlock();
     }
     return object;
 }
-#endif //MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
 
 #endif

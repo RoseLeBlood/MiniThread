@@ -143,7 +143,6 @@ public:
      */ 
     unsigned int  get_used();
 
-    #if MN_THREAD_CONFIG_DEBUG == MN_THREAD_CONFIG_YES
     /**
      * Get the memObject from allocated memory object 
      * 
@@ -152,8 +151,7 @@ public:
      * 
      * @note Return a object with raw_memObject = NULL, when object in list not found
      */ 
-    memObject     get_mem_object(void* mem);
-    #endif
+    memObject*   get_mem_object(void* mem, TickType_t xTicksToWait);
 
     /**
      * Set the alignment, only used befor the mempool sucessfull created 
