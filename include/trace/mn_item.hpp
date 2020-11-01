@@ -16,8 +16,9 @@
 *<https://www.gnu.org/licenses/>.  
 */
 
-#ifndef __LIBMIN_THREAD_TRACE_H_
-#define __LIBMIN_THREAD_TRACE_H_
+#ifndef __LIBMIN_THREAD_TRACE_ITEM_H_
+#define __LIBMIN_THREAD_TRACE_ITEM_H_
+
 
 #include <mn_micros.hpp>
 #include <string>
@@ -37,19 +38,19 @@ public:
         union {
             struct {
                 /** time sec */
-                uint8_t sec : 6;
+                uint8_t sec;
                 /** time minits */
-                uint8_t min  : 6;
+                uint8_t min;
                 /** time hour */
-                uint8_t hour  : 4;
+                uint8_t hour;
                 /** reserved */
-                uint16_t reserved;
+                uint8_t reserved;
                 /** current os ticks, or debug */
                 uint32_t ticks; 
-            }
+            };
             /** the buffer of the time - this variable are send */
-            uint64_t time;
-        }
+            uint64_t bytetime;
+        };
     };
     /**
      * Construtor
@@ -60,13 +61,6 @@ public:
     basic_trace_item(void* _Object, std::string _Name)
         : m_pObject(_Object), m_strName(_Name), m_tTime(get_time()) {  }
 
-    /** 
-     * get the message as c-style string
-     * 
-     * @return The message as c-style string 
-     */
-    virtual const char* message() = 0;
-
     template <class TRET> 
         TRET get_as() { return static_cast<TRET>(m_pObject); }
 
@@ -75,6 +69,21 @@ public:
      * @return The human readebly debug name of the object
      */ 
     std::string get_name() { return m_strName; }
+
+    /** 
+     * get the message as c-style string, for sending
+     * style: time:message;
+     * @return The message as c-style string 
+     */
+    const char* get_message();
+protected:
+    std::string time_to_string(time tm);
+    /** 
+     * get the user message as c-style string
+     * example: object:name:state
+     * @return The message as c-style string
+     */
+    virtual const char* message() = 0;
 private:   
     /**
      * Get the current creating time
@@ -88,39 +97,5 @@ private:
     time m_tTime;
 };
 
-
-/** The states of a semaphore_trace_item message */
-enum class semaphore_trace_state {
-    StateCreate,    /*!< The message state on create the semaphore */
-    StateDelete,    /*!< The message state on delete the semaphore */
-    StateEnterLock, /*!< The message state on lock the semaphore */
-    StateExitLock,  /*!< The message state on unlock the semaphore */
-    StateTryLock    /*!< The message state on try_lock the semaphore */
-};
-/**
- * Trace item for a semaphore object
- */ 
-class semaphore_trace_item : public basic_trace_item {
-public:
-    /**
-     * Construtor
-     * 
-     * @param _Object The mutex object of this message
-     * @param _Name The human readebly debug name for this mutex
-     */
-    semaphore_trace_item(semaphore_trace_state _State, basic_semaphore* _Object, std::string _Name)
-        : basic_trace_item(_Object, _Name), m_State(_State) {  }
-
-    /** 
-     * get the message as c-style string
-     * 
-     * @return The message as c-style string 
-     */
-    const char* message();
-
-    const semaphore_trace_state get_state() const { return m_State; }
-private:
-    semaphore_trace_state m_State;
-};
 
 #endif
