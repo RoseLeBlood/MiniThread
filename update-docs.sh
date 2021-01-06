@@ -1,7 +1,6 @@
 #!/bin/zsh 
 VERSION="bugfix"
-DOCSGIT=../../mnthread-docs/docs
-
+DOCSGIT=docs-git/docs
 
 POSITIONAL=()
 while [[ $# -gt 0 ]] do
@@ -28,8 +27,8 @@ cd doc
 doxygen
 
 # internal use
-#rm -r $DOCSGIT/
-#mkdir -p $DOCSGIT/css $DOCSGIT/js
+rm -r $DOCSGIT/
+mkdir -p $DOCSGIT/css $DOCSGIT/js
 
 
 
@@ -49,7 +48,7 @@ cp popper.min.js        $DOCSGIT/js/.
 cp bootstrap.min.css    $DOCSGIT/css/.
 cp bootstrap-doxy.css   $DOCSGIT/css/.
 
-rm -r html/*
+rm -r html/
 
 cd $DOCSGIT/..
 git add .

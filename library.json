@@ -16,6 +16,5 @@
     "version": "1.95.1",
     "frameworks": "espidf",
     "platforms": "espressif32",
-    "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
-    "examples": [ "example/basic.ino" ]
+    "homepage": "https://roseleblood.github.io/mnthread-docs/index.html"
 }
