@@ -75,6 +75,7 @@ extern "C" void app_main() {
 + add shared, timed and the ringbuffer to main version
 + remove old system locks and add new lock system - old nclude file
 + add new in code example and update the doxygen bootstra output style (not online)
++ Add static support
   
 ## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)
