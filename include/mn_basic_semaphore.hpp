@@ -111,6 +111,10 @@ public:
   int   get_error()                       { return m_iCreateErrorCode; }
 
   virtual bool is_initialized() const     { return m_pSpinlock != NULL; }
+
+  #if configQUEUE_REGISTRY_SIZE > 0
+    void set_name(const char* name)       { vQueueAddToRegistry(m_pSpinlock, name); }
+  #endif
 public:
   
   bool operator == (const basic_semaphore &r) const {
@@ -136,6 +140,10 @@ protected:
    *  FreeRTOS semaphore handle.
    */
 	void* m_pSpinlock;
+
+  #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+    StaticSemaphore_t m_SemaphoreBasicBuffer;
+#endif
 
   /**
    * A saved / cached copy of error code on creating

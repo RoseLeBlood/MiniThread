@@ -76,7 +76,9 @@
  */ 
 #define MN_THREAD_CONFIG_CORE_TWO   1
 
-  
+#if( configSUPPORT_STATIC_ALLOCATION == 1 )
+    #define MN_THREAD_CONFIG_STACK_DEPTH 8192
+#endif
 /** 
  * @brief Pre defined on which core must run the task, can override in the create 
  * function

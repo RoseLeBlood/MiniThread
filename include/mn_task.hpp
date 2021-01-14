@@ -465,6 +465,11 @@ protected:
    * used or wait() and join()
    */ 
   event_group_t m_event;
+
+  #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+    StaticTask_t m_TaskBuffer;
+    StackType_t  m_stackBuffer[MN_THREAD_CONFIG_STACK_DEPTH];
+  #endif
 };
 
 using task_t = basic_task;

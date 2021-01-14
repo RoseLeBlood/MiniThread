@@ -27,13 +27,18 @@
 basic_binary_semaphore::basic_binary_semaphore() 
   : basic_semaphore() { 
   
+#if( configSUPPORT_STATIC_ALLOCATION == 1 )
+  m_pSpinlock = xSemaphoreCreateBinaryStatic(&m_SemaphoreBasicBuffer);
+#else
   m_pSpinlock = xSemaphoreCreateBinary();
+#endif
 
   if (m_pSpinlock) {
     unlock();
   } else {
     THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
   }
+  
 }
 
 //-----------------------------------

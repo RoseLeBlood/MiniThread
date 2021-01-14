@@ -195,6 +195,10 @@ private:
      *  A saved / cached copy of what the timers's ID is.
      */ 
     int m_iTimerID;
+
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+        StaticTimer_t m_xTimerBuffer;
+    #endif
 };
 
 using mtimer_t = basic_timer;

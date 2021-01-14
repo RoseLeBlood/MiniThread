@@ -36,7 +36,11 @@
 recursive_mutex::recursive_mutex() 
     : basic_mutex() {
 
-    m_pSpinlock = xSemaphoreCreateRecursiveMutex();
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+        m_pSpinlock = xSemaphoreCreateRecursiveMutexStatic(&m_SemaphoreBasicBuffer);
+    #else
+        m_pSpinlock = xSemaphoreCreateRecursiveMutex();
+    #endif
 
     if (m_pSpinlock) {
         unlock();

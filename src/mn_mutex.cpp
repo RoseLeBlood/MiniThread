@@ -29,7 +29,13 @@
 //  construtor
 //-----------------------------------
 basic_mutex::basic_mutex() : basic_semaphore() { 
-  m_pSpinlock = xSemaphoreCreateMutex();
+
+  #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+    m_pSpinlock = xSemaphoreCreateMutexStatic(&m_SemaphoreBasicBuffer);
+  #else
+    m_pSpinlock = xSemaphoreCreateMutex();
+  #endif
+
 
   if (m_pSpinlock) {
     unlock();

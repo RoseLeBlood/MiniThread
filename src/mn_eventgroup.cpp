@@ -24,7 +24,12 @@
 //  construtor
 //-----------------------------------
 basic_event_group::basic_event_group() {
-    m_pHandle = xEventGroupCreate();
+
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+        m_pHandle = xEventGroupCreateStatic(&m_xEventGroupBuffer);
+    #else
+        m_pHandle = xEventGroupCreate();
+    #endif
 }
 
 //-----------------------------------

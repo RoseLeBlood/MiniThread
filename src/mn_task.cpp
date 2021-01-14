@@ -107,9 +107,15 @@ int basic_task::start(int iCore) {
 	}
 	m_runningMutex.unlock();
 
-  xTaskCreatePinnedToCore(&runtaskstub, m_strName.c_str(),
-              m_usStackDepth,
-              this, (int)m_uiPriority, &m_pHandle, m_iCore);
+   #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+    xTaskCreateStaticPinnedToCore(&runtaskstub, m_strName.c_str(),
+                m_usStackDepth,
+                this, (int)m_uiPriority, &m_pHandle, m_stackBuffer, m_TaskBuffer m_iCore);
+  #else
+    xTaskCreatePinnedToCore(&runtaskstub, m_strName.c_str(),
+                m_usStackDepth,
+                this, (int)m_uiPriority, &m_pHandle, m_iCore);
+  #endif
 
 	if (m_pHandle == 0) {
     m_continuemutex.unlock();

@@ -171,6 +171,10 @@ private:
      *  FreeRTOS Event Group handle.
      */
     EventGroupHandle_t m_pHandle;
+
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+        StaticEventGroup_t m_xEventGroupBuffer;
+    #endif
 };
 
 using event_group_t = basic_event_group;

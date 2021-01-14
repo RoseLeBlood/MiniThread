@@ -29,7 +29,11 @@ basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount)
     if ( (m_uiMaxCount < m_uiCount) && (m_uiMaxCount == 0) ) {
       THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
     } else {
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+      m_pSpinlock = xSemaphoreCreateCountingStatic(m_uiMaxCount, m_uiCount, &m_SemaphoreBasicBuffer);
+    #else
       m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
+    #endif
 
       if (m_pSpinlock) {
         unlock();

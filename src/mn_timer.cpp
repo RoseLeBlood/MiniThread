@@ -34,10 +34,19 @@ basic_timer::basic_timer(const char * strName, unsigned int uiPeriod, bool bIsOn
 int basic_timer::create() {
     if(m_pHandle != 0) return ERR_TIMER_ALREADYINIT;
 
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+
+    m_pHandle = xTimerCreateStatic(m_strName, m_uiPeriod, 
+                            m_bIsOneShot ? pdFALSE : pdTRUE,
+                            this, runtimerstub, 
+                            &m_xTimerBuffer);
+
+    #else
+    
     m_pHandle = xTimerCreate(m_strName, m_uiPeriod, 
                             m_bIsOneShot ? pdFALSE : pdTRUE,
                             this, runtimerstub);
-
+    #endif
     
     if (m_pHandle == NULL) 
         return ERR_TIMER_CANTCREATE;
