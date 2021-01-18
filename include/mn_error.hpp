@@ -232,4 +232,7 @@
 #define ERR_MEMPOOL_UNKNOW                0x8002
 #define ERR_MEMPOOL_BADALIGNMENT          0x8003
 
+#define ERR_TICKHOOK_OK                   NO_ERROR
+#define ERR_TICKHOOK_ADD                  0x9001        
+
 #endif

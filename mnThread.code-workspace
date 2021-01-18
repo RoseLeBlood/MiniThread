@@ -7,5 +7,19 @@
 			"path": "examples"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.ejson": "json",
+			"*.ujson": "json",
+			"*.vhtml": "html",
+			"*.ncpm": "jsonc",
+			"*.phtm": "html",
+			"deque": "cpp",
+			"string": "cpp",
+			"vector": "cpp",
+			"*.ipp": "cpp",
+			"*.tcc": "cpp",
+			"list": "cpp"
+		}
+	}
 }
