@@ -3,7 +3,7 @@
 #include "mn_tickhook.hpp"
 #include "mn_micros.hpp"
 
-///TODO: Add Critical Section
+///TODO: Add Critical Sections
 
 std::list<base_tickhook_entry*> base_tickhook::m_listHooks;
 unsigned int ___current_ticks_base_tickhook_dd789 = 0;
