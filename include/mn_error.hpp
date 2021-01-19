@@ -233,6 +233,7 @@
 #define ERR_MEMPOOL_BADALIGNMENT          0x8003
 
 #define ERR_TICKHOOK_OK                   NO_ERROR
-#define ERR_TICKHOOK_ADD                  0x9001        
+#define ERR_TICKHOOK_ADD                  0x9001 
+#define ERR_TICKHOOK_ENTRY_NULL           0x900A       
 
 #endif

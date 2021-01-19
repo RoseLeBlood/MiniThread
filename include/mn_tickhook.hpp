@@ -18,6 +18,8 @@
 #ifndef MINLIB_ESP32_TICK_HOOK_
 #define MINLIB_ESP32_TICK_HOOK_
 
+#if ( configUSE_TICK_HOOK == 1 )
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -25,9 +27,9 @@
 #include "mn_task.hpp"
 #include "mn_error.hpp"
 
-#include <list>
+#include "queue/mn_queue.hpp"
 
-#if ( configUSE_TICK_HOOK == 1 )
+#include "mn_tickhook_entry.hpp"
 
 /**
  * FreeRTOS expects this function to exist and requires it to be 
@@ -36,74 +38,6 @@
  */
 extern "C" void vApplicationTickHook(void);
 
-/**
- * This is an abstract base class for a entry of base_tickhook.
- *  
- * To use this, you need to subclass it. All of your coroutines should
- * be derived from the base_tickhook_entry class. Then implement the virtual on_hook
- * function. 
- */ 
-class base_tickhook_entry {
-    public:
-        /**
-         * Constructor 
-         * 
-         * @param iTicksToCall The number of ticks left after this run
-         * @param bOneShoted If the hook oneshoted ?
-         * @param pArgs a array of arguments.
-         * @param numArgs How many arguments are contains in the array pArgs.
-         */ 
-        base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted = false, 
-            void* pArgs = 0, int numArgs = 0)
-
-            : m_uiNumArgs(numArgs), m_pArgs(pArgs), 
-              m_iTicksToCall(iTicksToCall), 
-              m_bOneShoted(bOneShoted), 
-              m_bReady(false) { }
-
-        /**
-         * Set the number of ticks after this run. When param uiTicks 0 is, then run
-         * every tick.
-         * 
-         * @param uiTicks The number of ticks left after this run
-         */ 
-        bool set_ticks(unsigned int uiTicks) {
-            if(m_bReady) return false;
-            m_iTicksToCall = uiTicks; return true;
-        }
-        /**
-         * Set the is this entry oneshot? 
-         * @param bIsOneShot If true then oneshoted this entry and removed after run.
-         */ 
-        bool set_oneshot(bool bIsOneShot) {
-            if(m_bReady) return false;
-            m_bOneShoted = bIsOneShot; return true;
-        }
-        /**
-         * Marked the hook as ready, after this you can not modifitated the hook
-         */ 
-        void start() {
-            m_bReady = true;
-        }
-        void stop() {
-            m_bReady = false;
-        }
-
-        bool is_oneshoted() { return m_bOneShoted; }
-        bool is_ready() { return m_bReady; }
-
-        unsigned int get_ticks() { return m_iTicksToCall; }
-
-    protected:
-        virtual void on_tick() = 0;
-    protected:
-        uint32_t m_uiNumArgs;
-        void*    m_pArgs;
-        unsigned int m_iTicksToCall;
-        bool m_bOneShoted;
-        bool m_bReady;
-};
-
 
 /**
  * Wrapper class for Tick hooks, functions you want to run within the tick ISR. 
@@ -111,7 +45,39 @@ class base_tickhook_entry {
  * You can register multiple hooks (base_tickhook_entry) with this class.
  */ 
 class base_tickhook {
+    /**
+     *  Allow the global vApplicationTickHook() function access
+     *  to the internals of this class. This simplifies the overall
+     *  design.
+     */
+    friend void ::vApplicationTickHook();
+private:
+    /**
+     * @brief Creates a tick hook %list with default constructed elements.
+     * 
+     * @note This is a signleton class, only one object 
+     * plaese use base_tickhook::instance() 
+     */ 
+    base_tickhook() 
+        : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS, sizeof(base_tickhook_entry*) ) { 
+        reset(); 
+    }
+
+    /**
+     * The static object of this class
+     */ 
+    static base_tickhook* m_pInstance;
+    /**
+     * The static instance mutex
+     */ 
+    static mutex_t  m_staticInstanceMux;
 public:
+    /**
+     * Get the singleton instance 
+     * @return The singleton instance
+     */ 
+    static base_tickhook& instance();
+
     /**
      * Add a new tickhook to the list
      * @param entry The new tick hook entry
@@ -119,18 +85,52 @@ public:
      * @return 
      *  - ERR_TICKHOOK_OK The entry was added
      *  - ERR_TICKHOOK_ADD The entry already added
+     *  - ERR_TICKHOOK_ENTRY_NULL The entry is null
      */ 
-    static int register(base_tickhook_entry* entry);
+    int enqueue(base_tickhook_entry* entry, 
+        unsigned int timeout = (unsigned int) 0xffffffffUL);
+    /**
+     *  Remove an item from the front of the queue.
+     *
+     *  @param item Where the item you are removing will be returned to.
+     *  @param timeout How long to wait to remove an item to the queue.
+     *  @return 'ERR_QUEUE_OK' the item was removed, 'ERR_QUEUE_REMOVE' on an error
+     *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
+     */
+    void dequeue(base_tickhook_entry* entry,
+        unsigned int timeout = (unsigned int) 0xffffffffUL);
+    /**
+     * Clear the list
+     */ 
+    void clear();
+
+    /**
+     * Reset
+     */ 
+    void reset();
+    /**
+     * How many entrys are in the list
+     * @return The number of entrys in the list
+     */ 
+    unsigned int count();
 private:
     /**
-     *  Allow the global vApplicationTickHook() function access
-     *  to the internals of this class. This simplifies the overall
-     *  design.
-     */
-    friend void ::vApplicationTickHook();
-
-    static std::list<base_tickhook_entry*> m_listHooks;
+     * The tick hook logic - call from vApplicationTickHook. 
+     * All not oneshotted entrys enqueue after run to m_listToAdd.
+     * 
+     */ 
+    void onApplicationTickHook();
+    /**
+     * Swapped all entrys in m_listToAdd to m_listHooks back
+     * 
+     */ 
+    void swap();
+private:
+    mutex_t m_mutexAdd;
+    queue_t m_listHooks, m_listToAdd;
+    unsigned int m_iCurrent;
 };
 
 
-#endif
+#endif // #if ( configUSE_TICK_HOOK == 1 )
+#endif //  MINLIB_ESP32_TICK_HOOK_

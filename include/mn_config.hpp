@@ -363,6 +363,12 @@
     ///The end magic guard byte for detect heap memory corruption
     #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END     0xa8 //168 
 #endif
+
+
+#ifndef MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS         
+    ///The mak entrys are hold the tickhook queue
+    #define MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS     10 //168 
+#endif
 /** 
  * Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================
