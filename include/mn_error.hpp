@@ -27,6 +27,10 @@
  */
 #define NO_ERROR                        0x0000
 
+#define ERR_TIMEOUT                     0x0001
+
+#define ERR_NULL                        0x0002
+
 /**
  * No Error in one of the mutex function
  */

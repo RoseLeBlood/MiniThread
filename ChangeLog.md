@@ -4,8 +4,9 @@
 + update error codes
 + merge config_preview with config and error_preview with error
 + add shared, timed and the ringbuffer to main version
-+ remove old system locks and add new lock system - old nclude file
++ remove old system locks and add new lock system - old include file
 + add new in code example and update the doxygen bootstrap output style
++ add basic_tickhook system
 
 ## Version 1.9.1 Oktober 2020: (unstable 2.0beta) 
 + for the future version add prototypes: (Not for produtions use!!)

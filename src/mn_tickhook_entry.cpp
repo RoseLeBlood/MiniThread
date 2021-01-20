@@ -21,15 +21,15 @@
 #include "mn_tickhook_entry.hpp"
 
 /*--------------------------------------
- * instance()
+ * base_tickhook_entry()
  * -------------------------------------*/
-base_tickhook_entry::base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted = false, 
-    void* pArgs = 0, int numArgs = 0)
+base_tickhook_entry::base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted, 
+    void* pUserData)
 
-    : m_uiNumArgs(numArgs), m_pArgs(pArgs), 
-        m_iTicksToCall(iTicksToCall), 
-        m_bOneShoted(bOneShoted), 
-        m_bReady(false) { }
+    : m_pUserData(pUserData), 
+      m_iTicksToCall(iTicksToCall), 
+      m_bOneShoted(bOneShoted), 
+      m_bReady(false) { }
 
 /*--------------------------------------
  * set_ticks()

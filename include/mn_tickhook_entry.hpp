@@ -43,7 +43,7 @@ class base_tickhook_entry {
          * @param numArgs How many arguments are contains in the array pArgs.
          */ 
         base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted = false, 
-            void* pArgs = 0, int numArgs = 0);
+            void* pUserData = 0);
 
         base_tickhook_entry(const base_tickhook_entry&) = delete;
         /**
@@ -71,8 +71,7 @@ class base_tickhook_entry {
     protected:
         virtual void onTick(const unsigned int ticks) = 0;
     protected:
-        uint32_t m_uiNumArgs;
-        void*    m_pArgs;
+        void*    m_pUserData;
         unsigned int m_iTicksToCall;
         bool m_bOneShoted;
         bool m_bReady;

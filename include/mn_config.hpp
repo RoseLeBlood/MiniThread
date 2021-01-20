@@ -38,12 +38,12 @@
 ///@brief Major Version, the first number
 #define MN_THREAD_MAJOR_VERSION 1
 /// @brief Minor Version, the 2. number
-#define MN_THREAD_MINOR_VERSION 91
+#define MN_THREAD_MINOR_VERSION 95
 /// @brief  Prozent for next minor jump
-#define MN_THREAD_DEBUG_VERSION 23 
+#define MN_THREAD_DEBUG_VERSION 49 
 
 /// @brief The mini thread version as string
-#define MN_THREAD_VERSION_STRING          "1.91-23"
+#define MN_THREAD_VERSION_STRING          "1.95-49"
 
 /// @brief Pre defined helper values for config items - Use a mutex
 #define MN_THREAD_CONFIG_MUTEX                1
@@ -168,9 +168,9 @@
 #ifndef MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
     /**
      * The minimal stack size for a mn task
-     * @note default: 3072
+     * @note default: 2048
      */ 
-    #define MN_THREAD_CONFIG_MINIMAL_STACK_SIZE		3072
+    #define MN_THREAD_CONFIG_MINIMAL_STACK_SIZE		2048
 #endif   
 
 #ifndef MN_THREAD_CONFIG_MSGTASK_MAX_MESSAGES

@@ -18,10 +18,10 @@
 #ifndef MINLIB_ESP32_TICK_HOOK_
 #define MINLIB_ESP32_TICK_HOOK_
 
-#if ( configUSE_TICK_HOOK == 1 )
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
+#if ( configUSE_TICK_HOOK == 1 )
 
 #include "mn_config.hpp"
 #include "mn_task.hpp"
@@ -45,12 +45,6 @@ extern "C" void vApplicationTickHook(void);
  * You can register multiple hooks (base_tickhook_entry) with this class.
  */ 
 class base_tickhook {
-    /**
-     *  Allow the global vApplicationTickHook() function access
-     *  to the internals of this class. This simplifies the overall
-     *  design.
-     */
-    friend void ::vApplicationTickHook();
 private:
     /**
      * @brief Creates a tick hook %list with default constructed elements.
@@ -58,10 +52,7 @@ private:
      * @note This is a signleton class, only one object 
      * plaese use base_tickhook::instance() 
      */ 
-    base_tickhook() 
-        : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS, sizeof(base_tickhook_entry*) ) { 
-        reset(); 
-    }
+    base_tickhook();
 
     /**
      * The static object of this class
@@ -86,6 +77,7 @@ public:
      *  - ERR_TICKHOOK_OK The entry was added
      *  - ERR_TICKHOOK_ADD The entry already added
      *  - ERR_TICKHOOK_ENTRY_NULL The entry is null
+     *  - ERR_TIMEOUT TimeOut
      */ 
     int enqueue(base_tickhook_entry* entry, 
         unsigned int timeout = (unsigned int) 0xffffffffUL);
@@ -94,10 +86,12 @@ public:
      *
      *  @param item Where the item you are removing will be returned to.
      *  @param timeout How long to wait to remove an item to the queue.
-     *  @return 'ERR_QUEUE_OK' the item was removed, 'ERR_QUEUE_REMOVE' on an error
-     *          and 'ERR_QUEUE_NOTCREATED' when the queue not created
+     *  @return  - 'ERR_QUEUE_OK' the item was removed 
+     *           - 'ERR_QUEUE_REMOVE' on an error
+     *           - 'ERR_QUEUE_NOTCREATED' when the queue not created
+     *           - 'ERR_TIMEOUT' TimeOut
      */
-    void dequeue(base_tickhook_entry* entry,
+    int dequeue(base_tickhook_entry* entry,
         unsigned int timeout = (unsigned int) 0xffffffffUL);
     /**
      * Clear the list
@@ -131,6 +125,7 @@ private:
     unsigned int m_iCurrent;
 };
 
+using tickhook_t = base_tickhook;
 
 #endif // #if ( configUSE_TICK_HOOK == 1 )
 #endif //  MINLIB_ESP32_TICK_HOOK_

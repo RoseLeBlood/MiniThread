@@ -21,7 +21,6 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/event_groups.h"
 
 #include "mn_autolock.hpp"
 #include "mn_tickhook.hpp"
@@ -36,6 +35,15 @@ void vApplicationTickHook(void) {
     base_tickhook::instance().onApplicationTickHook();
 }
 
+base_tickhook::base_tickhook() 
+    : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS, sizeof(base_tickhook_entry*) ) {
+
+    m_listHooks.create();
+    m_listToAdd.create();
+     
+    reset(); 
+}
+
 /*--------------------------------------
  * onApplicationTickHook()
  * -------------------------------------*/
@@ -48,18 +56,20 @@ void base_tickhook::onApplicationTickHook() {
     if(m_listHooks->is_empty()) return;
 
     while( (dequeue(&entry) == ERR_QUEUE_OK) ) {
+
         time = entry->get_ticks();
 
-         if(entry->is_ready()) {
+        if(entry->is_ready()) {
 
             if( (time == 0) || (m_iCurrent % time) == 0) ) {
                 entry->onTick(m_iCurrent);
 
                 if(!entry->is_oneshoted())  
-                    m_listToAdd.enqueue(entry, timeout);
+                    m_listToAdd.enqueue(entry);
             }
         }
     }
+
 
     swap();
 }
@@ -80,11 +90,70 @@ int base_tickhook::enqueue(base_tickhook_entry* entry, unsigned int timeout) {
     if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
     if(is(entry)) return ERR_TICKHOOK_ADD;
 
-    m_mutexAdd.lock();
-    m_listHooks.enqueue(entry, timeout);
-    m_mutexAdd.unlock();
+    TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
+    TickType_t xTicksRemaining = timeout;
+    int _ret = ERR_TIMEOUT;
 
-    return NO_ERROR;
+    while(xTicksRemaining <= timeout) {
+       if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+                break;
+        }
+
+        _ret = m_listHooks.enqueue(entry, xTicksRemaining);
+
+        if(_ret == ERR_QUEUE_OK) {
+            m_mutexAdd->unlock();
+            break;
+        }
+        
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+        m_mutexAdd->unlock();
+    }
+
+    // Old with out RTOS timeout support
+    /*m_mutexAdd.lock();
+    m_listHooks.enqueue(entry, timeout);
+    m_mutexAdd.unlock();*/
+
+    return _ret;
+}
+
+/*--------------------------------------
+ * dequeue()
+ * -------------------------------------*/
+int base_tickhook::dequeue(base_tickhook_entry* entry, unsigned int timeout) {
+    if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
+
+    TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
+    TickType_t xTicksRemaining = timeout;
+    int _ret = ERR_TIMEOUT;
+
+    while(xTicksRemaining <= timeout) {
+       if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+                break;
+        }
+
+        _ret = m_listHooks.dequeue(entry, xTicksRemaining);
+
+        if(_ret == ERR_QUEUE_OK) {
+            m_mutexAdd->unlock();
+            break;
+        }
+        
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+        m_mutexAdd->unlock();
+    }
+    return _ret;
+    
+    
+    //automutx_t lock(m_mutexAdd);
+    //m_listHooks.dequeue(entry, timeout);
 }
 
 /*--------------------------------------
@@ -99,19 +168,16 @@ void base_tickhook::clear() {
  * -------------------------------------*/
 void base_tickhook::reset() {
     automutx_t lock(m_mutexAdd);
-    m_listHooks.clear();
-    m_iCurrent = 0;
 
-    m_listHooks.create();
-    m_listToAdd.create();
+    if(!m_listHooks.is_empty()) 
+        m_listHooks.clear();
+
+    if(!m_listToAdd.is_empty()) 
+        m_listToAdd.clear();
+
+    m_iCurrent = 0;
 }
-/*--------------------------------------
- * dequeue()
- * -------------------------------------*/
-void base_tickhook::dequeue(base_tickhook_entry* entry, unsigned int timeout) {
-    automutx_t lock(m_mutexAdd);
-    m_listHooks.dequeue(entry, timeout);
-}
+
 /*--------------------------------------
  * count()
  * -------------------------------------*/
