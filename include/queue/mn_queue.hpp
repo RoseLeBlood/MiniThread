@@ -75,7 +75,7 @@ public:
      *  Make a copy of an item from the front of the queue. 
      *  This will not remove it
      *
-     *  @param item Where the item you are removing will be returned to.
+     *  @param item Where the item you are getting will be returned to.
      *  @param timeout How long to wait 
      *  @return 'ERR_QUEUE_OK' if an item was copied, 'ERR_QUEUE_PEEK' on error 
      *  and 'ERR_QUEUE_NOTCREATED' when the queue not created
