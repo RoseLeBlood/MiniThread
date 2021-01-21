@@ -18,11 +18,8 @@
 #ifndef _MINLIB_IMEMPOOL_INTERFACE_H_
 #define _MINLIB_IMEMPOOL_INTERFACE_H_
 
-#include "../mn_config_preview.hpp"
-
-#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
-
-#include "../mn_error_preview.hpp"
+#include "../mn_config.hpp"
+#include "../mn_error.hpp"
 
 /**
  * Interface for all mempools in this library
@@ -31,7 +28,7 @@
  * be derived from the ILockObject class. Then implement the virtual allocate
  * and free functions.
  * 
- * @ingroup preview-memory
+ * \ingroup memory
  */ 
 class IMemPool {
 public:
@@ -41,7 +38,7 @@ public:
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
      */ 
-    virtual void* allocate(TickType_t xTicksToWait) = 0;
+    virtual void* allocate(unsigned int xTicksToWait) = 0;
     /**
      * Returns the item back to the pool.
      * 
@@ -50,11 +47,10 @@ public:
      * 
      * @return true if The item back to it's pool, false If not
      */ 
-    virtual bool  free(void* mem, TickType_t xTicksToWait) = 0;
+    virtual bool  free(void* mem, unsigned int xTicksToWait) = 0;
 protected:
     unsigned int m_uiItemSize;
     unsigned int m_uiElements;
 };
-#endif
 
 #endif

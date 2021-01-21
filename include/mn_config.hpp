@@ -367,7 +367,13 @@
 
 #ifndef MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS         
     ///The mak entrys are hold the tickhook queue
-    #define MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS     10 //168 
+    #define MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS     10 
+#endif
+
+
+#ifndef MN_THREAD_CONFIG_STACK_TYPE       
+    ///The stack using type
+    #define MN_THREAD_CONFIG_STACK_TYPE     unsigned long
 #endif
 /** 
  * Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!

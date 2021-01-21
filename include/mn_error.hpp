@@ -31,6 +31,8 @@
 
 #define ERR_NULL                        0x0002
 
+#define ERR_UNKN                      0x0003
+
 /**
  * No Error in one of the mutex function
  */
