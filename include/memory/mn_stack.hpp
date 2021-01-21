@@ -39,14 +39,14 @@ public:
      * @param nSize The size of the stack
      */ 
     explicit basic_stack(basic_type_t nSize) { 
-        internal_create(nSize, malloc(basic_type_t * nSize), 0 ); }
+        internal_create(nSize, (basic_type_t*)malloc(basic_type_t * nSize), 0 ); }
 
     /**
      * This constructor use a given address as buffer
      * @param nSize The size of the stack (The last position [addr+(nSize)] )
      * @param addr The first buffer or adress to use as stack 
      */ 
-    basic_stack(basic_type_t nSize, void* addr) { 
+    basic_stack(basic_type_t nSize, basic_type_t* addr) { 
         internal_create(nSize, addr, 0); }
 
     /**
@@ -55,7 +55,7 @@ public:
      * @param addr The first buffer or adress to use as stack 
      * @param offset The offset, when start position in the buffer not address 0 is
      */ 
-    basic_stack(basic_type_t nSize, void* addr, int offset) { 
+    basic_stack(basic_type_t nSize, basic_type_t* addr, int offset) { 
         internal_create(nSize, addr, offset); }
 
     /**
@@ -151,8 +151,8 @@ private:
      * @param addr The first buffer or adress to use as stack 
      * @param offset The offset, when start position in the buffer not address 0 is
      */ 
-    void internal_create(basic_type_t nSize, void* addr, int offset) {
-        m_ulAdrr = (addr);
+    void internal_create(basic_type_t nSize, basic_type_t* addr, int offset) {
+        m_ulAdrr = (addr); 
         m_ulSize = (nSize - offset);
 
         m_iFirst = (offset - 1); 

@@ -354,14 +354,14 @@
 #endif //MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING
 
 
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START
+#ifndef MN_THREAD_CONFIG_MEMPOOL_MAGIC_START
     ///The start magic guard byte for detect heap memory corruption
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_START   0x6d //109
+    #define MN_THREAD_CONFIG_MEMPOOL_MAGIC_START   0x6d //109
 #endif
 
-#ifndef MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END
+#ifndef MN_THREAD_CONFIG_MEMPOOL_MAGIC_END
     ///The end magic guard byte for detect heap memory corruption
-    #define MN_THREAD_CONFIG_FREELIST_MEMPOOL_MAGIC_END     0xa8 //168 
+    #define MN_THREAD_CONFIG_MEMPOOL_MAGIC_END     0xa8 //168 
 #endif
 
 

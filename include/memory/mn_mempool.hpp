@@ -33,7 +33,9 @@
 class IMemPool {
 public:
     IMemPool(unsigned int nItemSize, unsigned int nElements)
-        : m_uiItemSize(nItemSize), m_uiElements(nElements) { }
+        : m_uiItemSize(nItemSize), m_uiElements(nElements) { 
+            if(m_uiItemSize % 4 != 0) m_uiItemSize += 4 - (m_uiItemSize % 4); 
+    }
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
