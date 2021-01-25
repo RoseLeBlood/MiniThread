@@ -32,10 +32,11 @@
  */ 
 class IMemPool {
 public:
-    IMemPool(unsigned int nItemSize, unsigned int nElements)
-        : m_uiItemSize(nItemSize), m_uiElements(nElements) { 
-            if(m_uiItemSize % 4 != 0) m_uiItemSize += 4 - (m_uiItemSize % 4); 
+    IMemPool(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment)
+        : m_uiItemSize(nItemSize), m_uiElements(nElements), m_iAlignment(iAlignment) { 
     }
+    virtual int create(unsigned int xTicksToWait) { 
+        return calcAligentAndSize() ? NO_ERROR : 1; }
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
@@ -51,8 +52,21 @@ public:
      */ 
     virtual bool  free(void* mem, unsigned int xTicksToWait) = 0;
 protected:
+    bool calcAligentAndSize();
+protected:
     unsigned int m_uiItemSize;
     unsigned int m_uiElements;
+    unsigned int m_iAlignment;
 };
+
+void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
+
+#define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
+    malloc_timed(uiItemSize * nElements, xTicksToWait)
+
+#include "mn_mempool_simple.hpp"
+#include "mn_mempool_vector.hpp"
+
+using basic_mempool_t = basic_vector_mempool;
 
 #endif

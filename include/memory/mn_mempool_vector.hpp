@@ -19,6 +19,8 @@
 #define _MINLIB_SIMPLE_MEMPOOL_H_
 
 #include "mn_mempool.hpp"
+#include "../mn_mutex.hpp"
+
 #include <vector>
 
 /**
@@ -52,9 +54,10 @@ public:
 public:
     using chunk_t = chunk;
 
-    basic_vector_mempool(unsigned int nItemSize, unsigned int nElements);
+    basic_vector_mempool(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
     basic_vector_mempool(const basic_vector_mempool&) = delete;
     
+    virtual int create(unsigned int xTicksToWait);
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
@@ -63,23 +66,57 @@ public:
     /**
      * Returns the item back to the pool.
      * 
-     * @note There is no checking that the item is actually
-     *  valid to be returned to this pool.
-     * 
-     * @return true if The item back to it's pool, false If not
+     * @return if true ther the item back to it's pool, false If not
      */ 
     virtual bool  free(void* mem, unsigned int xTicksToWait);
 
+    /**
+     * Add memory to a basic_vector_mempool.
+     * @param itemCount [in] How many more items max do you want to allocate
+     * @return Return NO_ERROR when was added and '1' on error
+     */
+    int add_memory(unsigned int nElements, unsigned int xTicksToWait);
+
+    /**
+     * Add memory to a basic_vector_mempool.
+     * @param preallocatedMemory [in] The pointer of the preallocated memory to add.
+     * @param sSizeOf [in] The size of the preallocated memory
+     * @return Return NO_ERROR when was added and '1' on error
+     */
+    int add_memory( void *preallocatedMemory, size_t sSizeOf, unsigned int xTicksToWait);
+
+    /**
+     * No copyble
+     */ 
     basic_vector_mempool& operator=(const basic_vector_mempool&) = delete;
+
+    /**
+     * get the chunk from a mem pointer (address) 
+     * @param mem [in] The pointer (adress) from the memory 
+     * 
+     * @return the chunk from a mem pointer (address)
+     */ 
+    chunk_t* get_chunk_from_mem(void* mem);
+
+    /**
+     * Return the number of chunks in the mempool
+     * @return The number of chunks in the mempool
+     */ 
+    unsigned int chunk_size();
+
+    /**
+     * Return the size of memory they are handle in the pool
+     * @return The size of memory they are handle in the pool
+     */ 
+    unsigned long size();
 private:
     basic_vector_mempool();
-
-    bool internal_create_chunks();
 private:
     std::vector<chunk_t*> m_vChunks;
-    bool    m_bInit;
-
+    mutex_t m_mutex;
 };
+
+
 
 
 #endif
