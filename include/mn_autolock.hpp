@@ -49,7 +49,7 @@
  *  The destructor unlocks the ILockObject. 
  * 
  * @ingroup semaphore
- * @ingroup lock
+ * \ingroup lock
  */
 template <class LOCK = basic_mutex>
 class  basic_autolock {

@@ -31,6 +31,8 @@ class base_tickhook;
  * To use this, you need to subclass it. All of your coroutines should
  * be derived from the base_tickhook_entry class. Then implement the virtual on_hook
  * function. 
+ * 
+ * \ingroup hook
  */ 
 class base_tickhook_entry {
     public:

@@ -24,7 +24,7 @@
  * Template wrapper for basic_semaphores for counting lock
  * 
  * @ingroup semaphore
- * @ingroup lock
+ * \ingroup lock
  */
 template <class TLockType>
 class basic_clock : public basic_semaphore {

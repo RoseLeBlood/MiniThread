@@ -43,6 +43,8 @@ extern "C" void vApplicationTickHook(void);
  * Wrapper class for Tick hooks, functions you want to run within the tick ISR. 
  * 
  * You can register multiple hooks (base_tickhook_entry) with this class.
+ * 
+ * \ingroup hook
  */ 
 class base_tickhook {
 private:

@@ -56,7 +56,7 @@
  *  Base wrapper class around FreeRTOS's implementation of semaphores.
  * 
  * @ingroup semaphore
- * @ingroup lock
+ * \ingroup lock
  */
 class basic_semaphore : public ILockObject {
 public:

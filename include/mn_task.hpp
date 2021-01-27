@@ -38,7 +38,7 @@
  *  be derived from the basic_task class. Then implement the virtual on_task
  *  function.
  * 
- * @code{c}
+ * @code 
  * 
  * #include <miniThread.hpp>
  * // The number of test tasks
@@ -76,6 +76,9 @@
  * // [0 @ 0] Hello World!
  * // ...
  * @endcode
+ * 
+ * 
+ * \ingroup task
  */
 class  basic_task {
 public:
@@ -222,6 +225,8 @@ public:
    * @return FreeRTOS task handle.
    */
   xTaskHandle           get_handle();
+  operator xTaskHandle* () { return get_handle(); }
+
   /**
    * Get the return value of this task  - after run
    *
@@ -323,6 +328,18 @@ public:
    * on signal or broadcast this task, will signal and broadcast the child too.
    */
   bool                  add_child_task(basic_task* task);
+
+  /**
+   * Operator to get the task's backing task handle.
+   * @return FreeRTOS task handle.
+   */
+  operator xTaskHandle* () { return get_handle(); }
+
+  /**
+     * Operator to get the ID assigned to the task.
+     * @return The ID assigned to the task being queried.
+     */ 
+  operator int () { return get_id(); }
 public:
   bool operator == (const basic_task &r) const {
     return m_pHandle == r.m_pHandle;

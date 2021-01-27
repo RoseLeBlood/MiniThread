@@ -15,10 +15,13 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
+#include "mn_task_utils.hpp"
 #include "mn_task.hpp"
 #include <stdio.h>
 
 #include "mn_task_list.hpp"
+
+
 //-----------------------------------
 //  construtor
 //-----------------------------------
@@ -130,6 +133,9 @@ int basic_task::start(int iCore) {
   m_runningMutex.unlock();
   m_iCore = xTaskGetAffinity(m_pHandle) ;
 
+  //xTaskNotify(m_pHandle, 0, eNoAction);
+  task_utils::notify(this, 0, task_utils::action::no_action);
+  
 #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
   basic_task_list::instance().add_task(this);
 #endif

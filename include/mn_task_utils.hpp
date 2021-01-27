@@ -18,10 +18,15 @@
 #ifndef MINLIB_ESP32_THREAD_UTILS_
 #define MINLIB_ESP32_THREAD_UTILS_
 
-#include "mn_task.hpp"
+
 #include "mn_autolock.hpp"
 
+class basic_task;
 
+/**
+ * FreeRTOS wrapper for notify and broadcast a task
+ * \ingroup task
+ */ 
 class task_utils {
 public:
   /** Actions that can be performed when task_utils::notify() is called. */

@@ -19,7 +19,7 @@
 #include "freertos/task.h"
 
 #include "mn_task_utils.hpp"
-
+#include "mn_task.hpp"
 //-----------------------------------
 //  notify
 //-----------------------------------

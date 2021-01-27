@@ -130,7 +130,7 @@
 /**
  * Tasklet can not created 
  */ 
-#define ERR_COROUTINE_CANTSTART   		    0x4002
+#define ERR_COROUTINE_CANSHEDULE   		    0x4002
 
 // --------------------------------
 

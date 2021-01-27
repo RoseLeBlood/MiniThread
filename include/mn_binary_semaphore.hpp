@@ -20,6 +20,9 @@
 
 #include "mn_basic_semaphore.hpp"
 
+/**
+ * \ingroup lock
+ */ 
 class basic_binary_semaphore : public basic_semaphore {
 public:
   /**

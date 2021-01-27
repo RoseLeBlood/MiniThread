@@ -36,7 +36,7 @@
  *  be derived from the basic_tasklet class. Then implement the virtual on_coroutine
  *  function.
  * 
- * @ingroup task
+ * \ingroup tasklet
  */
 
 class basic_tasklet {
@@ -44,16 +44,16 @@ public:
     basic_tasklet();
     
     /**
-     *  Create and schedule this Tasklet to run.
+     *  schedule this Tasklet to run.
      *
      *  @param parameter Value passed to your on_tasklet method.
      *  @param CmdTimeout How long to wait to send this command to the
      *         timer daemon.
      *  @returns ERR_COROUTINE_OK This command will be sent to the timer daemon,
-     *           ERR_COROUTINE_CANTSTART It will not (i.e. timeout) and
+     *           ERR_COROUTINE_CANSHEDULE It will not (i.e. timeout) and
      *           ERR_COROUTINE_CANTINITLOCKT The Locking Object can't create - tasklet not run
      */
-    virtual int create(uint32_t parameter, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT);
+    virtual int schedule(uint32_t parameter, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_COROUTINE_DEFAULT);
     /**
      * Destroy the Tasklet
      * @returns ERR_COROUTINE_OK Destroyed without any errors

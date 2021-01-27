@@ -29,7 +29,7 @@ basic_tasklet::basic_tasklet()
 //-----------------------------------
 //  create
 //-----------------------------------
-int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
+int basic_tasklet::schedule(uint32_t parameter, TickType_t timeout) {
     BaseType_t success;
 
     m_ssLock.lock(); 
@@ -51,7 +51,7 @@ int basic_tasklet::create(uint32_t parameter, TickType_t timeout) {
         return ERR_COROUTINE_OK;
     
     m_ssLock.unlock();
-    return ERR_COROUTINE_CANTSTART;
+    return ERR_COROUTINE_CANSHEDULE;
 }
 
 //-----------------------------------

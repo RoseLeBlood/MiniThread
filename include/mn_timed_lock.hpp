@@ -25,6 +25,9 @@
     #include "mn_convar_task.hpp"
     #include "mn_autolock.hpp"
 
+    /**
+     * \ingroup lock
+     */ 
     template<class TLOCK>
     class basic_timed_lock {
     public:
