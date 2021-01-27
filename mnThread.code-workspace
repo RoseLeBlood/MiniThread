@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "examples"
+		},
+		{
+			"path": "../../../Downloads/freertos-addons-master"
 		}
 	],
 	"settings": {

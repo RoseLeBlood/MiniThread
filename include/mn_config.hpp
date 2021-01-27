@@ -76,8 +76,26 @@
  */ 
 #define MN_THREAD_CONFIG_CORE_TWO   1
 
+/** 
+ * @brief Pre defined values for config items -
+ * @note corrently use for MN_THREAD_CONFIG_BOARD 
+ * Set board type to esp32 
+ */ 
+#define MN_THREAD_CONFIG_ESP32      0
+
+/** 
+ * @brief Pre defined values for config items -
+ * @note corrently use for MN_THREAD_CONFIG_BOARD 
+ * Set board type to other - not work 
+ */ 
+#define MN_THREAD_CONFIG_OTHER      1
+
 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
     #define MN_THREAD_CONFIG_STACK_DEPTH 8192
+#endif
+
+#ifndef MN_THREAD_CONFIG_BOARD    
+    #define MN_THREAD_CONFIG_BOARD  MN_THREAD_CONFIG_ESP32
 #endif
 /** 
  * @brief Pre defined on which core must run the task, can override in the create 

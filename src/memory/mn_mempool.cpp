@@ -22,6 +22,8 @@
 
 bool IMemPool::calcAligentAndSize() {
     unsigned int acount = 0;
+
+    // Calc aligent
     if (m_iAlignment < (int)sizeof(unsigned char *)) {
         m_iAlignment = (int)sizeof(unsigned char *);
     }
@@ -33,6 +35,7 @@ bool IMemPool::calcAligentAndSize() {
         } 
     }
 
+    // Calc size
     if (m_uiItemSize <= m_iAlignment)  m_uiItemSize = m_iAlignment;
     else {
         acount = m_uiItemSize / m_iAlignment;
@@ -45,10 +48,79 @@ bool IMemPool::calcAligentAndSize() {
 void* malloc_timed(unsigned long size, unsigned int xTicksToWait) {
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
-    unsigned char *address = NULL;
+    void *address = NULL;
 
-    while( (xTicksRemaining <= xTicksToWait) && address == NULL ) {
-        address = (unsigned char *)malloc(size);
+    while( (xTicksRemaining <= xTicksToWait) ) {
+        address = malloc(size);
+        if(address != NULL) break;
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+    }
+    return address;
+}
+void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait) {
+    if(addr == NULL) return addr;
+
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+    
+    while( (xTicksRemaining <= xTicksToWait) ) {
+        addr = realloc(addr, size);
+        if(addr != NULL) break;
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+    }
+    return addr;
+}
+void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait) {
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+    void *address = NULL;
+
+    while( (xTicksRemaining <= xTicksToWait) ) {
+        address = calloc(nmemb, size);
+        if(address != NULL) break;
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+    }
+    return address;
+}
+#include <string.h>
+
+void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait) {
+    if(dest == NULL || src == NULL) return NULL;
+
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+    void *address = NULL;
+
+    while( (xTicksRemaining <= xTicksToWait) ) {
+        
+        address = memcpy(dest, src, size);
+        if(address != NULL) break;
+
+        if (timeout != portMAX_DELAY) {
+            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+        }
+    }
+    return address;
+}
+void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait) {
+    if(addr == NULL) return addr;
+
+    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+    TickType_t xTicksRemaining = xTicksToWait;
+    void *address = NULL;
+
+    while( (xTicksRemaining <= xTicksToWait) ) {
+        address = memset(addr, set, size);
+        if(address != NULL) break;
 
         if (timeout != portMAX_DELAY) {
             xTicksRemaining = xTicksEnd - xTaskGetTickCount();

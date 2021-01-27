@@ -15,20 +15,20 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINLIB_SIMPLE_MEMPOOL_H_
-#define _MINLIB_SIMPLE_MEMPOOL_H_
+#ifndef _MINLIB_VECTOR_MEMPOOL_H_
+#define _MINLIB_VECTOR_MEMPOOL_H_
 
 #include "mn_mempool.hpp"
-#include "../mn_mutex.hpp"
+
 
 #include <vector>
 
 /**
- * A very simple mempool
+ * A very extendeble mempool for debug and more (timed version)
  * 
  * \ingroup memory
  */ 
-class basic_vector_mempool : public IMemPool {
+class basic_vector_mempool_timed : public IMemPool {
 public:
     enum class chunk_state {
         Free,
@@ -54,8 +54,8 @@ public:
 public:
     using chunk_t = chunk;
 
-    basic_vector_mempool(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
-    basic_vector_mempool(const basic_vector_mempool&) = delete;
+    basic_vector_mempool_timed(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
+    basic_vector_mempool_timed(const basic_vector_mempool_timed&) = delete;
     
     virtual int create(unsigned int xTicksToWait);
     /**
@@ -88,7 +88,7 @@ public:
     /**
      * No copyble
      */ 
-    basic_vector_mempool& operator=(const basic_vector_mempool&) = delete;
+    basic_vector_mempool_timed& operator=(const basic_vector_mempool_timed&) = delete;
 
     /**
      * get the chunk from a mem pointer (address) 

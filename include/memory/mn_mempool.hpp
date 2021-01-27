@@ -20,6 +20,7 @@
 
 #include "../mn_config.hpp"
 #include "../mn_error.hpp"
+#include "../mn_mutex.hpp"
 
 /**
  * Interface for all mempools in this library
@@ -59,7 +60,12 @@ protected:
     unsigned int m_iAlignment;
 };
 
+// Functions use in the mempool class - only for timed use 
 void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
+void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait);
+void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait);
+void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait);
+void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait);
 
 #define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
     malloc_timed(uiItemSize * nElements, xTicksToWait)
