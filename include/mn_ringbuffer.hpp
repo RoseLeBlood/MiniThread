@@ -47,16 +47,15 @@ public:
      * Write a item to the buffer
      * @param item The item to write to the ringbuffer
      */ 
-    void write(buffer_item_t item, TickType_t xTicksToWait) {
+    bool write(buffer_item_t item, TickType_t xTicksToWait) {
+        bool written = false;
         TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
         TickType_t xTicksRemaining = xTicksToWait;
 
-        while (xTicksRemaining <= xTicksToWait) {
-            if(m_mLock->lock(xTicksRemaining) != NO_ERROR){
-                break;
-            }
-
+        if(m_mLock->lock(xTicksToWait) == NO_ERROR) {
             m_pBuffer[m_iHead] = item;
+
+            written = (m_pBuffer[m_iHead] == item) ;
 
             if(m_bFull) 
                 m_iTail = (m_iTail + 1) % m_szRingBufferSize;
@@ -64,11 +63,10 @@ public:
             m_iHead = (m_iHead + 1) % m_szRingBufferSize;
             m_bFull = (m_iHead == m_iTail);
 
-            if (xTicksToWait != portMAX_DELAY) {
-                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-            }
+            
             m_mLock->unlock();
         }
+        return written;
 	}
     /**
      * Write items to the ringbuffer
@@ -80,76 +78,70 @@ public:
      */ 
     int write(buffer_item_t* items, unsigned int offset, unsigned int size, TickType_t xTicksToWait) {
         if (size <= offset) return -1;
+        if(items == NULL) return 0;
+
+        TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+        TickType_t xTicksRemaining = xTicksToWait;
 
         int written = 0;
-        for(unsigned int i = offset; i < (size - offset); i++) {
-            put(items[i], xTicksToWait);
-            written++;
+        int _size = (size - offset);
+
+        for(int i = offset; (i < _size ) && (xTicksRemaining <= xTicksToWait); i++) {
+            if(write(items[i], xTicksRemaining))
+                written++;
+
+            if (xTicksToWait != portMAX_DELAY) {
+                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+            }
         }
         return written;
     }
     /**
      * get a item from the buffer
      * 
-     * @return The readed value
+     * @param item [out] The readed value
+     * 
+     * @return If true then readed from buffer and false when not
      */ 
-    buffer_item_t read(TickType_t xTicksToWait) {
-        TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-        TickType_t xTicksRemaining = xTicksToWait;
+    bool read(buffer_item_t* item, TickType_t xTicksToWait) {
+        bool _ret = false;
 
-        buffer_item_t _ret; 
-        while (xTicksRemaining <= xTicksToWait) {
-            if(m_mLock->lock(xTicksRemaining) != NO_ERROR){
-                break;
-            }
+        if(m_mLock->lock(xTicksToWait) == NO_ERROR) {  
+            if(!is_empty()) {
+            
+                *item = m_pBuffer[m_iTail];
 
-            if(is_empty()) {
-                _ret = buffer_item_t();
+                m_bFull = false;
+                m_iTail = (m_iTail + 1) % m_szRingBufferSize;
+
                 m_mLock->unlock();
-                break;
-            } 
 
-            _ret = m_pBuffer[m_iTail];
-            m_bFull = false;
-            m_iTail = (m_iTail + 1) % m_szRingBufferSize;
-
-            if (xTicksToWait != portMAX_DELAY) {
-                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+                _ret = true;
             }
-            m_mLock->unlock();
         }
+    
 		return _ret;
 	}
     /**
      * get a item from the buffer, don't removed it
      * 
-     * @return The readed value
+     * @param item [out] The readed value
+     * @return If true then readed from buffer and false when not
      */ 
-    buffer_item_t peek(TickType_t xTicksToWait) {
-        TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-        TickType_t xTicksRemaining = xTicksToWait;
+    bool peek(buffer_item_t* item, TickType_t xTicksToWait) {
+        bool _ret = false;
+    
+        if(m_mLock->lock(xTicksToWait) == NO_ERROR) {
+            if(!is_empty()) {
 
-        buffer_item_t _ret; 
-        while (xTicksRemaining <= xTicksToWait) {
-            if(m_mLock->lock(xTicksRemaining) != NO_ERROR){
-                break;
-            }
-
-            if(is_empty()) {
-                _ret = buffer_item_t();
-                m_mLock->unlock();
-                break;
-            }
-
-            _ret = m_pBuffer[m_iTail];
-
-            if (xTicksToWait != portMAX_DELAY) {
-                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+                *item = m_pBuffer[m_iTail]; 
+                _ret = true;
             }
             m_mLock->unlock();
         }
+
 		return _ret;
-    }
+	}
     /**
      * Read a array of items from the ringbuffer buffer
      * 
@@ -162,10 +154,23 @@ public:
     int read(buffer_item_t* items, unsigned int offset, unsigned int size, TickType_t xTicksToWait) {
         if (size <= offset) return -1;
 
+        TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
+        TickType_t xTicksRemaining = xTicksToWait;
+
         int readed = 0;
-        for(unsigned int i = 0; i < size; i++) {
-            items[i + offset] = read(xTicksToWait);
-            readed++;
+        buffer_item_t item ;
+
+        for(unsigned int i = 0; (i < size) && (xTicksRemaining <= xTicksToWait); i++) {
+            if(is_empty()) break; 
+
+            if(read(&item, xTicksRemaining)) {
+                items[readed + offset] = item;
+                readed++;
+            }
+
+            if (xTicksToWait != portMAX_DELAY) {
+                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+            }
         }
         return readed;
     }
@@ -235,6 +240,7 @@ protected:
     unsigned int    m_iHead;
     /** The tail index of the ringbuffer */
 	unsigned int    m_iTail;
+    /// Is the buffer full
 	bool            m_bFull;
 };
 

@@ -36,14 +36,14 @@
 //==================================
 
 ///@brief Major Version, the first number
-#define MN_THREAD_MAJOR_VERSION 1
+#define MN_THREAD_MAJOR_VERSION 2
 /// @brief Minor Version, the 2. number
-#define MN_THREAD_MINOR_VERSION 95
-/// @brief  Prozent for next minor jump
-#define MN_THREAD_DEBUG_VERSION 49 
+#define MN_THREAD_MINOR_VERSION 0
+/// @brief  Debug version
+#define MN_THREAD_DEBUG_VERSION 1
 
 /// @brief The mini thread version as string
-#define MN_THREAD_VERSION_STRING          "1.95-49"
+#define MN_THREAD_VERSION_STRING          "2.0.1"
 
 /// @brief Pre defined helper values for config items - Use a mutex
 #define MN_THREAD_CONFIG_MUTEX                1
@@ -373,19 +373,28 @@
 
 
 #ifndef MN_THREAD_CONFIG_MEMPOOL_MAGIC_START
-    ///The start magic guard byte for detect heap memory corruption
+    ///The start magic guard byte for detect heap memory corruption, not use in simple version
     #define MN_THREAD_CONFIG_MEMPOOL_MAGIC_START   0x6d //109
 #endif
 
 #ifndef MN_THREAD_CONFIG_MEMPOOL_MAGIC_END
-    ///The end magic guard byte for detect heap memory corruption
+    ///The end magic guard byte for detect heap memory corruption, not use in simple version
     #define MN_THREAD_CONFIG_MEMPOOL_MAGIC_END     0xa8 //168 
 #endif
 
+#ifndef MN_THREAD_CONFIG_MEMPOOL_USETIMED     
+    /**
+     * Use for mempool the timed version and xTicksToWait
+     * When true than is the class name basic_mempool_%name%_timed 
+     * and If false then basic_mempool_%name%
+     */
+    #define MN_THREAD_CONFIG_MEMPOOL_USETIMED     MN_THREAD_CONFIG_YES
+#endif
 
-#ifndef MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS         
-    ///The mak entrys are hold the tickhook queue
-    #define MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS     10 
+
+#ifndef MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS         
+    ///The max entrys are hold the tickhook queue
+    #define MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS     10 
 #endif
 
 
@@ -393,6 +402,8 @@
     ///The stack using type
     #define MN_THREAD_CONFIG_STACK_TYPE     unsigned long
 #endif
+
+
 /** 
  * Ab hier nichts verändern | DO NOT EDIT AFTER THIS LINE!!!
  * =================================================================

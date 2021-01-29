@@ -1,5 +1,17 @@
 # Changelog
-
+## Version 2.0.1 Januar 2021
++ rename tasklet function create to schedule - (DE: Mein fehler - misverständnis)
++ add schudaler util class 
++ add random handler, for future use
++ add new memory pool handler simple version and a complexere version for debugging 
++ add a stack template class: memory/mn_stack.hpp
++ add a wrapper for handling tickhooks
++ EXAMPLES in progress
++ Add new configs items
+  + MN_THREAD_CONFIG_MEMPOOL_USETIMED Use for mempool the timed version and xTicksToWait (see config)
+  + MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS The max entrys are hold the tickhook queue
+  + MN_THREAD_CONFIG_STACK_TYPE The basic type for stack_t ( basic_stack<MN_THREAD_CONFIG_STACK_TYPE>; )
+  
 ## Version 1.95 Oktober 2020: (stable 2.0beta) 
 + update error codes
 + merge config_preview with config and error_preview with error

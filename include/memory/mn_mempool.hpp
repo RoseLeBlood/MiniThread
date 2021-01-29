@@ -73,6 +73,6 @@ void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksTo
 #include "mn_mempool_simple.hpp"
 #include "mn_mempool_vector.hpp"
 
-using basic_mempool_t = basic_vector_mempool;
+using basic_mempool_t = vector_mempool_t;
 
 #endif

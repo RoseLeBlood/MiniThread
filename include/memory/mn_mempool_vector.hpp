@@ -23,23 +23,37 @@
 
 #include <vector>
 
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
+    #define MN_VECTOR_MEMPOOL_CLASS_NAME    basic_vector_mempool_timed
+#else
+    #define MN_VECTOR_MEMPOOL_CLASS_NAME    basic_vector_mempool
+#endif
+
+#define MN_VECTOR_MEMPOOL_CLASS_DEF         class MN_VECTOR_MEMPOOL_CLASS_NAME : public IMemPool
 /**
  * A very extendeble mempool for debug and more (timed version)
  * 
  * \ingroup memory
  */ 
-class basic_vector_mempool_timed : public IMemPool {
+MN_VECTOR_MEMPOOL_CLASS_DEF {
 public:
+    /**
+     * The state for a memory chunk
+     */ 
     enum class chunk_state {
-        Free,
-        Used,
-        Blocked
+        Free,                   /*!< The chunk is free and can allocated */
+        Used,                   /*!< The chunk is used */
+        Blocked,                /*!< The chunk is blocked and can not use */
+        NotHandle = 99          /*!< Return when the address not handle with this mempool */
     };
+    /**
+     * The memory chunk 
+     */ 
     struct chunk {
-        void* theBuffer;
-        char theMagicGuard[2];
-        chunk_state state;
-        bool wasCurropted;
+        void* theBuffer;            /*!< The real buffer */
+        char theMagicGuard[2];      /*!< The magicGuard of this chunk */
+        chunk_state state;          /*!< The state for a memory chunk */
+        bool wasCurropted;          /*!< Was the chunk curropted - only use in free */
 
         chunk(void* buffer)
             : theBuffer(buffer), 
@@ -50,37 +64,52 @@ public:
                 theMagicGuard[1] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_END;
             }
     };
-    
 public:
     using chunk_t = chunk;
 
-    basic_vector_mempool_timed(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
-    basic_vector_mempool_timed(const basic_vector_mempool_timed&) = delete;
+    /**
+     * Basic Ctor 
+     * @param[in] nItemSize The size of a item
+     * @param[in] nElements How many elements are handle with the  pool
+     * @param[in] iAlignment The alignment
+     */ 
+    MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
+    MN_VECTOR_MEMPOOL_CLASS_NAME(const MN_VECTOR_MEMPOOL_CLASS_NAME&) = delete; ///< no copyable 
     
+    /**
+     * Create the mempool 
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return - NO_ERROR:
+     *         - ERR_MEMPOOL_UNKNOW: 
+     */ 
     virtual int create(unsigned int xTicksToWait);
     /**
      * Allocate an item from the pool.
+     * @param[in] xTicksToWait How long to wait to get until giving up.
      * @return Pointer of the memory or NULL if the pool is empty.
      */ 
     virtual void* allocate(unsigned int xTicksToWait);
     /**
      * Returns the item back to the pool.
-     * 
+     * @param[in] mem The allocated memory to given back te the pool
+     * @param[in] xTicksToWait How long to wait to get until giving up.
      * @return if true ther the item back to it's pool, false If not
      */ 
     virtual bool  free(void* mem, unsigned int xTicksToWait);
 
     /**
      * Add memory to a basic_vector_mempool.
-     * @param itemCount [in] How many more items max do you want to allocate
+     * @param[in] itemCount How many more items max do you want to allocate
+     * @param[in] xTicksToWait How long to wait to get until giving up.
      * @return Return NO_ERROR when was added and '1' on error
      */
     int add_memory(unsigned int nElements, unsigned int xTicksToWait);
 
     /**
      * Add memory to a basic_vector_mempool.
-     * @param preallocatedMemory [in] The pointer of the preallocated memory to add.
-     * @param sSizeOf [in] The size of the preallocated memory
+     * @param[in] preallocatedMemory [in] The pointer of the preallocated memory to add.
+     * @param[in] sSizeOf [in] The size of the preallocated memory
+     * @param[in] xTicksToWait How long to wait to get until giving up.
      * @return Return NO_ERROR when was added and '1' on error
      */
     int add_memory( void *preallocatedMemory, size_t sSizeOf, unsigned int xTicksToWait);
@@ -88,15 +117,7 @@ public:
     /**
      * No copyble
      */ 
-    basic_vector_mempool_timed& operator=(const basic_vector_mempool_timed&) = delete;
-
-    /**
-     * get the chunk from a mem pointer (address) 
-     * @param mem [in] The pointer (adress) from the memory 
-     * 
-     * @return the chunk from a mem pointer (address)
-     */ 
-    chunk_t* get_chunk_from_mem(void* mem);
+    MN_VECTOR_MEMPOOL_CLASS_NAME& operator=(const MN_VECTOR_MEMPOOL_CLASS_NAME&) = delete;
 
     /**
      * Return the number of chunks in the mempool
@@ -109,14 +130,101 @@ public:
      * @return The size of memory they are handle in the pool
      */ 
     unsigned long size();
+
+    /**
+     * How many elements are marked as used
+     * @return The number of elements / chunks are marked as use
+     */ 
+    unsigned int get_used();
+    /**
+     * How many elements are marked as free
+     * @return The number of elements / chunks are marked as free
+     */ 
+    unsigned int get_free();
+    /**
+     * How many elements are marked as blocked
+     * @return The number of elements / chunks are marked as blocked
+     */ 
+    unsigned int get_blocked();
+
+    bool is_empty() { ( size() ) == ( get_used() + get_blocked() ); }
+    /**
+     * block a chunk 
+     * @param[in] id The id of the chunk
+     * @param[in] blocked If True than block the chunk and if false then unblock the chunk
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return False the chunk is in use and can not block or release. If true then 
+     * was block or unblock the chunk 
+     */ 
+    bool set_blocked(const int id, const bool blocked, unsigned int xTicksToWait);
+
+    /**
+     * block a chunk 
+     * @param[in] address The address of the memory block  to block
+     * @param[in] blocked If True than block the chunk and if false then unblock the chunk
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return False the chunk is in use and can not block or release. If true then 
+     * was block or unblock the chunk 
+     */ 
+    bool set_adress_blocked(const int address, const bool blocked, unsigned int xTicksToWait);
+
+    /**
+     * Get the state of the chunk
+     * @param[in] id The id of the chunk
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return The state of the chunk
+     */ 
+    chunk_state get_state(const int id, unsigned int xTicksToWait);
+    /**
+     * Get the chunk state from the handle memory address, 
+     * not the address from the chunk pointer
+     * 
+     * @param[in] address The address of the raw memory block
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return The chunk state from the handle memory address 
+     */ 
+    chunk_state get_address_state(const int address, unsigned int xTicksToWait);
+
+    /**
+     * Is the given address handle with a chunk in this buffer
+     * @param address The address of the raw memory block
+     * 
+     * @return If true then handle the adress with this pool, If false then not
+     */ 
+    bool is_handle(const int address);
+
+    /**
+     * Get the chunk from a given chunk id
+     * @param[in] id The id of the chunk
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * 
+     * @return The chunk from a given chunk id
+     */ 
+    chunk_t* get_chunk(const int id, unsigned int xTicksToWait);
+    /**
+     * Get the chunk from a given buffer address - not the chunk address
+     * 
+     * @param[in] address The address of the raw memory block
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * 
+     * @return The chunk from a given raw memory block
+     */ 
+    chunk_t* get_chunk_from_address(const int address, unsigned int xTicksToWait);
+
+    /**
+     * Is the given chunk_t curropted
+     * @param [in] chnk The chunk to cheak
+     * @return true the given chunk_t is curropted or false when not
+     */ 
+    bool is_chunk_curropted(chunk_t* chnk);
 private:
-    basic_vector_mempool();
+    MN_VECTOR_MEMPOOL_CLASS_NAME();
 private:
     std::vector<chunk_t*> m_vChunks;
     mutex_t m_mutex;
 };
 
 
-
+using vector_mempool_t = MN_VECTOR_MEMPOOL_CLASS_NAME;
 
 #endif

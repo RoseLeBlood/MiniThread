@@ -49,10 +49,13 @@
 #include "queue/mn_deque.hpp"
 #include "queue/mn_workqueue.hpp"
 
-#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 #include "mn_ringbuffer.hpp"
-#include "mn_memory.hpp"
+#include "memory/mn_mempool.hpp"
 #include "mn_shared.hpp"
+
+
+#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+
 #endif
 
 void mn_panic();

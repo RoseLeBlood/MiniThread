@@ -1,4 +1,5 @@
-# Mini Thread 1.95-beta.2.0 (2.0.0 preview)
+
+# Mini Thread 2.0.1
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
@@ -60,14 +61,24 @@ extern "C" void app_main() {
 - [X] Add event group class 
 - [X] Add usefull FreeRTOS Wrapper
 - [X] Completed the documentation
-- [ ] Write more examles (after 1.9 ready ) 
+- [-] Write more examles (after 1.9 ready ) 
 - [X] add a Workqueues 
-- [~] add Memory Manager class
+- [X] add Memory Manager class
 - [ ] start to add trace support UART and LwIP out (ready to Version 2.5)
 - [X] task Local Storage in task_utils
   
 
 ## ChangeLog
+For more see [ChangeLog](ChangeLog.md)
+
+## Version 2.0.1 Januar 2021
++ rename tasklet function create to schedule - (DE: Mein fehler - misverständnis)
++ add schudaler util class 
++ add random handler, for future use
++ add new memory pool handler simple version and a complexere version for debugging 
++ Version jump to 2.0
++ EXAMPLES in progress 
++ Add namespaces
 
 ## Version 1.9.5 Oktober 2020: (unstable 2.0beta) 
 + update error codes
@@ -97,24 +108,6 @@ extern "C" void app_main() {
 + rename create and on_create to start and on_start 
 + add to the basic_task: join(), wait() and get_self() functions - basic_task remove abstract 
 + remove the m_contextMutext2 LockObject 
-  
-## Version 1.9.0 September 2020: (stable 2.0beta)
-* add a eventgroup wrapper
-* rename basic_thread to basic_task and the other threads to task - with error codes and 
-  rename on_thread to on_task
-* add in confg:
-    * MN_THREAD_CONFIG_CORE_MAX   (portNUM_PROCESSORS - 1)
-    * add prority enum to task
-* rename mn_base.hpp to miniThread.hpp
-* remove bugs and errors
-* Strip semaphore classes 
-* add task_utils class for notify
 
-## Version 1.71 September 2020: (unstable 2.0beta)
-* add single and multi threaded worcking queues (basic_work_queue_single & basic_work_queue_multi) 
-    (TODO Optional add a Workqueues ) and add configand error defines, with doku
-* remove bugs and errors
-* This is the preview version of 2.0.0
 
-For more see [ChangeLog](ChangeLog.md)
 

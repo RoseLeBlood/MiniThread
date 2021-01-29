@@ -34,7 +34,7 @@ void vApplicationTickHook(void) {
 }
 
 base_tickhook::base_tickhook() 
-    : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAKENTRYS, sizeof(base_tickhook_entry*) ) {
+    : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, sizeof(base_tickhook_entry*) ) {
 
     m_listHooks.create();
     m_listToAdd.create();
