@@ -129,7 +129,7 @@ public:
      * Return the size of memory they are handle in the pool
      * @return The size of memory they are handle in the pool
      */ 
-    unsigned long size();
+    virtual unsigned long size() override;
 
     /**
      * How many elements are marked as used
@@ -147,7 +147,11 @@ public:
      */ 
     unsigned int get_blocked();
 
-    bool is_empty() { ( size() ) == ( get_used() + get_blocked() ); }
+    /**
+     * Is the mempool empty?
+     * @return True when all chunks are used (empty) and false when not
+     */ 
+    virtual bool is_empty() { ( size() ) == ( get_used() + get_blocked() ); }
     /**
      * block a chunk 
      * @param[in] id The id of the chunk
@@ -191,7 +195,7 @@ public:
      * 
      * @return If true then handle the adress with this pool, If false then not
      */ 
-    bool is_handle(const int address);
+    virtual bool is_handle(const int address) override;
 
     /**
      * Get the chunk from a given chunk id
@@ -218,10 +222,9 @@ public:
      */ 
     bool is_chunk_curropted(chunk_t* chnk);
 private:
-    MN_VECTOR_MEMPOOL_CLASS_NAME();
+    MN_VECTOR_MEMPOOL_CLASS_NAME() { }
 private:
     std::vector<chunk_t*> m_vChunks;
-    mutex_t m_mutex;
 };
 
 

@@ -38,6 +38,7 @@ int MN_VECTOR_MEMPOOL_CLASS_NAME::create(unsigned int xTicksToWait) {
 }
 void* MN_VECTOR_MEMPOOL_CLASS_NAME::allocate(unsigned int xTicksToWait) {
     if(m_vChunks.size() == 0) { return nullptr; }
+    if( is_empty() ) { return nullptr; }
 
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
