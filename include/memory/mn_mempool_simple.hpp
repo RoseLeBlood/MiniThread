@@ -38,9 +38,14 @@
 MN_VECTOR_SMEMPOOL_CLASS_DEF {
 public:
     struct chunk {
-        bool used;
-        unsigned char* buffer;
+    union {
+        struct {
+            int* buffer;
+            int used : 2;
+        };
+        int* rawBuffer;
     };
+};
 public:
     using chunk_t = chunk;
     /**

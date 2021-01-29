@@ -33,6 +33,16 @@
  */ 
 class IMemPool {
 public:
+    /**
+     * The state for a memory chunk
+     */ 
+    enum class chunk_state {
+        Free,                   /*!< The chunk is free and can allocated */
+        Used,                   /*!< The chunk is used */
+        Blocked,                /*!< The chunk is blocked and can not use */
+        NotHandle = 99          /*!< Return when the address not handle with this mempool */
+    };
+public:
     IMemPool(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment)
         : m_uiItemSize(nItemSize), m_uiElements(nElements), m_iAlignment(iAlignment) { 
     }
@@ -113,7 +123,15 @@ protected:
     malloc(uiItemSize * nElements, xTicksToWait)
 #endif
 
-#define zeroset(addr, size, xTicksToWait) memset_timed(addr, 0, size, xTicksToWait)
+template<typename T>
+inline T* zeroset(T* addr, unsigned long size, unsigned int xTicksToWait) {
+    return (T*)memset_timed(addr, 0, size, xTicksToWait);
+} 
+
+template<>
+inline void* zeroset(void* addr, unsigned long size, unsigned int xTicksToWait) {
+    return zeroset<void>(addr, size, xTicksToWait);
+} 
 
 
 

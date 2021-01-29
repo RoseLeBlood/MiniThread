@@ -38,31 +38,26 @@
 MN_VECTOR_MEMPOOL_CLASS_DEF {
 public:
     /**
-     * The state for a memory chunk
-     */ 
-    enum class chunk_state {
-        Free,                   /*!< The chunk is free and can allocated */
-        Used,                   /*!< The chunk is used */
-        Blocked,                /*!< The chunk is blocked and can not use */
-        NotHandle = 99          /*!< Return when the address not handle with this mempool */
-    };
-    /**
      * The memory chunk 
      */ 
     struct chunk {
-        void* theBuffer;            /*!< The real buffer */
-        char theMagicGuard[2];      /*!< The magicGuard of this chunk */
-        chunk_state state;          /*!< The state for a memory chunk */
+        union {
+            struct {
+                void* theBuffer;            /*!< The real buffer */
+                char theMagicGuard[2];      /*!< The magicGuard of this chunk */
+                chunk_state state;          /*!< The state for a memory chunk */
+            };
+            void* realBuffer;
+        };
         bool wasCurropted;          /*!< Was the chunk curropted - only use in free */
 
-        chunk(void* buffer)
-            : theBuffer(buffer), 
-            theMagicGuard( {0} ),
-            state(chunk_state::Free),
-            wasCurropted(false) { 
-                theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
-                theMagicGuard[1] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_END;
-            }
+        chunk(void* buffer) { 
+            theBuffer = buffer;
+            theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
+            theMagicGuard[1] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_END;
+            state = chunk_state::Free;
+            wasCurropted = false;
+        }
     };
 public:
     using chunk_t = chunk;
@@ -101,7 +96,7 @@ public:
      * Add memory to a basic_vector_mempool.
      * @param[in] itemCount How many more items max do you want to allocate
      * @param[in] xTicksToWait How long to wait to get until giving up.
-     * @return Return NO_ERROR when was added and '1' on error
+     * @return Return 0 when was added and '1' on error
      */
     int add_memory(unsigned int nElements, unsigned int xTicksToWait);
 
@@ -110,7 +105,7 @@ public:
      * @param[in] preallocatedMemory [in] The pointer of the preallocated memory to add.
      * @param[in] sSizeOf [in] The size of the preallocated memory
      * @param[in] xTicksToWait How long to wait to get until giving up.
-     * @return Return NO_ERROR when was added and '1' on error
+     * @return Return 0 when was added and '1' on error
      */
     int add_memory( void *preallocatedMemory, size_t sSizeOf, unsigned int xTicksToWait);
 
@@ -151,7 +146,7 @@ public:
      * Is the mempool empty?
      * @return True when all chunks are used (empty) and false when not
      */ 
-    virtual bool is_empty() { ( size() ) == ( get_used() + get_blocked() ); }
+    virtual bool is_empty() { return ( size() ) == ( get_used() + get_blocked() ); }
     /**
      * block a chunk 
      * @param[in] id The id of the chunk
@@ -163,39 +158,12 @@ public:
     bool set_blocked(const int id, const bool blocked, unsigned int xTicksToWait);
 
     /**
-     * block a chunk 
-     * @param[in] address The address of the memory block  to block
-     * @param[in] blocked If True than block the chunk and if false then unblock the chunk
-     * @param[in] xTicksToWait How long to wait to get until giving up.
-     * @return False the chunk is in use and can not block or release. If true then 
-     * was block or unblock the chunk 
-     */ 
-    bool set_adress_blocked(const int address, const bool blocked, unsigned int xTicksToWait);
-
-    /**
      * Get the state of the chunk
      * @param[in] id The id of the chunk
      * @param[in] xTicksToWait How long to wait to get until giving up.
      * @return The state of the chunk
      */ 
     chunk_state get_state(const int id, unsigned int xTicksToWait);
-    /**
-     * Get the chunk state from the handle memory address, 
-     * not the address from the chunk pointer
-     * 
-     * @param[in] address The address of the raw memory block
-     * @param[in] xTicksToWait How long to wait to get until giving up.
-     * @return The chunk state from the handle memory address 
-     */ 
-    chunk_state get_address_state(const int address, unsigned int xTicksToWait);
-
-    /**
-     * Is the given address handle with a chunk in this buffer
-     * @param address The address of the raw memory block
-     * 
-     * @return If true then handle the adress with this pool, If false then not
-     */ 
-    virtual bool is_handle(const int address) override;
 
     /**
      * Get the chunk from a given chunk id
@@ -205,15 +173,6 @@ public:
      * @return The chunk from a given chunk id
      */ 
     chunk_t* get_chunk(const int id, unsigned int xTicksToWait);
-    /**
-     * Get the chunk from a given buffer address - not the chunk address
-     * 
-     * @param[in] address The address of the raw memory block
-     * @param[in] xTicksToWait How long to wait to get until giving up.
-     * 
-     * @return The chunk from a given raw memory block
-     */ 
-    chunk_t* get_chunk_from_address(const int address, unsigned int xTicksToWait);
 
     /**
      * Is the given chunk_t curropted

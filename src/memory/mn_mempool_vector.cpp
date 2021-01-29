@@ -32,8 +32,9 @@ int MN_VECTOR_MEMPOOL_CLASS_NAME::create(unsigned int xTicksToWait) {
     bool _ret = NO_ERROR;
 
     if((IMemPool::create(xTicksToWait) != NO_ERROR) ) _ret = ERR_MEMPOOL_UNKNOW;
-    if(add_memory(m_uiElements, xTicksToWait) != NO_ERROR) _ret = ERR_MEMPOOL_UNKNOW;
-
+    else {
+        if(add_memory(m_uiElements, xTicksToWait) != NO_ERROR) _ret = ERR_MEMPOOL_UNKNOW;
+    }
     return _ret;
 }
 void* MN_VECTOR_MEMPOOL_CLASS_NAME::allocate(unsigned int xTicksToWait) {
@@ -42,26 +43,25 @@ void* MN_VECTOR_MEMPOOL_CLASS_NAME::allocate(unsigned int xTicksToWait) {
 
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
+
     void* buffer = nullptr;
 
-    while( (xTicksRemaining <= xTicksToWait) && (buffer == nullptr) ) {
+    for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
+        (it != m_vChunks.end()) && (xTicksRemaining <= xTicksToWait); it++) {
+        chunk_t* entry = *it;
+
         if(m_mutex.lock(xTicksRemaining) != NO_ERROR) break;
-        
-        
-        for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); it != m_vChunks.end(); it++) {
-            chunk_t* entry = *it;
 
-            if(entry->state == chunk_state::Free) {
-                entry->state = chunk_state::Used;
+        if(entry->state == chunk_state::Free) {
+            entry->state = chunk_state::Used;
 
-                buffer = entry->theBuffer;
-                break;
-            }
+            buffer = entry->realBuffer;
+            m_mutexAdd->unlock();
+            break;
         }
         if (timeout != portMAX_DELAY) {
             xTicksRemaining = xTicksEnd - xTaskGetTickCount();
         }
-        
         m_mutexAdd->unlock();
     }
     return buffer;
@@ -87,7 +87,7 @@ bool MN_VECTOR_MEMPOOL_CLASS_NAME::free(void* mem, unsigned int xTicksToWait) {
 
         chunk_t* entry = *it; 
 
-        if(entry->theBuffer == mem) {
+        if(entry->realBuffer == mem) {
             entry->wasCurropted = is_chunk_curropted(entry);
 
             entry->state = chunk_state::Free;
@@ -190,34 +190,6 @@ bool MN_VECTOR_MEMPOOL_CLASS_NAME::set_blocked(const int id, const bool blocked,
     return _ret;
 }
 
-bool MN_VECTOR_MEMPOOL_CLASS_NAME::set_address_blocked(const int address, const bool blocked, unsigned int xTicksToWait) {
-    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-    TickType_t xTicksRemaining = xTicksToWait;
-
-    bool _ret = false;
-
-    for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
-        (it != m_vChunks.end()) && (xTicksRemaining <= xTicksToWait) ; it++) {
-        
-        if(m_mutex.lock(xTicksRemaining) != NO_ERROR) break;
-        
-        chunk_t* entry = *it; 
-
-        if( (int32_t)(entry->theBuffer) == address) {
-           _ret = entry->state == chunk_state::Blocked;
-            m_mutex.unlock(); break;
-        }
-
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-
-        m_mutex.unlock();
-    }
-
-    return _ret;
-}
-
 MN_VECTOR_MEMPOOL_CLASS_NAME::chunk_state 
 MN_VECTOR_MEMPOOL_CLASS_NAME::get_state(const int id, unsigned int xTicksToWait) {
     automutx_t lock(m_mutex);
@@ -225,54 +197,6 @@ MN_VECTOR_MEMPOOL_CLASS_NAME::get_state(const int id, unsigned int xTicksToWait)
     if(id > m_vChunks.size() ) return chunk_state::NotHandle;
 
     return (m_vChunks.at(id)->state);
-}
-MN_VECTOR_MEMPOOL_CLASS_NAME::chunk_state 
-MN_VECTOR_MEMPOOL_CLASS_NAME::get_address_state(const int address, unsigned int xTicksToWait) {
-    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-    TickType_t xTicksRemaining = xTicksToWait;
-
-    chunk_state _ret = chunk_state::NotHandle;
-
-    for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
-        (it != m_vChunks.end()) && (xTicksRemaining <= xTicksToWait) ; it++ ) {
-        
-        if(m_mutex.lock(xTicksRemaining) != NO_ERROR) break;
-
-        if( (int32_t)( (*it)->theBuffer) == address) {
-           _ret = entry->state; m_mutex.unlock(); break;
-        }
-
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-        m_mutex.unlock();
-    }
-
-    return _ret;
-}
-
-bool MN_VECTOR_MEMPOOL_CLASS_NAME::is_handle(const int address, unsigned int xTicksToWait) {
-    TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-    TickType_t xTicksRemaining = xTicksToWait;
-
-    bool _ret = false;
-
-    for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
-        (it != m_vChunks.end()) && (xTicksRemaining <= xTicksToWait) ; it++ ) {
-        
-        if(m_mutex.lock(xTicksRemaining) != NO_ERROR) break;
-
-        if( (int32_t)( (*it)->theBuffer ) == address) {
-           _ret = true; m_mutex.unlock(); break;
-        }
-
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-        m_mutex.unlock();
-    }
-
-    return _ret;
 }
 
 MN_VECTOR_MEMPOOL_CLASS_NAME::chunk_t* 
@@ -291,36 +215,6 @@ MN_VECTOR_MEMPOOL_CLASS_NAME::get_chunk(const int id, unsigned int xTicksToWait)
 
     m_mutex.unlock();
 
-    return _cpyChunk;
-}
-MN_VECTOR_MEMPOOL_CLASS_NAME::chunk_t* 
-MN_VECTOR_MEMPOOL_CLASS_NAME::get_chunk_from_address(const int address, unsigned int xTicksToWait) {
-    chunk_t* _cpyChunk = NULL;
-
-    for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
-        (it != m_vChunks.end()) && (xTicksRemaining <= xTicksToWait) ; it++ ) {
-
-        if(m_mutex.lock(xTicksRemaining) != NO_ERROR) break;
-
-        if( (int32_t)( (*it)->theBuffer ) == address) {
-
-#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
-            _cpyChunk = (chunk_t*)malloc_timed(sizeof(chunk_t), portMAX_DELAY);
-            if(_cpyChunk)
-                memcpy_timed(_cpyChunk, (*it), sizeof(chunk_t), portMAX_DELAY);
-#else
-            _cpyChunk = (chunk_t*)malloc(sizeof(chunk_t));
-            if(_cpyChunk)
-                memcpy(_cpyChunk, (*it), sizeof(chunk_t));
-#endif
-            m_mutex.unlock();
-            break;
-        }
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-        m_mutex.unlock();
-    }
     return _cpyChunk;
 }
 
