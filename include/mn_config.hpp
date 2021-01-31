@@ -371,6 +371,10 @@
     #define MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING MN_THREAD_CONFIG_YES
 #endif //MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING
 
+#ifndef MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC  
+    /// Use the magic guard for detect heap memory corruption - default: MN_THREAD_CONFIG_NO
+    #define MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC MN_THREAD_CONFIG_NO
+#endif //MN_THREAD_CONFIG_SHAREDOBJECT_PREUSING
 
 #ifndef MN_THREAD_CONFIG_MEMPOOL_MAGIC_START
     ///The start magic guard byte for detect heap memory corruption, not use in simple version
@@ -391,6 +395,14 @@
     #define MN_THREAD_CONFIG_MEMPOOL_USETIMED     MN_THREAD_CONFIG_YES
 #endif
 
+#ifndef MN_THREAD_CONFIG_MEMPOOL_ELEMENTS
+    #define MN_THREAD_CONFIG_MEMPOOL_ELEMENTS     20
+#endif
+
+//Alignment
+#ifndef MN_THREAD_CONFIG_BASIC_ALIGNMENT
+    #define MN_THREAD_CONFIG_BASIC_ALIGNMENT     20
+#endif
 
 #ifndef MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS         
     ///The max entrys are hold the tickhook queue

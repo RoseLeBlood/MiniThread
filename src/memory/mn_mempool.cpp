@@ -45,6 +45,21 @@ bool IMemPool::calcAligentAndSize() {
     return true;
         
 }
+
+int IMemPool::create(unsigned int xTicksToWait) { 
+    if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+
+    return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+}
+int IMemPool::create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait) {
+    m_iAlignment = iAlignment;
+    m_uiElements = nElements;
+
+    if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+
+    return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+}
+
 void* malloc_timed(unsigned long size, unsigned int xTicksToWait) {
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;

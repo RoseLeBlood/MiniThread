@@ -22,6 +22,7 @@
 #include "../mn_error.hpp"
 #include "../mn_mutex.hpp"
 
+
 /**
  * Interface for all mempools in this library
  * This is an abstract base class.
@@ -43,11 +44,40 @@ public:
         NotHandle = 99          /*!< Return when the address not handle with this mempool */
     };
 public:
+    /**
+     * Ctor 
+     * @param[in] nItemSize The size of a item
+     */ 
+    IMemPool(unsigned int nItemSize) 
+        : IMemPool(nItemSize, MN_THREAD_CONFIG_MEMPOOL_ELEMENTS, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
+
+    /**
+     * Ctor 
+     * @param[in] nItemSize The size of a item
+     * @param[in] nElements How many elements are handle with the  pool
+     * @param[in] iAlignment The alignment of the memory
+     */ 
     IMemPool(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment)
         : m_uiItemSize(nItemSize), m_uiElements(nElements), m_iAlignment(iAlignment) { 
     }
-    virtual int create(unsigned int xTicksToWait) { 
-        return calcAligentAndSize() ? NO_ERROR : 1; }
+    /**
+     * Create the mempool 
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return - ERR_MEMPOOL_OK: Mempool are created
+     *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
+     *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
+     */ 
+    virtual int create(unsigned int xTicksToWait);
+
+    /**
+     * Create the mempool
+     * @param[in] nElements How many elements are store in the pool
+     * @param[in] iAlignment The alignment
+     * @return - ERR_MEMPOOL_OK: Mempool are created
+     *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
+     *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
+     */ 
+    virtual int create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait);
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
@@ -133,11 +163,7 @@ inline void* zeroset(void* addr, unsigned long size, unsigned int xTicksToWait) 
     return zeroset<void>(addr, size, xTicksToWait);
 } 
 
-
-
-#include "mn_mempool_simple.hpp"
 #include "mn_mempool_vector.hpp"
 
-using basic_mempool_t = vector_mempool_t;
 
 #endif

@@ -27,10 +27,18 @@
  */
 #define NO_ERROR                        0x0000
 
+/**
+ * Timed out
+ */ 
 #define ERR_TIMEOUT                     0x0001
-
+/**
+ * The given param was null or error in malloc
+ */ 
 #define ERR_NULL                        0x0002
 
+/**
+ * Currently not defined error
+ */ 
 #define ERR_UNKN                        0x0003
 
 /**
@@ -234,9 +242,8 @@
 
 
 #define ERR_MEMPOOL_OK                    NO_ERROR
-#define ERR_MEMPOOL_ALREADYINIT           0x8001
-#define ERR_MEMPOOL_UNKNOW                0x8002
 #define ERR_MEMPOOL_BADALIGNMENT          0x8003
+#define ERR_MEMPOOL_CREATE                0x8004
 
 #define ERR_TICKHOOK_OK                   NO_ERROR
 #define ERR_TICKHOOK_ADD                  0x9001 
