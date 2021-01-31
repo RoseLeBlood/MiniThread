@@ -16,7 +16,7 @@
 *<https://www.gnu.org/licenses/>.  
 */
 #include "freertos/FreeRTOS.h"
-#include "memory/mn_mempool_vector.hpp"
+#include "memory/mn_basic_mempool.hpp"
 #include <malloc.h>
 #include <iostream>
 #include "mn_autolock.hpp"
@@ -66,7 +66,7 @@ void* MN_VECTOR_MEMPOOL_CLASS_NAME::allocate(unsigned int xTicksToWait) {
 
 
 #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-bool MN_VECTOR_MEMPOOL_CLASS_NAME::free(void* mem, unsigned int xTicksToWait, bool* wasCurropted) {
+bool MN_VECTOR_MEMPOOL_CLASS_NAME::free(void* mem, bool* wasCurropted, unsigned int xTicksToWait) {
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
     bool _ret = false, _wasCurropted = false;
@@ -101,7 +101,7 @@ bool MN_VECTOR_MEMPOOL_CLASS_NAME::free(void* mem, unsigned int xTicksToWait, bo
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
             }
-            m_mutexAdd->unlock();
+            _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
         } // for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
     }
     return _ret;
@@ -135,7 +135,7 @@ bool MN_VECTOR_MEMPOOL_CLASS_NAME::free(void* mem, unsigned int xTicksToWait) {
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
             }
-            m_mutexAdd->unlock();
+            _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
         } // for(std::vector<chunk_t*>::iterator it = m_vChunks.begin(); 
     }
     return _ret;

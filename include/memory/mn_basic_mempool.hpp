@@ -68,15 +68,25 @@ public:
      * Ctor
      * @param[in] nItemSize The size of a item
      */ 
-    explicit MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize)  : IMemPool(nItemSize) { }
+    explicit MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize) 
+        : MN_VECTOR_MEMPOOL_CLASS_NAME(nItemSize, 20, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
 
     /**
      * Ctor 
      * @param[in] nItemSize The size of a item
      * @param[in] nElements How many elements are handle with the  pool
-     * @param[in] iAlignment The alignment
+     */ 
+    MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements)
+        : MN_VECTOR_MEMPOOL_CLASS_NAME(nItemSize, nElements, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
+
+    /**
+     * Ctor 
+     * @param[in] nItemSize The size of a item
+     * @param[in] nElements How many elements are handle with the  pool
+     * @param[in] iAlignment Requested alignment, in bytes.
      */ 
     MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
+
     MN_VECTOR_MEMPOOL_CLASS_NAME(const MN_VECTOR_MEMPOOL_CLASS_NAME&) = delete; ///< no copyable 
 
     /**
@@ -94,7 +104,7 @@ public:
      * if true then was the heap memory corrupted and false when not 
      * @return if true ther the item back to it's pool, false If not
      */ 
-    virtual bool  free(void* mem, unsigned int xTicksToWait, bool* wasCurropted);
+    virtual bool  free(void* mem, bool* wasCurropted, unsigned int xTicksToWait);
 #else 
     /**
      * Returns the item back to the pool.

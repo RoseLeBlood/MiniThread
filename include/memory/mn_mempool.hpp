@@ -49,7 +49,7 @@ public:
      * @param[in] nItemSize The size of a item
      */ 
     IMemPool(unsigned int nItemSize) 
-        : IMemPool(nItemSize, MN_THREAD_CONFIG_MEMPOOL_ELEMENTS, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
+        : IMemPool(nItemSize, 20, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
 
     /**
      * Ctor 
@@ -163,7 +163,8 @@ inline void* zeroset(void* addr, unsigned long size, unsigned int xTicksToWait) 
     return zeroset<void>(addr, size, xTicksToWait);
 } 
 
-#include "mn_mempool_vector.hpp"
+#include "mn_basic_mempool.hpp"
+using basic_mempool_t = MN_VECTOR_MEMPOOL_CLASS_NAME;
 
 
 #endif
