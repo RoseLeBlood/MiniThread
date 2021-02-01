@@ -20,47 +20,9 @@
 #include <malloc.h>
 #include <iostream>
 
-bool IMemPool::calcAligentAndSize() {
-    unsigned int acount = 0;
-
-    // Calc aligent
-    if (m_iAlignment < (int)sizeof(unsigned char *)) {
-        m_iAlignment = (int)sizeof(unsigned char *);
-    }
-    
-    for (int i = 0, a = 0x1; i <= 31; i++, a <<= 1) {
-        if(i == 31) return false;
-        else if (m_iAlignment == a) {
-            break;
-        } 
-    }
-
-    // Calc size
-    if (m_uiItemSize <= m_iAlignment)  m_uiItemSize = m_iAlignment;
-    else {
-        acount = m_uiItemSize / m_iAlignment;
-        acount += (m_uiItemSize % m_iAlignment != 0) ? 1 : 0;
-        m_uiItemSize = acount * m_iAlignment;
-    }
-    return true;
-        
-}
-
-int IMemPool::create(unsigned int xTicksToWait) { 
-    if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
-
-    return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
-}
-int IMemPool::create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait) {
-    m_iAlignment = iAlignment;
-    m_uiElements = nElements;
-
-    if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
-
-    return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
-}
 
 void* malloc_timed(unsigned long size, unsigned int xTicksToWait) {
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES 
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
     void *address = NULL;
@@ -74,10 +36,15 @@ void* malloc_timed(unsigned long size, unsigned int xTicksToWait) {
         }
     }
     return address;
+#endif
+    return malloc(size);
 }
+
+
 void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait) {
     if(addr == NULL) return addr;
 
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES 
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
     
@@ -90,8 +57,12 @@ void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait) {
         }
     }
     return addr;
+
+#endif
+    return realloc(addr, size);
 }
 void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait) {
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
     void *address = NULL;
@@ -105,11 +76,15 @@ void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksT
         }
     }
     return address;
+#endif
+    return calloc(nmemb, size);
 }
 #include <string.h>
 
 void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait) {
     if(dest == NULL || src == NULL) return NULL;
+
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
 
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
@@ -125,10 +100,12 @@ void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int 
         }
     }
     return address;
+#endif
+    return memcpy(dest, src, size);
 }
 void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait) {
     if(addr == NULL) return addr;
-
+#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
     TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
     TickType_t xTicksRemaining = xTicksToWait;
     void *address = NULL;
@@ -142,5 +119,7 @@ void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksTo
         }
     }
     return address;
+#endif
+    return memset(addr, set, size);
 }
 

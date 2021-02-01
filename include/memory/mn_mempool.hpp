@@ -22,6 +22,7 @@
 #include "../mn_error.hpp"
 #include "../mn_mutex.hpp"
 
+#include "../mn_allocator.hpp"
 
 /**
  * Interface for all mempools in this library
@@ -32,7 +33,8 @@
  * 
  * \ingroup memory
  */ 
-class IMemPool {
+template <class TALLOCATOR>
+class mempool_interface {
 public:
     /**
      * The state for a memory chunk
@@ -44,6 +46,7 @@ public:
         NotHandle = 99          /*!< Return when the address not handle with this mempool */
     };
 public:
+    using allocator_t = TALLOCATOR;
     /**
      * Ctor 
      * @param[in] nItemSize The size of a item
@@ -67,7 +70,12 @@ public:
      *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
      *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
      */ 
-    virtual int create(unsigned int xTicksToWait);
+    virtual int create(unsigned int xTicksToWait) {  
+        if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+        if(m_allocator.create() == false) return ERR_MEMPOOL_CREATE;
+        
+        return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+    }
 
     /**
      * Create the mempool
@@ -77,7 +85,15 @@ public:
      *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
      *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
      */ 
-    virtual int create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait);
+    virtual int create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait) {
+        m_iAlignment = iAlignment;
+        m_uiElements = nElements;
+
+        if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+        if(m_allocator.create() == false) return ERR_MEMPOOL_CREATE;
+
+        return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+    }
     /**
      * Allocate an item from the pool.
      * @return Pointer of the memory or NULL if the pool is empty.
@@ -122,36 +138,54 @@ public:
      */ 
     virtual bool is_empty() = 0;
 protected:
-    bool calcAligentAndSize();
+    bool calcAligentAndSize()  {
+        unsigned int acount = 0;
+
+        // Calc aligent
+        if (m_iAlignment < (int)sizeof(unsigned char *)) {
+            m_iAlignment = (int)sizeof(unsigned char *);
+        } else {
+            for (int i = 0, a = 0x1; i <= 31; i++, a <<= 1) {
+                if(i == 31) return false;
+                else if (m_iAlignment == a) {
+                    break;
+                } 
+            }
+        }
+
+        // Calc size
+        if (m_uiItemSize <= m_iAlignment)  m_uiItemSize = m_iAlignment;
+        else {
+            acount = m_uiItemSize / m_iAlignment;
+            acount += (m_uiItemSize % m_iAlignment != 0) ? 1 : 0;
+            m_uiItemSize = acount * m_iAlignment;
+        }
+        return true;   
+    }
 protected:
     unsigned int m_uiItemSize;
     unsigned int m_uiElements;
     unsigned int m_iAlignment;
 
     mutex_t      m_mutex;
+    allocator_t  m_allocator;
 };
 
-#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES 
-    void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
-    void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait);
-    void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait);
-    void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait);
-    void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait);
-#else
-    #define malloc_timed(size, xTicksToWait)            malloc(size)
-    #define realloc_timed(addr, size, xTicksToWait)     realloc(addr, size)
-    #define calloc_timed(nmemb, size, xTicksToWait)     calloc(nmemb, size)
-    #define memcpy_timed(dest, src, size, xTicksToWait)  memcpy(dest, src, size)
-    #define memset_timed(addr, set, size, xTicksToWait); memset(addr, set, size)
-#endif
+using basic_mempool_interface = mempool_interface< default_allocator_t >;
 
-#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
-    #define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
-    malloc_timed(uiItemSize * nElements, xTicksToWait)
-#else
-    #define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
-    malloc(uiItemSize * nElements, xTicksToWait)
-#endif
+using spiram_mempool_interface = mempool_interface< allocator_spiram_t >;
+using system_mempool_interface = mempool_interface< allocator_system_t >;
+
+void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
+void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait);
+void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait);
+void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait);
+void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait);
+
+
+#define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
+malloc_timed(uiItemSize * nElements, xTicksToWait)
+
 
 template<typename T>
 inline T* zeroset(T* addr, unsigned long size, unsigned int xTicksToWait) {
@@ -160,10 +194,11 @@ inline T* zeroset(T* addr, unsigned long size, unsigned int xTicksToWait) {
 
 template<>
 inline void* zeroset(void* addr, unsigned long size, unsigned int xTicksToWait) {
-    return zeroset<void>(addr, size, xTicksToWait);
+    return memset_timed(addr, 0, size, xTicksToWait);
 } 
 
 #include "mn_basic_mempool.hpp"
+
 using basic_mempool_t = MN_VECTOR_MEMPOOL_CLASS_NAME;
 
 

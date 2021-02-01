@@ -29,7 +29,7 @@
 #define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) Mutex->unlock(); break;
 
 MN_VECTOR_MEMPOOL_CLASS_NAME::MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements, 
-    unsigned int iAlignment) : IMemPool(nItemSize, nElements, iAlignment) { 
+    unsigned int iAlignment) : basic_mempool_interface(nItemSize, nElements, iAlignment) { 
     
 }
 void* MN_VECTOR_MEMPOOL_CLASS_NAME::allocate(unsigned int xTicksToWait) {
@@ -148,7 +148,9 @@ int MN_VECTOR_MEMPOOL_CLASS_NAME::add_memory(unsigned int nElements, unsigned in
     TickType_t xTicksRemaining = xTicksToWait;
     int i = 0;
 
-    unsigned char *address = (unsigned char *)MALLOC_TIMED(m_uiItemSize, nElements, xTicksRemaining);
+    //unsigned char *address = (unsigned char *)MALLOC_TIMED(m_uiItemSize, nElements, xTicksRemaining);
+    unsigned char *address =  m_allocator.malloc(m_uiItemSize*nElements, xTicksRemaining);
+    
     if(address == NULL)  return ERR_NULL;
 
     while((xTicksRemaining <= xTicksToWait)) {

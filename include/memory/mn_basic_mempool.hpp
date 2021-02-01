@@ -29,7 +29,7 @@
     #define MN_VECTOR_MEMPOOL_CLASS_NAME    basic_mempool
 #endif
 
-#define MN_VECTOR_MEMPOOL_CLASS_DEF         class MN_VECTOR_MEMPOOL_CLASS_NAME : public IMemPool
+#define MN_VECTOR_MEMPOOL_CLASS_DEF         class MN_VECTOR_MEMPOOL_CLASS_NAME : public basic_mempool_interface
 
 /**
  * A very extendeble mempool for debug and more (timed version)
