@@ -15,10 +15,10 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef MINLIB_ESP32_TIMER_
-#define MINLIB_ESP32_TIMER_
+#ifndef MINLIB_FREERTOS_TIMER_
+#define MINLIB_FREERTOS_TIMER_
 
-
+#include "mn_itimer.hpp"
 
 /**
  *  Wrapper class around FreeRTOS's implementation of a timer.
@@ -50,7 +50,7 @@ public:
      * @return ERR_TIMER_OK No error, ERR_TIMER_ALREADYINIT The timer are allready created and
      * ERR_TIMER_CANTCREATE on error on create the FreeRTOS Timer
      */ 
-    int create();
+    virtual int create();
 
     /**
      * destroy the timer
@@ -58,7 +58,7 @@ public:
      * @param timeout How long to wait
      * @return ERR_TIMER_OK No error, ERR_TIMER_NOTCREATED the timer are not created, plaese call create() first
      */ 
-    int destroy(unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int destroy(unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**
      * Start the timer.
@@ -68,7 +68,7 @@ public:
      *          ERR_TIMER_NOTCREATED the timer are not created, plaese call create() first
      *          ERR_TIMER_AKTIVATE if it will not (i.e. timeout).
      */
-    int active(unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int active(unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**
      * Stop the timer
@@ -78,7 +78,7 @@ public:
      *          ERR_TIMER_NOTCREATED the timer are not created, plaese call create() first
      *          ERR_TIMER_INAKTIVATE if it will not (i.e. timeout).
      */
-    int inactive(unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int inactive(unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**
      * Reset the timer
@@ -88,7 +88,7 @@ public:
      *          ERR_TIMER_NOTCREATED the timer are not created, plaese call create() first
      *          ERR_TIMER_RESET if it will not (i.e. timeout).
      */
-    int reset(unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual int reset(unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**
      *  Change a timer's period.
@@ -97,14 +97,14 @@ public:
      *  @param timeout How long to wait 
      *  @returns true no error, false if it will not (i.e. timeout).
      */
-    bool set_period(unsigned int uiNewPeriod, unsigned int timeout = (unsigned int) 0xffffffffUL);
+    virtual bool set_period(unsigned int uiNewPeriod, unsigned int timeout = (unsigned int) 0xffffffffUL);
 
     /**
      * Get the timer's period
      * 
      * @return The timer's period
      */ 
-    unsigned int get_period()   { return m_uiPeriod; }
+    virtual unsigned int get_period()   { return m_uiPeriod; }
 
     /**
      * Get the timer's name
@@ -125,7 +125,7 @@ public:
      * 
      * @return the FreeRTOS handle
      */
-    void*       get_handle()    { return m_pHandle; }
+    virtual void*       get_handle()    { return m_pHandle; }
 
     /**
      * Returns the ID assigned to the timer.
@@ -141,7 +141,7 @@ public:
      * 
      * @param nId The ID to assign to the timer.
      */ 
-    void        set_id(int nId);
+    virtual void        set_id(int nId);
 
     /**
      * Queries a timer to see if it is active or dormant.
@@ -149,7 +149,7 @@ public:
      * @return false will be returned if the timer is dormant.  
      * And true will be returned if the timer is active.
      */ 
-    bool        is_running();
+    virtual bool        is_running();
 
     operator bool() { return is_running(); }
 protected:
@@ -167,7 +167,7 @@ protected:
      * You can override this functions, call after on_timer
      */ 
     virtual void on_exit() { }
-private:
+protected:
      /**
       * Adapter function that allows you to write a class
       * specific on_timer() function that interfaces with FreeRTOS.
@@ -201,7 +201,7 @@ private:
     #endif
 };
 
-using mtimer_t = basic_timer;
+using freertos_timer_t = basic_timer;
 
 
 #endif
