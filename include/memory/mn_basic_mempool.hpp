@@ -23,20 +23,14 @@
 
 #include <vector>
 
-#if MN_THREAD_CONFIG_MEMPOOL_USETIMED == MN_THREAD_CONFIG_YES
-    #define MN_VECTOR_MEMPOOL_CLASS_NAME    basic_mempool_timed
-#else
-    #define MN_VECTOR_MEMPOOL_CLASS_NAME    basic_mempool
-#endif
-
-#define MN_VECTOR_MEMPOOL_CLASS_DEF         class MN_VECTOR_MEMPOOL_CLASS_NAME : public basic_mempool_interface
 
 /**
  * A very extendeble mempool for debug and more (timed version)
  * 
  * \ingroup memory
  */ 
-MN_VECTOR_MEMPOOL_CLASS_DEF {
+template <typename TALLOCATOR = default_allocator_t<unsigned char> >
+class basic_mempool_vector : public mempool_interface<TALLOCATOR> {
 public:
     /**
      * The memory chunk 
@@ -44,15 +38,15 @@ public:
     struct chunk {
         union {
             struct {
-                void* theBuffer;            /*!< The real buffer */
+                unsigned char* theBuffer;            /*!< The real buffer */
 #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
                 char theMagicGuard[2];      /*!< The magic guard bytes for detect heap memory corruption */
 #endif
                 chunk_state state;          /*!< The state for a memory chunk */
             };
-            void* realBuffer;
+            unsigned char* realBuffer;
         };
-        chunk(void* buffer) { 
+        chunk(unsigned char* buffer) { 
             theBuffer = buffer;
 #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
             theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
@@ -68,16 +62,16 @@ public:
      * Ctor
      * @param[in] nItemSize The size of a item
      */ 
-    explicit MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize) 
-        : MN_VECTOR_MEMPOOL_CLASS_NAME(nItemSize, 20, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
+    explicit basic_mempool_vector(unsigned int nItemSize) 
+        : basic_mempool_vector(nItemSize, 20, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
 
     /**
      * Ctor 
      * @param[in] nItemSize The size of a item
      * @param[in] nElements How many elements are handle with the  pool
      */ 
-    MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements)
-        : MN_VECTOR_MEMPOOL_CLASS_NAME(nItemSize, nElements, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
+    basic_mempool_vector(unsigned int nItemSize, unsigned int nElements)
+        : basic_mempool_vector(nItemSize, nElements, MN_THREAD_CONFIG_BASIC_ALIGNMENT) { }
 
     /**
      * Ctor 
@@ -85,9 +79,9 @@ public:
      * @param[in] nElements How many elements are handle with the  pool
      * @param[in] iAlignment Requested alignment, in bytes.
      */ 
-    MN_VECTOR_MEMPOOL_CLASS_NAME(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
+    basic_mempool_vector(unsigned int nItemSize, unsigned int nElements, unsigned int iAlignment);
 
-    MN_VECTOR_MEMPOOL_CLASS_NAME(const MN_VECTOR_MEMPOOL_CLASS_NAME&) = delete; ///< no copyable 
+    basic_mempool_vector(const basic_mempool_vector&) = delete; ///< no copyable 
 
     /**
      * Allocate an item from the pool.
@@ -135,7 +129,7 @@ public:
     /**
      * No copyble
      */ 
-    MN_VECTOR_MEMPOOL_CLASS_NAME& operator=(const MN_VECTOR_MEMPOOL_CLASS_NAME&) = delete;
+    basic_mempool_vector& operator=(const basic_mempool_vector&) = delete;
 
     /**
      * Return the number of chunks in the mempool
@@ -208,8 +202,12 @@ public:
 private:
     std::vector<chunk_t*> m_vChunks;
 };
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
+using basic_mempool_spiram_t = basic_mempool_vector< basic_allocator_spiram <unsigned char> >;
+#endif
 
+using basic_mempool_system_t = basic_mempool_vector< basic_allocator_system <unsigned char> >;
 
-using basic_mempool_t = MN_VECTOR_MEMPOOL_CLASS_NAME;
+using basic_mempool_t = basic_mempool_system_t;
 
 #endif

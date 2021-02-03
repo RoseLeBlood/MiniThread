@@ -171,10 +171,6 @@ protected:
     allocator_t  m_allocator;
 };
 
-using basic_mempool_interface = mempool_interface< default_allocator_t >;
-
-using spiram_mempool_interface = mempool_interface< allocator_spiram_t >;
-using system_mempool_interface = mempool_interface< allocator_system_t >;
 
 void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
 void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait);

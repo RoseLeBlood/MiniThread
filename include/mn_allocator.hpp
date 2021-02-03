@@ -22,10 +22,10 @@
 #include "mn_allocator_system.hpp"
 #include "mn_allocator_psram.hpp"
 
-using allocator_system_t = basic_allocator_system;
-using allocator_spiram_t = basic_allocator_spiram;
+template <typename T> using allocator_system_t = basic_allocator_system<T>;
+template <typename T> using allocator_spiram_t = basic_allocator_spiram<T>;
 
-using default_allocator_t = allocator_system_t;
+template <typename T> using default_allocator_t = allocator_system_t<T>;
 
 
 #endif

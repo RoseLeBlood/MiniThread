@@ -149,7 +149,7 @@ int MN_VECTOR_MEMPOOL_CLASS_NAME::add_memory(unsigned int nElements, unsigned in
     int i = 0;
 
     //unsigned char *address = (unsigned char *)MALLOC_TIMED(m_uiItemSize, nElements, xTicksRemaining);
-    unsigned char *address =  m_allocator.malloc(m_uiItemSize*nElements, xTicksRemaining);
+    unsigned char *address =  (unsigned char *)m_allocator.alloc_raw(m_uiItemSize, nElements, xTicksRemaining);
     
     if(address == NULL)  return ERR_NULL;
 
@@ -255,7 +255,7 @@ MN_VECTOR_MEMPOOL_CLASS_NAME::chunk_t*
 MN_VECTOR_MEMPOOL_CLASS_NAME::get_chunk(const int id, unsigned int xTicksToWait) {
     automutx_t lock(m_mutex);
 
-    _cpyChunk = (chunk_t*)malloc_timed(sizeof(chunk_t), xTicksToWait);
+    _cpyChunk = (chunk_t*)m_allocator.alloc_raw(sizeof(chunk_t), 1, xTicksToWait);
     memcpy_timed(_cpyChunk, m_vChunks.at(id), sizeof(chunk_t), xTicksToWait);
 
     return _cpyChunk;
