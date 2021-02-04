@@ -171,31 +171,18 @@ protected:
     allocator_t  m_allocator;
 };
 
-
-void* malloc_timed(unsigned long size, unsigned int xTicksToWait);
-void* realloc_timed(void* addr, unsigned long size, unsigned int xTicksToWait);
-void* calloc_timed(unsigned long nmemb, unsigned long size, unsigned int xTicksToWait);
-void* memcpy_timed(void* dest, const void* src, unsigned int size, unsigned int xTicksToWait);
-void* memset_timed(void* addr, int set, unsigned int size, unsigned int xTicksToWait);
-
-
-#define MALLOC_TIMED(uiItemSize, nElements, xTicksToWait) \
-malloc_timed(uiItemSize * nElements, xTicksToWait)
-
-
-template<typename T>
-inline T* zeroset(T* addr, unsigned long size, unsigned int xTicksToWait) {
-    return (T*)memset_timed(addr, 0, size, xTicksToWait);
-} 
-
-template<>
-inline void* zeroset(void* addr, unsigned long size, unsigned int xTicksToWait) {
-    return memset_timed(addr, 0, size, xTicksToWait);
-} 
-
 #include "mn_basic_mempool.hpp"
 
-using basic_mempool_t = MN_VECTOR_MEMPOOL_CLASS_NAME;
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
+template <typename TType>
+using basic_mempool_spiram_t = basic_mempool_vector<TType, basic_allocator_spiram <TType> >;
+#endif
+
+template <typename TType>
+using basic_mempool_system_t = basic_mempool_vector<TType, basic_allocator_system <TType> >;
+
+template <typename TType>
+using basic_mempool_t = basic_mempool_system_t<TType>;
 
 
 #endif
