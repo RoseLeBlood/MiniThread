@@ -222,11 +222,13 @@ public:
      * @return Return NO_ERROR when was added and 'ERR_MEMPOOL_UNKNOW' on error
      */
     int add_memory(unsigned int nElements, unsigned int xTicksToWait = portMAX_DELAY) {
-        size_t sSizeOf = m_allocator.size() * nElements;
+        
 
-        unsigned char *address = (unsigned char *)m_allocator.alloc_range(nElements, xTicksRemaining);
+        unsigned char *address;
+        size_t n = m_allocator.calloc(nElements, &address, xTicksRemaining);
         if(address == NULL)  return ERR_NULL;
 
+        size_t sSizeOf = m_allocator.size() * n;
         return add_memory(address, sSizeOf, xTicksRemaining);
     }
 

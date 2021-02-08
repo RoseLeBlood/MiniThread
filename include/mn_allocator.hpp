@@ -20,7 +20,8 @@
 #define _MINLIB_ALLOCATOR_H_
 
 #include "mn_allocator_system.hpp"
-
+#include "mn_allocator_stack.hpp"
+#include "mn_allocator_buffer.hpp"
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
         #include "mn_allocator_caps.hpp"
@@ -53,9 +54,15 @@
         #endif
 #endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
-
 #if MN_THREAD_CONFIG_ALLOCATOR_DEFAULT == MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
     template <typename T> using default_allocator_t = basic_allocator_system<T>;
 #else
     template <typename T> using default_allocator_t = basic_cap_allocator_esp32<T>;
 #endif
+
+template<typename T, int TBytes> 
+using allocator_stack_t = basic_allocator_stack<T, TBytes>;
+
+template<typename T> 
+using allocator_buffer_t = basic_allocator_buffer<T, default_allocator_t<T> >;
+

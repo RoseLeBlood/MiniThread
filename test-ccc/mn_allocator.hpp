@@ -20,10 +20,17 @@
 #define _MINLIB_ALLOCATOR_H_
 
 #include "mn_allocator_system.hpp"
+#include "mn_allocator_stack.hpp"
 
+template<typename T, int TBytes> 
+using allocator_stack_t = basic_allocator_stack<T, TBytes>;
 
 template <typename T> using allocator_system_t = basic_allocator_system<T>;
 template <typename T> using default_allocator_t = allocator_system_t<T>;
 
+#include "mn_allocator_buffer.hpp"
+
+template<typename T> 
+using allocator_buffer_t = basic_allocator_buffer<T, default_allocator_t<T> >;
 
 #endif

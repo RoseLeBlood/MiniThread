@@ -15,8 +15,10 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINLIB_ALLOCATOR_SYSTEM_H_
-#define _MINLIB_ALLOCATOR_SYSTEM_H_
+#ifndef _MINLIB_ALLOCATOR_CAPS_H_
+#define _MINLIB_ALLOCATOR_CAPS_H_
+
+#include "mn_config.hpp"
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
@@ -50,8 +52,8 @@ enum class cap_allocator_size {
  * ESP32 allocator heap wrapper
  */ 
 template <typename T, 
-cap_allocator_map TCAPS = cap_allocator_map::Internal,
-cap_allocator_size TSBITS = cap_allocator_size::Size8Bit>
+cap_allocator_map TCAPS,
+cap_allocator_size TSBITS>
 class basic_cap_allocator_esp32  {
 public:
     /**
@@ -59,47 +61,25 @@ public:
      * @param [in] maxSize The max size to alloc with this allocator. 
      * @note When maxSize 0 is then use all 
      */ 
-    bool create(size_t maxSize) : m_sMaxSize(0), m_sAlloced(0) { 
-        m_bFound = false;
-        m_bFaile = false;
+    bool create(size_t nElements = 0) { 
+        m_sAlloced = 0;
         m_sSize = sizeof(T);
-
-        int size = heap_caps_get_total_size( CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-        if( (maxSize > size) || (maxSize == 0) ) 
-                m_sMaxSize = size;
+        m_sMaxSize = nElements;
 
         if((int)(TCAPS) == MALLOC_CAP_SPIRAM ) {
             return intarnal_create_spi_ram();
         } else if((int)(TCAPS) == MALLOC_CAP_INTERNAL) {
             m_bFound = true;
         }
-       
-        return true; 
-    }
-    size_t size() {
-        return m_sSize;
-    }
-    void size(size_t uiSize) {
-        if(uiSize <= sizeof(T)) return;
-        m_sSize = uiSize;
-    }
-    /**
-     * Get the size of ram
-     * @return The size of bytes - works only on esp32
-     */ 
-    unsigned long get_size() {
-        return m_sMaxSize;
-    }
 
-    /**
-     * Get the size of free bytes
-     * @return The size of free bytes
-     */ 
-    unsigned long get_free() {
-        return m_maxSize - m_sAlloced; 
-    }
-    bool is_empty() {
-        return get_free() == 0;
+        if(m_bFound) {
+            int nMaxElements = heap_caps_get_total_size( CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
+            nMaxElements = nMaxElements / m_sSize;
+
+            if( (maxSize > nMaxElements) || (maxSize == 0) ) m_sMaxSize = nMaxElements;
+        }
+        
+        return m_bFound; 
     }
 
     /**
@@ -108,80 +88,41 @@ public:
      */ 
     T* alloc(unsigned int xTime) {
         if(!m_bFound) return NULL;
-
         if(is_empty() ) return NULL;
-        T* buf = NULL;
-        
-        buf = (T*)heap_caps_malloc(m_sSize,  CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
 
-        if(buf) { m_sAlloced += m_sSize; }
+        T* buf = (T*)heap_caps_malloc(m_sSize,  CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
+        assert(buf != NULL);
+
+        if(buf) { m_sAlloced++; }
         return buf;
     }
     
-    T* alloc_range(size_t n, unsigned int xTime) {
+    size_t calloc(size_t n, T** buf, unsigned int xTime) {
         if(!m_bFound) return NULL;
+        if(is_empty() ) {  buf = NULL; return 0; }
 
-        if(is_empty() ) return NULL; 
+        size_t size = n;
+        if(m_sMaxSize < size) size = get_free();
 
-        T* buf = (T*)heap_caps_malloc( m_sSize * n , CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-        if(buf) { m_sAlloced += m_sSize * n; }
-
-        return buf;
+        *buf = (T*)heap_caps_calloc( n, m_sSize, CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
+        assert(buf != NULL);
+        m_sAlloced += size; 
+        
+        return size;
     }
-    void* alloc_raw(size_t size, size_t n, unsigned int xTime ) {
-        if(!m_bFound) return NULL;
-
-        if(is_empty() ) return NULL;
-        T* buf = NULL;
-
-        buf = heap_caps_malloc( size * n , CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-
-        if(buf) { m_sAlloced += size * n; }
-        return buf;
-    }
-
-    /**
-     * Allocate n elements of SIZE bytes each, all initialized to 0. 
-     * @return A pointer of the allocated ram
-     */ 
-    T* calloc(size_t n,  unsigned int xTime) {
-        if(!m_bFound) return NULL;
-
-        if(is_empty() ) return NULL;
-        T* buf = (T*)heap_caps_calloc(n, m_sSize, CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-
-        if(buf) { m_sAlloced += m_sSize; }
-        return buf;
-    }
-
-    /**
-     * Re-allocate the previously allocated block in PTR, making the new
-     * block large enough for NMEMB elements of SIZE bytes each.
-     * @return A pointer of the re-allocated ram
-     */ 
-    T* realloc(T *ptr, size_t size, unsigned int xTime) {
-        if(!m_bFound) return NULL;
-
-        if(is_empty() ) return NULL;
-
-        buf = (T*)heap_caps_realloc(ptr, size, CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-
-        if(buf) { m_sAlloced = (m_sAlloced - m_sSize) + size; }
-        return buf;
+    void free_range(size_t n, T** buf) {
+        for(int i=0; i < n; i++) free(buf[i]);
     }
 
     /**
      * Free a block allocated by `malloc', `realloc' or `calloc'. 
      * @return True the mem are free and false when not
      */ 
-    bool free(T* mem, unsigned int xTime) {
-        if(!m_bFound) return NULL;
-
-        if(mem == NULL) return false;
-        m_sAlloced = (m_sAlloced - m_sSize);
-
-        heap_caps_free(mem); return true; 
-
+    void free(T* mem, unsigned int xTime) {
+        if(mem == NULL) return;
+        
+        heap_caps_free(mem); 
+        m_sAlloced--;
     }
 
     /**
@@ -197,6 +138,19 @@ public:
         if(mem == NULL) return 0;
         return heap_caps_get_allocated_size(mem);
     }
+
+    /**
+     * Get the size of free bytes
+     * @return The size of free bytes
+     */ 
+    unsigned long get_free()        { return m_sMaxSize - m_sAlloced; }
+    unsigned long get_allocated()   { return m_sAlloced; }
+    unsigned long get_max()         { return m_sMaxSize; }
+
+    size_t size()                   { return m_sSize; } ///<Get the size of T
+    void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
+
+    bool is_empty()                 { return get_free() == 0;  }
 private:
 
     bool intarnal_create_spi_ram() {

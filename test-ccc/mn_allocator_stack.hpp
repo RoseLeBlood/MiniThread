@@ -15,80 +15,66 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINLIB_ALLOCATOR_SYSTEM_H_
-#define _MINLIB_ALLOCATOR_SYSTEM_H_
+#ifndef _MINLIB_ALLOCATOR_STACK_H_
+#define _MINLIB_ALLOCATOR_STACK_H_
 
 #include <assert.h>
 
-template <typename T>
-class basic_allocator_system {
+/** Stack based allocator.
+ * Traits:
+ *      - operates on buffer of TBytes bytes of stack memory
+ *      - never frees memory
+ *      - cannot be copied
+ */
+template<typename T, int TBytes> 
+class basic_allocator_stack {
 public:
-    /**
-     * Create the allocator
-     * @param [in] nElements The max elements are allocated with this allocater
-     */ 
-    bool create(size_t nElements)  { 
-        m_sMaxSize = nElements;
-        m_sAlloced = 0;
-        return true; 
-    }
-    
-    /**
-     * Allocate SIZE bytes of memory 
-     * @return A pointer of the allocated ram
-     */ 
-    T* alloc(unsigned int xTime) {
-        if(is_empty() ) return NULL;
-        T* buf = (T*)::malloc(sizeof(T));
-        assert(buf != NULL);
+    explicit basic_allocator_stack() : m_bufferTop(0), m_sSize(sizeof(T)) { }
 
-        if(buf) { m_sAlloced++; }
-        return buf;
+    bool create(size_t nElements = 0) { return true; }
+
+    T* alloc(unsigned int xTime) {
+       if(is_empty()) return NULL;
+
+        assert(m_bufferTop + m_sSize <= (TBytes * m_sSize) );
+        char* ret = &m_buffer[0] + m_bufferTop;
+        m_bufferTop += m_sSize;
+        return (T*)ret;
     }
     /**
      * Allocate n elements of SIZE bytes each, all initialized to 0. 
      * @return A pointer of the allocated ram
      */ 
     size_t calloc(size_t n, T** buf, unsigned int xTime) {
-        if(is_empty() ) {  buf = NULL; return 0; }
-
+        if(is_empty()) return 0;
+    
         size_t size = n;
-        if(m_sMaxSize < size) size = get_free();
+        if( (get_max() - get_allocated() < size) ) size = get_free();
 
-        *buf = (T*)::calloc(size, sizeof(T));
-        assert(buf != NULL);
-        m_sAlloced += size; 
-        
+        assert(m_bufferTop + (m_sSize*size) <= (TBytes * m_sSize) );
+        *buf = (T*)&m_buffer[0] + m_bufferTop;
+        m_bufferTop += m_sSize*size;
+
         return size;
     }
-    /**
-     * Free a block allocated by `malloc', `realloc' or `calloc'. 
-     */ 
-    void free(T* mem, unsigned int xTime) {
-        if(mem == NULL) return;
-        
-        ::free(mem); 
-        m_sAlloced--;
-    }
-
-    /**
-     * Get the size of free bytes
-     * @return The size of free bytes
-     */ 
-    unsigned long get_free()        { return m_sMaxSize - m_sAlloced; }
-    unsigned long get_allocated()   { return m_sAlloced; }
-    unsigned long get_max()         { return m_sMaxSize; }
+    void free(void* ptr) { ptr = NULL; }
 
     size_t size()                   { return m_sSize; } ///<Get the size of T
     void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
 
     bool is_empty()                 { return get_free() == 0;  }
-private:
-   size_t m_sMaxSize;
-   size_t m_sAlloced;
-   size_t m_sSize;
-};
 
+    unsigned long get_free()        { return get_max() - (m_bufferTop/m_sSize); }
+    unsigned long get_allocated()   { return m_bufferTop/m_sSize; }
+    unsigned long get_max()         { return (TBytes); }
+
+    basic_allocator_stack(const basic_allocator_stack&) = delete;
+    basic_allocator_stack& operator=(const basic_allocator_stack&) = delete;
+private:
+    char            m_buffer[TBytes*sizeof(T)];
+    size_t          m_bufferTop;
+    size_t          m_sSize;
+};
 
 
 #endif
