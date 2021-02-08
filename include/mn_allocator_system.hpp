@@ -1,95 +1,115 @@
 /*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2021 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
-*the Free Software Foundation, version 3, or (at your option) any later version.
+* This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+* Copyright (c) 2021 Amber-Sophia Schroeck
+* 
+* The Mini Thread Library is free software; you can redistribute it and/or modify  
+* it under the terms of the GNU Lesser General Public License as published by  
+* the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+* The Mini Thread Library is distributed in the hope that it will be useful, but 
+* WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+* General Public License for more details.
+* 
+* You should have received a copy of the GNU Lesser General Public
+* License along with the Mini Thread  Library; if not, see
+* <https://www.gnu.org/licenses/>.  
 */
 #ifndef _MINLIB_ALLOCATOR_SYSTEM_H_
 #define _MINLIB_ALLOCATOR_SYSTEM_H_
 
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-#include "esp_heap_caps.h"
-#endif
-
-#include "mn_allocator_interface.hpp"
 /**
  * basic wrapper for system malloc
  */ 
 template <typename T>
-class basic_allocator_system : public basic_allocator_interface<T> {
+class basic_allocator_system {
 public:
+    /**
+     * Create the allocator
+     * @param [in] maxSize The max size to alloc with this allocator. 
+     * @note When maxSize 0 is then use all 
+     */ 
+    bool create(size_t maxSize) : m_sMaxSize(maxSize), m_sAlloced(0) { 
+        return true; 
+    }
+    /**
+     * Get the size of T
+     * @return The size of T
+     */
+    size_t size() {
+        return m_sSize;
+    }
+    /**
+     * set the size off T. Muss be greater as sizeof(T) 
+     */ 
+    void size(size_t uiSize) {
+        if(uiSize <= sizeof(T)) return;
+        m_sSize = uiSize;
+    }
+
     /**
      * Get the size of ram
      * @return The size of bytes - works only on esp32
      */ 
-    virtual unsigned long get_size() {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return heap_caps_get_total_size( MALLOC_CAP_INTERNAL);
-#else 
-        return 2048;
-#endif
+    unsigned long get_size() {
+        if(m_sMaxSize == 0) return __LONG_MAX__;
+        return m_sMaxSize;
     }
 
     /**
      * Get the size of free bytes
      * @return The size of free bytes
      */ 
-    virtual unsigned long get_free() {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return heap_caps_get_free_size( MALLOC_CAP_INTERNAL );
-#else 
-        return 2048;
-#endif
+    unsigned long get_free() {
+        if(m_sMaxSize == 0) {
+           	return __LONG_MAX__  - m_sAlloced;
+        } else {
+        	return m_maxSize - m_sAlloced; 
+        }
+    }
+    bool is_empty() {
+        if(m_sMaxSize == 0) {
+            return get_free() == 0;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Allocate SIZE bytes of memory 
      * @return A pointer of the allocated ram
      */ 
-    virtual T* alloc(unsigned int xTime) {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return (T*)heap_caps_malloc(sizeof(T),  MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-#else 
-        return (T*)::malloc(sizeof(T));
-#endif
+    T* alloc(unsigned int xTime) {
+        if(is_empty() ) return NULL;
+        T* buf = (T*)::malloc(sizeof(T));
+
+        if(buf) { m_sAlloced += sizeof(T); }
+        return buf;
     }
     
-    virtual T* alloc_range(size_t n, unsigned int xTime) {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return (T*)heap_caps_malloc( sizeof(T) * n , MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-#else 
-        return (T*)::malloc(sizeof(T) * n);
-#endif
+    T* alloc_range(size_t n, unsigned int xTime) {
+        if(is_empty() ) return NULL; 
+
+        T* buf = (T*)::malloc(sizeof(T) * n);
+        if(buf) { m_sAlloced += sizeof(T) * n; }
+        return buf;
     }
-    virtual void* alloc_raw(size_t size, size_t n, unsigned int xTime ) {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return heap_caps_malloc( size * n , MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-#else
-        return ::malloc(size * n);
-#endif
+    void* alloc_raw(size_t size, size_t n, unsigned int xTime ) {
+         if(is_empty() ) return NULL;
+        T* buf = ::malloc(size * n);
+        if(buf) { m_sAlloced += size * n; }
+        return buf;
     }
 
     /**
      * Allocate n elements of SIZE bytes each, all initialized to 0. 
      * @return A pointer of the allocated ram
      */ 
-    virtual T* calloc(size_t n,  unsigned int xTime) {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return (T*)heap_caps_calloc(n, sizeof(T), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-#else 
-        return (T*)::calloc(n, sizeof(T));
-#endif
+    T* calloc(size_t n,  unsigned int xTime) {
+        if(is_empty() ) return NULL;
+        T* buf = (T*)::calloc(n, sizeof(T));
+        if(buf) { m_sAlloced += sizeof(T); }
+        return buf;
     }
 
     /**
@@ -97,42 +117,25 @@ public:
      * block large enough for NMEMB elements of SIZE bytes each.
      * @return A pointer of the re-allocated ram
      */ 
-    virtual T* realloc(T *ptr, size_t size, unsigned int xTime) {
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        return (T*)heap_caps_realloc(ptr, size, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-#else 
-        return (T*)::realloc(ptr, size);
-#endif
+    T* realloc(T *ptr, size_t size, unsigned int xTime) {
+        if(is_empty() ) return NULL;
+        buf = (T*)::realloc(ptr, size);
+        if(buf) { m_sAlloced = (m_sAlloced - sizeof(T)) + size; }
+        return buf;
     }
 
     /**
      * Free a block allocated by `malloc', `realloc' or `calloc'. 
      * @return True the mem are free and false when not
      */ 
-    virtual bool free(T* mem, unsigned int xTime) {
+    bool free(T* mem, unsigned int xTime) {
         if(mem == NULL) return false;
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        heap_caps_free(mem); return true; 
-#else 
+        m_sAlloced = (m_sAlloced - sizeof(T));
         ::free(mem); return true;
-#endif
     }
-
-
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-    /**
-     * @brief Return the size that a particular pointer was allocated with.
-     *
-     * @param ptr Pointer to currently allocated heap memory. Must be a pointer value previously 
-     * returned by heap_caps_malloc,malloc,calloc, etc. and not yet freed.
-     *
-     * @return Size of the memory allocated at this block and 0 when mem are NULL is
-     */
-    virtual unsigned long get_size(T* mem) {
-        if(mem == NULL) return 0;
-        return heap_caps_get_allocated_size(mem);
-    }
-#endif
+private:
+   size_t m_sMaxSize;
+   size_t m_sAlloced;
 };
 
 

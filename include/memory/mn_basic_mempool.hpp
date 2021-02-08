@@ -37,9 +37,20 @@
  * \ingroup memory
  */ 
 template <typename TType, typename TALLOCATOR = default_allocator_t<TType>, int iAlligent = MN_THREAD_CONFIG_BASIC_ALIGNMENT >
-class basic_mempool_vector : public mempool_interface<TALLOCATOR> {
+class basic_mempool_vector {
 public:
+    /**
+     * The state for a memory chunk
+     */ 
+    enum class chunk_state {
+        Free,                   /*!< The chunk is free and can allocated */
+        Used,                   /*!< The chunk is used */
+        Blocked,                /*!< The chunk is blocked and can not use */
+        NotHandle = 99          /*!< Return when the address not handle with this mempool */
+    };
+
     using type_t = TType;
+    using allocator_t = TALLOCATOR;
 
     /**
      * The memory chunk 
@@ -72,7 +83,7 @@ public:
      * @param[in] nItemSize The size of a item
      */ 
     explicit basic_mempool_vector() 
-        : basic_mempool_vector(20, iAlligent) { }
+        : basic_mempool_vector(20, iAlligent) {  }
 
     /**
      * Ctor 
@@ -80,10 +91,44 @@ public:
      * @param[in] nElements How many elements are handle with the  pool
      * /* @param[in] iAlignment Requested alignment, in bytes. */
      */ 
-    basic_mempool_vector(unsigned int nElements)
-        : basic_mempool_interface(sizeof(TType), nElements, iAlligent)  { }
+    basic_mempool_vector(unsigned int nElements) { 
+            m_uiElements = nElements; 
+            m_iAlignment = iAlligent;
+         }
 
     basic_mempool_vector(const basic_mempool_vector&) = delete; ///< no copyable 
+
+    /**
+     * Create the mempool 
+     * @param[in] xTicksToWait How long to wait to get until giving up.
+     * @return - ERR_MEMPOOL_OK: Mempool are created
+     *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
+     *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
+     */ 
+    virtual int create(unsigned int xTicksToWait) {  
+        if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+        if(m_allocator.create() == false) return ERR_MEMPOOL_CREATE;
+        
+        return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+    }
+
+    /**
+     * Create the mempool
+     * @param[in] nElements How many elements are store in the pool
+     * @param[in] iAlignment The alignment
+     * @return - ERR_MEMPOOL_OK: Mempool are created
+     *         - ERR_MEMPOOL_BADALIGNMENT: The given Alignment not work
+     *         - ERR_MEMPOOL_CREATE: Can't create the mempool 
+     */ 
+    virtual int create(unsigned int nElements, unsigned int iAlignment, unsigned int xTicksToWait) {
+        m_iAlignment = iAlignment;
+        m_uiElements = nElements;
+
+        if(calcAligentAndSize() == false)  return ERR_MEMPOOL_BADALIGNMENT; 
+        if(m_allocator.create() == false) return ERR_MEMPOOL_CREATE;
+
+        return (add_memory(m_uiElements, xTicksToWait) == NO_ERROR)  ? NO_ERROR : ERR_MEMPOOL_CREATE;
+    }
 
     /**
      * Allocate an item from the pool.
@@ -156,7 +201,7 @@ public:
                 if(wasCurropted) *wasCurropted = false;
 
                 entry->state = chunk_state::Free;
-                memset(entry->theBuffer, 0, m_uiItemSize);
+                memset(entry->theBuffer, 0, m_allocator.size() );
 
                 _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd);
             }
@@ -177,9 +222,9 @@ public:
      * @return Return NO_ERROR when was added and 'ERR_MEMPOOL_UNKNOW' on error
      */
     int add_memory(unsigned int nElements, unsigned int xTicksToWait = portMAX_DELAY) {
-        size_t sSizeOf = m_uiItemSize * nElements;
+        size_t sSizeOf = m_allocator.size() * nElements;
 
-        unsigned char *address = (unsigned char *)m_allocator.alloc_raw(m_uiItemSize, nElements, xTicksRemaining);
+        unsigned char *address = (unsigned char *)m_allocator.alloc_range(nElements, xTicksRemaining);
         if(address == NULL)  return ERR_NULL;
 
         return add_memory(address, sSizeOf, xTicksRemaining);
@@ -199,12 +244,12 @@ public:
         if(preallocatedMemory == NULL) return ERR_NULL;
         unsigned char *address = (unsigned char *)preallocatedMemory;
 
-        while ((sSizeOf >= m_uiItemSize) && (xTicksRemaining <= xTicksToWait)  ) {
+        while ((sSizeOf >= m_allocator.size()) && (xTicksRemaining <= xTicksToWait)  ) {
             _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
 
             m_vChunks.push_back(new chunk_t(address) );
-            address += m_uiItemSize;
-            sSizeOf -= m_uiItemSize;
+            address += m_allocator.size();
+            sSizeOf -= m_allocator.size();
 
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
@@ -212,7 +257,7 @@ public:
             _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
         }
         
-        return ( (sSizeOf >= m_uiItemSize) ? ERR_MEMPOOL_UNKNOW : NO_ERROR );
+        return ( (sSizeOf >= m_allocator.size()) ? ERR_MEMPOOL_UNKNOW : NO_ERROR );
     }
 
     /**
@@ -235,7 +280,7 @@ public:
      */ 
     virtual unsigned long size() override {
         automutx_t lock(m_mutex); 
-        return m_uiItemSize * m_vChunks.size();
+        return m_allocator.size() * m_vChunks.size();
     }
 
     /**
@@ -350,9 +395,38 @@ public:
             chnk->theMagicGuard[1] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_END);
     }
 #endif
+protected:
+    bool calcAligentAndSize()  {
+        unsigned int acount = 0;
 
+        // Calc aligent
+        if (m_iAlignment < (int)sizeof(unsigned char *)) {
+            m_iAlignment = (int)sizeof(unsigned char *);
+        } else {
+            for (int i = 0, a = 0x1; i <= 31; i++, a <<= 1) {
+                if(i == 31) return false;
+                else if (m_iAlignment == a) {
+                    break;
+                } 
+            }
+        }
+
+        // Calc size
+        if (m_uiItemSize <= m_iAlignment)  m_uiItemSize = m_iAlignment;
+        else {
+            acount = m_uiItemSize / m_iAlignment;
+            acount += (m_uiItemSize % m_iAlignment != 0) ? 1 : 0;
+            m_uiItemSize = acount * m_iAlignment;
+        }
+        return true;   
+    }
 private:
     std::vector<chunk_t*> m_vChunks;
+    unsigned int m_uiElements;
+    unsigned int m_iAlignment;
+
+    mutex_t      m_mutex;
+    allocator_t  m_allocator;
 };
 
 

@@ -106,7 +106,19 @@
  * @brief Pre defined on which core must run the work queue task, 
  * can override in the create function
  */ 
-#define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO   
+#define MN_THREAD_CONFIG_DEFAULT_WORKQUEUE_CORE     MN_THREAD_CONFIG_CORE_TWO 
+
+
+/** 
+ * @brief For variable MN_THREAD_CONFIG_ALLOCATOR_DEFAULT, with this use 
+ * the normel system as defualt allocator
+ */ 
+#define MN_THREAD_CONFIG_ALLOCATOR_SYSTEM          1
+/** 
+ * @brief For variable MN_THREAD_CONFIG_ALLOCATOR_DEFAULT, with this use 
+ * the spiram system as defualt allocator
+ */
+#define MN_THREAD_CONFIG_ALLOCATOR_SPIRAM          2
 
 //Start Config section
 //==================================
@@ -393,6 +405,14 @@
      * and If false then basic_mempool_%name%
      */
     #define MN_THREAD_CONFIG_MEMPOOL_USETIMED     MN_THREAD_CONFIG_YES
+#endif
+
+#ifndef MN_THREAD_CONFIG_ALLOCATOR_DEFAULT
+    /**
+     * Which allocator use for default_allocator_t
+     * default: MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
+     */ 
+    #define MN_THREAD_CONFIG_ALLOCATOR_DEFAULT        MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
 #endif
 
 

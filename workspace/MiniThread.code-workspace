@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../examples"
+		},
+		{
+			"path": "../test-ccc"
 		}
 	],
 	"settings": {

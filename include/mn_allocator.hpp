@@ -20,12 +20,42 @@
 #define _MINLIB_ALLOCATOR_H_
 
 #include "mn_allocator_system.hpp"
-#include "mn_allocator_psram.hpp"
-
-template <typename T> using allocator_system_t = basic_allocator_system<T>;
-template <typename T> using allocator_spiram_t = basic_allocator_spiram<T>;
-
-template <typename T> using default_allocator_t = allocator_system_t<T>;
 
 
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
+        #include "mn_allocator_caps.hpp"
+        
+        template <typename T>
+        using allocator_internal_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::Internal, cap_allocator_size::Size8Bit>;
+
+        template <typename T>
+        using allocator_psram_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::SpiRam, cap_allocator_size::Size8Bit>;
+
+
+        template <typename T>
+        using allocator_internal32_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::Internal, cap_allocator_size::Size32Bit>;
+
+        template <typename T>
+        using allocator_psram32_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::SpiRam, cap_allocator_size::Size32Bit>;
+        #endif
+
+        template <typename T>
+        using allocator_internal_dma_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
+
+        template <typename T>
+        using allocator_psram_dma_esp32_t = 
+            basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
+        #endif
+#endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
+
+
+#if MN_THREAD_CONFIG_ALLOCATOR_DEFAULT == MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
+    template <typename T> using default_allocator_t = basic_allocator_system<T>;
+#else
+    template <typename T> using default_allocator_t = basic_cap_allocator_esp32<T>;
 #endif
