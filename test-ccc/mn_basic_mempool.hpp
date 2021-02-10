@@ -21,15 +21,32 @@
 
 #include <malloc.h>
 #include <iostream>
-#include "mn_autolock.hpp"
-#include "mn_allocator.hpp"
 #include <string.h>
 #include <vector>
 
-#define _MEMPOOL_CLASS_LOCK(Mutex, xTicksRemaining) if(Mutex.lock(xTicksRemaining) != NO_ERROR) break;
-#define _MEMPOOL_CLASS_UNLOCK(Mutex) Mutex->unlock();
-#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) Mutex->unlock(); break;
+#include "mn_allocator.hpp"
 
+#define _MEMPOOL_CLASS_LOCK(Mutex, xTicksRemaining) ;
+#define _MEMPOOL_CLASS_UNLOCK(Mutex) ;
+#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex)  break;
+
+#include "mn_config.hpp"
+#include "mn_error.hpp"
+
+using TickType_t = unsigned long;
+
+int tick = 0;
+
+inline TickType_t xTaskGetTickCount() {
+    return tick++;
+}
+
+#define ERR_MEMPOOL_UNKNOW 100
+
+const unsigned long portMAX_DELAY=0xfffffffffUL;
+
+#undef MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC
+#define MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC 1
 /**
  * A very extendeble mempool for debug and more (timed version)
  * 
@@ -96,7 +113,7 @@ public:
         size_t sSizeOf = m_allocator.calloc(m_uiElements, &address, xTicksToWait);
         if(address == NULL)  return ERR_NULL;
 
-        _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
+        //_MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
         for(int i = 0; i < sSizeOf; i++) {
             m_vChunks.push_back(new chunk_t( &address[i] ) );
         }
@@ -106,7 +123,7 @@ public:
     }
 
     virtual bool add_memory(unsigned int elements) {
-        automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/ 
 
         TType *address;
         size_t _oldEle = m_uiElements;
@@ -123,7 +140,7 @@ public:
         return _oldEle < m_uiElements;
     }
     virtual int add_memory(TType** address, size_t sSizeOf) {
-       automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/ 
 
         if(address == NULL)  return false;
         size_t _oldEle = m_uiElements;
@@ -154,7 +171,7 @@ public:
         type_t* buffer = nullptr;
 
         for(auto it = m_vChunks.begin(); 
-            (it != m_vChunks.end() && (xTicksRemaining <= xTicksToWait) )); it++) {
+            (it != m_vChunks.end() /* && (xTicksRemaining <= xTicksToWait) ) */); it++) {
 
             _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
             {
@@ -229,7 +246,7 @@ public:
      * @return The number of chunks in the mempool
      */ 
     unsigned int size() {
-       automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/ 
         return m_vChunks.size(); 
     }
     /**
@@ -250,7 +267,7 @@ public:
      * @return The number of elements / chunks are marked as free
      */ 
     unsigned int get_free() {
-       automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/ 
         unsigned int _ret = 0;
 
         for(auto it = m_vChunks.begin(); (it != m_vChunks.end()) ; it++ ) {
@@ -264,7 +281,7 @@ public:
      * @return The number of elements / chunks are marked as blocked
      */ 
     unsigned int get_blocked() {
-       automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/ 
         unsigned int _ret = 0;
 
         for(auto it = m_vChunks.begin(); (it != m_vChunks.end()) ; it++ ) {
@@ -318,7 +335,7 @@ public:
      * @return The state of the chunk
      */ 
     chunk_state get_state(const int id) {
-        automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/
         return (id < size) ?  m_vChunks.at(id)->state : chunk_state::NotHandle;
     }
 
@@ -329,7 +346,7 @@ public:
      * @return The chunk from a given chunk id
      */ 
     chunk_t* get_chunk(const int id) {
-        automutx_t lock(m_mutex);
+        /*automutx_t lock(m_mutex);*/
         return (id < m_vChunks.size()) ? m_vChunks.at(id) : NULL;
     }
     std::vector<chunk_t*> get_chunks() {
@@ -387,7 +404,7 @@ private:
     std::vector<chunk_t*> m_vChunks;
     unsigned int m_uiElements;
 
-    mutex_t      m_mutex;
+    //mutex_t      m_mutex;
     allocator_t  m_allocator;
 };
 

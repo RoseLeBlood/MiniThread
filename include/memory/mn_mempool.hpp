@@ -26,15 +26,15 @@
 #include "mn_basic_mempool.hpp"
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-template <typename TType>
-using basic_mempool_spiram_t = basic_mempool_vector<TType, basic_allocator_spiram <TType> >;
+template <typename TType, int nElements>
+using basic_mempool_spiram_t = basic_mempool_vector<TType, nElements, basic_allocator_spiram <TType> >;
 #endif
 
-template <typename TType>
-using basic_mempool_system_t = basic_mempool_vector<TType, basic_allocator_system <TType> >;
+template <typename TType, int nElements>
+using basic_mempool_system_t = basic_mempool_vector<TType, nElements, basic_allocator_system <TType> >;
 
-template <typename TType>
-using basic_mempool_t = basic_mempool_system_t<TType>;
+template <typename TType, int nElements>
+using basic_mempool_t = basic_mempool_system_t<TType, nElements>;
 
 
 #endif

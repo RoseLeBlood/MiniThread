@@ -31,7 +31,7 @@ class basic_allocator_stack {
 public:
     explicit basic_allocator_stack() : m_bufferTop(0), m_sSize(sizeof(T)) { }
 
-    bool create(size_t nElements = 0) { return true; }
+    bool create(size_t unused = 0) { return true; }
 
     T* alloc(unsigned int xTime) {
        if(is_empty()) return NULL;

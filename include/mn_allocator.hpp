@@ -23,12 +23,13 @@
 #include "mn_allocator_stack.hpp"
 #include "mn_allocator_buffer.hpp"
 
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-        #include "mn_allocator_caps.hpp"
-        
+#include "mn_allocator_caps.hpp"
+#include "mn_allactor_multiheap.hpp"
+
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32     
         template <typename T>
         using allocator_internal_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::Internal, cap_allocator_size::Size8Bit>;
+            basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
 
         template <typename T>
         using allocator_psram_esp32_t = 
@@ -37,7 +38,7 @@
 
         template <typename T>
         using allocator_internal32_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::Internal, cap_allocator_size::Size32Bit>;
+            basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size32Bit>;
 
         template <typename T>
         using allocator_psram32_esp32_t = 
@@ -66,3 +67,8 @@ using allocator_stack_t = basic_allocator_stack<T, TBytes>;
 template<typename T> 
 using allocator_buffer_t = basic_allocator_buffer<T, default_allocator_t<T> >;
 
+
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32  
+    template<typename T> 
+    using multiheap_allocator_esp32_t = basic_multiheap_allocator_esp32<T, default_allocator_t<T>>;
+#endif
