@@ -61,10 +61,10 @@ public:
      * @param [in] maxSize The max size to alloc with this allocator. 
      * @note When maxSize 0 is then use all 
      */ 
-    bool create(size_t nElements = 0) { 
+    bool create(size_t maxSize = 0) { 
         m_sAlloced = 0;
         m_sSize = sizeof(T);
-        m_sMaxSize = nElements;
+        m_sMaxSize = maxSize;
 
         if((int)(TCAPS) == MALLOC_CAP_SPIRAM ) {
             return intarnal_create_spi_ram();

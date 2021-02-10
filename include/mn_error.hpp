@@ -244,6 +244,7 @@
 #define ERR_MEMPOOL_OK                    NO_ERROR
 #define ERR_MEMPOOL_BADALIGNMENT          0x8003
 #define ERR_MEMPOOL_CREATE                0x8004
+#define ERR_MEMPOOL_MIN                   0x8005
 
 #define ERR_TICKHOOK_OK                   NO_ERROR
 #define ERR_TICKHOOK_ADD                  0x9001 

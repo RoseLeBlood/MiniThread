@@ -70,7 +70,7 @@ public:
     }
 
     bool create(size_t nElements = 0) { 
-        if(nElements != 0 && m_buffer == NULL) {
+        if(m_buffer == NULL) {
             return internal_create(nElements);
         }
         return m_buffer != NULL; 
@@ -115,6 +115,8 @@ public:
     basic_allocator_buffer& operator=(const basic_allocator_buffer&) = delete;
 private:
     bool internal_create(size_t nElements = 0) {
+        if(nElements == 0) nElements = 200;
+        
         TALLOC __alloc; __alloc.create(nElements*2);
         m_BufferSize = __alloc.calloc(nElements, &m_buffer, 200);
         return m_buffer != NULL;

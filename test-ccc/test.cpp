@@ -23,6 +23,8 @@ int main() {
 void test_pool() {
     // test_alloc();
     basic_mempool_vector<alloc_test, 20> pool;
+    basic_mempool_vector<alloc_test, 20>::vector_t chunks;
+
     pool.create(2000);
     pool.set_blocked(3, true, 300);
 
@@ -37,8 +39,8 @@ void test_pool() {
     std::cout << "U: " << used << " B: " << blocked << " F: " << free << std::endl;
     std::cout << "R: " << max << " S: " << pool.size() << std::endl;
 
-    auto chunk = pool.get_chunks(); int i = 0;
-    for(auto it = chunk.begin(); it != chunk.end(); it++, i++) {
+    chunks = pool.get_chunks(); int i = 0;
+    for(auto it = chunks.begin(); it != chunks.end(); it++, i++) {
         std::cout << "-------" << i <<"-------" << std::endl;
         pool.print_chunk(*it);
     }

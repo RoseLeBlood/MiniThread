@@ -1,5 +1,5 @@
 /*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+* This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  

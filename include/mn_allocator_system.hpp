@@ -19,18 +19,16 @@
 #define _MINLIB_ALLOCATOR_SYSTEM_H_
 
 #include <assert.h>
-
 template <typename T>
 class basic_allocator_system {
 public:
     /**
      * Create the allocator
-     * @param [in] nElements The max elements are allocated with this allocater
+     * @param [in] sMaxSize The max elements are allocated with this allocater
      */ 
-    bool create(size_t nElements = 0xffffffffffL)  { 
-        m_sMaxSize = (nElements == 0) ? 0xffffffffffL : nElements;
+    bool create(size_t sMaxSize = 0)  { 
+        m_sMaxSize = sMaxSize;
         m_sAlloced = 0;
-        m_sSize = sizeof(T);
         return true; 
     }
     
@@ -49,17 +47,20 @@ public:
     /**
      * Allocate n elements of SIZE bytes each, all initialized to 0. 
      * @return A pointer of the allocated ram
-     */
+     */ 
     size_t calloc(size_t n, T** buf, unsigned int xTime) {
         if(is_empty() ) {  buf = NULL; return 0; }
 
         size_t size = n;
-        if(m_sMaxSize < size) size = get_free();
 
+        if(m_sMaxSize != 0) {
+            if(m_sMaxSize < size) size = get_free();
+        }
         *buf = (T*)::calloc(size, sizeof(T));
+
         assert(buf != NULL);
         m_sAlloced += size; 
-        
+       
         return size;
     }
     /**
@@ -67,7 +68,6 @@ public:
      */ 
     void free(T* mem, unsigned int xTime) {
         if(mem == NULL) return;
-        
         ::free(mem); 
         m_sAlloced--;
     }
@@ -76,20 +76,19 @@ public:
      * Get the size of free bytes
      * @return The size of free bytes
      */ 
-    unsigned long get_free()        { return m_sMaxSize - m_sAlloced; }
+    unsigned long get_free()        { return (m_sMaxSize != 0) ? m_sMaxSize - m_sAlloced : __LONG_MAX__; }
     unsigned long get_allocated()   { return m_sAlloced; }
-    unsigned long get_max()         { return m_sMaxSize; }
+    unsigned long get_max()         { return (m_sMaxSize != 0) ? m_sMaxSize : __LONG_MAX__; }
 
     size_t size()                   { return m_sSize; } ///<Get the size of T
     void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
 
-    bool is_empty()                 { return get_free() == 0;  }
+    bool is_empty()                 { return (m_sMaxSize != 0) ? get_free() == 0 : false;  }
 private:
    size_t m_sMaxSize;
    size_t m_sAlloced;
    size_t m_sSize;
 };
-
 
 
 #endif

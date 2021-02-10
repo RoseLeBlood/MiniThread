@@ -1,0 +1,18 @@
+In Datei, eingebunden von test.cpp:5:
+mn_basic_mempool.hpp:273:42: Fehler: ISO-C++ verbietet Deklaration von »get« ohne Typ [-fpermissive]
+  273 |     template<vmempool_chunk_state state> get() {
+      |                                          ^~~
+mn_basic_mempool.hpp:326:5: Fehler: »chunk_state« bezeichnet keinen Typ; meinten Sie »chunk_t«?
+  326 |     chunk_state get_state(const int id) {
+      |     ^~~~~~~~~~~
+      |     chunk_t
+mn_basic_mempool.hpp: In Elementfunktion »virtual bool basic_mempool_vector<TType, nElements, TALLOCATOR>::free(basic_mempool_vector<TType, nElements, TALLOCATOR>::type_t*, bool*, unsigned int)«:
+mn_basic_mempool.hpp:235:32: Fehler: »chunk_state« wurde nicht deklariert
+  235 |                 entry->state = chunk_state::Free;
+      |                                ^~~~~~~~~~~
+mn_basic_mempool.hpp: In Elementfunktion »basic_mempool_vector<TType, nElements, TALLOCATOR>::type_t* basic_mempool_vector<TType, nElements, TALLOCATOR>::allocate(unsigned int) [mit TType = alloc_test; int nElements = 20; TALLOCATOR = basic_allocator_system<alloc_test>; basic_mempool_vector<TType, nElements, TALLOCATOR>::type_t = alloc_test]«:
+mn_basic_mempool.hpp:170:58: Warnung: Umwandlung von »long unsigned int« in »unsigned int« ändert Wert von »68719476735« nach »4294967295« [-Woverflow]
+  170 |     virtual type_t* allocate(unsigned int xTicksToWait = portMAX_DELAY) {
+      |                                                          ^~~~~~~~~~~~~
+mn_basic_mempool.hpp: In Funktion »void test_pool()«:
+mn_basic_mempool.hpp:170:58: Warnung: Umwandlung von »long unsigned int« in »unsigned int« ändert Wert von »68719476735« nach »4294967295« [-Woverflow]
