@@ -45,3 +45,6 @@ update pio.sh
 sdkconfig
 CMakeLists
 mnThread.code-workspace
+
+test-ccc/
+test-ccc/*
