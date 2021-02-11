@@ -24,17 +24,28 @@
 
 #include "../mn_allocator.hpp"
 #include "mn_basic_mempool.hpp"
+#include "mn_allocator_mempool.hpp"
 
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-template <typename TType, int nElements>
-using basic_mempool_spiram_t = basic_mempool_vector<TType, nElements, basic_allocator_spiram <TType> >;
-#endif
+namespace mn {
+    namespace memory {
+        
+    #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
+        template <typename TType, int nElements>
+        using basic_mempool_spiram_t = basic_mempool_vector<TType, nElements, basic_allocator_spiram <TType> >;
+    #endif
 
-template <typename TType, int nElements>
-using basic_mempool_system_t = basic_mempool_vector<TType, nElements, basic_allocator_system <TType> >;
+        template <typename TType, int nElements>
+        using basic_mempool_system_t = basic_mempool_vector<TType, nElements, basic_allocator_system <TType> >;
 
-template <typename TType, int nElements>
-using basic_mempool_t = basic_mempool_system_t<TType, nElements>;
+        template <typename TType, int nElements>
+        using basic_mempool_t = basic_mempool_system_t<TType, nElements>;
+
+
+        template<typename T, int nElements > 
+        using  basic_mempool_allocator_t = basic_allocator_mempool<T, ::basic_mempool_t<T, nElements> >;
+    }
+}
+
 
 
 #endif
