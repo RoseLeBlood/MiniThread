@@ -18,6 +18,8 @@
 
 #include "utils/mn_random.hpp"
 
+using namespace nm;
+
 #define NM_THREAD_CONFIG_RANDOM_LFSR_PM32 0xB4BCD35C
 #define NM_THREAD_CONFIG_RANDOM_LFSR_PM31 0x7A5BC2E3
 

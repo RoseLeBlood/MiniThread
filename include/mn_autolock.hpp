@@ -21,6 +21,7 @@
 #include "mn_config.hpp"
 #include "mn_mutex.hpp"
 #include "mn_semaphore.hpp"
+#include "mn_null_lock.hpp"
 
 /**
  * Macro for locked sections

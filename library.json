@@ -1,11 +1,11 @@
 {
     "name": "mini Thread",
-    "keywords": ["esp32", "thread", "mutex", "queue", "convar", "group", "signal", "workqueue"],
-    "description": "Mini Thread is a library for creating secure threads for the esp32 microcontroller.  With variable condition support if required. And many other useful wrappers for the esp32 - mutex, semaphores and workqueues and etc",
+    "keywords": ["esp32", "task", "mutex", "queue", "convar", "c++", "mempool", "stl"],
+    "description": "Mini Thread is a library for creating easy tasks and other useful thinks for the esp32 microcontroller",
     "authors":
     {
         "name": "RoseLeBlood",
-		"email": "ambersophia.schroeck@outlook.com",
+		"email": "ambersophia.schroeck@to.com",
 		"maintainer": true
     },
     "repository": 
@@ -13,8 +13,40 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "1.95.5",
+    "version": "2.0.3",
     "frameworks": "espidf",
     "platforms": "espressif32",
-    "homepage": "https://roseleblood.github.io/mnthread-docs/index.html"
+    "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
+    "examples": [
+        {
+            "name": "empty",
+            "base": "examples/empty",
+            "files": [ "src/empty-project.cpp" ]
+        },
+        {
+            "name": "simple-mutex",
+            "base": "examples/simple-mutex",
+            "files": [ "src/simple-mutex.cpp" ]
+        },
+        {
+            "name": "simple-task",
+            "base": "examples/simple-task",
+            "files": [ "src/simple-task.cpp" ]
+        },
+        {
+            "name": "simple-tasklet",
+            "base": "examples/simple-tasklet",
+            "files": [ "src/simple-tasklet.cpp" ]
+        },
+        {
+            "name": "simple-timer",
+            "base": "examples/simple-timer",
+            "files": [ "src/simple-timer.cpp" ]
+        },
+        {
+            "name": "mempool",
+            "base": "examples/mempool",
+            "files": [ "src/mempool.cpp" ]
+        }
+    ]
 }
