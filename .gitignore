@@ -48,3 +48,5 @@ mnThread.code-workspace
 
 test-ccc/
 test-ccc/*
+
+preBuild
