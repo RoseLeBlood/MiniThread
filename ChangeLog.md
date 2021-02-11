@@ -1,6 +1,12 @@
 # Changelog
-## Version 2.0.2 Januar 2021
+## Version 2.0.4 Januar 2021
 + add staked, buffered allocator
++ add allocator, mempool and stack to mn::memory namespace
++ add allocator with mempool backend
++ start add aSTL template classes to this library, aSTL a other lightwidgt STL 
+  In the future are replace all vector, list, map etc. with aSTL version 
+  + add auto_ptr, weak_ptr, skoped_ptr, clone_ptr, save_ptr, shared_ptr to library
+
   
 ## Version 2.0.1 Januar 2021
 + rename tasklet function create to schedule - (DE: Mein fehler - misverständnis)
