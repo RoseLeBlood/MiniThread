@@ -24,17 +24,22 @@
 
 #include "trace/mn_item.hpp"
 
-basic_trace_item::time basic_trace_item::get_time() {
-    time_t rawtime = ::time(NULL);
-    struct tm* _time = localtime (&rawtime);
+namespace mn {
+    namespace trace {
 
-    basic_trace_item::time _retTime;
+        basic_trace_item::time basic_trace_item::get_time() {
+            time_t rawtime = ::time(NULL);
+            struct tm* _time = localtime (&rawtime);
 
-    _retTime.sec = _time->tm_sec;
-    _retTime.min = _time->tm_min;
-    _retTime.hour = _time->tm_hour;
-    _retTime.ticks = xTaskGetTickCount();
+            basic_trace_item::time _retTime;
 
-    return _retTime;
+            _retTime.sec = _time->tm_sec;
+            _retTime.min = _time->tm_min;
+            _retTime.hour = _time->tm_hour;
+            _retTime.ticks = xTaskGetTickCount();
+
+            return _retTime;
+        }
+    }
 }
 #endif

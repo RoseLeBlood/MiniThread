@@ -59,7 +59,7 @@
 #endif
 
 namespace mn {
-    void mn_panic();
+    void panic();
 }
 
 #endif

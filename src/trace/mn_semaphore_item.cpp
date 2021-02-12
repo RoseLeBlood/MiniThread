@@ -26,13 +26,17 @@
 
 #include <string>
 
-const char* semaphore_trace_item::message() {
-    std::string _retString;
+namespace mn {
+    namespace trace {
+        const char* semaphore_trace_item::message() {
+            std::string _retString;
 
-    _retString += std::to_string( (uint32_t)m_pObject) + ":" + m_strName + ":" 
-        + std::to_string( (uint32_t)m_State) + ";";
+            _retString += std::to_string( (uint32_t)m_pObject) + ":" + m_strName + ":" 
+                + std::to_string( (uint32_t)m_State) + ";";
 
-    return _retString.c_str();
+            return _retString.c_str();
+        }
+    }
 }
 
 #endif

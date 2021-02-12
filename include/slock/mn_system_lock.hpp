@@ -34,7 +34,7 @@ namespace mn {
          * @ingroup Interface
          * @ingroup lock
          */ 
-        class ISystemLockObject : public ILockObject {
+        class ISystemLockObject : public ::mn::ILockObject {
         public:
             /**
              * call lock() 

@@ -23,41 +23,42 @@
 #include <exception>
 #include <string>
 
-/**
- * Lock creating exception
- * 
- * @ingroup lock
- */ 
-class lockcreate_exception : public std::exception {
-public:
-    /**
-     * Constructor for normal use
-     * 
-     * @param code The error code on creating the lock object
-     */ 
-    lockcreate_exception(int code);
-    /**
-     * Constructor for debugging
-     * 
-     * @param code The error code on creating the lock object
-     * @param line The line in the source code, where the given error code throwed
-     * @param file The file name where the given error code throwed
-     */ 
-    lockcreate_exception(int code, int line, const char* file);
+namespace mn {
+  /**
+   * Lock creating exception
+   * 
+   * @ingroup lock
+   */ 
+  class lockcreate_exception : public std::exception {
+  public:
+      /**
+       * Constructor for normal use
+       * 
+       * @param code The error code on creating the lock object
+       */ 
+      lockcreate_exception(int code);
+      /**
+       * Constructor for debugging
+       * 
+       * @param code The error code on creating the lock object
+       * @param line The line in the source code, where the given error code throwed
+       * @param file The file name where the given error code throwed
+       */ 
+      lockcreate_exception(int code, int line, const char* file);
 
-    /** 
-     * Returns a C-style character string describing the general cause
-     * of the current error.  
-     * 
-     * @return The C-style character string describing the general cause
-     * of the current error.
-     */
-    virtual std::string to_string();
-private:
-  int m_iCode;
-  int m_iLine;
-  const char* m_strFile;
-};
-
+      /** 
+       * Returns a C-style character string describing the general cause
+       * of the current error.  
+       * 
+       * @return The C-style character string describing the general cause
+       * of the current error.
+       */
+      virtual std::string to_string();
+  private:
+    int m_iCode;
+    int m_iLine;
+    const char* m_strFile;
+  };
+}
 
 #endif //MINLIB_ESP32_LOCK_EXCEPTION_

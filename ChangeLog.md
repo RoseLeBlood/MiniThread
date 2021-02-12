@@ -6,6 +6,16 @@
 + start add aSTL template classes to this library, aSTL a other lightwidgt STL 
   In the future are replace all vector, list, map etc. with aSTL version 
   + add auto_ptr, weak_ptr, skoped_ptr, clone_ptr, save_ptr, shared_ptr to library
++ added namespaces:
+  + slock -> mn::system
+  + mempool, allocator and deleter -> mn::memory
+  + foregin_task, convar system, msg task -> mn::ext
+  + trace -> mn::trace
+  + all other -> mn
++ rename:
+  + func: mn_sleep, mn_usleep and mn_nsleep rename to sleep, nsleep and usleeep
+  + func: mn_panic to panic
+  + class: libmnversion to version
 
   
 ## Version 2.0.1 Januar 2021
