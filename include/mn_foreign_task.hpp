@@ -22,78 +22,81 @@
 
 #if MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT == MN_THREAD_CONFIG_YES
 
-/**
- * Get the idle task for the current CPU.
- */ 
-#define FT_IDLE_TASK            foreign_task::get_idle_task()
-/**
- * Get the idle task for the given CPU.
- */ 
-#define FT_IDLE_TASK_ON(CPUID)  foreign_task::get_idle_task(CPUID)
+namespace mn {
+    namespace ext {
+      /**
+       * Get the idle task for the current CPU.
+       */ 
+      #define FT_IDLE_TASK            foreign_task::get_idle_task()
+      /**
+       * Get the idle task for the given CPU.
+       */ 
+      #define FT_IDLE_TASK_ON(CPUID)  foreign_task::get_idle_task(CPUID)
 
-/**
- * Wrapper class around FreeRTOS's implementation of a task, 
- * for foreign miniThread Task 
- * 
- * @note using foreign_task::create_from to create all using LockObjects 
- * objects
- * 
- * @ingroup task
- */
-class foreign_task : public basic_task {
-private: 
-  /**
-   * Constructor - the current thread
-   */ 
-  foreign_task();
-  /**
-   * Constructor - from a FreeRTOS handle
-   */ 
-  foreign_task(void* t);
-public:
-  /**
-   *  Override - do nothings
-   */ 
-  int                   start(int uiCore = -1) { return 0; }
-public:
-  /**
-   * Get the foreign_task of idle task for the current CPU.
-   *
-   * @return The foreign_task of the idle task.
-   */
-  static foreign_task* get_idle_task();
-  /**
-   * Get the foreign_task of idle task for the given CPU.
-   * 
-   * @param cpuid The CPU to get the foreign_task for
-   *
-   * @return Idle foreign_task of a given cpu.
-   */
-  static foreign_task* get_idle_task(UBaseType_t cpuid);
+      /**
+       * Wrapper class around FreeRTOS's implementation of a task, 
+       * for foreign miniThread Task 
+       * 
+       * @note using foreign_task::create_from to create all using LockObjects 
+       * objects
+       * 
+       * @ingroup task
+       */
+      class foreign_task : public basic_task {
+      private: 
+        /**
+         * Constructor - the current thread
+         */ 
+        foreign_task();
+        /**
+         * Constructor - from a FreeRTOS handle
+         */ 
+        foreign_task(void* t);
+      public:
+        /**
+         *  Override - do nothings
+         */ 
+        int                   start(int uiCore = -1) { return 0; }
+      public:
+        /**
+         * Get the foreign_task of idle task for the current CPU.
+         *
+         * @return The foreign_task of the idle task.
+         */
+        static foreign_task* get_idle_task();
+        /**
+         * Get the foreign_task of idle task for the given CPU.
+         * 
+         * @param cpuid The CPU to get the foreign_task for
+         *
+         * @return Idle foreign_task of a given cpu.
+         */
+        static foreign_task* get_idle_task(UBaseType_t cpuid);
 
-  /**
-   * Helper function to create a foreign_task from a FreeRTOS handle
-   * 
-   * @param foreign_handle The FreeRTOS handle
-   * @param ret_error optional pointer for creating error code
-   */ 
-  static foreign_task* create_from(void* foreign_handle, int* ret_error = NULL);
-protected:
-  /**
-   * Override - Do nothings and never call
-   * @return NULL
-   */
-  void*         on_task() { return NULL; }
-private:
-  /**
-   * Internal functions to create all usings locktypes
-   * its call from create_from
-   */ 
-  int           __internal_create_usings_types();
-};
+        /**
+         * Helper function to create a foreign_task from a FreeRTOS handle
+         * 
+         * @param foreign_handle The FreeRTOS handle
+         * @param ret_error optional pointer for creating error code
+         */ 
+        static foreign_task* create_from(void* foreign_handle, int* ret_error = NULL);
+      protected:
+        /**
+         * Override - Do nothings and never call
+         * @return NULL
+         */
+        void*         on_task() { return NULL; }
+      private:
+        /**
+         * Internal functions to create all usings locktypes
+         * its call from create_from
+         */ 
+        int           __internal_create_usings_types();
+      };
 
-using foreign_task_t = foreign_task;
-
+      using foreign_task_t = foreign_task;
+    }
+}
 #endif
 
 #endif

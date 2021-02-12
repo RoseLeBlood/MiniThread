@@ -25,96 +25,101 @@
 #include <string.h>
 #include <unistd.h>
 
-basic_esp32_timer::basic_esp32_timer(const char * strName, unsigned int uiPeriod, bool bIsOneShot) {
-    m_bIsOneShot = bIsOneShot;
-    m_uiPeriod = uiPeriod;
-    m_strName = strName;
-    m_bIsInit = false;
-    m_bIsRunning = false;
-}
-int basic_esp32_timer::create() {
-    if(m_bIsInit) return ERR_TIMER_ALREADYINIT;
+namespace mn {
+    namespace esp32 {
+        
+        basic_esp32_timer::basic_esp32_timer(const char * strName, unsigned int uiPeriod, bool bIsOneShot) {
+            m_bIsOneShot = bIsOneShot;
+            m_uiPeriod = uiPeriod;
+            m_strName = strName;
+            m_bIsInit = false;
+            m_bIsRunning = false;
+        }
+        int basic_esp32_timer::create() {
+            if(m_bIsInit) return ERR_TIMER_ALREADYINIT;
 
-    m_timerArgs = {
-            .callback = &runtimerstub,
-            .name = m_strName,
-            .arg = (void*) this,
-    };
+            m_timerArgs = {
+                    .callback = &runtimerstub,
+                    .name = m_strName,
+                    .arg = (void*) this,
+            };
 
-    if(esp_timer_create(&m_timerArgs, &m_pHandle) != ESP_OK) return ERR_TIMER_CANTCREATE;
+            if(esp_timer_create(&m_timerArgs, &m_pHandle) != ESP_OK) return ERR_TIMER_CANTCREATE;
 
-    m_bIsInit = true;
+            m_bIsInit = true;
 
-    return ERR_TIMER_OK;
-}  
-int basic_esp32_timer::destroy(unsigned int timeout) {
-    if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            return ERR_TIMER_OK;
+        }  
+        int basic_esp32_timer::destroy(unsigned int timeout) {
+            if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
-    if(m_bIsRunning) {
-        if(esp_timer_stop(periodic_timer) != ESP_OK) 
-            return ERR_TIMER_INAKTIVATE;
-    }
-    if(esp_timer_delete(periodic_timer) != ESP_OK) 
-        return ERR_UNKN;
+            if(m_bIsRunning) {
+                if(esp_timer_stop(periodic_timer) != ESP_OK) 
+                    return ERR_TIMER_INAKTIVATE;
+            }
+            if(esp_timer_delete(periodic_timer) != ESP_OK) 
+                return ERR_UNKN;
 
-    return ERR_TIMER_OK; //
-} 
-int basic_esp32_timer::active(unsigned int timeout) {
-    if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            return ERR_TIMER_OK; //
+        } 
+        int basic_esp32_timer::active(unsigned int timeout) {
+            if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
-    if(m_bIsRunning) {
-        if(!bIsOneShot)
-            if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) 
-                return ERR_TIMER_AKTIVATE;
-        else
-            if(esp_timer_start_once(m_pHandle, m_uiPeriod)  != ESP_OK) 
-                return ERR_TIMER_AKTIVATE;
+            if(m_bIsRunning) {
+                if(!bIsOneShot)
+                    if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) 
+                        return ERR_TIMER_AKTIVATE;
+                else
+                    if(esp_timer_start_once(m_pHandle, m_uiPeriod)  != ESP_OK) 
+                        return ERR_TIMER_AKTIVATE;
 
-        m_bIsRunning = true;
-    }
+                m_bIsRunning = true;
+            }
 
-    return ERR_TIMER_OK;
-}
-int basic_esp32_timer::inactive(unsigned int timeout) {
-    if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            return ERR_TIMER_OK;
+        }
+        int basic_esp32_timer::inactive(unsigned int timeout) {
+            if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
-    if(!m_bIsRunning) {
-        if(esp_timer_stop(m_pHandle) != ESP_OK) return ERR_TIMER_INAKTIVATE;
-        m_bIsRunning = false;
-    }
-    return ERR_TIMER_OK;
-}
-int basic_esp32_timer::reset(unsigned int timeout) {
-    if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            if(!m_bIsRunning) {
+                if(esp_timer_stop(m_pHandle) != ESP_OK) return ERR_TIMER_INAKTIVATE;
+                m_bIsRunning = false;
+            }
+            return ERR_TIMER_OK;
+        }
+        int basic_esp32_timer::reset(unsigned int timeout) {
+            if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
-    if(esp_timer_stop(m_pHandle) != ESP_OK) return ERR_TIMER_INAKTIVATE;
-    if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) return ERR_TIMER_RESET;
+            if(esp_timer_stop(m_pHandle) != ESP_OK) return ERR_TIMER_INAKTIVATE;
+            if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) return ERR_TIMER_RESET;
 
-    return ERR_TIMER_OK;
-}
-bool basic_esp32_timer::set_period(unsigned int uiNewPeriod, unsigned int timeout) {
-    if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            return ERR_TIMER_OK;
+        }
+        bool basic_esp32_timer::set_period(unsigned int uiNewPeriod, unsigned int timeout) {
+            if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
-    if(esp_timer_stop(m_pHandle) != ESP_OK) return false;
-    if(esp_timer_start_periodic(m_pHandle, uiNewPeriod) != ESP_OK) return false;
+            if(esp_timer_stop(m_pHandle) != ESP_OK) return false;
+            if(esp_timer_start_periodic(m_pHandle, uiNewPeriod) != ESP_OK) return false;
 
-    m_uiPeriod = uiNewPeriod;
+            m_uiPeriod = uiNewPeriod;
 
-    return true;
-}
-void*  basic_esp32_timer::get_handle() {
-    return (void*)m_pHandle;
-}
+            return true;
+        }
+        void*  basic_esp32_timer::get_handle() {
+            return (void*)m_pHandle;
+        }
 
-void basic_esp32_timer::runtimerstub(void* xTimer) {
-    basic_esp32_timer* timer = (basic_esp32_timer*)xTimer;
+        void basic_esp32_timer::runtimerstub(void* xTimer) {
+            basic_esp32_timer* timer = (basic_esp32_timer*)xTimer;
 
-    if(timer) {
-        timer->on_enter();
-        timer->on_timer();
-        timer->on_exit();
+            if(timer) {
+                timer->on_enter();
+                timer->on_timer();
+                timer->on_exit();
 
-        if(timer->m_bIsOneShot) 
-            timer->m_bIsRunning = false;
+                if(timer->m_bIsOneShot) 
+                    timer->m_bIsRunning = false;
+            }
+        }
     }
 }

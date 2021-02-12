@@ -19,15 +19,16 @@
 #include "mn_schedular.hpp"
 
 
+namespace mn {
+    int basic_schedular::start() {
+        return (xPortStartScheduler() == pdTRUE) ? NO_ERROR : ERR_UNKN;
+    }
+    void basic_schedular::stop() {
+    #if MN_THREAD_CONFIG_BOARD == MN_THREAD_CONFIG_ESP32
 
-int basic_schedular::start() {
-    return (xPortStartScheduler() == pdTRUE) ? NO_ERROR : ERR_UNKN;
-}
-void basic_schedular::stop() {
-#if MN_THREAD_CONFIG_BOARD == MN_THREAD_CONFIG_ESP32
-
-#else
-    vPortEndScheduler();
-#endif
+    #else
+        vPortEndScheduler();
+    #endif
+    }
 }
 

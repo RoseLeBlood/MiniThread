@@ -19,26 +19,23 @@
 #define _MINLIB_ASTL_DELETER_H_
 
 namespace mn {
+    namespace memory {
+        template<typename T>
+        struct default_delete {
+            constexpr default_delete() = default;
+            constexpr default_delete(const default_delete&) {}
 
-    template<typename T>
-    struct default_delete {
-        constexpr default_delete() = default;
-        constexpr default_delete(const default_delete&) {}
+            void operator()(T* ptr) const { if(ptr != 0); delete ptr; }
+        };
+        
+        template<typename T[] >
+        struct default_delete {
+            constexpr default_delete() = default;
+            constexpr default_delete(const default_delete&) {}
 
-        void operator()(T* ptr) const { if(ptr != 0); delete ptr; }
-    };
-    
-    template<typename T>
-    struct default_delete_array {
-        constexpr default_delete_array() = default;
-        constexpr default_delete_array(const default_delete_array&) {}
-
-        void operator()(T* ptr) const { if(ptr != 0); delete[] ptr; }
-    };
-}
-
-int main() {
-    mn::default_delete<int>(); 
+            void operator()(T* ptr) const { if(ptr != 0); delete[] ptr; }
+        };
+    }
 }
 
 #endif

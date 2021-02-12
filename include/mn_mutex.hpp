@@ -21,54 +21,55 @@
 #include "mn_basic_semaphore.hpp"
 #include "mn_error.hpp"
 
-/**
- *  Base wrapper class around FreeRTOS's implementation of mutexes.
- *  These objects are not recursively acquirable. Calling lock() twice from
- *  the same Thread (i.e. task) will deadlock.
- * 
- * @ingroup mutex
- * @ingroup lock
- */
-class basic_mutex : public basic_semaphore {
-public:
+namespace mn {
   /**
-   * Create the mutex
+   *  Base wrapper class around FreeRTOS's implementation of mutexes.
+   *  These objects are not recursively acquirable. Calling lock() twice from
+   *  the same Thread (i.e. task) will deadlock.
    * 
-   * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
-   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
-   * enabled, then with debug informations.
-   * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
-   * with basic_semaphore::get_error()
+   * @ingroup mutex
+   * @ingroup lock
    */
-  basic_mutex();
-  /**
-   * Destrutor - destroy the mutex
-   */ 
-  virtual ~basic_mutex();
+  class basic_mutex : public basic_semaphore {
+  public:
+    /**
+     * Create the mutex
+     * 
+     * @note When enabled the config item MN_THREAD_CONFIG_USE_LOCK_CREATE then throw on error
+     * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+     * enabled, then with debug informations.
+     * When the config item MN_THREAD_CONFIG_USE_LOCK_CREATE disabled then get the created error code
+     * with basic_semaphore::get_error()
+     */
+    basic_mutex();
+    /**
+     * Destrutor - destroy the mutex
+     */ 
+    virtual ~basic_mutex();
 
-  /**
-   *  Lock the Mutex.
-   *
-   *  @param Timeout How long to wait to get the Lock until giving up. (default = 0xffffffffUL)
-   *  @return ERR_MUTEX_OK if the Lock was acquired, ERR_MUTEX_LOCK if it timed out.
-   *  or ERR_MUTEX_NOTINIT when mutex not created
-   */
-	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT);
+    /**
+     *  Lock the Mutex.
+     *
+     *  @param Timeout How long to wait to get the Lock until giving up. (default = 0xffffffffUL)
+     *  @return ERR_MUTEX_OK if the Lock was acquired, ERR_MUTEX_LOCK if it timed out.
+     *  or ERR_MUTEX_NOTINIT when mutex not created
+     */
+    virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT);
 
-  /**
-   *  Unlock the Mutex.
-   *
-   *  @return ERR_MUTEX_OK if the Lock was released, ERR_MUTEX_UNLOCK if it failed. 
-   *  or ERR_MUTEX_NOTINIT when mutex not created
-   */
-	virtual int unlock();
-};
-
-
+    /**
+     *  Unlock the Mutex.
+     *
+     *  @return ERR_MUTEX_OK if the Lock was released, ERR_MUTEX_UNLOCK if it failed. 
+     *  or ERR_MUTEX_NOTINIT when mutex not created
+     */
+    virtual int unlock();
+  };
 
 
-using mutex_t = basic_mutex;
 
+
+  using mutex_t = basic_mutex;
+}
 
 
 #endif

@@ -20,22 +20,26 @@
 
 #include "mn_system_lock.hpp"
 
-/**
- * This class is a lock helper for disable and enable the interrupts 
- * with auto_interrupts_lock_t guard
- */ 
-class basic_interrupts_lock : public ISystemLockObject {
-public:
-    /**
-     * Disable the interrupts
-     * @return - NO_ERROR no errors
-     */
-	int lock(unsigned int timeout = 0);
-    /**
-     * Enable the interrupts
-     * @return - NO_ERROR no errors
-     */
-	int unlock();
-};
+namespace mn {
+    namespace system {
+        /**
+         * This class is a lock helper for disable and enable the interrupts 
+         * with auto_interrupts_lock_t guard
+         */ 
+        class basic_interrupts_lock : public ISystemLockObject {
+        public:
+            /**
+            * Disable the interrupts
+            * @return - NO_ERROR no errors
+            */
+            int lock(unsigned int timeout = 0);
+            /**
+            * Enable the interrupts
+            * @return - NO_ERROR no errors
+            */
+            int unlock();
+        };
+    }
+}
 
 #endif

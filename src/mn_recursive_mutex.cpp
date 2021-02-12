@@ -30,45 +30,46 @@
 
 #include "mn_recursive_mutex.hpp"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-recursive_mutex::recursive_mutex() 
-    : basic_mutex() {
+namespace mn {
+    //-----------------------------------
+    //  construtor
+    //-----------------------------------
+    recursive_mutex::recursive_mutex() 
+        : basic_mutex() {
 
-    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-        m_pSpinlock = xSemaphoreCreateRecursiveMutexStatic(&m_SemaphoreBasicBuffer);
-    #else
-        m_pSpinlock = xSemaphoreCreateRecursiveMutex();
-    #endif
+        #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+            m_pSpinlock = xSemaphoreCreateRecursiveMutexStatic(&m_SemaphoreBasicBuffer);
+        #else
+            m_pSpinlock = xSemaphoreCreateRecursiveMutex();
+        #endif
 
-    if (m_pSpinlock) {
-        unlock();
-    } else {
-        THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
+        if (m_pSpinlock) {
+            unlock();
+        } else {
+            THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
+        }
+    }
+    //-----------------------------------
+    //  lock
+    //-----------------------------------
+    int recursive_mutex::lock(unsigned int timeout) {
+        
+        if(xSemaphoreTakeRecursive(m_pSpinlock, timeout) != pdTRUE) {
+            return ERR_MUTEX_LOCK;
+        } 
+        return ERR_MUTEX_OK; 
+    }
+
+    //-----------------------------------
+    //  unlock
+    //-----------------------------------
+    int recursive_mutex::unlock() {
+
+        if(xSemaphoreGiveRecursive(m_pSpinlock) != pdTRUE) {
+            return ERR_MUTEX_UNLOCK;
+        } 
+        return ERR_MUTEX_OK; 
     }
 }
-//-----------------------------------
-//  lock
-//-----------------------------------
-int recursive_mutex::lock(unsigned int timeout) {
-    
-    if(xSemaphoreTakeRecursive(m_pSpinlock, timeout) != pdTRUE) {
-        return ERR_MUTEX_LOCK;
-    } 
-    return ERR_MUTEX_OK; 
-}
-
-//-----------------------------------
-//  unlock
-//-----------------------------------
-int recursive_mutex::unlock() {
-
-    if(xSemaphoreGiveRecursive(m_pSpinlock) != pdTRUE) {
-        return ERR_MUTEX_UNLOCK;
-    } 
-    return ERR_MUTEX_OK; 
-}
-
 
 #endif

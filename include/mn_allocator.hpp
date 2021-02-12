@@ -23,8 +23,10 @@
 #include "mn_allocator_stack.hpp"
 #include "mn_allocator_buffer.hpp"
 
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 #include "mn_allocator_caps.hpp"
 #include "mn_allactor_multiheap.hpp"
+#endif
 
 namespace mn {
     namespace memory {
@@ -58,9 +60,7 @@ namespace mn {
 
 
 #if MN_THREAD_CONFIG_ALLOCATOR_DEFAULT == MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
-        template <typename T> using default_allocator_t = basic_allocator_system<T>;
-#else
-        template <typename T> using default_allocator_t = basic_cap_allocator_esp32<T>;
+    template <typename T> using default_allocator_t = basic_allocator_system<T>;
 #endif
 
         template<typename T, int TBytes> 
@@ -72,7 +72,7 @@ namespace mn {
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32  
         template<typename T> 
-        using multiheap_allocator_esp32_t = basic_multiheap_allocator_esp32<T, default_allocator_t<T>>;
+        using multiheap_allocator_esp32_t = basic_multiheap_allocator_esp32<T, basic_cap_allocator_esp32<T>>;
 #endif
     }
 }

@@ -22,35 +22,34 @@
 #include "mn_error.hpp"
 #include "mn_config.hpp"
 
-/**
- * FreeRTOS schedular wrapper util
- * \ingroup util
- */ 
-class basic_schedular {
-public:
+namespace mn {
     /**
-     * Start the schedular
-     * @note On ESP32 only return NO_ERROR. 
-     * @return - NO_ERROR: No error - schedular started 
-     *         - ERR_UNKN: Error in FreeRTOS - schedular can't start 
+     * FreeRTOS schedular wrapper util
+     * \ingroup util
      */ 
-    static int start();
-    /**
-     * Stop the schedular
-     *  @note On ESP32 not use Text from IDF-SDK: It is unlikely that the Xtensa port will get stopped.  If required simply disable the tick interrupt here. 
-     */ 
-    static void stop();
+    class basic_schedular {
+    public:
+        /**
+         * Start the schedular
+         * @note On ESP32 only return NO_ERROR. 
+         * @return - NO_ERROR: No error - schedular started 
+         *         - ERR_UNKN: Error in FreeRTOS - schedular can't start 
+         */ 
+        static int start();
+        /**
+         * Stop the schedular
+         *  @note On ESP32 not use Text from IDF-SDK: It is unlikely that the Xtensa port will get stopped.  If required simply disable the tick interrupt here. 
+         */ 
+        static void stop();
 
-    static void yieldOtherCore(int core) {
-       vPortYieldOtherCore(core);
-    }
-    static uint32_t get_hz() {
-        return (uint32_t)configTICK_RATE_HZ;
-    }
-};
+        static void yieldOtherCore(int core) {
+        vPortYieldOtherCore(core);
+        }
+        static uint32_t get_hz() {
+            return (uint32_t)configTICK_RATE_HZ;
+        }
+    };
 
-using mnschedular = basic_schedular;
-
-
-
+    using schedular = basic_schedular;
+}
 #endif

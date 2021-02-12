@@ -31,17 +31,18 @@
  * @ingroup base
  */
 
-/**
- * Delay a given task for a given number of seconds.  
- */ 
-unsigned mn_sleep(unsigned int secs);
-/**
- * Delay a given task for a given number of micro seconds.
- */ 
-int mn_usleep(useconds_t usec);
-/**
- * Delay a given task for a given timespec 
- */ 
-int mn_nsleep(const struct timespec *req, struct timespec *rem);
-
+namespace mn {
+    /**
+     * Delay a given task for a given number of seconds.  
+     */ 
+    unsigned sleep(unsigned int secs);
+    /**
+     * Delay a given task for a given number of micro seconds.
+     */ 
+    int usleep(useconds_t usec);
+    /**
+     * Delay a given task for a given timespec 
+     */ 
+    int nsleep(const struct timespec *req, struct timespec *rem);
+}
 #endif

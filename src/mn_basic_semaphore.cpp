@@ -28,71 +28,72 @@
 
 #include "mn_micros.hpp"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_semaphore::basic_semaphore() 
-  : m_pSpinlock(NULL) { }
+namespace mn {
+  //-----------------------------------
+  //  construtor
+  //-----------------------------------
+  basic_semaphore::basic_semaphore() 
+    : m_pSpinlock(NULL) { }
 
-basic_semaphore::basic_semaphore(const basic_semaphore& other)
-  : m_pSpinlock(other.m_pSpinlock) { 
+  basic_semaphore::basic_semaphore(const basic_semaphore& other)
+    : m_pSpinlock(other.m_pSpinlock) { 
 
-  if(!is_initialized()) {
-    THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+    if(!is_initialized()) {
+      THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+    }
+  }
+
+  //-----------------------------------
+  //  lock
+  //-----------------------------------
+  int basic_semaphore::lock(unsigned int timeout) {
+    BaseType_t success;
+
+    if (xPortInIsrContext()) {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+        if(xHigherPriorityTaskWoken)
+          _frxt_setup_switch();
+    } else {
+      success = xSemaphoreTake(m_pSpinlock, timeout);
+    }
+    if(success != pdTRUE) {
+      return ERR_SPINLOCK_LOCK;
+    }
+    return ERR_SPINLOCK_OK;
+  }
+
+  //-----------------------------------
+  //  unlock
+  //-----------------------------------
+  int basic_semaphore::unlock() {
+    BaseType_t success;
+
+    if (xPortInIsrContext()) {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        success = xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+        if(xHigherPriorityTaskWoken)
+          _frxt_setup_switch();
+    } else {
+        success = xSemaphoreGive(m_pSpinlock);
+    }
+    if(success != pdTRUE) {
+      return ERR_SPINLOCK_UNLOCK;
+    }
+    
+    return ERR_SPINLOCK_OK;
+  }
+
+  //-----------------------------------
+  //  time_lock(const struct timespec *abs_time)
+  //-----------------------------------
+  int basic_semaphore::time_lock(const struct timespec *timeout) {
+    struct timespec currtime;
+    clock_gettime(CLOCK_REALTIME, &currtime);
+
+    TickType_t _time = ((timeout->tv_sec - currtime.tv_sec)*1000 +
+                      (timeout->tv_nsec - currtime.tv_nsec)/1000000)/portTICK_PERIOD_MS;
+
+    return lock(_time);
   }
 }
-
-//-----------------------------------
-//  lock
-//-----------------------------------
-int basic_semaphore::lock(unsigned int timeout) {
-  BaseType_t success;
-
-  if (xPortInIsrContext()) {
-       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
-       if(xHigherPriorityTaskWoken)
-         _frxt_setup_switch();
-   } else {
-    success = xSemaphoreTake(m_pSpinlock, timeout);
-   }
-   if(success != pdTRUE) {
-     return ERR_SPINLOCK_LOCK;
-   }
-   return ERR_SPINLOCK_OK;
-}
-
-//-----------------------------------
-//  unlock
-//-----------------------------------
-int basic_semaphore::unlock() {
-  BaseType_t success;
-
-  if (xPortInIsrContext()) {
-       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       success = xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
-       if(xHigherPriorityTaskWoken)
-         _frxt_setup_switch();
-   } else {
-			success = xSemaphoreGive(m_pSpinlock);
-  }
-  if(success != pdTRUE) {
-     return ERR_SPINLOCK_UNLOCK;
-  }
-  
-  return ERR_SPINLOCK_OK;
-}
-
-//-----------------------------------
-//  time_lock(const struct timespec *abs_time)
-//-----------------------------------
-int basic_semaphore::time_lock(const struct timespec *timeout) {
-  struct timespec currtime;
-  clock_gettime(CLOCK_REALTIME, &currtime);
-
-  TickType_t _time = ((timeout->tv_sec - currtime.tv_sec)*1000 +
-                     (timeout->tv_nsec - currtime.tv_nsec)/1000000)/portTICK_PERIOD_MS;
-
-  return lock(_time);
-}
-

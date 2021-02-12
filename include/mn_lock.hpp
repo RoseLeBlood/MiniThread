@@ -21,47 +21,49 @@
 #include <time.h>
 #include "mn_micros.hpp"
 
-/**
- * Interface for all lock types in this library
- * This is an abstract base class.
- * To use this, you need to subclass it. All of your LockObjetcs should
- * be derived from the ILockObject class. Then implement the virtual lock,
- * unlock and is_initialized functions.
- * 
- * @ingroup Interface
- * @ingroup lock
- */ 
-class ILockObject {
-public:
+namespace mn {
     /**
-     *  lock (take) a LokObject
-     *  @param timeout How long to wait to get the Lock until giving up.
-     */
-	virtual int lock(unsigned int timeout = 0) = 0;
-
-    virtual int time_lock(const struct timespec *timeout) = 0;
-    /**
-     *  unlock (give) a semaphore.
-     */
-	virtual int unlock() = 0;
-
-    /**
-     * Try to lock the ILockObject
+     * Interface for all lock types in this library
+     * This is an abstract base class.
+     * To use this, you need to subclass it. All of your LockObjetcs should
+     * be derived from the ILockObject class. Then implement the virtual lock,
+     * unlock and is_initialized functions.
      * 
-     * @note call lock with timeout from 0
-     * 
-     * @return true if the Lock was acquired, false when not
-     */
-    virtual bool try_lock() {
-        return (lock(0) == 0);
-    }
+     * @ingroup Interface
+     * @ingroup lock
+     */ 
+    class ILockObject {
+    public:
+        /**
+         *  lock (take) a LokObject
+         *  @param timeout How long to wait to get the Lock until giving up.
+         */
+        virtual int lock(unsigned int timeout = 0) = 0;
 
-    /**
-     * Is the ILockObject created (initialized) ?
-     * 
-     * @return true if the ILockObject created (initialized) and false when not
-     */
-    virtual bool is_initialized() const = 0;
-};
+        virtual int time_lock(const struct timespec *timeout) = 0;
+        /**
+         *  unlock (give) a semaphore.
+         */
+        virtual int unlock() = 0;
+
+        /**
+         * Try to lock the ILockObject
+         * 
+         * @note call lock with timeout from 0
+         * 
+         * @return true if the Lock was acquired, false when not
+         */
+        virtual bool try_lock() {
+            return (lock(0) == 0);
+        }
+
+        /**
+         * Is the ILockObject created (initialized) ?
+         * 
+         * @return true if the ILockObject created (initialized) and false when not
+         */
+        virtual bool is_initialized() const = 0;
+    };
+}
 
 #endif

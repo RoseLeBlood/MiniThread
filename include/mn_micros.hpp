@@ -21,100 +21,100 @@
 #include <sys/time.h>
 #include <time.h>
 
-/**
- * @ingroup base
- */
+namespace mn {
+    /**
+     * @ingroup base
+     */
 
-/**
- * Get the current micros 
- * @return Current micros
- */
-unsigned long micros();
-/**
- * Get the current millis or from ISR context - automatic switch
- * @return Current milliseconds
- */
-unsigned long millis();
+    /**
+     * Get the current micros 
+     * @return Current micros
+     */
+    unsigned long micros();
+    /**
+     * Get the current millis or from ISR context - automatic switch
+     * @return Current milliseconds
+     */
+    unsigned long millis();
 
-/**
- *  Get the current tick count or from ISR context - automatic switch
- *  @return Current tick count.
- */
-unsigned int get_ticks();
+    /**
+     *  Get the current tick count or from ISR context - automatic switch
+     *  @return Current tick count.
+     */
+    unsigned int get_ticks();
 
-/**
- *  Convert from ticks to ms.
- *
- *  @param ticks ticks to convert.
- *  @return milliseconds.
- */
-unsigned int ticks_to_ms(unsigned int ticks);
+    /**
+     *  Convert from ticks to ms.
+     *
+     *  @param ticks ticks to convert.
+     *  @return milliseconds.
+     */
+    unsigned int ticks_to_ms(unsigned int ticks);
 
-/**
- *  Convert from ms to ticks.
- *
- *  @param milliseconds milliseconds to convert.
- *  @return ticks
- */
-unsigned int ms_to_ticks(unsigned int ms);
+    /**
+     *  Convert from ms to ticks.
+     *
+     *  @param milliseconds milliseconds to convert.
+     *  @return ticks
+     */
+    unsigned int ms_to_ticks(unsigned int ms);
 
-/**
- *  Convert from seconds to ticks.
- *
- *  @param seconds seconds to convert.
- *  @return ticks
- */
-unsigned int seconds_to_ticks(unsigned int ms);
+    /**
+     *  Convert from seconds to ticks.
+     *
+     *  @param seconds seconds to convert.
+     *  @return ticks
+     */
+    unsigned int seconds_to_ticks(unsigned int ms);
 
-/**
- * Convert timeval to milliseconds
- * 
- * @param time The timeval to convert
- * @return the timeval in milliseconds
- */ 
-unsigned int time_to_ms(const struct timeval* time);
+    /**
+     * Convert timeval to milliseconds
+     * 
+     * @param time The timeval to convert
+     * @return the timeval in milliseconds
+     */ 
+    unsigned int time_to_ms(const struct timeval* time);
 
-/**
- * Convert timeval to ticks
- * 
- * @param time The timeval to convert
- * @return the timeval in ticks
- */ 
-unsigned int time_to_ticks(const struct timeval* time);
+    /**
+     * Convert timeval to ticks
+     * 
+     * @param time The timeval to convert
+     * @return the timeval in ticks
+     */ 
+    unsigned int time_to_ticks(const struct timeval* time);
 
-/**
- * Operator to sub two timevals
- * 
- * @param lhs The left operater timeval
- * @param rhs The right operater timeval
- */ 
-static inline struct timeval operator - (const struct timeval &lhs, const struct timeval &rhs) {
-    int32_t s = lhs.tv_sec - rhs.tv_sec;		
-    int32_t ns = lhs.tv_usec - rhs.tv_usec;	
-    if (ns < 0) {			
-        s--;				
-        ns += 1000000;			
-    }							
-        
-    return timeval{s, ns};
+    /**
+     * Operator to sub two timevals
+     * 
+     * @param lhs The left operater timeval
+     * @param rhs The right operater timeval
+     */ 
+    static inline struct timeval operator - (const struct timeval &lhs, const struct timeval &rhs) {
+        int32_t s = lhs.tv_sec - rhs.tv_sec;		
+        int32_t ns = lhs.tv_usec - rhs.tv_usec;	
+        if (ns < 0) {			
+            s--;				
+            ns += 1000000;			
+        }							
+            
+        return timeval{s, ns};
+    }
+
+    /**
+     * Operator to add two timevals
+     * 
+     * @param lhs The left operater timeval
+     * @param rhs The right operater timeval
+     */ 
+    static inline struct timeval operator + (const struct timeval &lhs, const struct timeval &rhs) {
+        int32_t s = lhs.tv_sec + rhs.tv_sec;		
+        int32_t ns = lhs.tv_usec + rhs.tv_usec;	
+        if (ns >= 1000000) {			
+            s++;				
+            ns -= 1000000;			
+        }							
+            
+        return timeval{s, ns};
+    }
 }
-
-/**
- * Operator to add two timevals
- * 
- * @param lhs The left operater timeval
- * @param rhs The right operater timeval
- */ 
-static inline struct timeval operator + (const struct timeval &lhs, const struct timeval &rhs) {
-    int32_t s = lhs.tv_sec + rhs.tv_sec;		
-    int32_t ns = lhs.tv_usec + rhs.tv_usec;	
-    if (ns >= 1000000) {			
-        s++;				
-        ns -= 1000000;			
-    }							
-        
-    return timeval{s, ns};
-}
-
-
 #endif

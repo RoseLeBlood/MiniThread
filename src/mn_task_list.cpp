@@ -18,94 +18,95 @@
 #include "mn_task.hpp"
 #include "mn_task_list.hpp"
 
+namespace mn {
+    basic_task_list* basic_task_list::m_pInstance = NULL;
+    mutex_t  basic_task_list::m_staticInstanceMux = mutex_t();
 
-basic_task_list* basic_task_list::m_pInstance = NULL;
-mutex_t  basic_task_list::m_staticInstanceMux = mutex_t();
+    //-----------------------------------
+    //  construtor
+    //-----------------------------------
+    basic_task_list::basic_task_list() 
+        : m_pLock(), m_mapTaskOnCore() {  }
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_task_list::basic_task_list() 
-    : m_pLock(), m_mapTaskOnCore() {  }
+    //-----------------------------------
+    //  add_task
+    //-----------------------------------
+    void basic_task_list::add_task(basic_task* task) {
+        autolock_t lock(m_pLock);
 
-//-----------------------------------
-//  add_task
-//-----------------------------------
-void basic_task_list::add_task(basic_task* task) {
-    autolock_t lock(m_pLock);
+        if(task == NULL) return;
 
-    if(task == NULL) return;
-
-    int core = task->get_on_core();
-    m_mapTaskOnCore[core].push_front(task);
-}
-
-//-----------------------------------
-//  remove_task
-//-----------------------------------
-void basic_task_list::remove_task(basic_task* task) {
-    autolock_t lock(m_pLock);
-
-    if(task == NULL) return;
-
-    int core = task->get_on_core();
-    m_mapTaskOnCore[core].remove(task);
-} 
-
-//-----------------------------------
-//  get_task
-//-----------------------------------
-basic_task* basic_task_list::get_task(int id) {
-    basic_task* _ret = get_task(0);
-    if(_ret == NULL) _ret = get_task(1);
-
-    return _ret;
-}
-
-//-----------------------------------
-//  get_task
-//-----------------------------------
-basic_task* basic_task_list::get_task(std::string name) {
-    basic_task* _ret = get_task(name);
-    if(_ret == NULL) _ret = get_task(name);
-
-    return _ret;
-}
-
-//-----------------------------------
-//  get_task
-//-----------------------------------
-basic_task* basic_task_list::get_task(int core, int id) {
-    autolock_t lock(m_pLock);
-
-    basic_task* _retTask = NULL;
-
-    for(std::list<basic_task*>::iterator i = m_mapTaskOnCore[core].begin();
-        i != m_mapTaskOnCore[core].end(); i++) {
-
-        if( (*i)->get_id() == id ) {
-            _retTask = (*i);
-            break;
-        }
+        int core = task->get_on_core();
+        m_mapTaskOnCore[core].push_front(task);
     }
-    return _retTask;
-}
 
-//-----------------------------------
-//  get_task
-//-----------------------------------
-basic_task* basic_task_list::get_task(int core, std::string name) {
-    autolock_t lock(m_pLock);
-    
-    basic_task* _retTask = NULL;
+    //-----------------------------------
+    //  remove_task
+    //-----------------------------------
+    void basic_task_list::remove_task(basic_task* task) {
+        autolock_t lock(m_pLock);
 
-    for(std::list<basic_task*>::iterator i = m_mapTaskOnCore[core].begin();
-        i != m_mapTaskOnCore[core].end(); i++) {
+        if(task == NULL) return;
 
-        if( (*i)->get_name() == name ) {
-            _retTask = (*i);
-            break;
-        }
+        int core = task->get_on_core();
+        m_mapTaskOnCore[core].remove(task);
+    } 
+
+    //-----------------------------------
+    //  get_task
+    //-----------------------------------
+    basic_task* basic_task_list::get_task(int id) {
+        basic_task* _ret = get_task(0);
+        if(_ret == NULL) _ret = get_task(1);
+
+        return _ret;
     }
-    return _retTask;
+
+    //-----------------------------------
+    //  get_task
+    //-----------------------------------
+    basic_task* basic_task_list::get_task(std::string name) {
+        basic_task* _ret = get_task(name);
+        if(_ret == NULL) _ret = get_task(name);
+
+        return _ret;
+    }
+
+    //-----------------------------------
+    //  get_task
+    //-----------------------------------
+    basic_task* basic_task_list::get_task(int core, int id) {
+        autolock_t lock(m_pLock);
+
+        basic_task* _retTask = NULL;
+
+        for(std::list<basic_task*>::iterator i = m_mapTaskOnCore[core].begin();
+            i != m_mapTaskOnCore[core].end(); i++) {
+
+            if( (*i)->get_id() == id ) {
+                _retTask = (*i);
+                break;
+            }
+        }
+        return _retTask;
+    }
+
+    //-----------------------------------
+    //  get_task
+    //-----------------------------------
+    basic_task* basic_task_list::get_task(int core, std::string name) {
+        autolock_t lock(m_pLock);
+        
+        basic_task* _retTask = NULL;
+
+        for(std::list<basic_task*>::iterator i = m_mapTaskOnCore[core].begin();
+            i != m_mapTaskOnCore[core].end(); i++) {
+
+            if( (*i)->get_name() == name ) {
+                _retTask = (*i);
+                break;
+            }
+        }
+        return _retTask;
+    }
 }

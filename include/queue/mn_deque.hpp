@@ -20,38 +20,41 @@
 
 #include "mn_queue.hpp"
 
-/**
- *  A deque class that implements a double ended queue.
- * 
- * @ingroup queue
- */
-class basic_deque : public basic_queue {
-public:
-    /**
-     *  ctor
-     * 
-     *  @param itemSize Size of an item in a queue.
-     */
-    basic_deque(unsigned int maxItems, unsigned int itemSize) 
-                : basic_queue(maxItems, itemSize) { }
+namespace mn {
+    namespace queue {
+        /**
+         *  A deque class that implements a double ended queue.
+         * 
+         * @ingroup queue
+         */
+        class basic_deque : public basic_queue {
+        public:
+            /**
+             *  ctor
+             * 
+             *  @param itemSize Size of an item in a queue.
+             */
+            basic_deque(unsigned int maxItems, unsigned int itemSize) 
+                        : basic_queue(maxItems, itemSize) { }
 
-    
-    /**
-     *  Add an item to the front of the queue. This will result in
-     *  the item being removed first, ahead of all of the items
-     *  added by the base cal dequeue() function.
-     *
-     *  @param item The item you are adding.
-     *  @param Timeout How long to wait to add the item to the queue if
-     *         the queue is currently full.
-     *  @return 
-     *      - ERR_QUEUE_OK The item was added 
-     *      - ERR_QUEUE_ADD The item was not added to dequeue
-     *      - ERR_QUEUE_NOTCREATED The queue was not created
-     */
-    virtual int enqueue_front(void* item, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
-};
+            
+            /**
+             *  Add an item to the front of the queue. This will result in
+             *  the item being removed first, ahead of all of the items
+             *  added by the base cal dequeue() function.
+             *
+             *  @param item The item you are adding.
+             *  @param Timeout How long to wait to add the item to the queue if
+             *         the queue is currently full.
+             *  @return 
+             *      - ERR_QUEUE_OK The item was added 
+             *      - ERR_QUEUE_ADD The item was not added to dequeue
+             *      - ERR_QUEUE_NOTCREATED The queue was not created
+             */
+            virtual int enqueue_front(void* item, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
+        };
 
-using deque_t = basic_deque;
-
+        using deque_t = basic_deque;
+    }
+}
 #endif

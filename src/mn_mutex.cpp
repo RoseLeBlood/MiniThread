@@ -25,71 +25,73 @@
 
 #include "esp_attr.h"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_mutex::basic_mutex() : basic_semaphore() { 
+namespace mn {
+  //-----------------------------------
+  //  construtor
+  //-----------------------------------
+  basic_mutex::basic_mutex() : basic_semaphore() { 
 
-  #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-    m_pSpinlock = xSemaphoreCreateMutexStatic(&m_SemaphoreBasicBuffer);
-  #else
-    m_pSpinlock = xSemaphoreCreateMutex();
-  #endif
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+      m_pSpinlock = xSemaphoreCreateMutexStatic(&m_SemaphoreBasicBuffer);
+    #else
+      m_pSpinlock = xSemaphoreCreateMutex();
+    #endif
 
 
-  if (m_pSpinlock) {
-    unlock();
-  } else {
-    THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
-  }
-}
-
-//-----------------------------------
-//  deconstrutor
-//-----------------------------------
-basic_mutex::~basic_mutex() {
-  if (m_pSpinlock != NULL)
-    vSemaphoreDelete(m_pSpinlock);
-}
-
-//-----------------------------------
-//  lock
-//-----------------------------------
-int basic_mutex::lock(unsigned int timeout) {
-  BaseType_t success;
-
-  if (xPortInIsrContext()) {
-       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
-       if(xHigherPriorityTaskWoken)
-         _frxt_setup_switch();
-  } else {
-    success = xSemaphoreTake(m_pSpinlock, timeout);
+    if (m_pSpinlock) {
+      unlock();
+    } else {
+      THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
+    }
   }
 
-  if(success != pdTRUE ) {
-    return ERR_MUTEX_LOCK;
-  } 
-  return ERR_MUTEX_OK;
-}
-
-//-----------------------------------
-//  unlock
-//-----------------------------------
-int basic_mutex::unlock() {
-  BaseType_t success;
-
-  if (xPortInIsrContext()) {
-       BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-       success = xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
-       if(xHigherPriorityTaskWoken)
-         _frxt_setup_switch();
-   } else {
-			success = xSemaphoreGive(m_pSpinlock);
+  //-----------------------------------
+  //  deconstrutor
+  //-----------------------------------
+  basic_mutex::~basic_mutex() {
+    if (m_pSpinlock != NULL)
+      vSemaphoreDelete(m_pSpinlock);
   }
 
-  if(success != pdTRUE ) {
-    return ERR_MUTEX_UNLOCK;
-  } 
-  return ERR_MUTEX_OK;
+  //-----------------------------------
+  //  lock
+  //-----------------------------------
+  int basic_mutex::lock(unsigned int timeout) {
+    BaseType_t success;
+
+    if (xPortInIsrContext()) {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        success = xSemaphoreTakeFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+        if(xHigherPriorityTaskWoken)
+          _frxt_setup_switch();
+    } else {
+      success = xSemaphoreTake(m_pSpinlock, timeout);
+    }
+
+    if(success != pdTRUE ) {
+      return ERR_MUTEX_LOCK;
+    } 
+    return ERR_MUTEX_OK;
+  }
+
+  //-----------------------------------
+  //  unlock
+  //-----------------------------------
+  int basic_mutex::unlock() {
+    BaseType_t success;
+
+    if (xPortInIsrContext()) {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        success = xSemaphoreGiveFromISR( m_pSpinlock, &xHigherPriorityTaskWoken );
+        if(xHigherPriorityTaskWoken)
+          _frxt_setup_switch();
+    } else {
+        success = xSemaphoreGive(m_pSpinlock);
+    }
+
+    if(success != pdTRUE ) {
+      return ERR_MUTEX_UNLOCK;
+    } 
+    return ERR_MUTEX_OK;
+  }
 }

@@ -22,11 +22,15 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-int basic_interrupts_lock::lock(unsigned int timeout) {
-    taskDISABLE_INTERRUPTS();
-    return NO_ERROR;
-}
-int basic_interrupts_lock::unlock() {
-    taskENABLE_INTERRUPTS();
-    return NO_ERROR;
+namespace mn {
+    namespace system {
+        int basic_interrupts_lock::lock(unsigned int timeout) {
+            taskDISABLE_INTERRUPTS();
+            return NO_ERROR;
+        }
+        int basic_interrupts_lock::unlock() {
+            taskENABLE_INTERRUPTS();
+            return NO_ERROR;
+        }
+    }
 }

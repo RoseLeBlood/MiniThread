@@ -15,15 +15,21 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "miniThread.hpp"
-#include <stdio.h>
+#ifndef _MINLIB_MEMORY_H_
+#define _MINLIB_MEMORY_H_
+
+#include "mn_auto_ptr.hpp"
+#include "mn_allocator.hpp"
 
 namespace mn {
-  //-----------------------------------
-  //  mn_panic
-  //-----------------------------------
-  void panic() {
-    printf("MiniThread-PANIC!!!");
-    for(;;) { }
-  }
+    template<class T, class TALLOCATOR = memory::basic_allocator_system<T> > 
+    auto_ptr<T> make_autoptr(T value, unsigned int xTime = portMAX_DELAY) { 
+        TALLOCATOR alloc;
+        T* _value = alloc.alloc(xTime); 
+        if(_value) { *_value = value; }
+
+        return auto_ptr<T>(_value);
+    }
 }
+
+#endif

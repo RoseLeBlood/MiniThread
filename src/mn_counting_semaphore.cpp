@@ -20,43 +20,45 @@
 
 #include "mn_counting_semaphore.hpp"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount) 
-  : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
-    
-    if ( (m_uiMaxCount < m_uiCount) && (m_uiMaxCount == 0) ) {
-      THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
-    } else {
-    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-      m_pSpinlock = xSemaphoreCreateCountingStatic(m_uiMaxCount, m_uiCount, &m_SemaphoreBasicBuffer);
-    #else
-      m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
-    #endif
-
-      if (m_pSpinlock) {
-        unlock();
+namespace mn {
+  //-----------------------------------
+  //  construtor
+  //-----------------------------------
+  basic_counting_semaphore::basic_counting_semaphore(int count, int maxcount) 
+    : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
+      
+      if ( (m_uiMaxCount < m_uiCount) && (m_uiMaxCount == 0) ) {
+        THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
       } else {
-        THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
+      #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+        m_pSpinlock = xSemaphoreCreateCountingStatic(m_uiMaxCount, m_uiCount, &m_SemaphoreBasicBuffer);
+      #else
+        m_pSpinlock = xSemaphoreCreateCounting(m_uiMaxCount, m_uiCount);
+      #endif
+
+        if (m_pSpinlock) {
+          unlock();
+        } else {
+          THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
+        }
       }
-    }
-}
-
-//-----------------------------------
-//  deconstrutor
-//-----------------------------------
-basic_counting_semaphore::~basic_counting_semaphore() {
-  if(m_pSpinlock) {
-    vSemaphoreDelete(m_pSpinlock);
-  } else {
-    THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
   }
-}
 
-//-----------------------------------
-//  get_count
-//-----------------------------------
-int basic_counting_semaphore::get_count() const {
-   return uxQueueMessagesWaiting(m_pSpinlock);
+  //-----------------------------------
+  //  deconstrutor
+  //-----------------------------------
+  basic_counting_semaphore::~basic_counting_semaphore() {
+    if(m_pSpinlock) {
+      vSemaphoreDelete(m_pSpinlock);
+    } else {
+      THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+    }
+  }
+
+  //-----------------------------------
+  //  get_count
+  //-----------------------------------
+  int basic_counting_semaphore::get_count() const {
+    return uxQueueMessagesWaiting(m_pSpinlock);
+  }
 }

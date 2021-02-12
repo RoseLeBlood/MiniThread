@@ -20,35 +20,39 @@
 
 #include "../mn_lock.hpp"
 
-/**
- * Interface for all system lock types in this library
- * This is an abstract mixed base class.
- * To use this, you need to subclass it. All of your SystemLockObject should
- * be derived from the ISystemLockObject class. 
- * Then implement the virtual lock, unlock functions, 
- * from the base class ILockObject, the function virtual time_lock,
- * implemented this class
- * 
- * @ingroup Interface
- * @ingroup lock
- */ 
-class ISystemLockObject : public ILockObject {
-public:
-    /**
-     * call lock() 
-     * @see lock()
-     */
-    virtual int time_lock(const struct timespec *timeout) { 
-        return lock();
+namespace mn {
+    namespace system {
+        /**
+         * Interface for all system lock types in this library
+         * This is an abstract mixed base class.
+         * To use this, you need to subclass it. All of your SystemLockObject should
+         * be derived from the ISystemLockObject class. 
+         * Then implement the virtual lock, unlock functions, 
+         * from the base class ILockObject, the function virtual time_lock,
+         * implemented this class
+         * 
+         * @ingroup Interface
+         * @ingroup lock
+         */ 
+        class ISystemLockObject : public ILockObject {
+        public:
+            /**
+             * call lock() 
+             * @see lock()
+             */
+            virtual int time_lock(const struct timespec *timeout) { 
+                return lock();
+            }
+            /**
+            * Is the SystemLockObject (initialized) ?
+            * 
+            * @return Always true
+            */
+            virtual bool is_initialized() { 
+                return true; 
+            }
+        };
     }
-    /**
-     * Is the SystemLockObject (initialized) ?
-     * 
-     * @return Always true
-     */
-    virtual bool is_initialized() { 
-        return true; 
-    }
-};
+}
 
 #endif

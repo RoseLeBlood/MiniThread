@@ -31,6 +31,7 @@
 
 #include "mn_tickhook_entry.hpp"
 
+
 /**
  * FreeRTOS expects this function to exist and requires it to be 
  * named as such with the following signature.
@@ -38,96 +39,97 @@
  */
 extern "C" void vApplicationTickHook(void);
 
-
-/**
- * Wrapper class for Tick hooks, functions you want to run within the tick ISR. 
- * 
- * You can register multiple hooks (base_tickhook_entry) with this class.
- * 
- * \ingroup hook
- */ 
-class base_tickhook {
-private:
+namespace mn {
     /**
-     * @brief Creates a tick hook %list with default constructed elements.
+     * Wrapper class for Tick hooks, functions you want to run within the tick ISR. 
      * 
-     * @note This is a signleton class, only one object 
-     * plaese use base_tickhook::instance() 
-     */ 
-    base_tickhook();
-
-    /**
-     * The static object of this class
-     */ 
-    static base_tickhook* m_pInstance;
-    /**
-     * The static instance mutex
-     */ 
-    static mutex_t  m_staticInstanceMux;
-public:
-    /**
-     * Get the singleton instance 
-     * @return The singleton instance
-     */ 
-    static base_tickhook& instance();
-
-    /**
-     * Add a new tickhook to the list
-     * @param entry The new tick hook entry
+     * You can register multiple hooks (base_tickhook_entry) with this class.
      * 
-     * @return 
-     *  - ERR_TICKHOOK_OK The entry was added
-     *  - ERR_TICKHOOK_ADD The entry already added
-     *  - ERR_TICKHOOK_ENTRY_NULL The entry is null
-     *  - ERR_TIMEOUT TimeOut
+     * \ingroup hook
      */ 
-    int enqueue(base_tickhook_entry* entry, 
-        unsigned int timeout = (unsigned int) 0xffffffffUL);
-    /**
-     *  Remove an item from the front of the queue.
-     *
-     *  @param item Where the item you are removing will be returned to.
-     *  @param timeout How long to wait to remove an item to the queue.
-     *  @return  - 'ERR_QUEUE_OK' the item was removed 
-     *           - 'ERR_QUEUE_REMOVE' on an error
-     *           - 'ERR_QUEUE_NOTCREATED' when the queue not created
-     *           - 'ERR_TIMEOUT' TimeOut
-     */
-    int dequeue(base_tickhook_entry* entry,
-        unsigned int timeout = (unsigned int) 0xffffffffUL);
-    /**
-     * Clear the list
-     */ 
-    void clear();
+    class base_tickhook {
+    private:
+        /**
+         * @brief Creates a tick hook %list with default constructed elements.
+         * 
+         * @note This is a signleton class, only one object 
+         * plaese use base_tickhook::instance() 
+         */ 
+        base_tickhook();
 
-    /**
-     * Reset
-     */ 
-    void reset();
-    /**
-     * How many entrys are in the list
-     * @return The number of entrys in the list
-     */ 
-    unsigned int count();
-private:
-    /**
-     * The tick hook logic - call from vApplicationTickHook. 
-     * All not oneshotted entrys enqueue after run to m_listToAdd.
-     * 
-     */ 
-    void onApplicationTickHook();
-    /**
-     * Swapped all entrys in m_listToAdd to m_listHooks back
-     * 
-     */ 
-    void swap();
-private:
-    mutex_t m_mutexAdd;
-    queue_t m_listHooks, m_listToAdd;
-    unsigned int m_iCurrent;
-};
+        /**
+         * The static object of this class
+         */ 
+        static base_tickhook* m_pInstance;
+        /**
+         * The static instance mutex
+         */ 
+        static mutex_t  m_staticInstanceMux;
+    public:
+        /**
+         * Get the singleton instance 
+         * @return The singleton instance
+         */ 
+        static base_tickhook& instance();
 
-using tickhook_t = base_tickhook;
+        /**
+         * Add a new tickhook to the list
+         * @param entry The new tick hook entry
+         * 
+         * @return 
+         *  - ERR_TICKHOOK_OK The entry was added
+         *  - ERR_TICKHOOK_ADD The entry already added
+         *  - ERR_TICKHOOK_ENTRY_NULL The entry is null
+         *  - ERR_TIMEOUT TimeOut
+         */ 
+        int enqueue(base_tickhook_entry* entry, 
+            unsigned int timeout = (unsigned int) 0xffffffffUL);
+        /**
+         *  Remove an item from the front of the queue.
+         *
+         *  @param item Where the item you are removing will be returned to.
+         *  @param timeout How long to wait to remove an item to the queue.
+         *  @return  - 'ERR_QUEUE_OK' the item was removed 
+         *           - 'ERR_QUEUE_REMOVE' on an error
+         *           - 'ERR_QUEUE_NOTCREATED' when the queue not created
+         *           - 'ERR_TIMEOUT' TimeOut
+         */
+        int dequeue(base_tickhook_entry* entry,
+            unsigned int timeout = (unsigned int) 0xffffffffUL);
+        /**
+         * Clear the list
+         */ 
+        void clear();
+
+        /**
+         * Reset
+         */ 
+        void reset();
+        /**
+         * How many entrys are in the list
+         * @return The number of entrys in the list
+         */ 
+        unsigned int count();
+    private:
+        /**
+         * The tick hook logic - call from vApplicationTickHook. 
+         * All not oneshotted entrys enqueue after run to m_listToAdd.
+         * 
+         */ 
+        void onApplicationTickHook();
+        /**
+         * Swapped all entrys in m_listToAdd to m_listHooks back
+         * 
+         */ 
+        void swap();
+    private:
+        mutex_t m_mutexAdd;
+        queue_t m_listHooks, m_listToAdd;
+        unsigned int m_iCurrent;
+    };
+
+    using tickhook_t = base_tickhook;
+}
 
 #endif // #if ( configUSE_TICK_HOOK == 1 )
 #endif //  MINLIB_ESP32_TICK_HOOK_

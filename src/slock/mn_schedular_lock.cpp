@@ -22,10 +22,14 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-int basic_schedular_lock::lock(unsigned int timeout) {
-    vTaskSuspendAll();
-    return ERR_SYSTEM_NO_RETURN;
-}
-int basic_schedular_lock::unlock() {
-    return xTaskResumeAll() ? ERR_SYSTEM_OK : ERR_SYSTEM_UNLOCK;
+namespace mn {
+    namespace system {
+        int basic_schedular_lock::lock(unsigned int timeout) {
+            vTaskSuspendAll();
+            return ERR_SYSTEM_NO_RETURN;
+        }
+        int basic_schedular_lock::unlock() {
+            return xTaskResumeAll() ? ERR_SYSTEM_OK : ERR_SYSTEM_UNLOCK;
+        }
+    }
 }

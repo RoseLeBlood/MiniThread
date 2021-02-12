@@ -31,65 +31,67 @@
 #include "esp_partition.h"
 #include <sys/time.h>
 
-//-----------------------------------
-//  mn_sleep
-//-----------------------------------
-unsigned mn_sleep(unsigned int secs) {
-	vTaskDelay( (secs * 1000) / ((TickType_t) 1000 / configTICK_RATE_HZ));
-	return 0;
-}
-
-//-----------------------------------
-//  mn_usleep
-//-----------------------------------
-int mn_usleep(useconds_t usec) {
-	vTaskDelay(usec / ((TickType_t) 1000000 / configTICK_RATE_HZ));
-	return 0; 
-}
-
-//-----------------------------------
-//  mn_nsleep
-//-----------------------------------
-int IRAM_ATTR mn_nsleep(const struct timespec *req, struct timespec *rem) {
-	struct timeval start, end;
-
-	if ((req->tv_nsec < 0) || (req->tv_nsec > 999999999)) {
-		errno = EINVAL;
-
-		return -1;
+namespace mn {
+	//-----------------------------------
+	//  sleep
+	//-----------------------------------
+	unsigned sleep(unsigned int secs) {
+		vTaskDelay( (secs * 1000) / ((TickType_t) 1000 / configTICK_RATE_HZ));
+		return 0;
 	}
 
-	// Get time in msecs
-	uint32_t msecs;
-
-	msecs  = req->tv_sec * 1000;
-	msecs += (req->tv_nsec + 999999) / 1000000;
-
-	if (rem != NULL) {
-		gettimeofday(&start, NULL);
+	//-----------------------------------
+	//  usleep
+	//-----------------------------------
+	int usleep(useconds_t usec) {
+		vTaskDelay(usec / ((TickType_t) 1000000 / configTICK_RATE_HZ));
+		return 0; 
 	}
 
-	vTaskDelay(msecs / portTICK_PERIOD_MS);
-	
-	if (rem != NULL) {
-		rem->tv_sec = 0;
-		rem->tv_nsec = 0;
+	//-----------------------------------
+	//  nsleep
+	//-----------------------------------
+	int IRAM_ATTR nsleep(const struct timespec *req, struct timespec *rem) {
+		struct timeval start, end;
 
-		gettimeofday(&end, NULL);
+		if ((req->tv_nsec < 0) || (req->tv_nsec > 999999999)) {
+			errno = EINVAL;
 
-		uint32_t elapsed = (end.tv_sec - start.tv_sec) * 1000
-						 + ((end.tv_usec - start.tv_usec) / 1000000);
+			return -1;
+		}
 
-		if (elapsed < msecs) {
-			if (elapsed > 1000) {
-				rem->tv_sec = elapsed / 1000;
-				elapsed -= rem->tv_sec * 1000;
-				rem->tv_nsec = elapsed * 1000000;
+		// Get time in msecs
+		uint32_t msecs;
+
+		msecs  = req->tv_sec * 1000;
+		msecs += (req->tv_nsec + 999999) / 1000000;
+
+		if (rem != NULL) {
+			gettimeofday(&start, NULL);
+		}
+
+		vTaskDelay(msecs / portTICK_PERIOD_MS);
+		
+		if (rem != NULL) {
+			rem->tv_sec = 0;
+			rem->tv_nsec = 0;
+
+			gettimeofday(&end, NULL);
+
+			uint32_t elapsed = (end.tv_sec - start.tv_sec) * 1000
+							+ ((end.tv_usec - start.tv_usec) / 1000000);
+
+			if (elapsed < msecs) {
+				if (elapsed > 1000) {
+					rem->tv_sec = elapsed / 1000;
+					elapsed -= rem->tv_sec * 1000;
+					rem->tv_nsec = elapsed * 1000000;
+				}
 			}
 		}
+		errno = EINTR;
+
+
+		return 0;
 	}
-	errno = EINTR;
-
-
-	return 0;
 }

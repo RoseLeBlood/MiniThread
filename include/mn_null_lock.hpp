@@ -21,27 +21,23 @@
 #include "mn_lock.hpp"
 #include "mn_error.hpp"
 
-namespace nm {
+namespace mn {
+    /**
+     * @brief Null Lock is a lock object without any lock logic
+     * 
+     */
     class basic_null_lock : public ILockObject {
     public:
-        basic_null_lock() : m_iLocked(0) { }
+        basic_null_lock() { }
         /**
          *  lock (take) a LokObject
          *  @param timeout How long to wait to get the Lock until giving up.
          */
-        virtual int lock(unsigned int timeout = 0) { 
-            if(m_iLocked == 1) return ERR_SPINLOCK_LOCK; 
-            m_iLocked = 1;
-            return NO_ERROR;
-        }
+        virtual int lock(unsigned int timeout = 0) { return NO_ERROR; }
         /**
          *  unlock (give) a semaphore.
          */
-        virtual int unlock() {
-            if(m_iLocked == 0) return ERR_SPINLOCK_UNLOCK; 
-            m_iLocked = 0;
-            return NO_ERROR;
-        }
+        virtual int unlock()        { return NO_ERROR;  }
         /**
          * Is the ILockObject created (initialized) ?
          * 
@@ -49,11 +45,8 @@ namespace nm {
          */
         virtual bool is_initialized() const  { return true; }
 
-        operator bool () { return m_iLocked == 1; }
-    private:
-        int m_iLocked : 2;
+        virtual int time_lock(const struct timespec *timeout) { return NO_ERROR; }
     };
-
-};
+}
 
 #endif

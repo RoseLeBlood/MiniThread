@@ -22,51 +22,55 @@
 #include "queue/mn_workqueue_task.hpp"
 #include "queue/mn_workqueue.hpp"
 
-//-----------------------------------
-//  constructor
-//-----------------------------------
-work_queue_task::work_queue_task(char const* strName, 
-                                    basic_task::priority uiPriority,
-                                    unsigned short  usStackDepth, 
-                                    basic_work_queue* parent)
+namespace mn {
+    namespace queue {
+        //-----------------------------------
+        //  constructor
+        //-----------------------------------
+        work_queue_task::work_queue_task(char const* strName, 
+                                            basic_task::priority uiPriority,
+                                            unsigned short  usStackDepth, 
+                                            basic_work_queue* parent)
 
-    : basic_task(strName, uiPriority, usStackDepth), m_parentWorkQueue(parent) { 
+            : basic_task(strName, uiPriority, usStackDepth), m_parentWorkQueue(parent) { 
 
-}
-//-----------------------------------
-//  deconstructor
-//-----------------------------------
-work_queue_task::~work_queue_task() { }
-
-//-----------------------------------
-//  on_task
-//-----------------------------------
-void* work_queue_task::on_task() {
-    basic_task::on_task();
-
-    work_queue_item *work_item = NULL;
-
-
-    while ( m_parentWorkQueue->running() ) {
-        work_item = m_parentWorkQueue->get_next_item(MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT);
-
-        if (work_item == NULL) { 
-            break;
         }
+        //-----------------------------------
+        //  deconstructor
+        //-----------------------------------
+        work_queue_task::~work_queue_task() { }
 
-        m_parentWorkQueue->m_ThreadStatus.lock();
+        //-----------------------------------
+        //  on_task
+        //-----------------------------------
+        void* work_queue_task::on_task() {
+            basic_task::on_task();
 
-            if(work_item->on_work())
-                m_parentWorkQueue->m_uiNumWorks++;
-            else
-                m_parentWorkQueue->m_uiErrorsNumWorks++;
+            work_queue_item *work_item = NULL;
 
-        m_parentWorkQueue->m_ThreadStatus.unlock();
 
-        if (work_item->can_delete()) {
-            delete work_item; work_item = NULL;
+            while ( m_parentWorkQueue->running() ) {
+                work_item = m_parentWorkQueue->get_next_item(MN_THREAD_CONFIG_WORKQUEUE_GETNEXTITEM_TIMEOUT);
+
+                if (work_item == NULL) { 
+                    break;
+                }
+
+                m_parentWorkQueue->m_ThreadStatus.lock();
+
+                    if(work_item->on_work())
+                        m_parentWorkQueue->m_uiNumWorks++;
+                    else
+                        m_parentWorkQueue->m_uiErrorsNumWorks++;
+
+                m_parentWorkQueue->m_ThreadStatus.unlock();
+
+                if (work_item->can_delete()) {
+                    delete work_item; work_item = NULL;
+                }
+            }
+            
+            return 0;
         }
     }
-    
-    return 0;
 }

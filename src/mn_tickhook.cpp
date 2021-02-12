@@ -20,182 +20,183 @@
 
 #if ( configUSE_TICK_HOOK == 1 )
 
+
 #include "mn_autolock.hpp"
 #include "mn_tickhook.hpp"
 #include "mn_micros.hpp"
 
+namespace mn {
+    base_tickhook* base_tickhook::m_pInstance = NULL;
+    mutex_t  base_tickhook::m_staticInstanceMux = mutex_t();
 
-base_tickhook* base_tickhook::m_pInstance = NULL;
-mutex_t  base_tickhook::m_staticInstanceMux = mutex_t();
 
+    void vApplicationTickHook(void) {
+        base_tickhook::instance().onApplicationTickHook();
+    }
 
-void vApplicationTickHook(void) {
-    base_tickhook::instance().onApplicationTickHook();
-}
+    base_tickhook::base_tickhook() 
+        : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, sizeof(base_tickhook_entry*) ) {
 
-base_tickhook::base_tickhook() 
-    : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, sizeof(base_tickhook_entry*) ) {
+        m_listHooks.create();
+        m_listToAdd.create();
+        
+        reset(); 
+    }
 
-    m_listHooks.create();
-    m_listToAdd.create();
-     
-    reset(); 
-}
+    /*--------------------------------------
+    * onApplicationTickHook()
+    * -------------------------------------*/
+    void base_tickhook::onApplicationTickHook() {
+        base_tickhook_entry *entry = 0;
+        unsigned int time = 0;
 
-/*--------------------------------------
- * onApplicationTickHook()
- * -------------------------------------*/
-void base_tickhook::onApplicationTickHook() {
-    base_tickhook_entry *entry = 0;
-    unsigned int time = 0;
+        m_iCurrent++;
 
-    m_iCurrent++;
+        if(m_listHooks->is_empty()) return;
 
-    if(m_listHooks->is_empty()) return;
+        while( (dequeue(&entry) == ERR_QUEUE_OK) ) {
 
-    while( (dequeue(&entry) == ERR_QUEUE_OK) ) {
+            time = entry->get_ticks();
 
-        time = entry->get_ticks();
+            if(entry->is_ready()) {
 
-        if(entry->is_ready()) {
+                if( (time == 0) || (m_iCurrent % time) == 0) ) {
+                    entry->onTick(m_iCurrent);
 
-            if( (time == 0) || (m_iCurrent % time) == 0) ) {
-                entry->onTick(m_iCurrent);
-
-                if(!entry->is_oneshoted())  
-                    m_listToAdd.enqueue(entry);
+                    if(!entry->is_oneshoted())  
+                        m_listToAdd.enqueue(entry);
+                }
             }
         }
+
+
+        swap();
     }
 
+    /*--------------------------------------
+    * instance()
+    * -------------------------------------*/
+    base_tickhook& base_tickhook::instance() {
+        automutx_t lock(m_staticInstanceMux);
+        if(m_pInstance != NULL) 
+            m_pInstance = new base_tickhook();
+        return *m_pInstance;
+    }
+    /*--------------------------------------
+    * enqueue()
+    * -------------------------------------*/
+    int base_tickhook::enqueue(base_tickhook_entry* entry, unsigned int timeout) {
+        if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
+        if(is(entry)) return ERR_TICKHOOK_ADD;
 
-    swap();
-}
+        TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
+        TickType_t xTicksRemaining = timeout;
+        int _ret = ERR_TIMEOUT;
 
-/*--------------------------------------
- * instance()
- * -------------------------------------*/
-base_tickhook& base_tickhook::instance() {
-    automutx_t lock(m_staticInstanceMux);
-    if(m_pInstance != NULL) 
-        m_pInstance = new base_tickhook();
-    return *m_pInstance;
-}
-/*--------------------------------------
- * enqueue()
- * -------------------------------------*/
-int base_tickhook::enqueue(base_tickhook_entry* entry, unsigned int timeout) {
-    if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
-    if(is(entry)) return ERR_TICKHOOK_ADD;
+        while(xTicksRemaining <= timeout) {
+        if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+                    break;
+            }
 
-    TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
-    TickType_t xTicksRemaining = timeout;
-    int _ret = ERR_TIMEOUT;
+            _ret = m_listHooks.enqueue(entry, xTicksRemaining);
 
-    while(xTicksRemaining <= timeout) {
-       if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+            if(_ret == ERR_QUEUE_OK) {
+                m_mutexAdd->unlock();
                 break;
-        }
+            }
+            
 
-        _ret = m_listHooks.enqueue(entry, xTicksRemaining);
-
-        if(_ret == ERR_QUEUE_OK) {
+            if (timeout != portMAX_DELAY) {
+                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+            }
             m_mutexAdd->unlock();
-            break;
         }
-        
 
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-        m_mutexAdd->unlock();
+        // Old with out RTOS timeout support
+        /*m_mutexAdd.lock();
+        m_listHooks.enqueue(entry, timeout);
+        m_mutexAdd.unlock();*/
+
+        return _ret;
     }
 
-    // Old with out RTOS timeout support
-    /*m_mutexAdd.lock();
-    m_listHooks.enqueue(entry, timeout);
-    m_mutexAdd.unlock();*/
+    /*--------------------------------------
+    * dequeue()
+    * -------------------------------------*/
+    int base_tickhook::dequeue(base_tickhook_entry* entry, unsigned int timeout) {
+        if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
 
-    return _ret;
-}
+        TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
+        TickType_t xTicksRemaining = timeout;
+        int _ret = ERR_TIMEOUT;
 
-/*--------------------------------------
- * dequeue()
- * -------------------------------------*/
-int base_tickhook::dequeue(base_tickhook_entry* entry, unsigned int timeout) {
-    if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
+        while(xTicksRemaining <= timeout) {
+        if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+                    break;
+            }
 
-    TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
-    TickType_t xTicksRemaining = timeout;
-    int _ret = ERR_TIMEOUT;
+            _ret = m_listHooks.dequeue(entry, xTicksRemaining);
 
-    while(xTicksRemaining <= timeout) {
-       if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+            if(_ret == ERR_QUEUE_OK) {
+                m_mutexAdd->unlock();
                 break;
-        }
+            }
+            
 
-        _ret = m_listHooks.dequeue(entry, xTicksRemaining);
-
-        if(_ret == ERR_QUEUE_OK) {
+            if (timeout != portMAX_DELAY) {
+                xTicksRemaining = xTicksEnd - xTaskGetTickCount();
+            }
             m_mutexAdd->unlock();
-            break;
         }
+        return _ret;
         
-
-        if (timeout != portMAX_DELAY) {
-            xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-        }
-        m_mutexAdd->unlock();
+        
+        //automutx_t lock(m_mutexAdd);
+        //m_listHooks.dequeue(entry, timeout);
     }
-    return _ret;
-    
-    
-    //automutx_t lock(m_mutexAdd);
-    //m_listHooks.dequeue(entry, timeout);
-}
 
-/*--------------------------------------
- * clear()
- * -------------------------------------*/
-void base_tickhook::clear() {
-    automutx_t lock(m_mutexAdd);
-    m_listHooks.clear();
-}
-/*--------------------------------------
- * reset()
- * -------------------------------------*/
-void base_tickhook::reset() {
-    automutx_t lock(m_mutexAdd);
-
-    if(!m_listHooks.is_empty()) 
+    /*--------------------------------------
+    * clear()
+    * -------------------------------------*/
+    void base_tickhook::clear() {
+        automutx_t lock(m_mutexAdd);
         m_listHooks.clear();
+    }
+    /*--------------------------------------
+    * reset()
+    * -------------------------------------*/
+    void base_tickhook::reset() {
+        automutx_t lock(m_mutexAdd);
 
-    if(!m_listToAdd.is_empty()) 
-        m_listToAdd.clear();
+        if(!m_listHooks.is_empty()) 
+            m_listHooks.clear();
 
-    m_iCurrent = 0;
-}
+        if(!m_listToAdd.is_empty()) 
+            m_listToAdd.clear();
 
-/*--------------------------------------
- * count()
- * -------------------------------------*/
-unsigned int base_tickhook::count() {
-    return m_listHooks.get_num_items();
-}
+        m_iCurrent = 0;
+    }
 
-/*--------------------------------------
- * swap()
- * -------------------------------------*/
-void base_tickhook::swap() {
-    automutx_t lock(m_mutexAdd);
+    /*--------------------------------------
+    * count()
+    * -------------------------------------*/
+    unsigned int base_tickhook::count() {
+        return m_listHooks.get_num_items();
+    }
 
-    base_tickhook_entry *entry = 0;
-    
-    while( (m_listToAdd.dequeue(&entry) == ERR_QUEUE_OK) ) {
-        enqueue(entry, timeout);
+    /*--------------------------------------
+    * swap()
+    * -------------------------------------*/
+    void base_tickhook::swap() {
+        automutx_t lock(m_mutexAdd);
+
+        base_tickhook_entry *entry = 0;
+        
+        while( (m_listToAdd.dequeue(&entry) == ERR_QUEUE_OK) ) {
+            enqueue(entry, timeout);
+        }
     }
 }
-
 
 
 #endif

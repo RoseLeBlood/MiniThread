@@ -20,24 +20,26 @@
 
 #include "mn_basic_semaphore.hpp"
 
-/**
- * \ingroup lock
- */ 
-class basic_binary_semaphore : public basic_semaphore {
-public:
+namespace mn {
   /**
-   * Create the binary semaphore
-   * 
-   * @note When enabled the config item MN_THREAD_CONFIG_USE_EXCEPTIONS then throw on error
-   * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
-   * enabled, then with debug informations.
-   * When the config item MN_THREAD_CONFIG_USE_EXCEPTIONS disabled then get the created error code
-   * with basic_semaphore::get_error()
-   */
-  basic_binary_semaphore();
-  virtual ~basic_binary_semaphore();
-};
+   * \ingroup lock
+   */ 
+  class basic_binary_semaphore : public basic_semaphore {
+  public:
+    /**
+     * Create the binary semaphore
+     * 
+     * @note When enabled the config item MN_THREAD_CONFIG_USE_EXCEPTIONS then throw on error
+     * the lockcreate_exception exceptions and the config item MN_THREAD_CONFIG_DEBUG 
+     * enabled, then with debug informations.
+     * When the config item MN_THREAD_CONFIG_USE_EXCEPTIONS disabled then get the created error code
+     * with basic_semaphore::get_error()
+     */
+    basic_binary_semaphore();
+    virtual ~basic_binary_semaphore();
+  };
 
-using binary_semaphore_t = basic_binary_semaphore;
+  using binary_semaphore_t = basic_binary_semaphore;
+}
 
 #endif

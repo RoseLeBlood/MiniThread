@@ -19,66 +19,70 @@
 
 #include "mn_task_utils.hpp"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_convar_task::basic_convar_task()
-     :  basic_task() { 
-        
-}
+namespace mn {
+    namespace ext {
+        //-----------------------------------
+        //  construtor
+        //-----------------------------------
+        basic_convar_task::basic_convar_task()
+            :  basic_task() { 
+                
+        }
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_convar_task::basic_convar_task(std::string strName, basic_task::priority uiPriority, 
-    unsigned short  usStackDepth) 
-       : basic_task(strName, uiPriority, usStackDepth), m_waitSem() { 
+        //-----------------------------------
+        //  construtor
+        //-----------------------------------
+        basic_convar_task::basic_convar_task(std::string strName, basic_task::priority uiPriority, 
+            unsigned short  usStackDepth) 
+            : basic_task(strName, uiPriority, usStackDepth), m_waitSem() { 
 
-     m_waitSem.lock();    
-}
+            m_waitSem.lock();    
+        }
 
-//-----------------------------------
-//  signal
-//-----------------------------------
-void basic_convar_task::signal() {
-    autolock_t autolock(m_runningMutex);
-    m_waitSem.unlock(); 
+        //-----------------------------------
+        //  signal
+        //-----------------------------------
+        void basic_convar_task::signal() {
+            autolock_t autolock(m_runningMutex);
+            m_waitSem.unlock(); 
 
-    task_utils::notify_give(this);
+            task_utils::notify_give(this);
 
-    on_signal();
-} 
+            on_signal();
+        } 
 
-//-----------------------------------
-//  signal_all
-//-----------------------------------
-void basic_convar_task::signal_all() {
-    autolock_t autolock(m_runningMutex);
+        //-----------------------------------
+        //  signal_all
+        //-----------------------------------
+        void basic_convar_task::signal_all() {
+            autolock_t autolock(m_runningMutex);
 
-    m_waitSem.unlock(); 
-    task_utils::notify_give(this);
-    
-    on_signal();
+            m_waitSem.unlock(); 
+            task_utils::notify_give(this);
+            
+            on_signal();
 
-    basic_convar_task* __child = (basic_convar_task*)(m_pChild);
+            basic_convar_task* __child = (basic_convar_task*)(m_pChild);
 
-    if(__child) 
-        __child->signal_all();
-}
+            if(__child) 
+                __child->signal_all();
+        }
 
-//-----------------------------------
-//  wait
-//-----------------------------------
-int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
-    autolock_t autolock(m_runningMutex);
-    
-    cv.add_list(this);
-    
-    cvl.unlock();
-    int ret = m_waitSem.lock(timeOut);
-    cvl.lock();
+        //-----------------------------------
+        //  wait
+        //-----------------------------------
+        int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {
+            autolock_t autolock(m_runningMutex);
+            
+            cv.add_list(this);
+            
+            cvl.unlock();
+            int ret = m_waitSem.lock(timeOut);
+            cvl.lock();
 
-    task_utils::notify_take(true, timeOut);
+            task_utils::notify_take(true, timeOut);
 
-    return ret; 
+            return ret; 
+        }
+    }
 }

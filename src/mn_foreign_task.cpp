@@ -19,87 +19,90 @@
 
 #if MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT == MN_THREAD_CONFIG_YES
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-foreign_task::foreign_task() 
-  : foreign_task(xTaskGetCurrentTaskHandle()) { 
+namespace mn {
+  namespace ext {
+    //-----------------------------------
+    //  construtor
+    //-----------------------------------
+    foreign_task::foreign_task() 
+      : foreign_task(xTaskGetCurrentTaskHandle()) { 
 
-  m_strName = "current_foreign_task";
-}
+      m_strName = "current_foreign_task";
+    }
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-foreign_task::foreign_task(void* t)
-  : basic_task() { 
-  
-  m_pHandle = t;
+    //-----------------------------------
+    //  construtor
+    //-----------------------------------
+    foreign_task::foreign_task(void* t)
+      : basic_task() { 
+      
+      m_pHandle = t;
 
-  m_strName = "foreign_task";
-  m_iCore = xPortGetCoreID();
-  m_iID = uxTaskGetTaskNumber(m_pHandle);
-  m_usStackDepth = 0;
+      m_strName = "foreign_task";
+      m_iCore = xPortGetCoreID();
+      m_iID = uxTaskGetTaskNumber(m_pHandle);
+      m_usStackDepth = 0;
 
-  if (xPortInIsrContext()) {
-    m_uiPriority = (basic_task::priority)uxTaskPriorityGetFromISR(m_pHandle);
-  } else {
-	  m_uiPriority = (basic_task::priority)uxTaskPriorityGet(m_pHandle);
+      if (xPortInIsrContext()) {
+        m_uiPriority = (basic_task::priority)uxTaskPriorityGetFromISR(m_pHandle);
+      } else {
+        m_uiPriority = (basic_task::priority)uxTaskPriorityGet(m_pHandle);
+      }
+      m_pChild = NULL;
+      m_pParent = NULL;
+    }
+
+    //-----------------------------------
+    //  __internal_create_usings_types
+    //-----------------------------------
+    int foreign_task::__internal_create_usings_types() {
+      m_continuemutex.lock();
+
+      if (m_pHandle == 0) {
+        m_continuemutex.unlock();
+        return ERR_TASK_CANTSTARTTHREAD;
+      }
+      m_continuemutex.unlock();
+
+      return ERR_TASK_OK;
+    }
+
+    //-----------------------------------
+    //  get_idle_task
+    //-----------------------------------
+    foreign_task* foreign_task::get_idle_task() {
+      void* rawHandle = xTaskGetIdleTaskHandle();
+
+      return foreign_task::create_from(rawHandle);
+    }
+
+    //-----------------------------------
+    //  get_idle_task
+    //-----------------------------------
+    foreign_task* foreign_task::get_idle_task(UBaseType_t cpuid) {
+      void* rawHandle = xTaskGetIdleTaskHandleForCPU(cpuid);
+
+      foreign_task* thread = foreign_task::create_from(rawHandle);
+
+      if(thread) thread->m_iCore = cpuid;
+      
+      return thread;
+    }
+
+    //-----------------------------------
+    //  create_from
+    //-----------------------------------
+    foreign_task* foreign_task::create_from(void* foreign_handle, int* ret_error ) {
+        if(foreign_handle == NULL) return NULL;
+
+        int _error_ret = 0;
+        foreign_task* newThread = new foreign_task(foreign_handle);
+
+        _error_ret = newThread->__internal_create_usings_types();
+        if(ret_error) *ret_error = _error_ret;
+
+        return newThread;
+    }
   }
-  m_pChild = NULL;
-  m_pParent = NULL;
 }
-
-//-----------------------------------
-//  __internal_create_usings_types
-//-----------------------------------
-int foreign_task::__internal_create_usings_types() {
-  m_continuemutex.lock();
-
-	if (m_pHandle == 0) {
-    m_continuemutex.unlock();
-		return ERR_TASK_CANTSTARTTHREAD;
-  }
-  m_continuemutex.unlock();
-
-	return ERR_TASK_OK;
-}
-
-//-----------------------------------
-//  get_idle_task
-//-----------------------------------
-foreign_task* foreign_task::get_idle_task() {
-  void* rawHandle = xTaskGetIdleTaskHandle();
-
-  return foreign_task::create_from(rawHandle);
-}
-
-//-----------------------------------
-//  get_idle_task
-//-----------------------------------
-foreign_task* foreign_task::get_idle_task(UBaseType_t cpuid) {
-  void* rawHandle = xTaskGetIdleTaskHandleForCPU(cpuid);
-
-  foreign_task* thread = foreign_task::create_from(rawHandle);
-
-  if(thread) thread->m_iCore = cpuid;
-  
-  return thread;
-}
-
-//-----------------------------------
-//  create_from
-//-----------------------------------
-foreign_task* foreign_task::create_from(void* foreign_handle, int* ret_error ) {
-    if(foreign_handle == NULL) return NULL;
-
-    int _error_ret = 0;
-    foreign_task* newThread = new foreign_task(foreign_handle);
-
-    _error_ret = newThread->__internal_create_usings_types();
-    if(ret_error) *ret_error = _error_ret;
-
-    return newThread;
-}
-
 #endif

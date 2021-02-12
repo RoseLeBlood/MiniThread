@@ -51,105 +51,108 @@
     #define THROW_LOCK_EXP2(CODE, RET)  { set_error(CODE); return RET; }
 #endif //MN_THREAD_CONFIG_USE_EXCEPTIONS
 
-/**
- *
- *  Base wrapper class around FreeRTOS's implementation of semaphores.
- * 
- * @ingroup semaphore
- * \ingroup lock
- */
-class basic_semaphore : public ILockObject {
-public:
+namespace mn {
+    
   /**
-   * Construtor
-   */ 
-  basic_semaphore();
-  /**
-   * Copy Construtor
-   */ 
-  basic_semaphore(const basic_semaphore& other);
-
-  /**
-   * lock (take) a semaphore.
    *
-   * @param timeout How long to wait to get the lock until giving up.
-   * @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
+   *  Base wrapper class around FreeRTOS's implementation of semaphores.
    * 
-   * @example
-   * basic_semaphore sem = basic_semaphore();
-   * sem.lock(100);
+   * @ingroup semaphore
+   * \ingroup lock
    */
-	virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT);
+  class basic_semaphore : public ILockObject {
+  public:
+    /**
+     * Construtor
+     */ 
+    basic_semaphore();
+    /**
+     * Copy Construtor
+     */ 
+    basic_semaphore(const basic_semaphore& other);
 
-  /**
-   *  lock (take) a semaphore.
-   * 
-   *  @param abs_time How long to wait to get the lock until giving up.
-   * 
-   *  @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
-   */
-  virtual int time_lock(const struct timespec *timeout);
+    /**
+     * lock (take) a semaphore.
+     *
+     * @param timeout How long to wait to get the lock until giving up.
+     * @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
+     * 
+     * @example
+     * basic_semaphore sem = basic_semaphore();
+     * sem.lock(100);
+     */
+    virtual int lock(unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_SEMAPHORE_DEFAULT);
 
-  /**
-   *  unlock (give) a semaphore.
-   *
-   *  @return ERR_SPINLOCK_OK if the Semaphore was unlocked, ERR_SPINLOCK_UNLOCK if it failed.
-   */
-	virtual int unlock();
+    /**
+     *  lock (take) a semaphore.
+     * 
+     *  @param abs_time How long to wait to get the lock until giving up.
+     * 
+     *  @return ERR_SPINLOCK_OK if the Semaphore was locked, ERR_SPINLOCK_LOCK if it timed out.
+     */
+    virtual int time_lock(const struct timespec *timeout);
 
-  /**
-   * Get the FreeRTOS handle
-   * 
-   * @return the FreeRTOS handle
-   */
-  void* get_handle()                      { return m_pSpinlock; }
+    /**
+     *  unlock (give) a semaphore.
+     *
+     *  @return ERR_SPINLOCK_OK if the Semaphore was unlocked, ERR_SPINLOCK_UNLOCK if it failed.
+     */
+    virtual int unlock();
 
-  /**
-   * Get the error code on creating
-   * @return The error code on creating
-   */ 
-  int   get_error()                       { return m_iCreateErrorCode; }
+    /**
+     * Get the FreeRTOS handle
+     * 
+     * @return the FreeRTOS handle
+     */
+    void* get_handle()                      { return m_pSpinlock; }
 
-  virtual bool is_initialized() const     { return m_pSpinlock != NULL; }
+    /**
+     * Get the error code on creating
+     * @return The error code on creating
+     */ 
+    int   get_error()                       { return m_iCreateErrorCode; }
 
-  #if configQUEUE_REGISTRY_SIZE > 0
-    void set_name(const char* name)       { vQueueAddToRegistry(m_pSpinlock, name); }
+    virtual bool is_initialized() const     { return m_pSpinlock != NULL; }
+
+    #if configQUEUE_REGISTRY_SIZE > 0
+      void set_name(const char* name)       { vQueueAddToRegistry(m_pSpinlock, name); }
+    #endif
+  public:
+    
+    bool operator == (const basic_semaphore &r) const {
+      return m_pSpinlock == r.m_pSpinlock;
+    }
+
+    bool operator != (const basic_semaphore &r) const {
+      return !operator==(r);
+    }
+
+    bool operator < (const basic_semaphore &r) const {
+      return m_pSpinlock < r.m_pSpinlock;
+    }
+
+    bool operator > (const basic_semaphore &r) const {
+      return m_pSpinlock > r.m_pSpinlock;
+    }
+  protected:
+    /** Set the error codes @param error The error code */
+    void  set_error(int error)              { m_iCreateErrorCode = error; }
+  protected:
+    /**
+     *  FreeRTOS semaphore handle.
+     */
+    void* m_pSpinlock;
+
+    #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+      StaticSemaphore_t m_SemaphoreBasicBuffer;
   #endif
-public:
-  
-  bool operator == (const basic_semaphore &r) const {
-    return m_pSpinlock == r.m_pSpinlock;
-  }
 
-  bool operator != (const basic_semaphore &r) const {
-    return !operator==(r);
-  }
-
-  bool operator < (const basic_semaphore &r) const {
-    return m_pSpinlock < r.m_pSpinlock;
-  }
-
-  bool operator > (const basic_semaphore &r) const {
-    return m_pSpinlock > r.m_pSpinlock;
-  }
-protected:
-  /** Set the error codes @param error The error code */
-  void  set_error(int error)              { m_iCreateErrorCode = error; }
-protected:
-  /**
-   *  FreeRTOS semaphore handle.
-   */
-	void* m_pSpinlock;
-
-  #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-    StaticSemaphore_t m_SemaphoreBasicBuffer;
-#endif
-
-  /**
-   * A saved / cached copy of error code on creating
-   */ 
-  int m_iCreateErrorCode;
-  
-};
+    /**
+     * A saved / cached copy of error code on creating
+     */ 
+    int m_iCreateErrorCode;
+    
+  };
+}
 
 #endif

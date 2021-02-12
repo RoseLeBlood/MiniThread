@@ -23,6 +23,7 @@
 #include "mn_auto_ptr.hpp"
 
 namespace nm {
+
     template < typename T, class TLOCK > 
     class basic_singleton {
     public:
@@ -54,6 +55,7 @@ namespace nm {
 
     template < typename T, class TLOCK > 
     using singleton_t = basic_singleton;
+    
 }
 
 #endif

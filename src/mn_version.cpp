@@ -20,47 +20,49 @@
 
 #include <stdio.h>
 
-//-----------------------------------
-//  m_pInstance
-//-----------------------------------
-libmnVersion* libmnVersion::m_pInstance = NULL;
+namespace mn {
+	//-----------------------------------
+	//  m_pInstance
+	//-----------------------------------
+	version* version::m_pInstance = NULL;
 
-//-----------------------------------
-//  constructor
-//-----------------------------------
-libmnVersion::libmnVersion()
-{
-	m_major = MN_THREAD_MAJOR_VERSION;
-	m_minor = MN_THREAD_MINOR_VERSION;
-	m_debug = MN_THREAD_DEBUG_VERSION;
+	//-----------------------------------
+	//  constructor
+	//-----------------------------------
+	version::version()
+	{
+		m_major = MN_THREAD_MAJOR_VERSION;
+		m_minor = MN_THREAD_MINOR_VERSION;
+		m_debug = MN_THREAD_DEBUG_VERSION;
 
-	m_license = std::string("-LGPL");
+		m_license = std::string("-LGPL");
 
-#if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
-  	m_extras = std::string("-MX");
-#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
-  	m_extras = std::string("-BS");
-#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
-  	m_extras = std::string("-CS");
-#endif
-}
+	#if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
+		m_extras = std::string("-MX");
+	#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
+		m_extras = std::string("-BS");
+	#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
+		m_extras = std::string("-CS");
+	#endif
+	}
 
-//-----------------------------------
-//  deconstructor
-//-----------------------------------
-libmnVersion::~libmnVersion() { }
+	//-----------------------------------
+	//  deconstructor
+	//-----------------------------------
+	version::~version() { }
 
-//-----------------------------------
-//  to_string
-//-----------------------------------
-std::string libmnVersion::to_string() const {
-	std::string text = std::string(MN_THREAD_VERSION_STRING);
+	//-----------------------------------
+	//  to_string
+	//-----------------------------------
+	std::string version::to_string() const {
+		std::string text = std::string(MN_THREAD_VERSION_STRING);
 
 
-#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
-	text += std::string(MN_THREAD_BETA_VERSION_STRING);
-#endif
-	 
-	text += m_license + m_extras;
-	return text;
+	#if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
+		text += std::string(MN_THREAD_BETA_VERSION_STRING);
+	#endif
+		
+		text += m_license + m_extras;
+		return text;
+	}
 }

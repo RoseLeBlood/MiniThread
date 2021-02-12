@@ -25,6 +25,7 @@
     #include "mn_convar_task.hpp"
     #include "mn_autolock.hpp"
 
+namespace mn {
     /**
      * \ingroup lock
      */ 
@@ -75,6 +76,7 @@
     using timed_binary_semaphore_t        = basic_timed_lock<binary_semaphore_t>;
     using timed_counting_semaphore_t      = basic_timed_lock<counting_semaphore_t>;
 
+}
 #if MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES 
     using timed_remutex_t = basic_timed_lock<remutex_t>;
 #endif //MN_THREAD_CONFIG_RECURSIVE_MUTEX

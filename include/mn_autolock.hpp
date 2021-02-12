@@ -23,143 +23,145 @@
 #include "mn_semaphore.hpp"
 #include "mn_null_lock.hpp"
 
-/**
- * Macro for locked sections
- * 
- * @param LOCK The typ of lock class
- * @param OBJECT The lock object
- * 
- * @example @code 
- * mutex_t mutex;
- * LOCKED_SECTION(mutex_t, mutex) {
- *  locked
- * }
- * unlocked
- * @endcode
- * 
- * @ingroup lock
- */ 
-#define LOCKED_SECTION(LOCK, OBJECT) if( (basic_autolock<LOCK> lock(OBJECT)) )
-
-/**
- *  Synchronization helper class that leverages the C++ language to help
- *  prevent deadlocks.
- *  This is a C++11 feature that allows ILockObject 
- *  Locking and Unlocking to behave following an RAII style. 
- *  The constructor of this helper object locks the ILockObject. 
- *  The destructor unlocks the ILockObject. 
- * 
- * @ingroup semaphore
- * \ingroup lock
- */
-template <class LOCK = basic_mutex>
-class  basic_autolock {
-public:
+namespace mn {
   /**
-   *  Create a basic_autolock with a specific LockType, without timeout
-   *
-   *  @post The LockObject will be locked.
-   */
-	basic_autolock(LOCK &m) 
-    : m_ref_lock(m) {
-    m_iErrorLock = m_ref_lock.lock(portMAX_DELAY);
-  }
-  /**
-   * Create a basic_autolock with a specific LockType, with timeout
-   *
-   * @param xTicksToWait How long to wait to get the lock until giving up.
+   * Macro for locked sections
    * 
-   * @post The LockObject will be locked.
-   */
-	basic_autolock(LOCK &m, TickType_t xTicksToWait) 
-    : m_ref_lock(m) {
-    m_iErrorLock = m_ref_lock.lock(xTicksToWait);
-  }
-  /**
-   *  Destroy a basic_autolock.
-   *
-   *  @post The LockObject will be unlocked, when the lock Object locked
-   */
-	~basic_autolock() {
-    if(m_iErrorLock == NO_ERROR)
-      m_ref_lock.unlock();
-  }
-
-  /**
-   * Helper for lock sections, see example
+   * @param LOCK The typ of lock class
+   * @param OBJECT The lock object
    * 
-   * @code{c}
-   * LockType_t mutex;
-   * 
-   * if( (autolock_t lock(mutex)) ) {
-   *   locked
+   * @example @code 
+   * mutex_t mutex;
+   * LOCKED_SECTION(mutex_t, mutex) {
+   *  locked
    * }
    * unlocked
    * @endcode
-   */ 
-  explicit operator bool() { return is_locked(); }
-
-   /**
-     *  We do not want a copy constructor.
-     */
-  basic_autolock(const basic_autolock&) = delete;
-  basic_autolock& operator=(const basic_autolock&) = delete;
-
-  /**
-   * Get the locked error code.
    * 
-   * @return The locked error code
-   */  
-  int get_error() { return m_iErrorLock; }
-
-  bool is_locked() {
-    return (m_iErrorLock == NO_ERROR);
-  }
-private:
-  /**
-   *  Reference to the LockObject we locked, so it can be unlocked
-   *  in the destructor.
-   */
-	LOCK &m_ref_lock;
-  /**
-   * A copy fom locked error code 
+   * @ingroup lock
    */ 
-  int m_iErrorLock;
-};
+  #define LOCKED_SECTION(LOCK, OBJECT) if( (basic_autolock<LOCK> lock(OBJECT)) )
 
-/**
- * A autolock type for counting_semaphore_t objects
- */
-using autocsemp_t = basic_autolock<counting_semaphore_t>;
+  /**
+   *  Synchronization helper class that leverages the C++ language to help
+   *  prevent deadlocks.
+   *  This is a C++11 feature that allows ILockObject 
+   *  Locking and Unlocking to behave following an RAII style. 
+   *  The constructor of this helper object locks the ILockObject. 
+   *  The destructor unlocks the ILockObject. 
+   * 
+   * @ingroup semaphore
+   * \ingroup lock
+   */
+  template <class LOCK = basic_mutex>
+  class  basic_autolock {
+  public:
+    /**
+     *  Create a basic_autolock with a specific LockType, without timeout
+     *
+     *  @post The LockObject will be locked.
+     */
+    basic_autolock(LOCK &m) 
+      : m_ref_lock(m) {
+      m_iErrorLock = m_ref_lock.lock(portMAX_DELAY);
+    }
+    /**
+     * Create a basic_autolock with a specific LockType, with timeout
+     *
+     * @param xTicksToWait How long to wait to get the lock until giving up.
+     * 
+     * @post The LockObject will be locked.
+     */
+    basic_autolock(LOCK &m, TickType_t xTicksToWait) 
+      : m_ref_lock(m) {
+      m_iErrorLock = m_ref_lock.lock(xTicksToWait);
+    }
+    /**
+     *  Destroy a basic_autolock.
+     *
+     *  @post The LockObject will be unlocked, when the lock Object locked
+     */
+    ~basic_autolock() {
+      if(m_iErrorLock == NO_ERROR)
+        m_ref_lock.unlock();
+    }
 
-/**
- * A autolock type for binary_semaphore_t objects
- */
-using autobinsemp_t = basic_autolock<binary_semaphore_t>;
+    /**
+     * Helper for lock sections, see example
+     * 
+     * @code{c}
+     * LockType_t mutex;
+     * 
+     * if( (autolock_t lock(mutex)) ) {
+     *   locked
+     * }
+     * unlocked
+     * @endcode
+     */ 
+    explicit operator bool() { return is_locked(); }
 
-/**
- * A autolock type for mutex_t objects
- */
-using automutx_t = basic_autolock<mutex_t>;
+    /**
+       *  We do not want a copy constructor.
+       */
+    basic_autolock(const basic_autolock&) = delete;
+    basic_autolock& operator=(const basic_autolock&) = delete;
 
-#if (MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES)
-#include "mn_recursive_mutex.hpp"
-/**
- * A autolock type for remutex_t objects
- */
-using autoremutx_t = basic_autolock<remutex_t>;
-#endif
+    /**
+     * Get the locked error code.
+     * 
+     * @return The locked error code
+     */  
+    int get_error() { return m_iErrorLock; }
 
-#if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
-  using LockType_t = mutex_t;
-#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
-  using LockType_t = binary_semaphore_t;
-#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
-  using LockType_t = counting_semaphore_t;
-//#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_RECURSIVE_MUTEX
-//  using LockType_t = remutex_t;
-#endif
+    bool is_locked() {
+      return (m_iErrorLock == NO_ERROR);
+    }
+  private:
+    /**
+     *  Reference to the LockObject we locked, so it can be unlocked
+     *  in the destructor.
+     */
+    LOCK &m_ref_lock;
+    /**
+     * A copy fom locked error code 
+     */ 
+    int m_iErrorLock;
+  };
 
-using autolock_t = basic_autolock<LockType_t>;
+  /**
+   * A autolock type for counting_semaphore_t objects
+   */
+  using autocsemp_t = basic_autolock<counting_semaphore_t>;
+
+  /**
+   * A autolock type for binary_semaphore_t objects
+   */
+  using autobinsemp_t = basic_autolock<binary_semaphore_t>;
+
+  /**
+   * A autolock type for mutex_t objects
+   */
+  using automutx_t = basic_autolock<mutex_t>;
+
+  #if (MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES)
+  #include "mn_recursive_mutex.hpp"
+  /**
+   * A autolock type for remutex_t objects
+   */
+  using autoremutx_t = basic_autolock<remutex_t>;
+  #endif
+
+  #if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX
+    using LockType_t = mutex_t;
+  #elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_BINARY_SEMAPHORE
+    using LockType_t = binary_semaphore_t;
+  #elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_COUNTING_SEMAPHORE
+    using LockType_t = counting_semaphore_t;
+  //#elif MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_RECURSIVE_MUTEX
+  //  using LockType_t = remutex_t;
+  #endif
+
+  using autolock_t = basic_autolock<LockType_t>;
+}
 
 #endif

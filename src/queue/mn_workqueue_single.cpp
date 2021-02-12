@@ -18,36 +18,40 @@
 #include "mn_config.hpp"
 #include "queue/mn_workqueue_single.hpp"
 
-//-----------------------------------
-//  constructor
-//-----------------------------------
-basic_work_queue_single::basic_work_queue_single( basic_task::priority uiPriority,
-                                                  uint16_t usStackDepth, uint8_t uiMaxWorkItems) 
+namespace mn {
+    namespace queue {
+        //-----------------------------------
+        //  constructor
+        //-----------------------------------
+        basic_work_queue_single::basic_work_queue_single( basic_task::priority uiPriority,
+                                                        uint16_t usStackDepth, uint8_t uiMaxWorkItems) 
 
-    : basic_work_queue(uiPriority, usStackDepth, uiMaxWorkItems) {
+            : basic_work_queue(uiPriority, usStackDepth, uiMaxWorkItems) {
 
-    m_pWorker = new work_queue_task("single_workqueue_thread", uiPriority, usStackDepth, this);
-}
+            m_pWorker = new work_queue_task("single_workqueue_thread", uiPriority, usStackDepth, this);
+        }
 
-//-----------------------------------
-//  create_engine
-//-----------------------------------
-int basic_work_queue_single::create_engine(int iCore) {
-    automutx_t lock(m_ThreadStatus);
+        //-----------------------------------
+        //  create_engine
+        //-----------------------------------
+        int basic_work_queue_single::create_engine(int iCore) {
+            automutx_t lock(m_ThreadStatus);
 
-    if(m_bRunning) { 
-        return ERR_WORKQUEUE_ALREADYINIT;
+            if(m_bRunning) { 
+                return ERR_WORKQUEUE_ALREADYINIT;
+            }
+            m_bRunning = true;
+
+            return (m_pWorker->start(iCore) == NO_ERROR) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_CANTCREATE;
+
+        }
+
+        //-----------------------------------
+        //  destroy_engine
+        //-----------------------------------
+        void basic_work_queue_single::destroy_engine() {
+            m_pWorker->kill();
+        }
     }
-    m_bRunning = true;
-
-    return (m_pWorker->start(iCore) == NO_ERROR) ? ERR_WORKQUEUE_OK : ERR_WORKQUEUE_CANTCREATE;
-
-}
-
-//-----------------------------------
-//  destroy_engine
-//-----------------------------------
-void basic_work_queue_single::destroy_engine() {
-    m_pWorker->kill();
 }
 

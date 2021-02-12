@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -15,15 +15,18 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "miniThread.hpp"
-#include <stdio.h>
+#ifndef _MINLIB_MEMPOOL_DELETER_H_
+#define _MINLIB_MEMPOOL_DELETER_H_
 
 namespace mn {
-  //-----------------------------------
-  //  mn_panic
-  //-----------------------------------
-  void panic() {
-    printf("MiniThread-PANIC!!!");
-    for(;;) { }
-  }
+    namespace memory {
+        template<typename T, class TMEMPOOL> 
+        struct basic_mempool_delete {
+            constexpr basic_mempool_delete() = default;
+            constexpr basic_mempool_delete(const basic_mempool_delete&) {}
+
+            void operator()(T* ptr, TMEMPOOL& mempool) const {  mempool.free(ptr); }
+        };
+    }
 }
+#endif

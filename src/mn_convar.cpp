@@ -22,53 +22,57 @@
 #include "mn_convar_task.hpp"
 #include "mn_task_utils.hpp"
 
-//-----------------------------------
-//  construtor
-//-----------------------------------
-basic_condition_variable::basic_condition_variable() 
-    : m_mutex(), m_waitList() {
-}
+namespace mn  {
+    namespace ext {
+        //-----------------------------------
+        //  construtor
+        //-----------------------------------
+        basic_condition_variable::basic_condition_variable() 
+            : m_mutex(), m_waitList() {
+        }
 
-//-----------------------------------
-//  add_list
-//-----------------------------------
-void basic_condition_variable::add_list(basic_convar_task *thread) {
-    automutx_t autolock(m_mutex);
+        //-----------------------------------
+        //  add_list
+        //-----------------------------------
+        void basic_condition_variable::add_list(basic_convar_task *thread) {
+            automutx_t autolock(m_mutex);
 
-    m_waitList.push_back(thread);
-}
+            m_waitList.push_back(thread);
+        }
 
-//-----------------------------------
-//  signal
-//-----------------------------------
-void basic_condition_variable::signal(bool with_child_thread) {
-    automutx_t autolock(m_mutex);
+        //-----------------------------------
+        //  signal
+        //-----------------------------------
+        void basic_condition_variable::signal(bool with_child_thread) {
+            automutx_t autolock(m_mutex);
 
-    if ( !m_waitList.empty() ) {
-        basic_convar_task *thr = m_waitList.front();
-        m_waitList.pop_front();
+            if ( !m_waitList.empty() ) {
+                basic_convar_task *thr = m_waitList.front();
+                m_waitList.pop_front();
 
-        if(with_child_thread)
-            thr->signal_all();
-        else
-            thr->signal();
-    }
-}
+                if(with_child_thread)
+                    thr->signal_all();
+                else
+                    thr->signal();
+            }
+        }
 
-//-----------------------------------
-//  broadcast
-//-----------------------------------
-void basic_condition_variable::broadcast(bool with_child_thread) {
-    automutx_t autolock(m_mutex);
+        //-----------------------------------
+        //  broadcast
+        //-----------------------------------
+        void basic_condition_variable::broadcast(bool with_child_thread) {
+            automutx_t autolock(m_mutex);
 
-    while ( !m_waitList.empty() ) {
-        basic_convar_task *thr = m_waitList.front();
-        m_waitList.pop_front();
-        
-        if(with_child_thread)
-            thr->signal_all();
-        else
-            thr->signal();
+            while ( !m_waitList.empty() ) {
+                basic_convar_task *thr = m_waitList.front();
+                m_waitList.pop_front();
+                
+                if(with_child_thread)
+                    thr->signal_all();
+                else
+                    thr->signal();
+            }
+        }
     }
 }
 

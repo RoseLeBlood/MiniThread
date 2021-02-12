@@ -21,40 +21,44 @@
 
 #include "../mn_task.hpp"
 
-class basic_work_queue;
+namespace mn {
+    namespace queue {
+        class basic_work_queue;
 
-/**
- * The basic worker task for single task and multi task workqueue engines
- * 
- * @ingroup queue
- */ 
-class work_queue_task : public basic_task {
-    public:
         /**
-         * Constructor for this workqueue task.
-         *
-         * @param strName Name of the task. Only useful for debugging.
-         * @param uiPriority FreeRTOS priority of this Task.
-         * @param usStackDepth Number of "words" allocated for the Task stack. 
-         * @param parent The base work_queue for this worker Task
-         */
-        work_queue_task(char const* strName, basic_task::priority uiPriority,
-                            unsigned short  usStackDepth,
-                            basic_work_queue* parent);
-
-        virtual ~work_queue_task();
-
-    protected:
-        /**
-         * Implementation of your actual work queue working code ( Omg ...)
-         * @return The pointer of m_uiNumWorks - @see get_num_works()
+         * The basic worker task for single task and multi task workqueue engines
+         * 
+         * @ingroup queue
          */ 
-        virtual void* on_task();
-    private:
-        /**
-         * Holder of the base work_queue for this worker thread
-         */
-        basic_work_queue* m_parentWorkQueue;
-};
+        class work_queue_task : public basic_task {
+            public:
+                /**
+                 * Constructor for this workqueue task.
+                 *
+                 * @param strName Name of the task. Only useful for debugging.
+                 * @param uiPriority FreeRTOS priority of this Task.
+                 * @param usStackDepth Number of "words" allocated for the Task stack. 
+                 * @param parent The base work_queue for this worker Task
+                 */
+                work_queue_task(char const* strName, basic_task::priority uiPriority,
+                                    unsigned short  usStackDepth,
+                                    basic_work_queue* parent);
+
+                virtual ~work_queue_task();
+
+            protected:
+                /**
+                 * Implementation of your actual work queue working code ( Omg ...)
+                 * @return The pointer of m_uiNumWorks - @see get_num_works()
+                 */ 
+                virtual void* on_task();
+            private:
+                /**
+                 * Holder of the base work_queue for this worker thread
+                 */
+                basic_work_queue* m_parentWorkQueue;
+        };
+    }
+}
 
 #endif

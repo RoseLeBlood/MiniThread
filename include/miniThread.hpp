@@ -58,6 +58,8 @@
 
 #endif
 
-void mn_panic();
+namespace mn {
+    void mn_panic();
+}
 
 #endif

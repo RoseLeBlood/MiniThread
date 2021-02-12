@@ -20,74 +20,76 @@
 
 #include "mn_tickhook_entry.hpp"
 
-/*--------------------------------------
- * base_tickhook_entry()
- * -------------------------------------*/
-base_tickhook_entry::base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted, 
-    void* pUserData)
+namespace mn {
+    /*--------------------------------------
+    * base_tickhook_entry()
+    * -------------------------------------*/
+    base_tickhook_entry::base_tickhook_entry(unsigned int iTicksToCall, bool bOneShoted, 
+        void* pUserData)
 
-    : m_pUserData(pUserData), 
-      m_iTicksToCall(iTicksToCall), 
-      m_bOneShoted(bOneShoted), 
-      m_bReady(false) { }
+        : m_pUserData(pUserData), 
+        m_iTicksToCall(iTicksToCall), 
+        m_bOneShoted(bOneShoted), 
+        m_bReady(false) { }
 
-/*--------------------------------------
- * set_ticks()
- * -------------------------------------*/
-bool base_tickhook_entry::set_ticks(unsigned int uiTicks) {
-    automutx_t lock(m_mutexEntry);
+    /*--------------------------------------
+    * set_ticks()
+    * -------------------------------------*/
+    bool base_tickhook_entry::set_ticks(unsigned int uiTicks) {
+        automutx_t lock(m_mutexEntry);
 
-    if(m_bReady) return false;
-    m_iTicksToCall = uiTicks; return true;
-}
-/*--------------------------------------
- * set_oneshot()
- * -------------------------------------*/
-bool base_tickhook_entry::set_oneshot(bool bIsOneShot) {
-    automutx_t lock(m_mutexEntry);
+        if(m_bReady) return false;
+        m_iTicksToCall = uiTicks; return true;
+    }
+    /*--------------------------------------
+    * set_oneshot()
+    * -------------------------------------*/
+    bool base_tickhook_entry::set_oneshot(bool bIsOneShot) {
+        automutx_t lock(m_mutexEntry);
 
-    if(m_bReady) return false;
-    m_bOneShoted = bIsOneShot; return true;
-}
-/*--------------------------------------
- * start()
- * -------------------------------------*/
-void base_tickhook_entry::start() {
-    automutx_t lock(m_mutexEntry);
+        if(m_bReady) return false;
+        m_bOneShoted = bIsOneShot; return true;
+    }
+    /*--------------------------------------
+    * start()
+    * -------------------------------------*/
+    void base_tickhook_entry::start() {
+        automutx_t lock(m_mutexEntry);
 
-    m_bReady = true;
-}
-/*--------------------------------------
- * stop()
- * -------------------------------------*/
-void base_tickhook_entry::stop() {
-    automutx_t lock(m_mutexEntry);
+        m_bReady = true;
+    }
+    /*--------------------------------------
+    * stop()
+    * -------------------------------------*/
+    void base_tickhook_entry::stop() {
+        automutx_t lock(m_mutexEntry);
 
-    m_bReady = false;
-}
-/*--------------------------------------
- * is_oneshoted()
- * -------------------------------------*/
-bool base_tickhook_entry::is_oneshoted() { 
-    automutx_t lock(m_mutexEntry);
+        m_bReady = false;
+    }
+    /*--------------------------------------
+    * is_oneshoted()
+    * -------------------------------------*/
+    bool base_tickhook_entry::is_oneshoted() { 
+        automutx_t lock(m_mutexEntry);
 
-    return m_bOneShoted; 
-}
-/*--------------------------------------
- * is_ready()
- * -------------------------------------*/
-bool base_tickhook_entry::is_ready() { 
-    automutx_t lock(m_mutexEntry);
+        return m_bOneShoted; 
+    }
+    /*--------------------------------------
+    * is_ready()
+    * -------------------------------------*/
+    bool base_tickhook_entry::is_ready() { 
+        automutx_t lock(m_mutexEntry);
 
-    return m_bReady; 
-}
-/*--------------------------------------
- * get_ticks()
- * -------------------------------------*/
-unsigned int base_tickhook_entry::get_ticks() { 
-    automutx_t lock(m_mutexEntry);
-    
-    return m_iTicksToCall; 
+        return m_bReady; 
+    }
+    /*--------------------------------------
+    * get_ticks()
+    * -------------------------------------*/
+    unsigned int base_tickhook_entry::get_ticks() { 
+        automutx_t lock(m_mutexEntry);
+        
+        return m_iTicksToCall; 
+    }
 }
 
 
