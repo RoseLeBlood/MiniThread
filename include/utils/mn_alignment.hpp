@@ -21,7 +21,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-namespace nm {
+namespace mn {
     namespace internal {
         #pragma warning(push)
 
@@ -31,7 +31,9 @@ namespace nm {
 	        T 		y;
 	    };
 
+        struct __attribute__ ((aligned (32))) aligned32 { uint64_t member[4]; } ;
         struct __attribute__ ((aligned (16))) aligned16 { uint64_t member[2]; } ;
+
         #pragma warning(pop)
 
         template<size_t N> struct type_with_alignment {
@@ -43,6 +45,7 @@ namespace nm {
         template<> struct type_with_alignment<4> { uint32_t member; };
         template<> struct type_with_alignment<8> { uint64_t member; };
         template<> struct type_with_alignment<16> { aligned16 member; };
+        template<> struct type_with_alignment<32> { aligned32 member; };
     }
     template<typename T>
 	struct aligof {
