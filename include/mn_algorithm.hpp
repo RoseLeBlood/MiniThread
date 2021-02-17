@@ -19,6 +19,8 @@
 #ifndef _MINLIB_STL_ALGORITHM_H_
 #define _MINLIB_STL_ALGORITHM_H_
 
+#include "mn_defines.hpp"
+
 #include "utils/mn_alignment.hpp"
 #include "utils/mn_inttokey.hpp"
 #include "utils/mn_utils.hpp"
@@ -27,17 +29,17 @@
 #include "mn_iterator.hpp"
 
 namespace mn {
-    template<typename T> 
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void  copy_construct(T* mem, const T& orig) {
 	        internal::copy_construct(mem, orig, int_to_type<has_trivial_copy<T>::value>());
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void construct(T* mem) {
 	        internal::construct(mem, int_to_type<has_trivial_constructor<T>::value>());
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void destruct(T* mem) {
 	        internal::destruct(mem, int_to_type<has_trivial_destructor<T>::value>());
 	}
@@ -50,22 +52,22 @@ namespace mn {
      * @param n How many elements are copy te destination
      * @param dest The destination
      */
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void copy_n(const T* src, size_t n, T* dest) {
 	        internal::copy_n(src, n, dest, int_to_type<has_trivial_copy<T>::value>());
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void copy(const T* src, const T* last, T* dest) {
 	        internal::copy(src, last, dest, int_to_type<has_trivial_copy<T>::value>());
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void copy_construct_n(T* src, size_t n, T* dest) {
 	        internal::copy_construct_n(src, n, dest, int_to_type<has_trivial_copy<T>::value>());
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void move_n(const T* from, size_t n, T* dest) {
         assert(from != dest || n == 0);
 
@@ -76,7 +78,7 @@ namespace mn {
         }
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void move(const T* src, const T* last, T* dest) {
         assert(src != dest || src == last);
         const size_t n = reinterpret_cast<uintptr_t>(last) - reinterpret_cast<uintptr_t>(src);
@@ -89,7 +91,7 @@ namespace mn {
         }
 	}
 
-	template<class TIter, class TFn> 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TFn) 
     TFn foreach(TIter src, TIter last, TFn fn) {
         while (src!=last)  {
             fn (*src); ++src;
@@ -97,15 +99,15 @@ namespace mn {
         return (fn);      
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void construct_n(T* src, size_t n) {
 	    internal::construct_n(src, n, int_to_type<has_trivial_constructor<T>::value>());
 	}
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void destruct_n(T* src, size_t n) {
 	    internal::destruct_n(src, n, int_to_type<has_trivial_destructor<T>::value>());
 	}
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void fill_n(T* src, size_t n, const T& val) {
         T* last = src + n;
        
@@ -123,17 +125,17 @@ namespace mn {
         }
 	}
 
-	template<typename TIter, typename TDist> 
+	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TFn) 
     inline void distance(TIter src, TIter last, TDist& dist) {
 	        internal::distance(src, last, dist, typename iterator_traits<TIter>::iterator_category());
 	}
 
-	template<typename TIter, typename TDist> 
+	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TFn) 
     inline void advance(TIter& iter, TDist off) {
 	        internal::advance(iter, off, typename iterator_traits<TIter>::iterator_category());
 	}
 
-	template<class TIter, typename T, class TPred> 
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred) 
     inline TIter lower_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
@@ -151,7 +153,7 @@ namespace mn {
 	        return src;
 	}
 
-	template<class TIter, typename T, class TPred> 
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred) 
     inline TIter upper_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
@@ -169,7 +171,7 @@ namespace mn {
 	        return src;
 	}
 
-	template<class TIter, typename T> 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T) 
     TIter find(TIter src, TIter last, const T& val) {
         while (src != last) {
             if ((*src) == val) return src;
@@ -178,7 +180,7 @@ namespace mn {
         return last;
 	}
 
-	template<class TIter, typename T, class TPred> 
+	MN_TEMPLATE_FULL_DECL_THREE(class ,TIter, typename, T, class, TPred) 
     TIter find_if(TIter src, TIter last, const T& val, const TPred& pred) {
         while (src != last) {
             if (pred(*src, val))
@@ -188,7 +190,7 @@ namespace mn {
         return last;
 	}
 
-	template<class TIter, typename T> 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T) 
     void accumulate(TIter src, TIter last, T& dest) {
         while (src != last)
         {
@@ -197,7 +199,7 @@ namespace mn {
         }
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     T abs(const T& t) {
 	    return t >= T(0) ? t : -t;
 	}
@@ -212,17 +214,17 @@ namespace mn {
         return (x ^ y) - y;
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline T max(const T& x, const T& y) {
 	    return x > y ? x : y;
 	}
 
-	template<typename T> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline T min(const T& x, const T& y) {
 	    return x < y ? x : y;
 	}
 
-	template<typename TAssignable> 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, TAssignable) 
     void swap(TAssignable& a, TAssignable& b) {
         TAssignable tmp(a);
         a = b;

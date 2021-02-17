@@ -26,15 +26,7 @@
 /// Shorthand for container reverse iteration.
 #define eachfor(type,i,ctr)	for (type i = (ctr).rbegin(); i != (ctr).rend(); ++ i)
 
-#define MN_TEMPLATE_FULL_DECL_ONE(d1,t1)		        template <d1 t1>
-#define MN_TEMPLATE_FULL_DECL_TWO(d1,t1,d2,t2)	        template <d1 t1, d2 t2>
-#define MN_TEMPLATE_FULL_DECL_THREE(d1,t1,d2,t2,d3,t3)	template <d1 t1, d2 t2, d3 t3>
-#define MN_TEMPLATE_DECL_ONE(t1)		                MN_TEMPLATE_FULL_DECL_ONE(typename,t1)
-#define MN_TEMPLATE_DECL_TWO(t1,t2)		                MN_TEMPLATE_FULL_DECL_TWO(typename,t1,typename,t2)
-#define MN_TEMPLATE_DECL_THREE(t1,t2,t3)	            MN_TEMPLATE_FULL_DECL_THREE(typename,t1,typename,t2,typename,t3)
-#define MN_TEMPLATE_TYPE_ONE(type,a1)		            type<a1>
-#define MN_TEMPLATE_TYPE_TWO(type,a1,a2)	            type<a1,a2>
-#define MN_TEMPLATE_TYPE_THREE(type,a1,a2,a3)	        type<a1,a2,a3>
+#include "../mn_defines.hpp"
 
 
 namespace mn {
