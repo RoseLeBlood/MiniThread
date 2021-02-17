@@ -15,10 +15,10 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "freertos/FreeRTOS.h"
-#include "freertos/timers.h"
+
 
 #include "mn_error.hpp"
+#include "esp_timer.h"
 #include "mn_timer_esp32.hpp"
 
 #include <stdio.h>
@@ -38,13 +38,20 @@ namespace mn {
         int basic_esp32_timer::create() {
             if(m_bIsInit) return ERR_TIMER_ALREADYINIT;
 
-            m_timerArgs = {
-                    .callback = &runtimerstub,
-                    .name = m_strName,
-                    .arg = (void*) this,
-            };
+            /*
+             esp_timer_cb_t callback;        //!< Function to call when timer expires
+    void* arg;                      //!< Argument to pass to the callback
+    esp_timer_dispatch_t dispatch_method;   //!< Call the callback from task or from ISR
+    const char* name;               //!< Timer name, used in esp_timer_dump function
+    bool skip_unhandled_events;     //!< Skip unhandled events for periodic timers
+            */
+            esp_timer_create_args_t _timerArgs;
+            _timerArgs.arg = (void*) this;
+            _timerArgs.callback = &runtimerstub;
+            _timerArgs.name = m_strName;
+        
 
-            if(esp_timer_create(&m_timerArgs, &m_pHandle) != ESP_OK) return ERR_TIMER_CANTCREATE;
+            if(esp_timer_create(&_timerArgs, &m_pHandle) != ESP_OK) return ERR_TIMER_CANTCREATE;
 
             m_bIsInit = true;
 
@@ -54,27 +61,26 @@ namespace mn {
             if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
             if(m_bIsRunning) {
-                if(esp_timer_stop(periodic_timer) != ESP_OK) 
+                if(esp_timer_stop(m_pHandle) != ESP_OK) 
                     return ERR_TIMER_INAKTIVATE;
             }
-            if(esp_timer_delete(periodic_timer) != ESP_OK) 
+            if(esp_timer_delete(m_pHandle) != ESP_OK) 
                 return ERR_UNKN;
 
             return ERR_TIMER_OK; //
         } 
         int basic_esp32_timer::active(unsigned int timeout) {
             if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
+            if(!m_bIsRunning) return ERR_TIMER_OK;
 
-            if(m_bIsRunning) {
-                if(!bIsOneShot)
-                    if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) 
-                        return ERR_TIMER_AKTIVATE;
-                else
-                    if(esp_timer_start_once(m_pHandle, m_uiPeriod)  != ESP_OK) 
-                        return ERR_TIMER_AKTIVATE;
-
-                m_bIsRunning = true;
+            
+            if(!m_bIsOneShot) {
+                if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) return ERR_TIMER_AKTIVATE;
+            } else {
+                if(esp_timer_start_once(m_pHandle, m_uiPeriod)  != ESP_OK)  return ERR_TIMER_AKTIVATE;
             }
+            m_bIsRunning = true;
+            
 
             return ERR_TIMER_OK;
         }

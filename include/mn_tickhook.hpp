@@ -110,13 +110,14 @@ namespace mn {
          * @return The number of entrys in the list
          */ 
         unsigned int count();
-    private:
         /**
          * The tick hook logic - call from vApplicationTickHook. 
          * All not oneshotted entrys enqueue after run to m_listToAdd.
          * 
          */ 
         void onApplicationTickHook();
+    private:
+        
         /**
          * Swapped all entrys in m_listToAdd to m_listHooks back
          * 
@@ -124,7 +125,7 @@ namespace mn {
         void swap();
     private:
         mutex_t m_mutexAdd;
-        queue_t m_listHooks, m_listToAdd;
+        queue::queue_t m_listHooks, m_listToAdd;
         unsigned int m_iCurrent;
     };
 

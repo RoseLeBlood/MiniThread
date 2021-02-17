@@ -48,7 +48,8 @@ namespace mn {
                 return tmp; 
             }       
             void reset(value_type *p = NULL) {
-                if(m_ptr) delete m_ptr; m_ptr = p;
+                if(m_ptr != NULL)  delete m_ptr;
+                m_ptr = p;
             }
             void swap(self_type &other) {                         
                 value_type *tmp = other.m_ptr;
@@ -56,8 +57,8 @@ namespace mn {
                 m_ptr = tmp;
             }
 
-            basic_save_ptr(save_ptr const &other) = delete;
-            basic_save_ptr const &operator=(save_ptr const &other) = delete;
+            basic_save_ptr(const basic_save_ptr &other) = delete;
+            basic_save_ptr const &operator=(const basic_save_ptr &other) = delete;
 
         private:
             pointer *m_ptr; 

@@ -17,6 +17,7 @@
 */
 #include "excp/mn_lock_exptions.hpp"
 
+namespace mn {
 //-----------------------------------
 //  Constructor
 //-----------------------------------
@@ -38,4 +39,6 @@ std::string lockcreate_exception::to_string() {
                 __text += std::string(" with code ") + std::string(m_iCode);*/
     
     return "__text";
+}
+
 }

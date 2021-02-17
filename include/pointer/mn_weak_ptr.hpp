@@ -37,29 +37,30 @@ namespace mn {
 
             explicit basic_weak_ptr(value_type pValue = 0) : _m_ptr(pValue), _m_ref(1)  { }
             basic_weak_ptr( const self_type& r ) : _m_ptr(r._m_ptr), _m_ref(r._m_ref)  { }
-            basic_weak_ptr(shared_type pShrd) : _m_ptr(pShrd.get()), _m_ref( pShrd.ref() ) {}
+            basic_weak_ptr( shared_type& pShrd) : _m_ptr(pShrd.get()), _m_ref( pShrd.ref() ) {}
         
             template <typename other>
             basic_weak_ptr( const basic_weak_ptr<other>& r ) : _m_ptr(r._m_ptr), _m_ref(r._m_ref)  { }
         
             template <typename other>
-            basic_weak_ptr( const shared_ptr<other>& pShrd)  : _m_ptr(pShrd.get()), _m_ref(pShrd.ref() ) {}
+            basic_weak_ptr( const basic_shared_ptr<other>& pShrd)  : _m_ptr(pShrd.get()), _m_ref(pShrd.ref() ) {}
         
-            shared_type lock()                          { return shared_ptr(_m_ptr); }
-            const bool expired()                        { return use_count() == 0; }
-            void reset()                                { self_type().swap(*this) ;}
-            ref_type use_count() const                  { return _m_ref.get(); }
+            shared_type lock()                          { return shared_type(_m_ptr); }
+            bool expired()                              { return _m_ref.get() == 0; }
+            void reset()                                { self_type(0).swap(*this); }
+
+            atomic_type use_count()                     { return _m_ref.get(); }
 
             void swap(self_type& other) {
                 mn::swap<value_type>(_m_ptr, other._m_ptr);
                 _m_ref.swap(other._m_ref);
             }
             template<class Y> 
-            const bool owner_before( basic_weak_ptr<Y> const & rhs ) {
+            bool owner_before( const basic_weak_ptr<Y> & rhs ) {
                 return _m_ref < rhs._m_ref;
             }
             template<class Y>
-            const bool owner_before( shared_ptr<Y> const & rhs ) {
+            bool owner_before( const basic_shared_ptr<Y> & rhs ) {
                 return _m_ref < rhs.ref();
             }
 
@@ -69,13 +70,13 @@ namespace mn {
                 return *this;
             }
 
-            pointer operator->() const {
-                assert(get() != 0);
+            pointer operator->() {
+                assert(_m_ptr != 0);
                 return _m_ptr;
 	        }
-            const_value_type& operator*() {
-                    assert(get() != 0);
-                    return *_m_ptr;
+            value_type& operator*() {
+                assert(_m_ptr != 0);
+                return *_m_ptr;
             }
             operator bool() {
                 return _m_ptr != 0;

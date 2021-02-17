@@ -144,9 +144,8 @@ namespace mn {
          * @tparam TCAPACITY  The maximal capacity of elements, 
          * @tparam TLOCK      The lock object for task saftly
          */
-        template <class T, size_t TCAPACITY = 100, typename TLOCK >
-        class basic_ring_buffer
-        {
+        template <class T, size_t TCAPACITY = 100, typename TLOCK = LockType_t >
+        class basic_ring_buffer {
         public:
             using value_type = T;
             using pointer = T*;
@@ -226,27 +225,27 @@ namespace mn {
                 lock_guard lock(m_lockObject);
                 return iterator(this, TCAPACITY); 
             }
-            const_iterator begin() {
+            const_iterator cbegin() {
                 lock_guard lock(m_lockObject);
                 return const_iterator(this, 0); 
             }
-            const_iterator end() { 
+            const_iterator cend() { 
                 lock_guard lock(m_lockObject);
                 return const_iterator(this, TCAPACITY); 
             }
-            reference       front() {
+            reference       rfront() {
                 lock_guard lock(m_lockObject); 
                 return m_Array[m_Head];
             }
-            const_reference front() const { 
+            const_reference crfront() const { 
                 lock_guard lock(m_lockObject);
                 return m_Array[m_Head]; 
             }
-            const_reference back() const  { 
+            const_reference crback() const  { 
                 lock_guard lock(m_lockObject);
                 return m_Array[m_Tail]; 
             }
-            reference       back()  { 
+            reference       rback()  { 
                 lock_guard lock(m_lockObject);
                 return m_Array[m_Tail]; 
             }
@@ -298,7 +297,7 @@ namespace mn {
              * Get the write position (head)
              * @return The write position (head)
              */
-            const size_t get_head() const {
+            size_t get_head() {
                 lock_guard lock(m_lockObject);
                 return m_Head;
             }
@@ -306,7 +305,7 @@ namespace mn {
              * Get the read position index  (head)
              * @return The read position  (head)
              */
-            const size_t get_tail() const {
+            size_t get_tail() {
                 lock_guard lock(m_lockObject);
                 return m_Tail;
             }
@@ -333,7 +332,7 @@ namespace mn {
             lock_type   m_lockObject;
         };
 
-        template <class T, size_t TCAPACITY = 100, typename TLOCK = mn::mutex_t >
+        template <class T, size_t TCAPACITY = 100, typename TLOCK = LockType_t >
         using ringbuffer_t = basic_ring_buffer<T, TCAPACITY, TLOCK>;
 
 #ifdef __EXPERT 

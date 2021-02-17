@@ -30,18 +30,18 @@ namespace mn {
         using value_type = T;
         using reference = value_type&;
         using lock_t = TLOCK;
-        using pointer = auto_ptr<value_type>;
+        using pointer = T*;
         
         static reference instance() {
             basic_autolock<TLOCK> lock(m_tLock);
 
-            if( m_ptr.get() == 0 ) {
-                m_ptr.reset( new value_type() );
+            if( m_ptr == 0 ) {
+                m_ptr = new T();
             }
             return *m_ptr;
         }
-        basic_singleton(singleton const&)       = delete;
-        void operator=(basic_singleton const&)  = delete; 
+        basic_singleton(const basic_singleton&)       = delete;
+        void operator=(const basic_singleton&)  = delete; 
     protected:
         basic_singleton() {}
     private:
@@ -49,10 +49,10 @@ namespace mn {
         static lock_t  m_tLock; 
     };
     template < typename T, class TLOCK > 
-    mn::auto_ptr<T> basic_singleton<T, TLOCK>::m_ptr = mn::auto_ptr<T>(0);
+    T* basic_singleton<T, TLOCK>::m_ptr = 0;
 
     template < typename T, class TLOCK > 
-    basic_singleton<T, TLOCK>::lock_t basic_singleton<T, TLOCK>::m_tLock;
+    TLOCK basic_singleton<T, TLOCK>::m_tLock;
 
 }
 

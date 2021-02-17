@@ -229,7 +229,6 @@ namespace mn {
      * @return FreeRTOS task handle.
      */
     xTaskHandle           get_handle();
-    operator xTaskHandle* () { return get_handle(); }
 
     /**
      * Get the return value of this task  - after run

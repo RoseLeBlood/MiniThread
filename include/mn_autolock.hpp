@@ -23,6 +23,14 @@
 #include "mn_semaphore.hpp"
 #include "mn_null_lock.hpp"
 
+#if (MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES)
+  #include "mn_recursive_mutex.hpp"
+#endif
+
+#ifndef portMAX_DELAY 
+#define portMAX_DELAY 0xffffffffUL
+#endif
+
 namespace mn {
   /**
    * Macro for locked sections
@@ -41,6 +49,7 @@ namespace mn {
    * @ingroup lock
    */ 
   #define LOCKED_SECTION(LOCK, OBJECT) if( (basic_autolock<LOCK> lock(OBJECT)) )
+
 
   /**
    *  Synchronization helper class that leverages the C++ language to help
@@ -72,7 +81,7 @@ namespace mn {
      * 
      * @post The LockObject will be locked.
      */
-    basic_autolock(LOCK &m, TickType_t xTicksToWait) 
+    basic_autolock(LOCK &m, unsigned long xTicksToWait) 
       : m_ref_lock(m) {
       m_iErrorLock = m_ref_lock.lock(xTicksToWait);
     }
@@ -145,11 +154,7 @@ namespace mn {
   using automutx_t = basic_autolock<mutex_t>;
 
   #if (MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES)
-  #include "mn_recursive_mutex.hpp"
-  /**
-   * A autolock type for remutex_t objects
-   */
-  using autoremutx_t = basic_autolock<remutex_t>;
+  //using autoremutx_t = basic_autolock<remutex_t>;
   #endif
 
   #if MN_THREAD_CONFIG_LOCK_TYPE == MN_THREAD_CONFIG_MUTEX

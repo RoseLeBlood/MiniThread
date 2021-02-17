@@ -35,7 +35,8 @@ namespace mn {
     }
 
     base_tickhook::base_tickhook() 
-        : m_listHooks(MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, sizeof(base_tickhook_entry*) ) {
+        : m_listHooks((unsigned int)MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, (unsigned int)sizeof(base_tickhook_entry*) ),
+          m_listToAdd( (unsigned int)MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, (unsigned int)sizeof(base_tickhook_entry*) ) {
 
         m_listHooks.create();
         m_listToAdd.create();
@@ -52,15 +53,15 @@ namespace mn {
 
         m_iCurrent++;
 
-        if(m_listHooks->is_empty()) return;
+        if(m_listHooks.is_empty()) return;
 
-        while( (dequeue(&entry) == ERR_QUEUE_OK) ) {
+        while( (dequeue(entry) == ERR_QUEUE_OK) ) {
 
             time = entry->get_ticks();
 
             if(entry->is_ready()) {
 
-                if( (time == 0) || (m_iCurrent % time) == 0) ) {
+                if( (time == 0) || ((m_iCurrent % time) == 0) )  {
                     entry->onTick(m_iCurrent);
 
                     if(!entry->is_oneshoted())  
@@ -87,21 +88,20 @@ namespace mn {
     * -------------------------------------*/
     int base_tickhook::enqueue(base_tickhook_entry* entry, unsigned int timeout) {
         if(entry == NULL) return ERR_TICKHOOK_ENTRY_NULL;
-        if(is(entry)) return ERR_TICKHOOK_ADD;
 
         TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
         TickType_t xTicksRemaining = timeout;
         int _ret = ERR_TIMEOUT;
 
         while(xTicksRemaining <= timeout) {
-        if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+        if(m_mutexAdd.lock(xTicksRemaining) != NO_ERROR){
                     break;
             }
 
             _ret = m_listHooks.enqueue(entry, xTicksRemaining);
 
             if(_ret == ERR_QUEUE_OK) {
-                m_mutexAdd->unlock();
+                m_mutexAdd.unlock();
                 break;
             }
             
@@ -109,7 +109,7 @@ namespace mn {
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
             }
-            m_mutexAdd->unlock();
+            m_mutexAdd.unlock();
         }
 
         // Old with out RTOS timeout support
@@ -131,14 +131,14 @@ namespace mn {
         int _ret = ERR_TIMEOUT;
 
         while(xTicksRemaining <= timeout) {
-        if(m_mutexAdd->lock(xTicksRemaining) != NO_ERROR){
+        if(m_mutexAdd.lock(xTicksRemaining) != NO_ERROR){
                     break;
             }
 
             _ret = m_listHooks.dequeue(entry, xTicksRemaining);
 
             if(_ret == ERR_QUEUE_OK) {
-                m_mutexAdd->unlock();
+                m_mutexAdd.unlock();
                 break;
             }
             
@@ -146,7 +146,7 @@ namespace mn {
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
             }
-            m_mutexAdd->unlock();
+            m_mutexAdd.unlock();
         }
         return _ret;
         
@@ -192,8 +192,8 @@ namespace mn {
 
         base_tickhook_entry *entry = 0;
         
-        while( (m_listToAdd.dequeue(&entry) == ERR_QUEUE_OK) ) {
-            enqueue(entry, timeout);
+        while( (m_listToAdd.dequeue(entry) == ERR_QUEUE_OK) ) {
+            enqueue(entry);
         }
     }
 }

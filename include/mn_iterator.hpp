@@ -18,6 +18,12 @@
 #ifndef MINLIB_77a7a837_8b20_44ce_8a17_e432d8f6f902_H_
 #define MINLIB_77a7a837_8b20_44ce_8a17_e432d8f6f902_H_
 
+/// Shorthand for container iteration.
+#define for_each(type,i,ctr) for (type i = (ctr).begin(); i != (ctr).end(); ++ i)
+/// Shorthand for container reverse iteration.
+#define each_for(type,i,ctr) for (type i = (ctr).rbegin(); i != (ctr).rend(); ++ i)
+
+
 namespace mn {
     struct input_iterator_tag {};
 	struct output_iterator_tag {};

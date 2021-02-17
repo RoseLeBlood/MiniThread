@@ -48,23 +48,18 @@ namespace mn {
             /**
              * @brief Construct a new array object
              */
-            array() { }
+            basic_array() { }
             /**
              * @brief Construct a new array object, from a given array
              * @param a The given array
              */
-            array(const T a[N]) { mn::copy_n(&a[0], N, m_data); }
+            basic_array(const T a[N]) { mn::copy_n(&a[0], N, m_buffer); }
             
             /**
              * @brief Get the first element of the array
              * @return The first element of the array 
              */
             iterator        begin()       { return m_buffer; }
-            /**
-             * @brief Get the first element of the array
-             * @return The first element of the array 
-             */
-            const_iterator  begin() const { return m_buffer; }
             /**
              * @brief Get the first element of the array
              * @return The first element of the array 
@@ -76,11 +71,7 @@ namespace mn {
              * @return The last element of the array 
              */
             iterator        end()       { return m_buffer[N-1]; }
-            /**
-             * @brief Get the last element of the array
-             * @return The last element of the array 
-             */
-            const_iterator  end() const { return m_buffer[N-1]; }
+
             /**
              * @brief Get the last element of the array
              * @return The last element of the array 
@@ -96,7 +87,7 @@ namespace mn {
              * @brief Get the first element of the array
              * @return The first element of the array 
              */
-            const_reference front() const { return m_buffer[0]; }
+            const_reference cfront() const { return m_buffer[0]; }
             /**
              * @brief Get the last element of the array
              * @return The last element of the array 
@@ -106,7 +97,7 @@ namespace mn {
              * @brief Get the last element of the array
              * @return The last element of the array 
              */
-            const_reference back() const { return m_buffer[N-1]; }
+            const_reference cback() const { return m_buffer[N-1]; }
 
             /**
              * @brief Get the maximal size of elements to store in this array.
@@ -133,7 +124,7 @@ namespace mn {
             
 
             template <typename T2>
-            array<T,N>& operator = (const array<T2,N>& rhs) {
+            basic_array<T,N>& operator = (const basic_array<T2,N>& rhs) {
                 
                 mn::copy(rhs.begin(),rhs.end(), begin());
                 return *this;
@@ -151,7 +142,7 @@ namespace mn {
              * @brief Get the raw data of the array
              * @return The raw data of the array 
              */
-            const_iterator data() { return &m_buffer[0]; }
+            const_iterator cdata() { return &m_buffer[0]; }
                 
         private:
             T m_buffer[N];
@@ -167,7 +158,7 @@ namespace mn {
             return true;
         }
         template < typename T, size_t N >
-        inline bool operator == (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+        inline bool operator != (const basic_array<T, N>& a, const basic_array<T, N>& b) {
             return !(a == b);
         }
         template < typename T, size_t N >

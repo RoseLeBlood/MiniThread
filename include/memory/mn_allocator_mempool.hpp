@@ -79,7 +79,7 @@ namespace mn {
                 m_Mempool.free(mem);
             }
 
-            bool add_memory(TType** address, size_t sSizeOf) {
+            bool add_memory(pointer address, size_t sSizeOf) {
                 return m_Mempool.add_memory(address, sSizeOf);
             }
             bool add_memory(size_t nElements) {

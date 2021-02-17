@@ -29,11 +29,12 @@ namespace mn {
         class clone_ptr_interface {
         protected:
             using pointer = T*;
+            using value_type = T;
 
             virtual pointer clone(pointer src) {
                 pointer _clone = NULL;
                 
-                if(other != NULL) {
+                if(src != NULL) {
                     _clone = new value_type();
                     memcpy(_clone, src, sizeof(src));
                 }
@@ -48,7 +49,7 @@ namespace mn {
             using value_type = T;
             using pointer = T*;
             using reference = T&;
-            using self_type = basic_clone_ptr<value_type, TInterface<T> >;
+            using self_type = basic_clone_ptr<value_type >;
             using cloneptrinterface = TInterface;
             
             basic_clone_ptr() : m_ptr(0) { }
@@ -59,13 +60,9 @@ namespace mn {
 
             ~basic_clone_ptr() { if(m_ptr) delete m_ptr; }
 
-            pointer const get() const               { return m_ptr;  }
             pointer get()                           { return m_ptr;  }
     
-            value_type const &operator *() const    { return *m_ptr; }
-            value_type &operator *()                { return *m_ptr; }
-
-            pointer const *operator->() const       { return m_ptr; }
+            value_type operator *()                { return *m_ptr; }
             pointer operator->()                    { return m_ptr; }
             pointer release()                       { pointer tmp = m_ptr;  m_ptr = NULL; return tmp; }
 
@@ -78,12 +75,15 @@ namespace mn {
                 other.reset(tmp);
             }
 
-            self_type& const &operator = (const self_type& other) {
-                if(other != this) basic_clone_ptr tmp(other); return *this;
+            self_type& operator = (const self_type& other) {
+                if(other.m_ptr != this.m_ptr) {
+                    reset(other.clone()); 
+                }     
+                return *this;
             }
         
             pointer clone() {
-                return TInterface::clone(m_ptr);
+                return clone(m_ptr);
             }
         private:
             pointer m_ptr;

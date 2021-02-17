@@ -23,38 +23,38 @@ source code archive.
   - The online pre builded version: https://roseleblood.github.io/mnthread-docs/
 - example; The basic's example, and for more see extra repository: [mnthread-examples](https://github.com/RoseLeBlood/mnthread-examples)
 
+## Using 
+Build from git from
+1. run ./build.sh
+2. add to your platformio.ini under lib_deps =  path/to/release/miniThread-2.*.*.tar.gz
+### Example
+```ini
+[env:esp-wrover-kit]
+platform = espressif32
+board = esp-wrover-kit
+framework = espidf
+lib_deps = path/to/release/miniThread-2.*.*.tar.gz
 
-## Simple Example
-```cpp
-//simple_example.cpp
+```
+## Using from platformio
+```ini
+# platformio.ini – project configuration file
 
-#include <miniThread.hpp>
+[env:my_build_env]
+platform = espressif32
+framework = espidf
+lib_deps =
+  # RECOMMENDED
+  # Accept new functionality in a backwards compatible manner and patches
+  roseleblood/mini Thread @ ^2.10.7
 
-#define NUMBER_OF_TEST_THREADS      2
+  # Accept only backwards compatible bug fixes
+  # (any version with the same major and minor versions, and an equal or greater patch version)
+  roseleblood/mini Thread @ ~2.10.7
 
-class hello_world_task : public basic_task {
-public:
-    hello_world_task() : basic_task("HelloWorld", 1) { }
+  # The exact version
+  roseleblood/mini Thread @ 2.10.7
 
-    virtual void*  on_task() override { 
-        int id = get_id();
-        int core = get_on_core();
-
-        for(;;) {
-            printf("[%d @ %d] Hello World!!\n", id, core );
-        }
-
-        return NULL; 
-    }
-};
-extern "C" void app_main() {
-    hello_world_task tasks[NUMBER_OF_TEST_THREADS];
-
-    for(int i = 0; i < NUMBER_OF_TEST_THREADS; i++) {
-        tasks[i].start( i % 2 );
-    }
-    mn_panic();
-}
 ```
 
 ## TODO's for Version 2.0

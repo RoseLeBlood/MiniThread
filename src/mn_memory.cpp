@@ -15,4 +15,3 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#include "mn_memory.hpp"

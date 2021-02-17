@@ -63,7 +63,7 @@ namespace mn {
          * Operator to set the value of the shared resource.
          * @param refNewValue The new value for this shared resource
          */ 
-        void operator = (const T& refNewValue)  {
+        void operator = (const ref_object_t refNewValue)  {
             set_object(refNewValue);
         }
         /**

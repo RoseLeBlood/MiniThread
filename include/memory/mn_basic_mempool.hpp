@@ -120,7 +120,7 @@ namespace mn {
                 if(address == NULL)  return ERR_NULL;
                 if(sSizeOf < nElements) _retError = ERR_MEMPOOL_MIN;
 
-                _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
+                m_mutex->lock(xTicksToWait);
                 for(int i = 0; i < sSizeOf; i++) {
                     m_vChunks.push_back(new chunk_t( &address[i] ) );
                 }

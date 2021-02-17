@@ -36,6 +36,7 @@ namespace mn {
      * \ingroup hook
      */ 
     class base_tickhook_entry {
+        friend class base_tickhook;
         public:
             /**
              * Constructor 

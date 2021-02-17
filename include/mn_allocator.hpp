@@ -19,6 +19,9 @@
 #ifndef _MINLIB_ALLOCATOR_H_
 #define _MINLIB_ALLOCATOR_H_
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "mn_allocator_system.hpp"
 #include "mn_allocator_stack.hpp"
 #include "mn_allocator_buffer.hpp"
@@ -26,7 +29,7 @@
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 #include "mn_allocator_caps.hpp"
 #include "mn_allactor_multiheap.hpp"
-#endif
+#endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
 namespace mn {
     namespace memory {
@@ -141,3 +144,5 @@ namespace mn {
         
     }
 }
+
+#endif

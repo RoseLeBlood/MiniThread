@@ -156,7 +156,7 @@ namespace mn {
 
         protected:
             mutex_t m_ltMessageQueueLock;
-            queue_t m_qeMessageQueue;
+            queue::queue_t m_qeMessageQueue;
             convar_t m_cvMessage;
         };
 

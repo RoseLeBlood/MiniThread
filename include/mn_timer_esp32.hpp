@@ -31,7 +31,7 @@ namespace mn {
          * 
          * @ingroup base
          */
-        class basic_esp32_timer : public ::mn::basic_timer {
+        class basic_esp32_timer : public ITimer {
         public:
             /**
              * Construct a timer.
@@ -160,10 +160,7 @@ namespace mn {
              *  Reference to the underlying timer handle.
              */
             esp_timer_handle_t m_pHandle;
-            /**
-             *  A saved / cached copy of the timer Args
-             */
-            esp_timer_create_args_t m_timerArgs;
+            
             /**
              * A saved / cached copy of what the timers's mode is.
              */

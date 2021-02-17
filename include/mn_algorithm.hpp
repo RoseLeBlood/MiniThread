@@ -125,12 +125,12 @@ namespace mn {
         }
 	}
 
-	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TFn) 
+	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TDist) 
     inline void distance(TIter src, TIter last, TDist& dist) {
 	        internal::distance(src, last, dist, typename iterator_traits<TIter>::iterator_category());
 	}
 
-	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TFn) 
+	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TDist) 
     inline void advance(TIter& iter, TDist off) {
 	        internal::advance(iter, off, typename iterator_traits<TIter>::iterator_category());
 	}

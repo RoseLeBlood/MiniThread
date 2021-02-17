@@ -59,11 +59,11 @@ namespace mn {
 	        }
 
             atomic_type ref() {
-                return _m_ref->get();
+                return _m_ref.get();
             }
             void swap(self_type& b) {
                 mn::swap<value_type*>(_m_ptr, b._m_ptr);
-                mn::swap<atomic<atomic_type>>(_m_ref, b._m_ref);
+                mn::swap<atomic_t<atomic_type> >(_m_ref, b._m_ref);
             }
 
             self_type& operator = (self_type& sp) {

@@ -20,13 +20,8 @@
 #define MINLIB_STL_UTILS_H_
 
 #include "mn_inttokey.hpp"
-
-/// Shorthand for container iteration.
-#define foreach(type,i,ctr)	for (type i = (ctr).begin(); i != (ctr).end(); ++ i)
-/// Shorthand for container reverse iteration.
-#define eachfor(type,i,ctr)	for (type i = (ctr).rbegin(); i != (ctr).rend(); ++ i)
-
 #include "../mn_defines.hpp"
+
 
 
 namespace mn {

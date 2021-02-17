@@ -23,8 +23,7 @@
 
 namespace mn {
     namespace internal {
-        #pragma warning(push)
-
+        
         template<typename T>
 	    struct alignof_helper {
 	        char    x;
@@ -34,7 +33,6 @@ namespace mn {
         struct __attribute__ ((aligned (32))) aligned32 { uint64_t member[4]; } ;
         struct __attribute__ ((aligned (16))) aligned16 { uint64_t member[2]; } ;
 
-        #pragma warning(pop)
 
         template<size_t N> struct type_with_alignment {
 	        typedef char err_invalid_alignment[N > 0 ? -1 : 1];

@@ -36,8 +36,7 @@ namespace mn {
             using value_type = T;
             using lock_type = TLOCK;
             using pointer = volatile T*;
-            using reference = T&;
-            using self_type = lock_ptr<T, TLOCK>;
+            using self_type = basic_lock_ptr<T, TLOCK>;
         
             /**
              * @brief constructor make the pointer and auto lock
@@ -46,19 +45,19 @@ namespace mn {
              * @param m The reference of the lock object
              */
             basic_lock_ptr(pointer v, lock_type& m) 
-                : m_ptr(v), m_lock(m)                   { m_lock->lock(); }
+                : m_ptr(v), m_lock(m)                   { m_lock.lock(); }
             
             /**
              * @brief decunstructor and auto unlock the pointer
              */
-            ~basic_lock_ptr()                           { m_lock->unlock(); }
+            ~basic_lock_ptr()                           { m_lock.unlock(); }
 
             /** @brief get the pointer value const */
             value_type const *get() const               { return m_ptr;  }
             /** @brief get the pointer value */ 
             value_type *get()                           {  return m_ptr; }
             /** @brief return the reference of the pointer */
-            value_type &operator *()                    { return *m_ptr;  }
+            value_type operator *()                    { return *m_ptr;  }
             /** @brief helper to use this pointer as "native" pointer */
             value_type *operator->()                    { return m_ptr;  }
             

@@ -15,6 +15,8 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #if ( configUSE_TICK_HOOK == 1 )
 

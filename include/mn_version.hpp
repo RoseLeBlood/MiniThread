@@ -28,9 +28,10 @@ namespace mn {
 	 * @ingroup base
 	 */ 
 	class version : public basic_singleton<version> {
-	protected:
+		friend class basic_singleton<version>;
 		version();
 	public:
+		
 		/**
 		 * Get the major version
 		 * @return The major version

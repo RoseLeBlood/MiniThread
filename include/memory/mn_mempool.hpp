@@ -44,10 +44,8 @@ namespace mn {
 
 
         template<typename T, int nElements > 
-        using  basic_mempool_allocator_t = basic_allocator_mempool<T, basic_mempool_t<T, nElements> >;
-   
-        template<typename T, int nElements, class TMEMPOOL = basic_mempool_t<T, nElements> > 
-        using = basic_mempool_deleter_t = basic_mempool_delete<T, TMEMPOOL>;
+        using  mempool_allocator_t = basic_allocator_mempool<T, basic_mempool_t<T, nElements> >;
+
     }
 }
 

@@ -26,7 +26,7 @@ namespace mn {
         Acquire = __ATOMIC_ACQUIRE,
         Release = __ATOMIC_RELEASE,
         AcqRel = __ATOMIC_ACQ_REL,
-        basic_atomic_gcc_memory_order::SeqCst = __ATOMIC_SEQ_CST
+        SeqCst = __ATOMIC_SEQ_CST
     };
 
     template <typename T > 
@@ -38,7 +38,7 @@ namespace mn {
         basic_atomic_gcc() : _m_value(0) { }
         explicit basic_atomic_gcc(value_type value) : _m_value(value) { }
     
-        basic_atomic_gcc(const self_type& self) : _m_value( value.get() ) { }
+        basic_atomic_gcc(const self_type& self) : _m_value( self.get() ) { }
     
         value_type get() { return _m_value; }
         
