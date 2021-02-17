@@ -37,7 +37,8 @@ namespace mn {
         
         basic_atomic_gcc() : _m_value(0) { }
         explicit basic_atomic_gcc(value_type value) : _m_value(value) { }
-        
+    
+        basic_atomic_gcc(const self_type& self) : _m_value( value.get() ) { }
     
         value_type get() { return _m_value; }
         
