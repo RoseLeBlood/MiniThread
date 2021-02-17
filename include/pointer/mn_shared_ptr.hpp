@@ -19,8 +19,7 @@
 #define _MINLIB_831159bd_3f35_4a00_8d46_f3fd737a5797_H_
 
 
-#include "mn_atomic.hpp"
-#include "mn_algorithm.hpp"
+#include "../mn_atomic.hpp"
 
 namespace mn {
     namespace pointer {

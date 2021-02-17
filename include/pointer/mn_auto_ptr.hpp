@@ -136,6 +136,9 @@ namespace mn {
                     reset(px);
                     return *this;
             }
+            void swap(self_type& other) {
+                mn::swap<value_type>(_M_p, other._M_p);
+            }
             
             /**
              * Get the holding object
@@ -148,7 +151,8 @@ namespace mn {
             
             template<class T1> 
             operator basic_auto_ptr<T1>() { return basic_auto_ptr<T1>(release()); }
-            
+        private:
+
         };
     }
 }
