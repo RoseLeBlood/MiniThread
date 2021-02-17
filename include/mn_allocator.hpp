@@ -37,8 +37,7 @@ namespace mn {
          * @tparam T The value to allocate the allocator
          */
         template <typename T>
-        using allocator_internal_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
+        using allocator_internal_esp32_t = basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT 
@@ -78,35 +77,44 @@ namespace mn {
          * @tparam T The value to allocate the allocator
          */
         template <typename T>
-        using allocator_psram_dma_esp32_t = 
-        basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
-
+        allocator_psram_dma_esp32_t = basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
+        
         /**
          * @brief Use the multiheap api as allocater
          * @tparam T        The type to allocate the allocator
          * @tparam TBytes   The size of the using buffer on the stack
          */
-        template<typename T, unsigned long TBytes> 
-        using multiheap_allocator_esp32_t = basic_multiheap_allocator_esp32<T, TBytes>;
+        MN_TEMPLATE_USING_TWO(multiheap_allocator_esp32_t, basic_multiheap_allocator_esp32, typename, T, unsigned long, TBytes );
 #endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
         /**
          * @brief A basic allocator, use the basic alloc system from tde used libc 
          * @tparam T The value to allocate the allocator
+         */
+        MN_TEMPLATE_USING_ONE(allocator_system_t, basic_allocator_system, typename, T);
+        /**
+         * @brief A basic allocator, use the basic alloc system from tde used libc 
+         * @tparam T The value to allocate the allocator
          * @tparam sMaxSize The maximal size to use from memory, when 0 then no limit
          */
-        template <typename T, int sMaxSize = 0>
-        using allocator_system_t = basic_allocator_system<T, sMaxSize>;
+        MN_TEMPLATE_USING_TWO(allocator_system_ex_t, basic_allocator_system, typename, T, int, sMaxSize);
+
 
 
 #if MN_THREAD_CONFIG_ALLOCATOR_DEFAULT == MN_THREAD_CONFIG_ALLOCATOR_SYSTEM
         /**
          * @brief Use the basic_allocator_system as default allocator for this library 
          * @tparam T        The value to allocate the allocator
+         */
+        MN_TEMPLATE_USING_ONE(default_allocator_t, allocator_system_t, typename, T);
+
+        /**
+         * @brief Use the basic_allocator_system as default allocator for this library 
+         * @tparam T        The value to allocate the allocator
          * @tparam sMaxSize The maximal size to use from memory, when 0 then no limit
          */
-        template <typename T, int sMaxSize = 0> 
-        using default_allocator_t = allocator_system_t<T, sMaxSize>;
+        MN_TEMPLATE_USING_TWO(default_allocator_ex_t, allocator_system_ex_t, typename, T, int, sMaxSize);
+
 #endif
 
         /**
@@ -118,8 +126,7 @@ namespace mn {
          * @tparam T                The value to allocate the allocator
          * @tparam TBUFFERSIZE      The size of the buffer
          */
-        template<typename T, int TBUFFERSIZE>  
-        using allocator_stack_t = basic_allocator_stack<T, TBUFFERSIZE>;
+        MN_TEMPLATE_USING_TWO(allocator_stack_t, basic_allocator_stack, typename, T, int, TBUFFERSIZE);
 
          /** 
          * @brief buffer based allocator.
@@ -130,7 +137,7 @@ namespace mn {
          * @date 2021.02.21
          * @version 1.0
          */
-        template<typename T> 
-        using allocator_buffer_t = basic_allocator_buffer<T>;
+        MN_TEMPLATE_USING_ONE(allocator_buffer_t, basic_allocator_buffer, typename, T);
+        
     }
 }
