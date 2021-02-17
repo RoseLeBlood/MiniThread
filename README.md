@@ -1,5 +1,5 @@
 
-# Mini Thread 2.0.4
+# Mini Thread 2.10.7 
 Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
 With variable condition support if required. 
 And wrappers for:  
@@ -57,19 +57,10 @@ lib_deps =
 
 ```
 
-## TODO's for Version 2.0
-- [X] Add event group class 
-- [X] Add usefull FreeRTOS Wrapper
-- [X] Completed the documentation
-- [-] Write more examles (after 1.9 ready ) 
-- [X] add a Workqueues 
-- [X] add Memory Manager class
-- [ ] start to add trace support UART and LwIP out (ready to Version 2.5)
-- [X] task Local Storage in task_utils
-  
-
 ## ChangeLog
 For more see [ChangeLog](ChangeLog.md)
+## Version 2.10.7 Februar 2021 (stable)
++ remove build issus
 
 ## Version 2.0.4 Januar 2021 (beta 2.0)
 + add staked, buffered allocator

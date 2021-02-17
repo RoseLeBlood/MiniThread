@@ -5,7 +5,7 @@
     "authors":
     {
         "name": "RoseLeBlood",
-		"email": "ambersophia.schroeck@to.com",
+		"email": "ambersophia.schroeck@outlook.com",
 		"maintainer": true
     },
     "repository": 
@@ -13,7 +13,7 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "2.10.6-2",
+    "version": "2.10.7",
     "frameworks": "espidf",
     "platforms": "espressif32",
     "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
