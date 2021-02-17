@@ -1,4 +1,8 @@
 # Changelog
+## Version 2.10 Februar 2021
++ add pointer suppert - weak, shared, clone_ptr, and other
++ add new ringbuffer and updated examples
+  
 ## Version 2.0.4 Januar 2021
 + add staked, buffered allocator
 + add allocator, mempool and stack to mn::memory namespace

@@ -19,6 +19,7 @@
 #define _MINLIB_VERSION_H_
 
 #include <string>
+#include "mn_singleton.hpp"
 
 namespace mn {
 	/**
@@ -26,12 +27,10 @@ namespace mn {
 	 * 
 	 * @ingroup base
 	 */ 
-	class version {
-	private:
+	class version : public basic_singleton<version> {
+	protected:
 		version();
 	public:
-		~version();
-
 		/**
 		 * Get the major version
 		 * @return The major version
@@ -59,19 +58,8 @@ namespace mn {
 		 */ 
 		std::string to_string() const;
 
-		/**
-		 * Get the singleton instances from this class 
-		 * @return The singleton instance
-		 */
-		static version& instance() {
-			if(m_pInstance == NULL) m_pInstance = new version();
-			return *m_pInstance;
-		}
-	private:
-		/**
-		 * The Sigleton Object holder
-		 */ 
-		static version* m_pInstance;
+		version(const version&)       	= delete;
+        void operator=(const version&)  = delete; 
 	private:
 		/**
 		 * The license string holder

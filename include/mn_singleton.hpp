@@ -20,17 +20,19 @@
 
 #include "mn_config.hpp"
 #include "mn_autolock.hpp"
-#include "mn_auto_ptr.hpp"
+#include "mn_pointer.hpp"
 
-namespace nm {
+namespace mn {
 
-    template < typename T, class TLOCK > 
+    template < typename T, class TLOCK = LockType_t> 
     class basic_singleton {
     public:
         using value_type = T;
+        using reference = value_type&;
         using lock_t = TLOCK;
+        using pointer = auto_ptr<value_type>;
         
-        static value_type& get() {
+        static reference instance() {
             basic_autolock<TLOCK> lock(m_tLock);
 
             if( m_ptr.get() == 0 ) {
@@ -40,12 +42,11 @@ namespace nm {
         }
         basic_singleton(singleton const&)       = delete;
         void operator=(basic_singleton const&)  = delete; 
-
     protected:
         basic_singleton() {}
     private:
-        static auto_ptr<T> m_ptr;  
-        static lock_t   m_tLock; 
+        static pointer m_ptr;  
+        static lock_t  m_tLock; 
     };
     template < typename T, class TLOCK > 
     mn::auto_ptr<T> basic_singleton<T, TLOCK>::m_ptr = mn::auto_ptr<T>(0);
@@ -53,9 +54,6 @@ namespace nm {
     template < typename T, class TLOCK > 
     basic_singleton<T, TLOCK>::lock_t basic_singleton<T, TLOCK>::m_tLock;
 
-    template < typename T, class TLOCK > 
-    using singleton_t = basic_singleton;
-    
 }
 
 #endif

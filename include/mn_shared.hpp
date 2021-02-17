@@ -41,9 +41,7 @@ namespace mn {
          * @param value sets the initial value of the resource.
          */
         basic_shared_object (const ref_object_t refValue) 
-            : m_refValue(refValue)  {
-            m_pReadWriteLock.create();
-        }
+            : m_refValue(refValue)  { }
         /** 
          * Get the value of the shared resource.
          * @return The value of the shared resource.
@@ -66,7 +64,7 @@ namespace mn {
          * @param refNewValue The new value for this shared resource
          */ 
         void operator = (const T& refNewValue)  {
-            set_object(new_value);
+            set_object(refNewValue);
         }
         /**
          * Operator to get the value of the shared resource.

@@ -30,8 +30,8 @@
 
 
 #define _MEMPOOL_CLASS_LOCK(Mutex, xTicksRemaining) if(Mutex.lock(xTicksRemaining) != NO_ERROR) break;
-#define _MEMPOOL_CLASS_UNLOCK(Mutex) Mutex->unlock();
-#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) Mutex->unlock(); break;
+#define _MEMPOOL_CLASS_UNLOCK(Mutex) Mutex.unlock();
+#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) Mutex.unlock(); break;
 
 
 namespace mn {
@@ -120,11 +120,11 @@ namespace mn {
                 if(address == NULL)  return ERR_NULL;
                 if(sSizeOf < nElements) _retError = ERR_MEMPOOL_MIN;
 
-                //_MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
+                _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
                 for(int i = 0; i < sSizeOf; i++) {
                     m_vChunks.push_back(new chunk_t( &address[i] ) );
                 }
-                _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
+                _MEMPOOL_CLASS_UNLOCK(m_mutex);
             
                 return m_vChunks.size() == sSizeOf ? _retError : ERR_MEMPOOL_CREATE;
             }
@@ -187,13 +187,13 @@ namespace mn {
                             entry->oocfree = (oFreedSelf) ? VMEM_CHUNK_OWNER_FREE : VMEM_CHUNK_ALL_FREE;
                             buffer = entry->realBuffer;
 
-                            _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd);
+                            _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
                         }
                     }
                     if (xTicksToWait != portMAX_DELAY) {
                         xTicksRemaining = xTicksEnd - xTaskGetTickCount();
                     }
-                    _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
+                    _MEMPOOL_CLASS_UNLOCK(m_mutex);
                 }
                 
                 return buffer;
@@ -230,7 +230,7 @@ namespace mn {
                         // the called task not the owner
                         if(entry->oocfree == VMEM_CHUNK_OWNER_FREE && entry->owner_task != task->get_id() ) {
                             // then break, this task can not deallocated this chunk
-                            _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd); 
+                            _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex); 
                         }
 
         #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
@@ -260,13 +260,13 @@ namespace mn {
                         memset(entry->theBuffer, 0, sizeof(TType) );
 
                         // break and leave the for loop
-                        _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd);
+                        _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
                     }
 
                     if (xTicksToWait != portMAX_DELAY) {
                         xTicksRemaining = xTicksEnd - xTaskGetTickCount();
                     }
-                    _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
+                    _MEMPOOL_CLASS_UNLOCK(m_mutex);
                 } 
                 return _ret;
             }
@@ -330,13 +330,13 @@ namespace mn {
                         m_vChunks.at(id)->state = blocked ? vmempool_chunk_state::Blocked : vmempool_chunk_state::Free; 
                         _ret = true; 
                         
-                        _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd);
+                        _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
                     }
 
                     if (xTicksToWait != portMAX_DELAY) {
                         xTicksRemaining = xTicksEnd - xTaskGetTickCount();
                     }
-                    _MEMPOOL_CLASS_UNLOCK(m_mutexAdd);
+                    _MEMPOOL_CLASS_UNLOCK(m_mutex);
 
                     if(_ret) break;
                 }

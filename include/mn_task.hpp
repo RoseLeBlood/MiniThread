@@ -337,7 +337,7 @@ namespace mn {
      * Operator to get the task's backing task handle.
      * @return FreeRTOS task handle.
      */
-    operator xTaskHandle* () { return get_handle(); }
+    operator xTaskHandle () { return (xTaskHandle)get_handle(); }
 
     /**
        * Operator to get the ID assigned to the task.
