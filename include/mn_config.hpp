@@ -494,4 +494,6 @@
     #define MN_THREAD_CONFIG_USE_TRACE configUSE_TRACE_FACILITY
 #endif
 
+#include "mn_defines.hpp"
+
 #endif //__MINLIB_MNTHREAD_CONFIG_H__
