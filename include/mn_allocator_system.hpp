@@ -23,19 +23,10 @@
 namespace mn {
     namespace memory {
         
-        template <typename T>
+        template <typename T, int sMaxSize = 0>
         class basic_allocator_system {
         public:
-            basic_allocator_system() : m_sMaxSize(0), m_sAlloced(0) { }
-
-            /**
-             * Create the allocator
-             * @param [in] sMaxSize The max elements are allocated with this allocater
-             */ 
-            bool create(size_t sMaxSize = 0)  { 
-                m_sMaxSize = sMaxSize;
-                return true; 
-            }
+            basic_allocator_system() : m_sMaxSize(sMaxSize), m_sAlloced(0) { }
             
             /**
              * Allocate SIZE bytes of memory 

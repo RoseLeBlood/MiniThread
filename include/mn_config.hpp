@@ -86,6 +86,13 @@
 /** 
  * @brief Pre defined values for config items -
  * @note corrently use for MN_THREAD_CONFIG_BOARD 
+ * Set board type to no spezial use, currently no esp32 spezial apis to use
+ */ 
+#define MN_THREAD_CONFIG_BOARD_NODEFS   99
+
+/** 
+ * @brief Pre defined values for config items -
+ * @note corrently use for MN_THREAD_CONFIG_BOARD 
  * Set board type to other - not work 
  */ 
 #define MN_THREAD_CONFIG_OTHER      1
@@ -95,7 +102,7 @@
 #endif
 
 #ifndef MN_THREAD_CONFIG_BOARD    
-    #define MN_THREAD_CONFIG_BOARD  MN_THREAD_CONFIG_ESP32
+    #define MN_THREAD_CONFIG_BOARD  MN_THREAD_CONFIG_BOARD_NODEFS
 #endif
 /** 
  * @brief Pre defined on which core must run the task, can override in the create 

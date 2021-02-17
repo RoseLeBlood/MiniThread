@@ -128,6 +128,7 @@ namespace mn {
     int m_iErrorLock;
   };
 
+
   /**
    * A autolock type for counting_semaphore_t objects
    */
@@ -162,6 +163,15 @@ namespace mn {
   #endif
 
   using autolock_t = basic_autolock<LockType_t>;
+
+  template <class TLOCK = LockType_t> 
+  int lock(TLOCK& m1, unsigned int timeout) { return m1.lock(timeout); }
+
+  template <class TLOCK = LockType_t> 
+  int unlock(TLOCK& m1) { return m1.unlock(); }
+
+  template <class TLOCK = LockType_t> 
+  bool try_lock(TLOCK& m1) { return m1.try_lock(); }
 }
 
 #endif

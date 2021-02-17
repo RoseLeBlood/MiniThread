@@ -54,33 +54,22 @@ namespace mn {
         /**
         * ESP32 allocator heap wrapper
         */ 
-        template <typename T, cap_allocator_map TCAPS, cap_allocator_size TSBITS>
+        template <typename T, cap_allocator_map TCAPS, cap_allocator_size TSBITS, int maxSize = 0 >
         class basic_cap_allocator_esp32  {
         public:
-            /**
-            * Create the allocator
-            * @param [in] maxSize The max size to alloc with this allocator. 
-            * @note When maxSize 0 is then use all 
-            */ 
-            bool create(size_t maxSize = 0) { 
-                m_sAlloced = 0;
-                m_sSize = sizeof(T);
-                m_sMaxSize = maxSize;
-
-                if((int)(TCAPS) == MALLOC_CAP_SPIRAM ) {
-                    return intarnal_create_spi_ram();
-                } else if((int)(TCAPS) == MALLOC_CAP_INTERNAL) {
-                    m_bFound = true;
-                }
+            basic_cap_allocator_esp32()
+                : m_sAlloced(0) {
+                
+                if((int)(TCAPS) == MALLOC_CAP_SPIRAM ) m_bFound = intarnal_create_spi_ram();
+                else if((int)(TCAPS) == MALLOC_CAP_INTERNAL) m_bFound = true;
+                
 
                 if(m_bFound) {
                     int nMaxElements = heap_caps_get_total_size( CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
-                    nMaxElements = nMaxElements / m_sSize;
-
-                    if( (maxSize > nMaxElements) || (maxSize == 0) ) m_sMaxSize = nMaxElements;
+                    
+                    m_sMaxSize = ( (maxSize > nMaxElements) || (maxSize == 0) ) 
+                         ? nMaxElements : maxSize;
                 }
-                
-                return m_bFound; 
             }
 
             /**
@@ -91,10 +80,10 @@ namespace mn {
                 if(!m_bFound) return NULL;
                 if(is_empty() ) return NULL;
 
-                T* buf = (T*)heap_caps_malloc(m_sSize,  CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
+                T* buf = (T*)heap_caps_malloc(sizeof(T),  CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
                 assert(buf != NULL);
 
-                if(buf) { m_sAlloced++; }
+                m_sAlloced += sizeof(T);
                 return buf;
             }
             
@@ -105,7 +94,7 @@ namespace mn {
                 size_t size = n;
                 if(m_sMaxSize < size) size = get_free();
 
-                *buf = (T*)heap_caps_calloc( n, m_sSize, CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
+                *buf = (T*)heap_caps_calloc( n, sizeof(T), CAP_ALLOCATOR_MAP_SIZE(TCAPS, TSBITS));
                 assert(buf != NULL);
                 m_sAlloced += size; 
                 
@@ -147,9 +136,6 @@ namespace mn {
             unsigned long get_free()        { return m_sMaxSize - m_sAlloced; }
             unsigned long get_allocated()   { return m_sAlloced; }
             unsigned long get_max()         { return m_sMaxSize; }
-
-            size_t size()                   { return m_sSize; } ///<Get the size of T
-            void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
 
             bool is_empty()                 { return get_free() == 0;  }
         private:

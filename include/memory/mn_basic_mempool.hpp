@@ -113,8 +113,6 @@ namespace mn {
             *          call size for cheak the real size of pool
             */ 
             virtual int create(unsigned long xTicksToWait) {    
-                if(m_allocator.create(0) == false) return ERR_MEMPOOL_CREATE;
-                
                 int _retError = ERR_MEMPOOL_OK;
 
                 TType *address;
@@ -259,7 +257,7 @@ namespace mn {
                         // maked the state now as free
                         entry->state = vmempool_chunk_state::Free;
                         // and fill the buffer with nulls - arrase the old informations
-                        memset(entry->theBuffer, 0, m_allocator.size() );
+                        memset(entry->theBuffer, 0, sizeof(TType) );
 
                         // break and leave the for loop
                         _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutexAdd);

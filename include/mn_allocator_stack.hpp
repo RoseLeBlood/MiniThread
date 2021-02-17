@@ -22,25 +22,30 @@
 
 namespace mn {
     namespace memory {
-        /** Stack based allocator.
-         * Traits:
-         *      - operates on buffer of TBytes bytes of stack memory
-         *      - never frees memory
-         *      - cannot be copied
+         /**
+         * @brief Stack based allocator.
+         * @note - operates on buffer of TBUFFERSIZE bytes of stack memory
+         * @note - never frees memory
+         * @note - cannot be copied
+         * 
+         * @author RoseLeBlood
+         * @date 2021.02.21
+         * @version 1.0
+         * 
+         * @tparam T                The value to allocate the allocator
+         * @tparam TBUFFERSIZE      The size of the buffer
          */
-        template<typename T, int TBytes> 
+        template<typename T, int TBUFFERSIZE> 
         class basic_allocator_stack {
         public:
-            explicit basic_allocator_stack() : m_bufferTop(0), m_sSize(sizeof(T)) { }
-
-            bool create(size_t unused = 0) { return true; }
+            explicit basic_allocator_stack() : m_bufferTop(0)  { }
 
             T* alloc(unsigned int xTime) {
             if(is_empty()) return NULL;
 
-                assert(m_bufferTop + m_sSize <= (TBytes * m_sSize) );
-                char* ret = &m_buffer[0] + m_bufferTop;
-                m_bufferTop += m_sSize;
+                assert(m_bufferTop + sizeof(T) <= (TBUFFERSIZE * sizeof(T)) );
+                char* ret = &m_aBuffer[0] + m_bufferTop;
+                m_bufferTop += sizeof(T);
                 return (T*)ret;
             }
             /**
@@ -53,29 +58,27 @@ namespace mn {
                 size_t size = n;
                 if( (get_max() - get_allocated() < size) ) size = get_free();
 
-                assert(m_bufferTop + (m_sSize*size) <= (TBytes * m_sSize) );
-                *buf = (T*)&m_buffer[0] + m_bufferTop;
-                m_bufferTop += m_sSize*size;
+                assert(m_bufferTop + (sizeof(T)*size) <= (TBUFFERSIZE * sizeof(T)) );
+
+                *buf = (T*)&m_aBuffer[0] + m_bufferTop;
+
+                m_bufferTop += sizeof(T)*size;
 
                 return size;
             }
             void free(void* ptr) { ptr = NULL; }
 
-            size_t size()                   { return m_sSize; } ///<Get the size of T
-            void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
-
             bool is_empty()                 { return get_free() == 0;  }
 
-            unsigned long get_free()        { return get_max() - (m_bufferTop/m_sSize); }
-            unsigned long get_allocated()   { return m_bufferTop/m_sSize; }
-            unsigned long get_max()         { return (TBytes); }
+            unsigned long get_free()        { return get_max() - (m_bufferTop); }
+            unsigned long get_allocated()   { return m_bufferTop; }
+            unsigned long get_max()         { return (TBUFFERSIZE); }
 
             basic_allocator_stack(const basic_allocator_stack&) = delete;
             basic_allocator_stack& operator=(const basic_allocator_stack&) = delete;
         private:
-            char            m_buffer[TBytes*sizeof(T)];
             size_t          m_bufferTop;
-            size_t          m_sSize;
+            char*           m_aBuffer[TBUFFERSIZE];   
         };
     }
 }

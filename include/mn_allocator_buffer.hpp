@@ -22,10 +22,15 @@
 
 namespace mn {
     namespace memory {
-        /** buffer based allocator.
-         * Traits:
-         *      - never frees memory
-         *      - cannot be copied
+        /** 
+         * @brief buffer based allocator.
+         * @note - never frees memory
+         * @note - cannot be copied
+         * 
+         * @author RoseLeBlood
+         * @date 2021.02.21
+         * @version 1.0
+         * 
          * @code cpp
          * #define ALLOC_TESTS_STRUCTS 20
          * #define ALLOC_TESTS_ALLOC 22
@@ -39,8 +44,11 @@ namespace mn {
          * alloc_test* test;
          * 
          * int main() {
-         *  allocator_buffer_t<alloc_test> alloc;
-         *  alloc.create(ALLOC_TESTS_STRUCTS);
+         *  char* buffer = (char*)malloc(ALLOC_TESTS_STRUCTS * sizeof(alloc_test) );
+         *  assert(buffer != NULL);
+         *  
+         *  allocator_buffer_t<alloc_test> 
+         *      alloc(buffer, ALLOC_TESTS_STRUCTS * sizeof(alloc_test));
          *  
          *  alloc.alloc(200);
          *  std::cout << "free: " << alloc.get_free() << "/" << alloc.get_max() << " (" << alloc.get_allocated() << ")" << std::endl;
@@ -52,38 +60,22 @@ namespace mn {
          * 
          *  return 0;
          * }
-         * //Ausgabe: 
-         * //free: 19/20 (1)
-         * //AL: 19 from 22
-         * //0::0::0::0::0::0::0::0::0::0::0::0::0::0::0::0::0::0::0::free: 0/20 (20)
-         * 
          * @endcode
          */
-        template<typename T, class TALLOC> 
+        template<typename T> 
         class basic_allocator_buffer {
         public:
-            basic_allocator_buffer()
-                : m_bufferTop(0), m_sSize(sizeof(T)) { m_buffer = NULL; }
-
-            basic_allocator_buffer(T* TBUFFER, unsigned long TSIZE) 
-                : m_bufferTop(0), m_sSize(sizeof(T)) { 
-                m_BufferSize = TSIZE;
-                m_buffer = (char*)TBUFFER;
-            }
-
-            bool create(size_t nElements = 0) { 
-                if(m_buffer == NULL) {
-                    return internal_create(nElements);
-                }
-                return m_buffer != NULL; 
-            }
+            basic_allocator_buffer(char* TBUFFER, unsigned long TSIZE) 
+                : m_bufferTop(0), m_sSize(sizeof(T)), m_BufferSize(TSIZE), 
+                  m_buffer( (char*)TBUFFER )  {  }
 
             T* alloc(unsigned int xTime) {
-            if(is_empty()) return NULL;
+                if(is_empty()) return NULL;
 
                 assert(m_bufferTop + m_sSize <= (m_BufferSize * m_sSize) );
                 char* ret = &m_buffer[0] + m_bufferTop;
                 m_bufferTop += m_sSize;
+
                 return (T*)ret;
             }
             /**
@@ -104,25 +96,16 @@ namespace mn {
             }
             void free(void* ptr) { ptr = NULL; }
 
-            size_t size()                   { return m_sSize; } ///<Get the size of T
-            void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
-
+    
             bool is_empty()                 { return get_free() == 0;  }
 
-            unsigned long get_free()        { return get_max() - (m_bufferTop/m_sSize); }
-            unsigned long get_allocated()   { return m_bufferTop/m_sSize; }
+            unsigned long get_free()        { return get_max() - (m_bufferTop); }
+            unsigned long get_allocated()   { return m_bufferTop; }
             unsigned long get_max()         { return (m_BufferSize); }
 
             basic_allocator_buffer(const basic_allocator_buffer&) = delete;
             basic_allocator_buffer& operator=(const basic_allocator_buffer&) = delete;
-        private:
-            bool internal_create(size_t nElements = 0) {
-                if(nElements == 0) nElements = 200;
-                
-                TALLOC __alloc; __alloc.create(nElements*2);
-                m_BufferSize = __alloc.calloc(nElements, &m_buffer, 200);
-                return m_buffer != NULL;
-            }
+        
         private:
             char            *m_buffer;
             size_t          m_bufferTop;

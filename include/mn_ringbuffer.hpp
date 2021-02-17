@@ -15,6 +15,7 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
+
 #ifndef MINLIB_ESP32_RINGBUFFER_
 #define MINLIB_ESP32_RINGBUFFER_
 
@@ -23,230 +24,345 @@
 
 #include "mn_config.hpp"
 #include "mn_autolock.hpp"
+#include "mn_allocator.hpp"
+#include "mn_array.hpp"
+
 
 namespace mn {
-    /**
-     * Template class for a simple circular_buffer
-     */ 
-    template <class T>
-    class basic_circular_buffer  {
-    public:
-        using buffer_item_t = T;
+
+    namespace container {
 
         /**
-         * Construtor set and create the ringbuffer
-         */ 
-        explicit basic_circular_buffer(unsigned int size) 
-            : m_szRingBufferSize(size),
-            m_mLock(),
-            m_pBuffer(new T[size]),
-            m_iHead(0),
-            m_iTail(0),
-            m_bFull(false) { }
-
-        /**
-         * Write a item to the buffer
-         * @param item The item to write to the ringbuffer
-         */ 
-        bool write(buffer_item_t item, TickType_t xTicksToWait) {
-            bool written = false;
-            TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-            TickType_t xTicksRemaining = xTicksToWait;
-
-            if(m_mLock->lock(xTicksToWait) == NO_ERROR) {
-                m_pBuffer[m_iHead] = item;
-
-                written = (m_pBuffer[m_iHead] == item) ;
-
-                if(m_bFull) 
-                    m_iTail = (m_iTail + 1) % m_szRingBufferSize;
-
-                m_iHead = (m_iHead + 1) % m_szRingBufferSize;
-                m_bFull = (m_iHead == m_iTail);
-
-                
-                m_mLock->unlock();
-            }
-            return written;
-        }
-        /**
-         * Write items to the ringbuffer
-         * @param items The array of items to write to the ring buffer
-         * @param offset The write offset
-         * @param size The size of the items to writte to the ring buffer
+         * @brief ring_buffer_iterator
          * 
-         * @return The size to written to the ringbuffer, -1 on error
-         */ 
-        int write(buffer_item_t* items, unsigned int offset, unsigned int size, TickType_t xTicksToWait) {
-            if (size <= offset) return -1;
-            if(items == NULL) return 0;
-
-            TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-            TickType_t xTicksRemaining = xTicksToWait;
-
-            int written = 0;
-            int _size = (size - offset);
-
-            for(int i = offset; (i < _size ) && (xTicksRemaining <= xTicksToWait); i++) {
-                if(write(items[i], xTicksRemaining))
-                    written++;
-
-                if (xTicksToWait != portMAX_DELAY) {
-                    xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-                }
-            }
-            return written;
-        }
-        /**
-         * get a item from the buffer
+         * @tparam T The ringbuffer type
+         * @tparam E 
          * 
-         * @param item [out] The readed value
-         * 
-         * @return If true then readed from buffer and false when not
-         */ 
-        bool read(buffer_item_t* item, TickType_t xTicksToWait) {
-            bool _ret = false;
+         */
+        template<typename T, typename E = typename T::value_type>
+        class basic_ring_buffer_iterator 
+        {
+        public:
+            using value_type = T;
+            using size_type = size_t;
+            using difference_type = ptrdiff_t; 
+            using pointer = T*;
+            using const_pointer = const T*;
+            using reference = T&;
+            using const_reference = const T&;
+            using self_type = basic_ring_buffer_iterator<T>;
 
-            if(m_mLock->lock(xTicksToWait) == NO_ERROR) {  
-                if(!is_empty()) {
-                
-                    *item = m_pBuffer[m_iTail];
-
-                    m_bFull = false;
-                    m_iTail = (m_iTail + 1) % m_szRingBufferSize;
-
-                    m_mLock->unlock();
-
-                    _ret = true;
-                }
+            using ringbuffer_iterator = typename T::iterator; 
+            using const_ringbuffer_iterator = typename T::const_iterator;
+            
+            basic_ring_buffer_iterator(pointer b, size_t start_pos)
+                : m_buf(b), m_pos(start_pos) { }
+            basic_ring_buffer_iterator(const basic_ring_buffer_iterator& it)
+                : m_buf(it.m_buf), m_pos(it.m_pos) { }
+            
+            basic_ring_buffer_iterator& operator = (const basic_ring_buffer_iterator& it) {
+                m_buf = it.m_buf; m_pos = it.m_pos; return *this;
             }
         
-            return _ret;
-        }
+            E &operator*() {
+                return (*m_buf)[m_pos]; 
+            }
+            E *operator->() { 
+                return &(operator*()); 
+            }
+            self_type &operator++() {
+                ++m_pos;
+                return *this;
+            }
+            self_type &operator--() {
+                --m_pos;
+                return *this;
+            }
+            self_type operator ++ (int) {
+                self_type tmp(*this);
+                ++(*this);
+                return tmp;
+            }
+            self_type operator -- (int) {
+                self_type tmp(*this);
+                --(*this);
+                return tmp;
+            }
+            self_type operator + (difference_type n) {
+                self_type tmp(*this);
+                tmp.m_pos += n;
+                return tmp;
+            }
+            self_type operator - (difference_type n) {
+                self_type tmp(*this);
+                tmp.m_pos -= n;
+                return tmp;
+            }
+            self_type &operator += (difference_type n) {
+                m_pos += n;
+                return *this;
+            }
+            self_type &operator -= (difference_type n) {
+                m_pos -= n;
+                return *this;
+            }
+            bool operator == (const self_type &other) const {
+                return (this->m_pos == other.m_pos);
+            }
+            bool operator != (const self_type &other) const {
+                return (this->m_pos != other.m_pos);
+            }
+            value_type& operator [] (difference_type n) const {
+                return *(*this + n); 
+            }
+            bool operator < (const self_type& it) const {
+                    return m_pos < it.m_pos;
+            }
+            bool operator > (const self_type& it) const {
+                return   it < *this;  
+            }
+            bool operator <= (const self_type& it) const { 
+                return !(it < *this); 
+            }
+            bool operator >= (const self_type& it) const { 
+                return !(*this < it); 
+            }
+        private:
+            value_type *m_buf;
+            size_t     m_pos;  
+        };
+
         /**
-         * get a item from the buffer, don't removed it
+         * @brief A basic ring buffer with iterator 
+         * @note A ring buffer is a FIFO (first-in, first-out) container which acts
+	     * much like a queue. The difference is that a ring buffer is implemented
+	     * via chasing pointers around a container and moving the read and write
+	     * positions forward (and possibly wrapping around) as the container is 
+	     * read and written via pop_front and push_back.
          * 
-         * @param item [out] The readed value
-         * @return If true then readed from buffer and false when not
-         */ 
-        bool peek(buffer_item_t* item, TickType_t xTicksToWait) {
-            bool _ret = false;
+         * @tparam T          Type of element. Required to be a complete type.
+         * @tparam TCAPACITY  The maximal capacity of elements, 
+         * @tparam TLOCK      The lock object for task saftly
+         */
+        template <class T, size_t TCAPACITY = 100, typename TLOCK >
+        class basic_ring_buffer
+        {
+        public:
+            using value_type = T;
+            using pointer = T*;
+            using const_pointer = const T*;
+            using reference = T&;
+            using const_reference = const T&;
+            using size_type = size_t;
+            using difference_type = ptrdiff_t; 
+            using lock_type = TLOCK;
+            using lock_guard = basic_autolock<TLOCK>;
+            using self_type = basic_ring_buffer<T, TCAPACITY, TLOCK>;
+            
+            using iterator = basic_ring_buffer_iterator<self_type, value_type> ; 
+            using const_iterator = basic_ring_buffer_iterator<self_type, const value_type>;
+
+            basic_ring_buffer() :  m_Head(0), m_Tail(0), m_ContentsSize(0) { }
         
-            if(m_mLock->lock(xTicksToWait) == NO_ERROR) {
-                if(!is_empty()) {
+            /**
+             * @brief Clear the ringbuffer and set read/write positoin to 0
+             */
+            void clear()  { 
+                lock_guard lock(m_lockObject);
+                m_Head = m_Tail = m_ContentsSize = 0; 
+                memset(m_Array, 0, TCAPACITY);
+            }
+            /**
+             * @brief Set read/write positoin to 0, for clear use function clear()
+             */
+            void reset() {
+                lock_guard lock(m_lockObject);
+                m_Head = m_Tail = 0;
+            }
+            
+            /**
+             * @brief push a value to the end of the buffer
+             * @param value The value to add
+             */
+            void push_back(const value_type &value) {
+                lock_guard lock(m_lockObject);
 
-                    *item = m_pBuffer[m_iTail]; 
-                    _ret = true;
-                }
-                m_mLock->unlock();
+                inc_tail();
+                if (m_ContentsSize == TCAPACITY)
+                    inc_head();
+
+                m_Array[m_Tail] = value;
+            }
+            /**
+             * @brief pop (read) the element from the front 
+             * and remove it from buffer
+             * 
+             * @return The poped value  
+             */
+            reference pop_front() { 
+                lock_guard lock(m_lockObject);
+
+                inc_head(); 
+                return m_Array[m_Head];
+            }
+            /**
+             * @brief pop (read) the element from the front 
+             * and remove it from buffer
+             * 
+             * @return The poped value  
+             */
+            const_reference pop_front() const { 
+                lock_guard lock(m_lockObject);
+
+                inc_head(); 
+                return m_Array[m_Head];
+            }
+      
+            iterator begin() { 
+                lock_guard lock(m_lockObject);
+                return iterator(this, TCAPACITY == 0 ? 0 : m_Array[m_Head] ); 
+            }
+            iterator end() { 
+                lock_guard lock(m_lockObject);
+                return iterator(this, TCAPACITY); 
+            }
+            const_iterator begin() {
+                lock_guard lock(m_lockObject);
+                return const_iterator(this, 0); 
+            }
+            const_iterator end() { 
+                lock_guard lock(m_lockObject);
+                return const_iterator(this, TCAPACITY); 
+            }
+            reference       front() {
+                lock_guard lock(m_lockObject); 
+                return m_Array[m_Head];
+            }
+            const_reference front() const { 
+                lock_guard lock(m_lockObject);
+                return m_Array[m_Head]; 
+            }
+            const_reference back() const  { 
+                lock_guard lock(m_lockObject);
+                return m_Array[m_Tail]; 
+            }
+            reference       back()  { 
+                lock_guard lock(m_lockObject);
+                return m_Array[m_Tail]; 
+            }
+            
+            /**
+             * @brief Get the size of the ringbuffer
+             * 
+             * @return The size of the ringbuffer 
+             */
+            size_type size() const {
+                lock_guard lock(m_lockObject);
+                return TCAPACITY;
+            }
+            /**
+             * @brief Get the number of stored elements in the buffer
+             * 
+             * @return The number of stored elements in the buffer 
+             */
+            size_type capacity() const {
+                lock_guard lock(m_lockObject);
+                return m_ContentsSize;
+            }
+            /**
+             * @brief Is the buffer empty?
+             * 
+             * @return true The buffer is empty
+             * @return false The buffer is not empty
+             */
+            bool empty() const {
+                lock_guard lock(m_lockObject);
+                return TCAPACITY == 0; 
+            }
+            /**
+             * @brief Is the buffer full?
+             * 
+             * @return true The buffer is full
+             * @return false The buffer is not full
+             */
+            bool full() const {
+                lock_guard lock(m_lockObject);
+                return TCAPACITY == m_ContentsSize;
+            }
+            size_type max() const {
+                lock_guard lock(m_lockObject);
+                return size_type(-1) / sizeof(value_type);
             }
 
-            return _ret;
-        }
-        /**
-         * Read a array of items from the ringbuffer buffer
-         * 
-         * @param items The pointer af array of the getted items
-         * @param offset The read offset
-         * @param size The size to read from the buffer
-         * 
-         * @return The size to readed from the ringbuffer, -1 on error
-         */ 
-        int read(buffer_item_t* items, unsigned int offset, unsigned int size, TickType_t xTicksToWait) {
-            if (size <= offset) return -1;
-
-            TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
-            TickType_t xTicksRemaining = xTicksToWait;
-
-            int readed = 0;
-            buffer_item_t item ;
-
-            for(unsigned int i = 0; (i < size) && (xTicksRemaining <= xTicksToWait); i++) {
-                if(is_empty()) break; 
-
-                if(read(&item, xTicksRemaining)) {
-                    items[readed + offset] = item;
-                    readed++;
-                }
-
-                if (xTicksToWait != portMAX_DELAY) {
-                    xTicksRemaining = xTicksEnd - xTaskGetTickCount();
-                }
+            /**
+             * Get the write position (head)
+             * @return The write position (head)
+             */
+            const size_t get_head() const {
+                lock_guard lock(m_lockObject);
+                return m_Head;
             }
-            return readed;
-        }
-
-        /**
-         * Reset the ringbuffer.
-         */ 
-        void reset() {
-            automutx_t lock(m_mLock);
-            m_iHead = m_iTail;
-            m_bFull = false;
-        }
-        /**
-         * Is the buffer empty?
-         * @return true If the ringbuffer is empty, false If not
-         */ 
-        bool is_empty() const               { return (!m_bFull && (m_iHead == m_iTail)); }
-        /**
-         * Is the buffer full?
-         * @return true If the ringbuffer is full, false If not
-         */ 
-        bool is_full() const                { return m_bFull; }
-        /**
-         * Get the size of the ringbuffer
-         * @return The size of the ringbuffer
-         */ 
-        size_t get_size() const             { return m_szRingBufferSize; }
-
-        /**
-         * Get the count of data in the ring buffer
-         * @return The count of data in the ring buffer
-         */ 
-        size_t get_count() const  {
-            if(is_full()) {
-                return get_size();
-            } else {
-                if(m_iHead < m_iTail) {
-                    return (get_size() + (m_iHead - m_iTail) );
-                } else {
-                    return (m_iHead - m_iTail);
-                }
+            /**
+             * Get the read position index  (head)
+             * @return The read position  (head)
+             */
+            const size_t get_tail() const {
+                lock_guard lock(m_lockObject);
+                return m_Tail;
             }
+            
+            
+        private:
+            void inc_tail() {
+                ++m_Tail;
+                ++m_ContentsSize;
+
+                if (m_Tail == TCAPACITY)  m_Tail = 0;
+            }
+            void inc_head() {
+                ++m_Head;
+                --m_ContentsSize;
+
+                if (m_Head == TCAPACITY) m_Head = 0;
+            }
+        private:
+            T           m_Array[TCAPACITY];
+            size_t      m_Head;
+            size_t      m_Tail;
+            size_t      m_ContentsSize;
+            lock_type   m_lockObject;
+        };
+
+        template <class T, size_t TCAPACITY = 100, typename TLOCK = mn::mutex_t >
+        using ringbuffer_t = basic_ring_buffer<T, TCAPACITY, TLOCK>;
+
+#ifdef __EXPERT 
+        template<class TRingBuffer, class TARRAY >
+        inline int write(TRingBuffer& rng, TARRAY& _array) {
+            using size_type = typename TRingBuffer::size_type;
+            size_type t = 0;
+
+            for(; t < _array.size(); t++) {
+                rng.push_back(_array[t]);
+            }
+
+            return t;
         }
 
-        /**
-         * Get the write position (head)
-         * @return The write position (head)
-         */ 
-        const int get_pos_write() const {
-            return m_iHead;
-        }
-        /**
-         * Get the read position index  (head)
-         * @return The read position  (head)
-         */ 
-        const int get_pos_read() const {
-            return m_iTail;
-        }
-    protected:
-        /** A saved / cached copy of the size of the buffer*/
-        unsigned int    m_szRingBufferSize;
-        /** The lock object for multitasking */
-        mutex_t         m_mLock;
-        /** The buffer of the ring buffer */
-        T*              m_pBuffer;
-        /** The head index of the ringbuffer */
-        unsigned int    m_iHead;
-        /** The tail index of the ringbuffer */
-        unsigned int    m_iTail;
-        /// Is the buffer full
-        bool            m_bFull;
-    };
+        template<class TRingBuffer, 
+                 typename value_type = typename TRingBuffer::value_type, 
+                 typename size_type = typename TRingBuffer::size_type>
+        inline int write(TRingBuffer& rng, const value_type* tarray, const size_type size ) {
+            size_type t = 0;
 
-    template <class T>
-    using circular_buffer_t = basic_circular_buffer<T>;
+            for(; t < size; t++) {
+                rng.push_back(_array[t]);
+            }
+            return t;
+        }
+#endif
+    }
+
 }
 
 #endif // MINLIB_ESP32_RINGBUFFER_

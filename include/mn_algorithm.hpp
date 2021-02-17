@@ -22,9 +22,9 @@
 #include "utils/mn_alignment.hpp"
 #include "utils/mn_inttokey.hpp"
 #include "utils/mn_utils.hpp"
-#include "mn_typetraits.hpp"
 
-//#include "mn_iterator.hpp"
+#include "mn_typetraits.hpp"
+#include "mn_iterator.hpp"
 
 namespace mn {
     template<typename T> 
