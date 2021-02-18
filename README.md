@@ -25,15 +25,18 @@ source code archive.
 
 ## Using 
 Build from git from
-1. run ./build.sh
-2. add to your platformio.ini under lib_deps =  path/to/release/miniThread-2.*.*.tar.gz
+1. ```sh ./configure or ./configure --prefix=<path> # without prefix then install to /opt```
+2. ```sh make build ```
+3. ```sh sudo or doas make install ```
+4. add  "lib_deps = /opt/miniThread/miniThread-2.*.tar.gz"  to your platformio.ini
+ 
 ### Example
 ```ini
 [env:esp-wrover-kit]
 platform = espressif32
 board = esp-wrover-kit
 framework = espidf
-lib_deps = path/to/release/miniThread-2.*.*.tar.gz
+lib_deps = /opt/miniThread/miniThread-2.*.tar.gz
 
 ```
 ## Using from platformio

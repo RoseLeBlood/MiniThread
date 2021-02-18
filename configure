@@ -1,0 +1,31 @@
+#!/bin/sh
+
+prefix=/opt
+version=2.10.7
+
+for arg in "$@"; do
+    case "$arg" in
+    --prefix=*)
+        prefix=`echo $arg | sed 's/--prefix=//'`
+        ;;
+    --clean)
+        rm Makefile &> /dev/null
+        rm -r release/* &> /dev/null
+        exit 0
+        ;;
+    --help)
+        echo 'usage: ./configure [options]'
+        echo 'options:'
+        echo '  --prefix=<path>: installation prefix'
+        echo '  --clean: remove Makefile and clean'
+        echo 'all invalid options are silently ignored'
+        exit 0
+        ;;
+    esac
+done
+
+echo 'generating makefile ...'
+echo "PREFIX = $prefix" > Makefile
+echo "VERSION = $version" >> Makefile
+cat Makefile.in >> Makefile
+echo 'configuration complete, type make to build.'
