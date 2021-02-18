@@ -2,6 +2,7 @@
 ## Version 2.10 Februar 2021
 + add pointer suppert - weak, shared, clone_ptr, and other
 + add new ringbuffer and updated examples
++ add Makefile support only for use the source from git, not use in platformio library regestrie
   
 ## Version 2.0.4 Januar 2021
 + add staked, buffered allocator
