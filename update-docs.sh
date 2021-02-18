@@ -51,8 +51,7 @@ cp bootstrap-doxy.css   $DOCSGIT/css/.
 rm -r html/
 
 cd $DOCSGIT/..
-git add .
-git commit -m "update to version ${VERSION}"
+git commit -a -m "update to version ${VERSION}"
 git push
 
 echo $ARG1

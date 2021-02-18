@@ -29,35 +29,90 @@
     </head>
     <body>    
 
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand" href="index.html">$projectname $projectnumber </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item "><a class="nav-link" href="annotated.html">Class List</a></li>
-                    <li class="nav-item "><a class="nav-link" href="inherits.html">Class Hierarchy</a></li>
-                    <li class="nav-item "><a class="nav-link" href="globals.html">Members</a></li>
-                    <li class="nav-item "><a class="nav-link" href="files.html">Files</a></li>
-                </ul>
-                <span class="form-inline my-2 my-lg-0">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item "><a class="nav-link" href="https://github.com/RoseLeBlood/MiniThread">Github</a></li>
-                    </ul>
-                </span>
-            </div>
+        <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+            <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="index.html">$projectname $projectnumber</a>
         </nav>
-        <main role="main">
-            <!-- Main jumbotron for a primary marketing message or call to action -->
-            <div class="jumbotron">
-                <div class="container">
-                <h1 class="display-3">$projectname $projectnumber</h1>
-                <p>Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++. All in the background of a more secure and consistent workflow. So that your application will be smaller and more effective.</p>
+        
+        <div class="container-fluid">
+            <div class="row">
+              <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Menu</span>
+                        <a class="d-flex align-items-center text-muted" href="#">
+                          <span data-feather="plus-circle"></span>
+                        </a>
+                      </h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item ">
+                            <a class="nav-link" href="index.html">
+                                <span data-feather="home"></span>
+                                Start
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="classes.html">
+                                <span data-feather="list"></span>
+                                Class List
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="inherits.html">
+                                <span data-feather="list"></span>
+                                Class Hierarchy
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="globals.html">
+                                <span data-feather="users"></span>
+                                Members
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="files.html">
+                                <span data-feather="file-text"></span>
+                                Files
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="md__home_ambersophia__dokumente_git_mnthread__change_log.html">
+                                <span data-feather="info"></span>
+                                Changelog
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="md__home_ambersophia__dokumente_git_mnthread__c_o_n_t_r_i_b_u_t_i_n_g.html">
+                                <span data-feather="info"></span>
+                                Contributing
+                            </a>
+                        </li>
+                    </ul>
+      
+                  <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Links</span>
+                    <a class="d-flex align-items-center text-muted" href="#">
+                      <span data-feather="at-sign"></span>
+                    </a>
+                  </h6>
+                  <ul class="nav flex-column mb-2">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="https://github.com/RoseLeBlood/MiniThread">
+                            <span data-feather="github"></span>
+                            Github
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="https://platformio.org/lib/show/11136/mini%20Thread">
+                            <span data-feather="package"></span>
+                            Platformio
+                        </a>
+                    </li>
+                  </ul>
                 </div>
-            </div>
-
-            <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-12 panel panel-default">
+              </nav>
+      
+              <main role="main" class="col-md-9 ml-sm-auto col-lg-10">
+                <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
