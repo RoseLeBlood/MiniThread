@@ -27,30 +27,37 @@
         <link href="$relpath^css/search.css" rel="stylesheet" type="text/css"/>
         <link href="$relpath^css/tabs.css" rel="stylesheet" type="text/css"/> 
     </head>
-    <body>     
-        <nav class="navbar fixed-top navbar-inverse navbar-dark bg-dark navbar-expand-sm">
-            <a class="navbar-brand" href="index.html">
-                <img src="$projectlogo" width="30" height="30" class="d-inline-block align-top" alt="">
-                $projectname $projectnumber 
-              </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <body>    
+
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="index.html">$projectname $projectnumber </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item "><a class="nav-link" href="annotated.html">Class List</a></li>
                     <li class="nav-item "><a class="nav-link" href="inherits.html">Class Hierarchy</a></li>
                     <li class="nav-item "><a class="nav-link" href="globals.html">Members</a></li>
                     <li class="nav-item "><a class="nav-link" href="files.html">Files</a></li>
                 </ul>
-                <span class="navbar-nav"> 
+                <span class="form-inline my-2 my-lg-0">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item "><a class="nav-link" href="https://github.com/RoseLeBlood/MiniThread">Github</a></li>
                     </ul>
                 </span>
             </div>
         </nav>
-        <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 panel panel-default">
+        <main role="main">
+            <!-- Main jumbotron for a primary marketing message or call to action -->
+            <div class="jumbotron">
+                <div class="container">
+                <h1 class="display-3">$projectname $projectnumber</h1>
+                <p>Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++. All in the background of a more secure and consistent workflow. So that your application will be smaller and more effective.</p>
+                </div>
+            </div>
+
+            <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 panel panel-default">

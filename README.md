@@ -1,13 +1,16 @@
 
 # Mini Thread 2.10.7 
-Mini Thread is a library for creating secure threads for the esp32 microcontroller. 
-With variable condition support if required. 
-And wrappers for:  
-   +  Mutex (recursive and standard)
-   +  Semaphore (binary and counting)
-   +  Queues (deque, binary-queue and the standard queue)
-   +  workqueues (multithreaded and singlethreaded workqueues)
-   +  Timers, Protothreads and event groups
+Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++. All in the background of a more secure and consistent workflow. 
+So that your application will be smaller and more effective.
+
+Many of the standard STL containers are replaced with their own optimized versions. Recognizable by its own namespace mn.
+All containers, such as vector, map, list, array, can be found in the namespace mn::container.
+
+Various types of association classes are provided for simplicity. This is just the exchange of the used allocator from the system to the Spiram allocator, whereby certain regions can be swapped out to a different storage capacity without having to rewrite the entire program. 
+Certain allocation in addition to a limit, the bytes used to be limited.
+All allocator find you under the namespace mn::memory.
+
+The containers and pointers use as default the mn::memory::default_allocator_t.
 
 The license that applies to the library is the LGPL.The license texts of these
 licenses can be found in the files [LICENSE](LICENSE.md) of the
