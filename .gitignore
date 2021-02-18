@@ -37,16 +37,10 @@
 .vscode
 .vscode/*
 
-doc/html/*
-doc/man/*
+doc/*
 
-platformio.ini
-update pio.sh
-sdkconfig
-CMakeLists
-mnThread.code-workspace
 
 test-ccc/
 test-ccc/*
 
-preBuild
+Makefile
