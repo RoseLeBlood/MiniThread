@@ -22,6 +22,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "mn_uint128.hpp"
+
 namespace mn {
     /**
      * This class is a fast bit for all fast_types
@@ -272,30 +274,33 @@ namespace mn {
         enum { size = sizeof(T) * 8 };
     };
 
-    using fsize_t = fast_type<value2size<size_t>::size, size_t>;
-    using ffloat_t = fast_type<value2size<float>::size, float>;
-    using fdouble_t = fast_type<value2size<double>::size, double>;
+    
 
-    using fint8_t =  fast_type<value2size<int8_t>::size, int8_t>;
-    using fint16_t = fast_type<value2size<int16_t>::size, int16_t>;
-    using fint32_t = fast_type<value2size<int32_t>::size, int32_t>;
-    using fint64_t = fast_type<value2size<int64_t>::size, int64_t>;
+    using fsize_t           = fast_type<value2size<size_t>::size,           size_t>;
+    using ffloat_t          = fast_type<value2size<float>::size,            float>;
+    using fdouble_t         = fast_type<value2size<double>::size,           double>;
 
-    using fuint8_t = fast_type<value2size<uint8_t>::size, uint8_t>;
-    using fuint16_t = fast_type<value2size<uint16_t>::size, uint16_t>;
-    using fuint32_t = fast_type<value2size<uint32_t>::size, uint32_t>;
-    using fuint64_t = fast_type<value2size<uint64_t>::size, uint64_t>;
+    using fint8_t           = fast_type<value2size<int8_t>::size,           int8_t>;
+    using fint16_t          = fast_type<value2size<int16_t>::size,          int16_t>;
+    using fint32_t          = fast_type<value2size<int32_t>::size,          int32_t>;
+    using fint64_t          = fast_type<value2size<int64_t>::size,          int64_t>;
 
-    using fint_least8_t =  fast_type<value2size<int_least8_t>::size, int_least8_t>;
-    using fint_least16_t = fast_type<value2size<int_least16_t>::size, int_least16_t>;
-    using fint_least32_t = fast_type<value2size<int_least32_t>::size, int_least32_t>;
-    using fint_least63_t = fast_type<value2size<int_least64_t>::size, int_least64_t>;
+    using fuint8_t          = fast_type<value2size<uint8_t>::size,          uint8_t>;
+    using fuint16_t         = fast_type<value2size<uint16_t>::size,         uint16_t>;
+    using fuint32_t         = fast_type<value2size<uint32_t>::size,         uint32_t>;
+    using fuint64_t         = fast_type<value2size<uint64_t>::size,         uint64_t>;
+    using fuint128_t        = fast_type<value2size<uint128_t>::size,        uint128_t>; 
 
-    using fuint_least8_t =  fast_type<value2size<uint_least8_t>::size, uint_least8_t>;
-    using fuint_least16_t = fast_type<value2size<uint_least16_t>::size, uint_least16_t>;
-    using fuint_least32_t = fast_type<value2size<uint_least32_t>::size, uint_least32_t>;
-    using fuint_least63_t = fast_type<value2size<uint_least64_t>::size, uint_least64_t>;
+    using fint_least8_t     = fast_type<value2size<int_least8_t>::size,     int_least8_t>;
+    using fint_least16_t    = fast_type<value2size<int_least16_t>::size,    int_least16_t>;
+    using fint_least32_t    = fast_type<value2size<int_least32_t>::size,    int_least32_t>;
+    using fint_least64_t    = fast_type<value2size<int_least64_t>::size,    int_least64_t>;
 
+    using fuint_least8_t    = fast_type<value2size<uint_least8_t>::size,    uint_least8_t>;
+    using fuint_least16_t   = fast_type<value2size<uint_least16_t>::size,   uint_least16_t>;
+    using fuint_least32_t   = fast_type<value2size<uint_least32_t>::size,   uint_least32_t>;
+    using fuint_least64_t   = fast_type<value2size<uint_least64_t>::size,   uint_least64_t>;
+    using fuint_least128_t  = fast_type<value2size<uint_least128_t>::size,  uint_least128_t>; 
 
 }
 

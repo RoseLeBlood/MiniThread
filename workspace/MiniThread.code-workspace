@@ -17,6 +17,7 @@
 			"*.vhtml": "html",
 			"*.ncpm": "jsonc",
 			"*.phtm": "html",
+			"configure": "shellscript",
 			"deque": "cpp",
 			"string": "cpp",
 			"vector": "cpp",
@@ -93,7 +94,8 @@
 			"netfwd": "cpp",
 			"stop_token": "cpp",
 			"shared_mutex": "cpp",
-			"span": "cpp"
+			"span": "cpp",
+			"cassert": "cpp"
 		}
 	}
 }

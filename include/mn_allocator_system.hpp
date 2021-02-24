@@ -18,72 +18,48 @@
 #ifndef _MINLIB_ALLOCATOR_SYSTEM_H_
 #define _MINLIB_ALLOCATOR_SYSTEM_H_
 
-#include <assert.h>
+#include "mn_allocator_interface.hpp"
+#include "malloc.h"
 
 namespace mn {
     namespace memory {
-        
-        template <typename T, int sMaxSize = 0>
-        class basic_allocator_system {
+
+        class basic_allocator_system : public allocator_interface{
         public:
-            basic_allocator_system() : m_sMaxSize(sMaxSize), m_sAlloced(0) { }
-            
             /**
              * Allocate SIZE bytes of memory 
              * @return A pointer of the allocated ram
              */ 
-            T* alloc(unsigned int xTime) {
-                if(is_empty() ) return NULL;
-                T* buf = (T*)::malloc(sizeof(T));
-                assert(buf != NULL);
+            void* alloc(size_t n, unsigned int xTime) override {
+                void* buf = NULL;
 
-                if(buf) { m_sAlloced++; }
+                if(is_free(n)) {
+                    buf = ::malloc(n);
+                    assert(buf != NULL);
+                    add_allocatedsize(n);
+                }
                 return buf;
             }
             /**
              * Allocate n elements of SIZE bytes each, all initialized to 0. 
-             * @return A pointer of the allocated ram
+             * @return A pointer of the allocated mem
              */ 
-            size_t calloc(size_t n, T** buf, unsigned int xTime) {
-                if(is_empty() ) {  buf = NULL; return 0; }
+            size_t calloc(size_t n, size_t b, void** buf, unsigned int xTime) override {
+                size_t _size = n*b;
 
-                size_t size = n;
-
-                if(m_sMaxSize != 0) {
-                    if(m_sMaxSize < size || get_free() < size) size = get_free();
+                if(is_free(_size)) {
+                    *buf = (void*)::calloc(n, b);
+                    assert(buf != NULL);
+                    add_allocatedsize(_size);
                 }
-                *buf = (T*)::calloc(size, sizeof(T));
-
-                assert(buf != NULL);
-                m_sAlloced += size; 
-            
-                return size;
+                return sizeof(*buf);
             }
             /**
              * Free a block allocated by `malloc', `realloc' or `calloc'. 
              */ 
-            void free(T* mem, unsigned int xTime) {
-                if(mem == NULL) return;
-                ::free(mem); 
-                m_sAlloced--;
+            void free(void* mem, unsigned int xTime) override {
+                ::free(mem); rm_allocatedsize(sizeof(mem));
             }
-
-            /**
-             * Get the size of free bytes
-             * @return The size of free bytes
-             */ 
-            unsigned long get_free()        { return (m_sMaxSize != 0) ? m_sMaxSize - m_sAlloced : __LONG_MAX__; }
-            unsigned long get_allocated()   { return m_sAlloced; }
-            unsigned long get_max()         { return (m_sMaxSize != 0) ? m_sMaxSize : __LONG_MAX__; }
-
-            size_t size()                   { return m_sSize; } ///<Get the size of T
-            void size(size_t uiSize)        { if(uiSize <= sizeof(T)) return; m_sSize = uiSize;  } ///<set the size off T. Muss be greater as sizeof(T) 
-
-            bool is_empty()                 { return (m_sMaxSize != 0) ? get_free() == 0 : false;  }
-        private:
-            size_t m_sMaxSize;
-            size_t m_sAlloced;
-            size_t m_sSize;
         };
     }
 }

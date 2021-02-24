@@ -1,19 +1,19 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+/**
+* This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+* Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
-*the Free Software Foundation, version 3, or (at your option) any later version.
+* The Mini Thread Library is free software; you can redistribute it and/or modify  
+* it under the terms of the GNU Lesser General Public License as published by  
+* the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-*General Public License for more details.
+* The Mini Thread Library is distributed in the hope that it will be useful, but 
+* WITHOUT ANY WARRANTY; without even the implied warranty of 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+* General Public License for more details.
 *
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+* You should have received a copy of the GNU Lesser General Public
+* License along with the Mini Thread  Library; if not, see
+* <https://www.gnu.org/licenses/>.  
 */
 #ifndef _MINILIB_14670b4a_3b21_4a28_aece_ea03219c6250_H_
 #define _MINILIB_14670b4a_3b21_4a28_aece_ea03219c6250_H_
@@ -27,6 +27,7 @@
 #include "pointer/mn_scoped_ptr.hpp"
 #include "pointer/mn_lock_ptr.hpp"
 #include "pointer/mn_weak_ptr.hpp"
+#include "pointer/mn_linked_ptr.hpp"
 
 
 
@@ -35,14 +36,15 @@ namespace mn {
     //----------------------------------------
     // USINGS
     //----------------------------------------
-    MN_TEMPLATE_USING_ONE(clone_ptr, pointer::basic_clone_ptr, typename, T)
-    MN_TEMPLATE_USING_TWO(clone_ptr_ex, pointer::basic_clone_ptr, typename, T, class, TInterface)
-    MN_TEMPLATE_USING_ONE(shared_ptr, pointer::basic_shared_ptr, typename, T)
-    MN_TEMPLATE_USING_ONE(scoped_ptr, pointer::basic_scoped_ptr, typename, T)
-    MN_TEMPLATE_USING_ONE(save_ptr, pointer::basic_save_ptr, typename, T)
-    MN_TEMPLATE_USING_ONE(lock_ptr, pointer::basic_save_ptr, typename, T)
-    MN_TEMPLATE_USING_TWO(lock_ptr_ex, pointer::basic_lock_ptr, typename, T, class, TLOCK)
-    MN_TEMPLATE_USING_ONE(weak_ptr, pointer::basic_weak_ptr, typename, T)
+    MN_TEMPLATE_USING_ONE(clone_ptr, pointer::basic_clone_ptr, typename, T);
+    MN_TEMPLATE_USING_TWO(clone_ptr_ex, pointer::basic_clone_ptr, typename, T, class, TInterface);
+    MN_TEMPLATE_USING_ONE(shared_ptr, pointer::basic_shared_ptr, typename, T);
+    MN_TEMPLATE_USING_ONE(scoped_ptr, pointer::basic_scoped_ptr, typename, T);
+    MN_TEMPLATE_USING_ONE(save_ptr, pointer::basic_save_ptr, typename, T);
+    MN_TEMPLATE_USING_ONE(lock_ptr, pointer::basic_save_ptr, typename, T);
+    MN_TEMPLATE_USING_TWO(lock_ptr_ex, pointer::basic_lock_ptr, typename, T, class, TLOCK);
+    MN_TEMPLATE_USING_ONE(weak_ptr, pointer::basic_weak_ptr, typename, T);
+    MN_TEMPLATE_USING_ONE(linked_ptr, pointer::basic_linked_ptr, typename, T);
 
 
     //----------------------------------------
@@ -119,6 +121,19 @@ namespace mn {
     MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t<T>)
     inline weak_ptr<T>  make_weak(T* value) { 
         return weak_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+    }
+
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline linked_ptr<T>  make_link(const linked_ptr<T>& value) { 
+        return linked_ptr<T>(value);
+    }
+    MN_TEMPLATE_FULL_DECL_TWO(typename, T, typename, U)
+    inline linked_ptr<T>  make_link(const linked_ptr<U>& value) { 
+        return linked_ptr<T>(value);
+    }
+    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t<T>)
+    inline linked_ptr<T>  make_link(T* value) { 
+        return linked_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
     }
 
     //----------------------------------------

@@ -18,7 +18,7 @@
 #ifndef _MINLIB_ALLOCATOR_STACK_H_
 #define _MINLIB_ALLOCATOR_STACK_H_
 
-#include <assert.h>
+#include "mn_allocator_interface.hpp"
 
 namespace mn {
     namespace memory {
@@ -31,51 +31,48 @@ namespace mn {
          * @author RoseLeBlood
          * @date 2021.02.21
          * @version 1.0
-         * 
-         * @tparam T                The value to allocate the allocator
-         * @tparam TBUFFERSIZE      The size of the buffer
          */
-        template<typename T, int TBUFFERSIZE> 
-        class basic_allocator_stack {
+        template <int TBUFFERSIZE>
+        class basic_allocator_stack : public allocator_interface  {
         public:
-            explicit basic_allocator_stack() : m_bufferTop(0)  { }
+            explicit basic_allocator_stack() 
+                : allocator_interface(TBUFFERSIZE), m_bufferTop(0)  { }
 
-            T* alloc(unsigned int xTime) {
-            if(is_empty()) return NULL;
-
-                assert(m_bufferTop + sizeof(T) <= (TBUFFERSIZE * sizeof(T)) );
-                char* ret = &m_aBuffer[0] + m_bufferTop;
-                m_bufferTop += sizeof(T);
-                return (T*)ret;
+            void* alloc(size_t size, unsigned int xTime) {
+                if(is_free(size)) { 
+                    char* ret = &m_aBuffer[0] + m_bufferTop;
+                    m_bufferTop += size;
+                    add_allocatedsize(size);
+                    return (void*)ret;
+                }
+                return NULL;
             }
             /**
              * Allocate n elements of SIZE bytes each, all initialized to 0. 
              * @return A pointer of the allocated ram
              */ 
-            size_t calloc(size_t n, T** buf, unsigned int xTime) {
-                if(is_empty()) return 0;
-            
-                size_t size = n;
-                if( (get_max() - get_allocated() < size) ) size = get_free();
+            size_t calloc(size_t n, size_t b, void** buf, unsigned int xTime) {
+                size_t size = n*b;
 
-                assert(m_bufferTop + (sizeof(T)*size) <= (TBUFFERSIZE * sizeof(T)) );
-
-                *buf = (T*)&m_aBuffer[0] + m_bufferTop;
-
-                m_bufferTop += sizeof(T)*size;
-
-                return size;
+                if(is_free(size)) { 
+                    *buf = (void*)&m_aBuffer[0] + m_bufferTop;
+                    m_bufferTop += size;
+                    add_allocatedsize(size);
+                    return size;
+                }
+                return 0;
             }
-            void free(void* ptr) { ptr = NULL; }
-
+            void free(void* ptr)            { ptr = NULL; }
             bool is_empty()                 { return get_free() == 0;  }
-
-            unsigned long get_free()        { return get_max() - (m_bufferTop); }
-            unsigned long get_allocated()   { return m_bufferTop; }
-            unsigned long get_max()         { return (TBUFFERSIZE); }
 
             basic_allocator_stack(const basic_allocator_stack&) = delete;
             basic_allocator_stack& operator=(const basic_allocator_stack&) = delete;
+
+            /**
+             * @brief Set the limit of bytes to use
+             * @param maxSize The limit of bytes to use, when 0 then use no limit 
+             */
+            virtual void set_limit(size_t) {  }
         private:
             size_t          m_bufferTop;
             char*           m_aBuffer[TBUFFERSIZE];   

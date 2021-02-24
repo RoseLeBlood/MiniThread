@@ -19,8 +19,10 @@
 #ifndef _MINLIB_ALLOCATOR_H_
 #define _MINLIB_ALLOCATOR_H_
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+//#include "freertos/FreeRTOS.h"
+//#include "freertos/task.h"
+
+#include "mn_config.hpp"
 
 #include "mn_allocator_system.hpp"
 #include "mn_allocator_stack.hpp"
@@ -39,68 +41,56 @@ namespace mn {
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DEFAULT | MALLOC_CAP_8BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
-        using allocator_internal_esp32_t = basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
+        using allocator_internal_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
         using allocator_psram_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::SpiRam, cap_allocator_size::Size8Bit>;
+            basic_cap_allocator_esp32<cap_allocator_map::SpiRam, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DEFAULT | MALLOC_CAP_32BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
         using allocator_internal32_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::Default, cap_allocator_size::Size32Bit>;
+            basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size32Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_32BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
         using allocator_psram32_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::SpiRam, cap_allocator_size::Size32Bit>;
+            basic_cap_allocator_esp32<cap_allocator_map::SpiRam, cap_allocator_size::Size32Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DMA | MALLOC_CAP_32BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
         using allocator_internal_dma_esp32_t = 
-            basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
+            basic_cap_allocator_esp32<cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
 
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DMA | MALLOC_CAP_32BIT 
          * @tparam T The value to allocate the allocator
          */
-        template <typename T>
-        allocator_psram_dma_esp32_t = basic_cap_allocator_esp32<T, cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
+        allocator_psram_dma_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
         
         /**
          * @brief Use the multiheap api as allocater
          * @tparam T        The type to allocate the allocator
          * @tparam TBytes   The size of the using buffer on the stack
          */
-        MN_TEMPLATE_USING_TWO(multiheap_allocator_esp32_t, basic_multiheap_allocator_esp32, typename, T, unsigned long, TBytes );
+        MN_TEMPLATE_USING_ONE(multiheap_allocator_esp32_t, basic_multiheap_allocator_esp32, unsigned long, TBytes );
 #endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
         /**
          * @brief A basic allocator, use the basic alloc system from tde used libc 
          * @tparam T The value to allocate the allocator
          */
-        MN_TEMPLATE_USING_ONE(allocator_system_t, basic_allocator_system, typename, T);
-        /**
-         * @brief A basic allocator, use the basic alloc system from tde used libc 
-         * @tparam T The value to allocate the allocator
-         * @tparam sMaxSize The maximal size to use from memory, when 0 then no limit
-         */
-        MN_TEMPLATE_USING_TWO(allocator_system_ex_t, basic_allocator_system, typename, T, int, sMaxSize);
+        MN_TEMPLATE_USING(allocator_system_t, basic_allocator_system);
 
 
 
@@ -109,14 +99,7 @@ namespace mn {
          * @brief Use the basic_allocator_system as default allocator for this library 
          * @tparam T        The value to allocate the allocator
          */
-        MN_TEMPLATE_USING_ONE(default_allocator_t, allocator_system_t, typename, T);
-
-        /**
-         * @brief Use the basic_allocator_system as default allocator for this library 
-         * @tparam T        The value to allocate the allocator
-         * @tparam sMaxSize The maximal size to use from memory, when 0 then no limit
-         */
-        MN_TEMPLATE_USING_TWO(default_allocator_ex_t, allocator_system_ex_t, typename, T, int, sMaxSize);
+        MN_TEMPLATE_USING(default_allocator_t, allocator_system_t);
 
 #endif
 
@@ -129,7 +112,7 @@ namespace mn {
          * @tparam T                The value to allocate the allocator
          * @tparam TBUFFERSIZE      The size of the buffer
          */
-        MN_TEMPLATE_USING_TWO(allocator_stack_t, basic_allocator_stack, typename, T, int, TBUFFERSIZE);
+        MN_TEMPLATE_USING_ONE(allocator_stack_t, basic_allocator_stack, int, TBUFFERSIZE);
 
          /** 
          * @brief buffer based allocator.
@@ -140,8 +123,32 @@ namespace mn {
          * @date 2021.02.21
          * @version 1.0
          */
-        MN_TEMPLATE_USING_ONE(allocator_buffer_t, basic_allocator_buffer, typename, T);
+        MN_TEMPLATE_USING(allocator_buffer_t, basic_allocator_buffer);
         
+        template <class TALLOCATOR>
+        inline void* get_allocated(TALLOCATOR& a, size_t n, size_t alignment = 16 ) {
+            return (alignment <= 16 ) ? a.alloc(n) : a.alloc(n, alignment);
+        }
+        template <class TALLOCATOR>
+        inline void free_allocated(TALLOCATOR& a, void* mem ) {
+            a.free(mem);
+        }
+
+        template <class TALLOCATOR = default_allocator_t> 
+        class basic_alloc_object {
+        public:
+            using self_type = xalloc_object<TALLOCATOR>;
+            using allocator_type = TALLOCATOR;
+
+            void* operator new (size_t size) {
+                return m_acObject.alloc(size);
+            }
+            void operator delete(void* pObject) {
+                m_acObject.free(pObject);
+            }
+        private:
+            allocator_type m_acObject;
+        };
     }
 }
 

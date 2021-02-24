@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2021 Amber-Sophia Schroeck
+*Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify  
 *it under the terms of the GNU Lesser General Public License as published by  
@@ -15,21 +15,27 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINLIB_08365b25_a93f_4c7e_81f8_38958486f7b2_H_
-#define _MINLIB_08365b25_a93f_4c7e_81f8_38958486f7b2_H_
+#ifndef MINLIB_141d5496_b8a8_4aed_a898_4fc5b62195bc_H_
+#define MINLIB_141d5496_b8a8_4aed_a898_4fc5b62195bc_H_
 
-#include "mn_atomic_gcc.hpp"
+#include "mn_config.hpp"
+#include <stdint.h>
+#include <stddef.h>
+
 
 namespace mn {
+    struct basic_uint128_t {
+        union {
+            struct {
+                uint64_t high;
+                uint64_t low;
+            };
+            uint64_t value[2];
+        };
+    };
 
-    template <typename T>
-    using atomic_gcc_t = basic_atomic_gcc<T>;
-
-    template<typename T>
-    using atomic_t = atomic_gcc_t<T>;
-
-
+    using uint128_t       = basic_uint128_t;
+    using uint_least128_t = basic_uint128_t;
 }
-
 
 #endif

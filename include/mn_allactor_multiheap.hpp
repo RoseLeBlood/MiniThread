@@ -23,28 +23,26 @@
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
 #include "multi_heap.h"
+#include "mn_allocator_interface.hpp"
 
 namespace mn {
     namespace memory {
         
-        template<typename T, unsigned long TBytes> 
-        class basic_multiheap_allocator_esp32 {
+        template<size_t TBytes> 
+        class basic_multiheap_allocator_esp32 : public allocator_interface {
         public:
-            basic_multiheap_allocator_esp32()
-                : m_pHandle(NULL) { 
-                if(m_pHandle == NULL) {
-                    m_pHandle = multi_heap_register(m_buffer, TBytes);
-                }
-            }
-            basic_multiheap_allocator_esp32(char* buffer, int size) {
-                 if(m_pHandle == NULL) {
-                    m_pHandle = multi_heap_register(buffer, size);
-                }
+            basic_multiheap_allocator_esp32() : allocator_interface(TBytes)  { 
+                m_pHandle = multi_heap_register(m_buffer, TBytes);
             }
 
-            T* alloc(unsigned int xTime) {
-            
-                return (T*) multi_heap_malloc(m_pHandle, sizeof(T) );
+            void* alloc(size_t size, unsigned int xTime) {
+                void* buffer = NULL;
+
+                if(is_free(size)) {
+                    buffer = multi_heap_malloc(m_pHandle, size ); 
+                }
+                if(buffer) add_allocatedsize(size);
+                return buffer;
             }
             /**
              * @brief 
@@ -54,40 +52,18 @@ namespace mn {
              * @param xTime How long to wait to given up 
              * @return How many elements are real allocated
              */
-            size_t calloc(size_t n, T** buf, unsigned int xTime) {
-                if(is_empty()) return 0;
+            size_t calloc(size_t n, size_t size, void** buf, unsigned int xTime) {
+                size_t _size = n * size;
 
-                size_t size = n * sizeof(T);
-                if( get_free() < size) size = get_free();
-
-                if(size != 0) {
-                    *buf = (T*) multi_heap_malloc(m_pHandle, size );
-                    size = size / sizeof(T);
+                if(is_free(_size)) {
+                    *buf = (void*) multi_heap_malloc(m_pHandle, _size );
                 }
-                return 0;
+                if(*buf) add_allocatedsize(_size);
+                return _size;
             }
             void free(void* ptr) {
                 multi_heap_free(m_pHandle, ptr);
-            }
-
-            bool is_empty() { 
-                return get_free() == 0;  
-            }
-
-            unsigned long get_free() { 
-                multi_heap_info_t info;
-                multi_heap_get_info(m_pHandle, &info);
-
-                return info.free_blocks ; 
-            }
-            unsigned long get_allocated() { 
-                multi_heap_info_t info;
-                multi_heap_get_info(m_pHandle, &info);
-
-                return info.allocated_blocks ; 
-            }   
-            unsigned long get_max() { 
-                return TBytes; 
+                rm_allocatedsize(sizeof(ptr));
             }
 
             basic_multiheap_allocator_esp32(const basic_multiheap_allocator_esp32&) = delete;

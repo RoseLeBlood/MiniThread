@@ -20,7 +20,7 @@
 #define MINLIB_STL_ARRAY_H_
 
 #include <stddef.h>
-#include "mn_algorithm.hpp"
+#include "../mn_algorithm.hpp"
 
 namespace mn {
     namespace container {

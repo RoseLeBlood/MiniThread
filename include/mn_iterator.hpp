@@ -44,12 +44,12 @@ namespace mn {
 	//-----------------------------------------------------------------------------
 	namespace internal {
         template<typename TIter, typename TDist> inline
-        void distance(TIter first, TIter last, TDist& dist, std::random_access_iterator_tag) {
+        void distance(TIter first, TIter last, TDist& dist, mn::random_access_iterator_tag) {
             dist = TDist(last - first);
         }
 
         template<typename TIter, typename TDist> inline
-        void distance(TIter first, TIter last, TDist& dist, std::input_iterator_tag) {
+        void distance(TIter first, TIter last, TDist& dist, mn::input_iterator_tag) {
             dist = 0;
             while (first != last) {
                     ++dist;
@@ -58,12 +58,12 @@ namespace mn {
         }
 
         template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, std::random_access_iterator_tag) {
+        void advance(TIter& iter, TDist d, mn::random_access_iterator_tag) {
             iter += d;
         }
 
         template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, std::bidirectional_iterator_tag) {
+        void advance(TIter& iter, TDist d, mn::bidirectional_iterator_tag) {
             if (d >= 0) {
                 while (d--) ++iter;
             } else {
@@ -71,7 +71,7 @@ namespace mn {
             }
         }
         template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, std::input_iterator_tag) {
+        void advance(TIter& iter, TDist d, mn::input_iterator_tag) {
             assert(d >= 0);
             while (d--)  ++iter;
         }
