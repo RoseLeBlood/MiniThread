@@ -34,39 +34,80 @@ namespace mn {
         class basic_lock_ptr {
         public:
             using value_type = T;
+            using const_value_type = const T;
+
             using lock_type = TLOCK;
-            using pointer = volatile T*;
+            using pointer =  T*;
+            using const_pointer = T*;
+            using reference = T&;
+            using const_reference = const T&;
+
             using self_type = basic_lock_ptr<T, TLOCK>;
         
             /**
              * @brief constructor make the pointer and auto lock
-             * 
              * @param v Reference to locked area/object
              * @param m The reference of the lock object
              */
-            basic_lock_ptr(pointer v, lock_type& m) 
-                : m_ptr(v), m_lock(m)                   { m_lock.lock(); }
-            
+            basic_lock_ptr(volatile reference& v, lock_type& m) 
+                : m_ptr(const_cast<pointer>(&v)), m_lock(m) { 
+                    m_lock.lock(); 
+            }
             /**
              * @brief decunstructor and auto unlock the pointer
              */
-            ~basic_lock_ptr()                           { m_lock.unlock(); }
+            ~basic_lock_ptr() { 
+                m_lock.unlock(); 
+            }
 
-            /** @brief get the pointer value const */
-            value_type const *get() const               { return m_ptr;  }
-            /** @brief get the pointer value */ 
-            value_type *get()                           {  return m_ptr; }
-            /** @brief return the reference of the pointer */
-            value_type operator *()                    { return *m_ptr;  }
-            /** @brief helper to use this pointer as "native" pointer */
-            value_type *operator->()                    { return m_ptr;  }
+            /** 
+             * @brief Get the pointer value 
+             * @return The pointer value 
+             */
+            const_pointer   get() const                 { return m_ptr;  }
+            /** 
+             * @brief Get the pointer value 
+             * @return The pointer value 
+             */
+            pointer         get()                       { return m_ptr; }
+    
+            /**
+             * @brief Get the reference of the pointer 
+             * @return The reference of the pointer  
+             */
+            const_reference operator *() const         { return *m_ptr; }
+            /**
+             * @brief Get the reference of the pointer 
+             * @return The reference of the pointer  
+             */
+            reference       operator *()               { return *m_ptr; }
+            /**
+             * @brief Helper to use this pointer as "native" pointer 
+             */
+            const_pointer   operator->() const         { return m_ptr; }
+            /**
+             * @brief Helper to use this pointer as "native" pointer 
+             */
+            pointer         operator->()               { return m_ptr; }
+
+            pointer release() { 
+                pointer tmp = m_ptr; 
+                m_ptr = NULL; 
+                return tmp; 
+            }       
+            void reset(pointer p = NULL) {
+                m_ptr = p;
+            }
+            lock_type& get_lock() {
+                return m_lock;
+            }
             
             basic_lock_ptr(const basic_lock_ptr&) = delete;
             basic_lock_ptr& operator = (const basic_lock_ptr&) = delete;
         private:
-            pointer m_ptr;
+            volatile pointer m_ptr;
             lock_type& m_lock;
-         };
+        };
     }
 }
 #endif
