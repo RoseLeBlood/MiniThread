@@ -30,37 +30,6 @@ namespace mn {
          * @author RoseLeBlood
          * @date 2021.02.21
          * @version 1.0
-         * 
-         * @code cpp
-         * #define ALLOC_TESTS_STRUCTS 20
-         * #define ALLOC_TESTS_ALLOC 22
-         * 
-         * int START_VAR = 0;
-         * struct alloc_test {
-         *  int var;
-         *  alloc_test() { var = 1; }
-         * };
-         * 
-         * alloc_test* test;
-         * 
-         * int main() {
-         *  char* buffer = (char*)malloc(ALLOC_TESTS_STRUCTS * sizeof(alloc_test) );
-         *  assert(buffer != NULL);
-         *  
-         *  allocator_buffer_t
-         *      alloc(buffer, ALLOC_TESTS_STRUCTS * sizeof(alloc_test));
-         *  
-         *  alloc.alloc(200);
-         *  std::cout << "free: " << alloc.get_free() << "/" << alloc.get_max() << " (" << alloc.get_allocated() << ")" << std::endl;
-         *  size_t n = alloc.calloc(ALLOC_TESTS_ALLOC, &test,200);
-         *  std::cout << "AL: " << n << " from " << ALLOC_TESTS_ALLOC <<  std::endl;
-         *  
-         *  for(int i=0; i < n; i++)  std::cout << test->var << "::";
-         *  std::cout << "free: " << alloc.get_free() << "/" << alloc.get_max() << " ("  << alloc.get_allocated() << ")" << std::endl;
-         * 
-         *  return 0;
-         * }
-         * @endcode
          */
         class basic_allocator_buffer : public allocator_interface {
         public:
@@ -68,9 +37,11 @@ namespace mn {
                 : allocator_interface(TSIZE), m_bufferTop(0), m_BufferSize(TSIZE), m_buffer(TBUFFER)  {  }
 
             void* alloc(size_t size, unsigned int xTime) {
+                char* ret = NULL;
+
                 if(is_free(size)) { 
                     assert(m_bufferTop + size <= (m_BufferSize ) );
-                    char* ret = &m_buffer[0] + m_bufferTop;
+                    ret = &m_buffer[0] + m_bufferTop;
                     m_bufferTop += size;
                     add_allocatedsize(size);
                 }
@@ -84,7 +55,7 @@ namespace mn {
                 size_t index = (size*n);
 
                 if(is_free(index)) {  
-                    if( (get_max() - get_allocated() < index ) ) return 0;
+                    
                     assert(m_bufferTop + index <= (m_BufferSize ) );
                     char *_buf = (char*)&m_buffer[0] + m_bufferTop;
                     m_bufferTop += index;

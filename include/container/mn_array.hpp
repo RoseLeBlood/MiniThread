@@ -147,6 +147,10 @@ namespace mn {
         private:
             T m_buffer[N];
         };
+
+        template <typename T, size_t N>
+        using basic_fixed_array = basic_array<T, N> ;
+
             
         template < typename T, size_t N >
         inline bool operator == (const basic_array<T, N>& a, const basic_array<T, N>& b) {
@@ -198,8 +202,7 @@ namespace mn {
             return true;
         }
 
-        template <typename T, size_t N>
-        using array = basic_array<T, N>;
+        
     }
 }
 

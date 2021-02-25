@@ -25,9 +25,9 @@ namespace mn {
     namespace container {
 
         template <class TALLOCATOR>
-        struct basic_node : public memory::basic_alloc_object<TALLOCATOR> {
+        struct basic_node : public memory::basic_alloc_object<basic_node, TALLOCATOR> {
             using self_type = basic_node<TALLOCATOR>;
-            using base_type = memory::basic_alloc_object<TALLOCATOR>;
+            using base_type = memory::basic_alloc_object<basic_node, TALLOCATOR>;
 
             using node_type = basic_node<TALLOCATOR>*;
             using reference = basic_node<TALLOCATOR>&;
@@ -36,12 +36,7 @@ namespace mn {
              * @brief Construct a new base node object
              */
             basic_node() : Next(0), Prev(0) { }
-            /**
-             * @brief Construct a new base  node object
-             * @param value The value for this node
-             */
-            explicit basic_node(value_type value) 
-                : Next(0), Prev(0), Value(value) { }
+            
             /**
              * @brief Inserts this standalone node before the node pNext in pNext's . 
              */
@@ -58,6 +53,10 @@ namespace mn {
                 Next->Prev = Prev;
                 Prev->Next = Next;
             }
+
+            bool is() const { 
+                return this != Next; }
+            
             /**
              * @brief Removes [pFirst,pLast) from the  it's in and inserts it before this in this node's .
              */
@@ -126,7 +125,22 @@ namespace mn {
             a.swap(b);
         }
 
-        using node = basic_node<memory::default_allocator_t>;
+        
+        template<typename T, class TAllocator> 
+        struct basic_value_node : public basic_node<TAllocator> {
+            basic_value_node() 
+                : basic_node<TAllocator>(), Value(0) { }
+
+            explicit basic_value_node(const T& value) 
+                : basic_node<TAllocator>(), Value(value) { }
+
+            T  Value;
+        };
+
+        template<typename T, class TAllocator> 
+        inline basic_value_node<T, TAllocator>* upcast(basic_node<TAllocator>* n) {
+	        return static_cast<basic_value_node<T, TAllocator>*>(n);
+	    }
     }
 }
 

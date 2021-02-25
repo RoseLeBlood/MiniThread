@@ -24,19 +24,6 @@
 namespace mn {
     namespace container {
 
-        template<typename T, class TAllocator> 
-        struct list_node : public basic_node<TAllocator> {
-            list_node() : Value(0) { }
-            explicit list_node(const T& value) : Value(value) { }
-
-            T  Value;
-        };
-
-        template<typename T, class TAllocator> 
-        inline list_node<T, TAllocator>* upcast(basic_node<TAllocator>* n) {
-	        return static_cast<list_node<T, TAllocator>*>(n);
-	    }
-
         template<typename TNodePtr, typename TPtr, typename TRef> 
         class list_node_iterator {
 	    public:
@@ -61,10 +48,10 @@ namespace mn {
             pointer operator->() const { return &m_node->value; }
 
             self_type& operator++() { 
-                m_node = upcast(m_node->next); return *this; }
+                m_node = upcast(m_node->Next); return *this; }
 
             self_type& operator--()  { 
-                m_node = upcast(m_node->prev); return *this; }
+                m_node = upcast(m_node->Prev); return *this; }
 
             self_type operator++(int) { 
                 self_type copy(*this); ++(*this); return copy; }
@@ -72,27 +59,27 @@ namespace mn {
             self_type operator--(int) {
                 self_type copy(*this); --(*this); return copy; }
 
-            bool operator==(const self_type& rhs) const {
+            bool operator == (const self_type& rhs) const {
                 return rhs.m_node == m_node; }
 
-            bool operator!=(const self_type& rhs) const {
+            bool operator != (const self_type& rhs) const {
                 return !(rhs == *this); }
 
         private:
             node_type m_node;
         };
 
-        template<typename T, class TAllocator, class TNODE = list_node<T, TAllocator> > 
+        template<typename T, class TAllocator > 
         class basic_list {
         public:
-            using self_type = basic_list<T, TAllocator, TNODE>;
+            using self_type = basic_list<T, TAllocator>;
             using value_type = T;
             using allocator_type = TAllocator;
             using size_type = size_t;
-            using node_type = TNODE;
+            using node_type = basic_value_node<T, TAllocator>;
 
-            using iterator = node_iterator<node_type*, T*, T&>;
-            using const_iterator = node_iterator<const node_type*, const T*, const T&>;
+            using iterator = list_node_iterator<node_type*, T*, T&>;
+            using const_iterator = list_node_iterator<const node_type*, const T*, const T&>;
 
             static const size_t NodeSize = sizeof(node_type);
 
@@ -144,7 +131,7 @@ namespace mn {
             }
             inline void pop_front() {
                 assert(!empty());
-                node_type* frontNode = upcast(m_root.next);
+                node_type* frontNode = upcast(m_root.Next);
                 frontNode->remove();
                 destruct_node(frontNode);
             }
@@ -155,7 +142,7 @@ namespace mn {
             }
             inline void pop_back() {
                 assert(!empty());
-                node_type* backNode = upcast(m_root.prev);
+                node_type* backNode = upcast(m_root.Prev);
                 backNode->remove();
                 destruct_node(backNode);
             }
@@ -167,7 +154,7 @@ namespace mn {
             }
 
             iterator erase(iterator it) {
-                assert(it.node()->in_list());
+                assert(it.node()->is());
                 iterator itErase(it);
                 ++it;
                 itErase.node()->remove();
@@ -190,7 +177,7 @@ namespace mn {
             }
 
             bool empty() const { 
-                return !m_root.in_list(); 
+                return !m_root.is(); 
             }
 
             void clear() {

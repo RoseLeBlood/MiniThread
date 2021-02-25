@@ -63,7 +63,6 @@ namespace mn {
                 return 0;
             }
             void free(void* ptr)            { ptr = NULL; }
-            bool is_empty()                 { return get_free() == 0;  }
 
             basic_allocator_stack(const basic_allocator_stack&) = delete;
             basic_allocator_stack& operator=(const basic_allocator_stack&) = delete;

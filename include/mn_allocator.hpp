@@ -41,7 +41,7 @@ namespace mn {
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DEFAULT | MALLOC_CAP_8BIT 
          * @tparam T The value to allocate the allocator
          */
-        using allocator_internal_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
+        using allocator_internal8_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT 
@@ -125,30 +125,26 @@ namespace mn {
          */
         MN_TEMPLATE_USING(allocator_buffer_t, basic_allocator_buffer);
         
-        template <class TALLOCATOR>
-        inline void* get_allocated(TALLOCATOR& a, size_t n, size_t alignment = 16 ) {
-            return (alignment <= 16 ) ? a.alloc(n) : a.alloc(n, alignment);
-        }
-        template <class TALLOCATOR>
-        inline void free_allocated(TALLOCATOR& a, void* mem ) {
-            a.free(mem);
-        }
 
-        template <class TALLOCATOR = default_allocator_t> 
+        template <class TSELF, class TALLOCATOR = default_allocator_t> 
         class basic_alloc_object {
         public:
-            using self_type = xalloc_object<TALLOCATOR>;
+            using self_type = basic_alloc_object<TSELF, TALLOCATOR>;
             using allocator_type = TALLOCATOR;
+            using extends_type = TSELF;
 
             void* operator new (size_t size) {
-                return m_acObject.alloc(size);
+                return m_acObject.alloc(size, __UINT32_MAX__ );
             }
             void operator delete(void* pObject) {
                 m_acObject.free(pObject);
             }
         private:
-            allocator_type m_acObject;
+            static TALLOCATOR m_acObject;
         };
+
+        template <class TSELF, class TALLOCATOR> 
+        TALLOCATOR basic_alloc_object<TSELF, TALLOCATOR>::m_acObject; 
     }
 }
 

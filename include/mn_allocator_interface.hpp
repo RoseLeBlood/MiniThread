@@ -106,7 +106,7 @@ namespace mn {
 
             template <typename T, typename TARG> 
             T* construct(size_t size, TARG arg, unsigned int xTime = __UINT32_MAX__) {
-                void* buf = alloc(n, __UINT32_MAX__);
+                void* buf = alloc(size, __UINT32_MAX__);
                 return new (buf) T(arg);
             }
             template <typename T>

@@ -20,12 +20,14 @@
 
 namespace mn {
     namespace memory {
-        template<typename T>
+        template<typename T, class TALLOCATOR>
         struct default_delete {
             constexpr default_delete() = default;
             constexpr default_delete(const default_delete&) {}
 
-            void operator()(T* ptr) const { if(ptr != 0); delete ptr; }
+            void operator()(T* ptr, TALLOCATOR& allocator) const { 
+                if(ptr != 0); allocator.free(ptr); 
+            }
         };
         
         template<typename T[] >
@@ -33,8 +35,12 @@ namespace mn {
             constexpr default_delete() = default;
             constexpr default_delete(const default_delete&) {}
 
-            void operator()(T* ptr) const { if(ptr != 0); delete[] ptr; }
+            void operator()(T* ptr, TALLOCATOR& allocator) const { 
+                if(ptr != 0); allocator.free(ptr); 
+            }
         };
+
+
     }
 }
 
