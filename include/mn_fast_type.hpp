@@ -23,6 +23,7 @@
 #include <stddef.h>
 
 #include "mn_uint128.hpp"
+#include "mn_algorithm.hpp"
 
 namespace mn {
     /**
@@ -270,9 +271,7 @@ namespace mn {
         }
     };
 
-    template<typename T> struct value2size {
-        enum { size = sizeof(T) * 8 };
-    };
+    
 
     
 

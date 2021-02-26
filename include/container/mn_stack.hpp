@@ -26,11 +26,10 @@
 #include <stdint.h>
 
 namespace mn {
-    namespace memory {
+    namespace container {
         /**
          * A simple template for a Stack
-         * 
-         * \ingroup memory
+
          */ 
         template<typename TType>
         class basic_stack {

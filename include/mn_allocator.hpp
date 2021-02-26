@@ -23,10 +23,12 @@
 //#include "freertos/task.h"
 
 #include "mn_config.hpp"
+#include "mn_allocator_object.hpp"
 
 #include "mn_allocator_system.hpp"
 #include "mn_allocator_stack.hpp"
 #include "mn_allocator_buffer.hpp"
+
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 #include "mn_allocator_caps.hpp"
@@ -124,27 +126,6 @@ namespace mn {
          * @version 1.0
          */
         MN_TEMPLATE_USING(allocator_buffer_t, basic_allocator_buffer);
-        
-
-        template <class TSELF, class TALLOCATOR = default_allocator_t> 
-        class basic_alloc_object {
-        public:
-            using self_type = basic_alloc_object<TSELF, TALLOCATOR>;
-            using allocator_type = TALLOCATOR;
-            using extends_type = TSELF;
-
-            void* operator new (size_t size) {
-                return m_acObject.alloc(size, __UINT32_MAX__ );
-            }
-            void operator delete(void* pObject) {
-                m_acObject.free(pObject);
-            }
-        private:
-            static TALLOCATOR m_acObject;
-        };
-
-        template <class TSELF, class TALLOCATOR> 
-        TALLOCATOR basic_alloc_object<TSELF, TALLOCATOR>::m_acObject; 
     }
 }
 

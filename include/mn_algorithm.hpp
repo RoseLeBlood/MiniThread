@@ -230,6 +230,14 @@ namespace mn {
         a = b;
         b = tmp;
 	}
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    struct value2size {
+        enum { size = sizeof(T) * 8 };
+    };
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    struct value2size_raw {
+        enum { size = sizeof(T) };
+    };
 }
 
 #endif

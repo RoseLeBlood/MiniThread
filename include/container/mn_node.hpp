@@ -25,10 +25,10 @@ namespace mn {
     namespace container {
 
         template <class TALLOCATOR>
-        struct basic_node : public memory::basic_alloc_object<basic_node, TALLOCATOR> {
-            using self_type = basic_node<TALLOCATOR>;
-            using base_type = memory::basic_alloc_object<basic_node, TALLOCATOR>;
+        struct basic_node {
+            MNALLOC_OBJECT(TALLOCATOR);
 
+            using self_type = basic_node<TALLOCATOR>;
             using node_type = basic_node<TALLOCATOR>*;
             using reference = basic_node<TALLOCATOR>&;
 
@@ -119,6 +119,7 @@ namespace mn {
              */
             node_type Prev;
         };
+        MNALLOC_OBJECT_DONE(basic_node, class, TALLOCATOR);
 
         template <class TALLOCATOR>
         inline void swap(basic_node<TALLOCATOR>& a, basic_node<TALLOCATOR>& b) {
@@ -128,6 +129,8 @@ namespace mn {
         
         template<typename T, class TAllocator> 
         struct basic_value_node : public basic_node<TAllocator> {
+            MNALLOC_OBJECT(TAllocator);
+            
             basic_value_node() 
                 : basic_node<TAllocator>(), Value(0) { }
 
@@ -136,6 +139,8 @@ namespace mn {
 
             T  Value;
         };
+        MNALLOC_OBJECT_DTWO( basic_value_node, typename, T, class, TAllocator );
+
 
         template<typename T, class TAllocator> 
         inline basic_value_node<T, TAllocator>* upcast(basic_node<TAllocator>* n) {
