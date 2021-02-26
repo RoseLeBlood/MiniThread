@@ -1,5 +1,10 @@
 # Changelog
 ## Version 2.10 Februar 2021
++ add allocator helpor macros: MNALLOC_OBJECT, MNALLOC_OBJECT_D ... @see MNALLOC_OBJECT
++ update mempool - added MNALLOC_OBJECT systems
++ add mn::list -- replace std::list
+  
+## Version 2.10 Februar 2021
 + add pointer suppert - weak, shared, clone_ptr, and other
 + add new ringbuffer and updated examples
 + add Makefile support only for use the source from git, not use in platformio library regestrie
