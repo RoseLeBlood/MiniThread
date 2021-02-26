@@ -33,18 +33,15 @@ namespace mn {
         
     #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
         template <typename TType, int nElements>
-        using basic_mempool_spiram_t = basic_mempool_vector<TType, nElements, basic_allocator_spiram <TType> >;
+        using basic_mempool_spiram_t = basic_mempool_vector<TType, nElements, 
+            basic_mutex, basic_allocator_spiram  >;
     #endif
 
         template <typename TType, int nElements>
-        using basic_mempool_system_t = basic_mempool_vector<TType, nElements, basic_allocator_system <TType> >;
+        using basic_mempool_system_t = basic_mempool_vector<TType, nElements>;
 
         template <typename TType, int nElements>
         using basic_mempool_t = basic_mempool_system_t<TType, nElements>;
-
-
-        template<typename T, int nElements > 
-        using  mempool_allocator_t = basic_allocator_mempool<T, basic_mempool_t<T, nElements> >;
 
     }
 }

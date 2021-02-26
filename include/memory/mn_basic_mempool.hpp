@@ -21,13 +21,13 @@
 
 #include <malloc.h>
 #include <iostream>
-#include "mn_autolock.hpp"
-#include "mn_allocator.hpp"
+#include "../mn_autolock.hpp"
+#include "../mn_allocator.hpp"
 #include <string.h>
 #include <vector>
 
-#include "mn_task.hpp"
-
+#include "../mn_task.hpp"
+#include "mn_basic_mempool_chunk.hpp"
 
 #define _MEMPOOL_CLASS_LOCK(Mutex, xTicksRemaining) if(Mutex.lock(xTicksRemaining) != NO_ERROR) break;
 #define _MEMPOOL_CLASS_UNLOCK(Mutex) Mutex.unlock();
@@ -37,67 +37,25 @@
 namespace mn {
     namespace memory {
         /**
-         * The state for a memory chunk
-         */ 
-        enum class vmempool_chunk_state {
-            Free,                   /*!< The chunk is free and can allocated */
-            Used,                   /*!< The chunk is used */
-            Blocked,                /*!< The chunk is blocked and can not use */
-            NotHandle = 99          /*!< Return when the address not handle with this mempool */
-        };
-
-        #define VMEM_CHUNK_OWNER_FREE 1
-        #define VMEM_CHUNK_ALL_FREE   0
-        /**
-         * The memory chunk 
-         */ 
-        template <typename TType>
-        struct vmempool_chunk {
-            union {
-                struct {
-                    TType* theBuffer;            /*!< The real buffer */
-        #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-                    char theMagicGuard[2];      /*!< The magic guard bytes for detect heap memory corruption */
-        #endif
-                    vmempool_chunk_state state;          /*!< The state for a memory chunk */
-                };
-                TType* realBuffer;
-            };
-
-            uint32_t owner_task; /*!< The task that alloc this chunk */
-            char   oocfree : 2; /*!< Can only owner task free this chunk? 1 = Yes, 0 = all can free */
-
-            vmempool_chunk(TType* buffer) { 
-                theBuffer = buffer;
-        #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-                theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
-                theMagicGuard[1] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_END;
-        #endif
-                state = vmempool_chunk_state::Free;
-                owner_task = 0;
-                oocfree = 0;
-            }
-        };
-
-        /**
         * A very extendeble mempool for debug and more (timed version)
         * 
         * \ingroup memory
         */ 
-        template <typename TType, int nElements, 
-                typename TMUTEX = basic_mutex,
-                typename TALLOCATOR = default_allocator_t<TType> >
+        template <typename TType, int nElements, typename TMUTEX = basic_mutex, class TALLOCATOR = default_allocator_t>
         class basic_mempool_vector {
         public:
-            using chunk_t = vmempool_chunk<TType>;
-            using chunk_ref_t = vmempool_chunk<TType>&;
-            using pchunk_t = vmempool_chunk<TType>*;
+            using chunk_type = vmempool_chunk<sizeof(TType), TALLOCATOR>;
+            using chunk_reference = chunk_type&;
+            using chunk_pointer = chunk_type*;
 
-            using type_t = TType;
-            using allocator_t = TALLOCATOR;
-            using vector_t = std::vector<chunk_t*>;
-            using base_t = basic_mempool_vector<TType, nElements, TMUTEX, TALLOCATOR>;
-            using lock_t = TMUTEX;
+            using value_type = TType;
+            using pointer = TType*;
+
+            using allocator_type = TALLOCATOR;
+            using vector_type = std::vector<chunk_pointer>;
+            using self_type = basic_mempool_vector<TType, nElements, TMUTEX, TALLOCATOR>;
+            using lock_type = TMUTEX;
+            using lock_gurd_type = basic_autolock<TMUTEX>;
             /**
             * Ctor 
             */ 
@@ -112,83 +70,61 @@ namespace mn {
             *         - ERR_MEMPOOL_MIN: Can not create the pool witd all elements, 
             *          call size for cheak the real size of pool
             */ 
-            virtual int create(unsigned long xTicksToWait) {    
+            virtual int create(unsigned long xTicksToWait) {  
+                lock_gurd_type lock(m_mutex); 
+
                 int _retError = ERR_MEMPOOL_OK;
-
-                TType *address;
-                size_t sSizeOf = m_allocator.calloc(nElements, &address, xTicksToWait);
-                if(address == NULL)  return ERR_NULL;
-                if(sSizeOf < nElements) _retError = ERR_MEMPOOL_MIN;
-
-                m_mutex->lock(xTicksToWait);
+            
                 for(int i = 0; i < sSizeOf; i++) {
-                    m_vChunks.push_back(new chunk_t( &address[i] ) );
+                    m_vChunks.push_back(new chunk_type() );
                 }
-                _MEMPOOL_CLASS_UNLOCK(m_mutex);
             
                 return m_vChunks.size() == sSizeOf ? _retError : ERR_MEMPOOL_CREATE;
             }
 
             virtual bool add_memory(unsigned int elements) {
-                basic_autolock<TMUTEX> lock(m_mutex); 
+                lock_gurd_type lock(m_mutex); 
 
-                TType *address;
                 size_t _oldEle = m_vChunks.size();
 
-                size_t sSizeOf = m_allocator.calloc(elements, &address, (int)portMAX_DELAY);
-                if(address == NULL)  return false;
-
                 for(int i = 0; i < sSizeOf; i++) {
-                    m_vChunks.push_back(new chunk_t( &address[i] ) );
+                    m_vChunks.push_back(new chunk_type() );
                 }
 
                 return _oldEle < m_vChunks.size();
             }
-            virtual int add_memory(TType** address, size_t sSizeOf) {
-                basic_autolock<TMUTEX> lock(m_mutex); 
-
-                if(address == NULL)  return false;
-                size_t _oldEle = m_vChunks.size();
-
-                for(int i = 0; i < sSizeOf; i++) {
-                    m_vChunks.push_back(new chunk_t( address[i] ) );
-                    
-                }
-
-                return _oldEle < m_vChunks.size();
-            }
+            
             /**
             * Allocate an item from the pool.
             * @param[in] oFreedSelf Can the allocated chunk only deallocated from allocated task?
             * @param[in] xTicksToWait How long to wait to get until giving up.
             * @return Pointer of the memory or NULL if the pool is empty.
             */ 
-            virtual type_t* allocate(bool oFreedSelf = false, unsigned long xTicksToWait = portMAX_DELAY) {
+            virtual pointer allocate(bool oFreedSelf = false, unsigned long xTicksToWait = portMAX_DELAY) {
                 if(m_vChunks.size() == 0) { return NULL; }
 
                 TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
                 TickType_t xTicksRemaining = xTicksToWait;
 
-                type_t* buffer = nullptr;
+                pointer buffer = nullptr;
 
                 for(auto it = m_vChunks.begin(); 
                     (it != m_vChunks.end() && (xTicksRemaining <= xTicksToWait) ); it++) {
 
                     _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
                     {
-                        chunk_t* entry = *it;
+                        chunk_type* entry = *it;
 
-                        if(entry->state == vmempool_chunk_state::Free) {
-                            entry->state = vmempool_chunk_state::Used;
+                        basic_task* task = basic_task::get_self();
 
-                            auto task = basic_task::get_self(); 
+                        if(task)
+                            buffer = static_cast<pointer>( entry->construct(oFreedSelf, task->get_id() ) );
+                        else 
+                            buffer = static_cast<pointer>( entry->construct(false, 0 ) );
 
-                            entry->owner_task = (task) ? task->get_id() : 0;
-                            entry->oocfree = (oFreedSelf) ? VMEM_CHUNK_OWNER_FREE : VMEM_CHUNK_ALL_FREE;
-                            buffer = entry->realBuffer;
-
+                        if(buffer != NULL) 
                             _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
-                        }
+
                     }
                     if (xTicksToWait != portMAX_DELAY) {
                         xTicksRemaining = xTicksEnd - xTaskGetTickCount();
@@ -203,18 +139,17 @@ namespace mn {
             * Returns the item back to the pool.
             * @param[in]  mem The allocated memory to given back te the pool
             * @param[in]  xTicksToWait How long to wait to get until giving up.
-            * @param[out] wasCurropted A pointer of a bool var - not use in the magic free version 
-            * if true then was the heap memory corrupted and false when not 
+            * @param[out] wasCurropted A pointer of a bool var 
             * @return if true ther the item back to it's pool, false If not
             */ 
-            virtual bool  free(type_t* mem, bool* wasCurropted = NULL, unsigned long xTicksToWait = portMAX_DELAY) {
+            virtual bool  free(pointer mem, bool* wasCurropted = NULL, unsigned long xTicksToWait = portMAX_DELAY) {
                 if(m_vChunks.size() == 0) { return false; }
                 if(mem == NULL) { return false; }
 
                 TickType_t xTicksEnd = xTaskGetTickCount() + xTicksToWait;
                 TickType_t xTicksRemaining = xTicksToWait;
                 bool _ret = false, _wasCurropted = false;
-                chunk_t* entry = NULL; 
+
                 basic_task* task = NULL;
 
                 for(auto it = m_vChunks.begin(); 
@@ -223,44 +158,11 @@ namespace mn {
                     _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
                     task = basic_task::get_self();
 
-                    entry = *it; 
-                        
-                    if( (_ret = entry->realBuffer == mem) ) {
-                        // Can the chunk mem deallocated from owner only and is
-                        // the called task not the owner
-                        if(entry->oocfree == VMEM_CHUNK_OWNER_FREE && entry->owner_task != task->get_id() ) {
-                            // then break, this task can not deallocated this chunk
-                            _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex); 
-                        }
-
-        #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-                        /* Cheak is this chunk corrupted - buffer overflow ..*/
-                        if( (_wasCurropted = is_chunk_curropted(entry)) ) {
-                            // then write as out 
-                            std::cout << "[MN_VECTOR_MEMPOOL_CLASS_NAME] entry was corrupted" << std::endl;
-                            // and corrected the chunk magic
-                            entry->theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
-                            entry->theMagicGuard[1] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_END;
-                        }
-                        // is wasCurropted not null then return this information
+                   
+                    if( (*it)->deconstruct(mem, task->get_id(), _wasCurropted) ) {
                         if(wasCurropted) *wasCurropted = _wasCurropted;
-        #else
-                        // if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC disable then set this var only to false
-                        if(wasCurropted) *wasCurropted = false;
-        #endif
-                        // is the chunk from a other task allocated then
-                        if(entry->owner_task != basic_task::get_self()) {
-                            // informatod the user
-                            std::cout << "foregin task " << basic_task::get_self() << " call free for" 
-                                << *mem << std::endl;
-                        }
-                        // maked the state now as free
-                        entry->state = vmempool_chunk_state::Free;
-                        // and fill the buffer with nulls - arrase the old informations
-                        memset(entry->theBuffer, 0, sizeof(TType) );
-
-                        // break and leave the for loop
                         _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
+                        _ret = true;
                     }
 
                     if (xTicksToWait != portMAX_DELAY) {
@@ -276,7 +178,7 @@ namespace mn {
             * @return The number of chunks in the mempool
             */ 
             unsigned int size() {
-                basic_autolock<TMUTEX> lock(m_mutex); 
+                lock_gurd_type lock(m_mutex); 
                 return m_vChunks.size(); 
             }
             /**
@@ -295,8 +197,9 @@ namespace mn {
             */ 
             unsigned int get_blocked() { return get_num_of_state<vmempool_chunk_state::Blocked>(); }
 
-            template<vmempool_chunk_state state> int get_num_of_state() {
-                basic_autolock<TMUTEX> lock(m_mutex); 
+            template<vmempool_chunk_state state> 
+            int get_num_of_state() {
+                lock_gurd_type lock(m_mutex); 
                 unsigned int _ret = 0;
 
                 for(auto it = m_vChunks.begin(); (it != m_vChunks.end()) ; it++ ) {
@@ -326,10 +229,13 @@ namespace mn {
                 while((xTicksRemaining <= xTicksToWait)) {
                     _MEMPOOL_CLASS_LOCK(m_mutex, xTicksRemaining);
 
-                    if( (m_vChunks.at(id)->state != vmempool_chunk_state::Used) ) {
-                        m_vChunks.at(id)->state = blocked ? vmempool_chunk_state::Blocked : vmempool_chunk_state::Free; 
-                        _ret = true; 
+                    if( (m_vChunks.at(id)->get_state() != vmempool_chunk_state::Used) ) {
                         
+                        m_vChunks.at(id)->set_state(blocked ? 
+                            vmempool_chunk_state::Blocked : 
+                            vmempool_chunk_state::Free); 
+                         
+                        _ret = true;
                         _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
                     }
 
@@ -337,8 +243,6 @@ namespace mn {
                         xTicksRemaining = xTicksEnd - xTaskGetTickCount();
                     }
                     _MEMPOOL_CLASS_UNLOCK(m_mutex);
-
-                    if(_ret) break;
                 }
                 return _ret;
             }
@@ -349,7 +253,7 @@ namespace mn {
             * @return The state of the chunk
             */ 
             vmempool_chunk_state get_state(const int id) {
-                basic_autolock<TMUTEX> lock(m_mutex);
+                lock_gurd_type lock(m_mutex);
                 return (id < size) ?  m_vChunks.at(id)->state : vmempool_chunk_state::NotHandle;
             }
 
@@ -359,65 +263,27 @@ namespace mn {
             * 
             * @return The chunk from a given chunk id
             */ 
-            chunk_t* get_chunk(const int id) {
-                basic_autolock<TMUTEX> lock(m_mutex);
+            chunk_type* get_chunk(const int id) {
+                lock_gurd_type lock(m_mutex);
                 return (id < m_vChunks.size()) ? m_vChunks.at(id) : NULL;
             }
-            vector_t get_chunks() {
-                vector_t ret;
+            vector_type get_chunks() {
+                vector_type ret;
                 m_vChunks.swap(ret);
                 return ret;
             }
-
-        #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-            /**
-            * Is the given chunk_t curropted
-            * @param [in] chnk The chunk to cheak
-            * @return true the given chunk_t is curropted or false when not
-            */ 
-            bool is_chunk_curropted(chunk_t* chnk) {
-                return (chnk->theMagicGuard[0] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_START &&
-                    chnk->theMagicGuard[1] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_END);
-            }
-        #endif
-
             /**
             * No copyble
             */ 
             basic_mempool_vector& operator=(const basic_mempool_vector&) = delete;
         public:
-            inline std::string state2name(vmempool_chunk_state state) {
-                return state == vmempool_chunk_state::Free ? "Free" : 
-                    (state == vmempool_chunk_state::Used) ? "Used" : 
-                    (state == vmempool_chunk_state::Blocked) ? "Blocked" :
-                    "NotHandle";
-            }
-
-            inline void print_chunk(vmempool_chunk<TType>* chunk) {
-                std::cout << "addreoss of chunk @" << chunk 
-                    << " with size of: " << sizeof(chunk[0]) <<  std::endl;
-                std::cout << "address of theBuffer @ " << chunk->theBuffer
-                    << " with size of: " << sizeof(chunk->theBuffer[0]) <<  std::endl;
-                std::cout << "address of realBuffer@ " << chunk->realBuffer 
-                    << " with size of: " << sizeof(chunk->realBuffer[0]) <<  std::endl;
-                
-                std::cout << "sate is: " << state2name(chunk->state) << std::endl;
-        #if MN_THREAD_CONFIG_MEMPOOL_USE_MAGIC == MN_THREAD_CONFIG_YES
-                std::cout << "magic start: " << (int)chunk->theMagicGuard[0] << std::endl;
-                std::cout << "magic end: " << (int)chunk->theMagicGuard[1] << std::endl;
-
-                if(chunk->theMagicGuard[1] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_END && 
-                chunk->theMagicGuard[0] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_START)
-                    std::cout << "chunk is corrupted" << std::endl;
-                else
-                    std::cout << "chunk is healty" << std::endl;   
-        #endif      
-
+            inline void print_chunk(chunk_type& chunk) {
+                chunk.print();      
             }
         private:
-            vector_t    m_vChunks;
-            lock_t      m_mutex;
-            allocator_t m_allocator;
+            vector_type    m_vChunks;
+            lock_type      m_mutex;
+            allocator_type m_allocator;
         };
     }
 }
