@@ -22,29 +22,29 @@
 #include "string/mn_basic_string.hpp"
 
 namespace mn {
-    using string = strings::strings::basic_string<char, memory::default_allocator_t>;
+    using string = strings::basic_string<char, memory::default_allocator_t>;
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
         /**
          * @brief  List type with allocated in SPI-RAM (8-Bit) 
          */
-        using cps_string8_t = strings::strings::basic_string<char, memory::allocator_psram_esp32_t >;
+        using cps_string8_t = strings::basic_string<char, memory::allocator_psram_esp32_t >;
         /**
          * @brief  List type with allocated in SPI-RAM (32-Bit)
          */
-        using cps_string32_t = strings::strings::basic_string<char, memory::allocator_psram32_esp32_t >;
+        using cps_string32_t = strings::basic_string<char, memory::allocator_psram32_esp32_t >;
         /**
          * @brief  List type with allocated in internal ram (8-Bit) 
          */
-        using cin_string8_t = strings::strings::basic_string<char, memory::allocator_internal8_esp32_t >;
+        using cin_string8_t = strings::basic_string<char, memory::allocator_internal8_esp32_t >;
         /**
          * @brief  List type with allocated in intarnal ram (32-Bit)
          */
-        using cin_string32_t = strings::strings::basic_string<char, memory::allocator_internal32_esp32_t >;
+        using cin_string32_t = strings::basic_string<char, memory::allocator_internal32_esp32_t >;
         /**
          * @brief  List type with allocated in DMA section(8-Bit) 
          */
-        using cdma_string_t = strings::strings::basic_string<char, memory::allocator_internal_dma_esp32_t >;
+        using cdma_string_t = strings::basic_string<char, memory::allocator_internal_dma_esp32_t >;
 #endif
 
     enum class flags_t {
