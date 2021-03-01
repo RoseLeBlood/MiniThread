@@ -229,6 +229,58 @@ namespace mn {
             allocator_type  m_allocator;
             node_type       m_root;
         };
+
+        /**
+         * @brief List type witch allocated in global heap
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using list = basic_list<T, memory::default_allocator_t >;
+
+        /**
+         * @brief List type witch allocated on the staked memory buffer
+         * 
+         * @tparam T The holding type for the value 
+         * @tparam TBUFFERSIZE The size of the memory buffer
+         */
+        template<typename T, int TBUFFERSIZE> 
+        using stacked_list = basic_list<T, memory::basic_allocator_stack<TBUFFERSIZE> >;
+
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
+
+        /**
+         * @brief  List type with allocated in SPI-RAM (8-Bit) 
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using cps_list8_t = basic_list<T, memory::allocator_psram_esp32_t >;
+        /**
+         * @brief  List type with allocated in SPI-RAM (32-Bit) 
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using cps_list32_t = basic_list<T, memory::allocator_psram32_esp32_t >;
+        /**
+         * @brief  List type with allocated in internal ram (8-Bit) 
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using cin_list8_t = basic_list<T, memory::allocator_internal8_esp32_t >;
+        /**
+         * @brief  List type with allocated in intarnal ram (32-Bit) 
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using cin_list32_t = basic_list<T, memory::allocator_internal32_esp32_t >;
+        /**
+         * @brief  List type with allocated in DMA section(8-Bit) 
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using cdma_list_t = basic_list<T, memory::allocator_internal_dma_esp32_t >;
+
+
+#endif
     }
 }
 

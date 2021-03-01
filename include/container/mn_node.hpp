@@ -146,6 +146,26 @@ namespace mn {
         inline basic_value_node<T, TAllocator>* upcast(basic_node<TAllocator>* n) {
 	        return static_cast<basic_value_node<T, TAllocator>*>(n);
 	    }
+
+        /**
+         * @brief Node type witch allocated in global heap
+         */
+        using node = basic_node<memory::default_allocator_t>;
+
+#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
+
+        /** @brief Node type witch allocated in SPI-RAM (8-Bit) */
+        using cps_node8_t = basic_node<memory::allocator_psram_esp32_t>;
+        /** @brief Node type witch allocated in SPI-RAM (32-Bit) */
+        using cps_node32_t = basic_node<memory::allocator_psram32_esp32_t>;
+        /** @brief Node type witch allocated in internal ram (8-Bit) */
+        using cin_node8_t = basic_node<memory::allocator_internal8_esp32_t>;
+        /** @brief Node type witch allocated in internal ram (32-Bit) */
+        using cin_node32_t = basic_node<memory::allocator_psram32_esp32_t>;
+        /** @brief Node type witch allocated on DMA section (32-Bit) */
+        using cdma_node32_t = basic_node<memory::allocator_internal_dma_esp32_t>;
+     
+#endif 
     }
 }
 

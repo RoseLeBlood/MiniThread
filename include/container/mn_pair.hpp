@@ -70,7 +70,22 @@ namespace mn {
 			first_type first;
 			second_type second;
 		};
+
+		template<typename TFIRST, typename TSECOND> 
+        using pair = basic_pair<TFIRST, TSECOND>;
+
+		template<typename TFIRST, typename TSECOND> 
+        pair<TFIRST, TSECOND> make_pair(const TFIRST& a, const TSECOND& b) {
+            return pair<TFIRST, TSECOND>(a, b);
+        }
 	}
+	template <typename TFIRST, typename TSECOND> 
+    struct is_pod< container::pair<TFIRST, TSECOND> > {
+        enum { 
+            value = ( (is_pod<TFIRST>::value || is_fundamental<TFIRST>::value) && 
+                        (is_pod<TSECOND>::value || is_fundamental<TSECOND>::value) )
+        };
+    };
 }
 
 #endif
