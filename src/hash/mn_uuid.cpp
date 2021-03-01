@@ -40,19 +40,19 @@ namespace mn {
             bool lookingForFirstChar = true;
             unsigned nextByte = 0;
 
-            for (const char &ch : fromString) {
-                if (ch == '-') continue;
+            for(int i = 0; i < fromString.size(); i++) {
+                if (fromString[i] == '-') continue;
 
-                if (nextByte >= 16 || !is_visible(ch)) {
+                if (nextByte >= 16 || !is_visible(fromString[i])) {
                     make_it_zero();
                     break;
                 }
 
                 if (lookingForFirstChar) {
-                    charOne = ch;
+                    charOne = fromString[i];
                     lookingForFirstChar = false;
                 } else {
-                    charTwo = ch;
+                    charTwo = fromString[i];
                     auto byte = HEXPAIR2CHAR(charOne, charTwo);
                     m_uuidBytes[nextByte++] = byte;
                     lookingForFirstChar = true;
@@ -91,7 +91,7 @@ namespace mn {
                 << std::setw(2) << (int)m_uuidBytes[14]
                 << std::setw(2) << (int)m_uuidBytes[15];
             
-	        return str.str();
+	        return mn::string(str.str());
         }
         void basic_uuid::make_it_zero() {
             m_uuidBytes = array_type({0});

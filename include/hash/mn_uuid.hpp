@@ -20,7 +20,7 @@
 
 #include "../mn_algorithm.hpp"
 #include "../container/mn_array.hpp"
-#include <string>
+#include "../mn_string.hpp"
 
 namespace mn {
     namespace hash {
@@ -37,7 +37,7 @@ namespace mn {
             static const basic_uuid Empty;
         public:
             using array_type = mn::container::array<uint8_t, 16>;
-            using string_type = std::string;
+            using string_type = mn::string;
 
             explicit basic_uuid(string_type fromString);
             explicit basic_uuid(array_type &bytes);
