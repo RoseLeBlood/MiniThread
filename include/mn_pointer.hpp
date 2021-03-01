@@ -29,6 +29,8 @@
 #include "pointer/mn_weak_ptr.hpp"
 #include "pointer/mn_linked_ptr.hpp"
 
+#include "pointer/mn_any_ptr.hpp"
+
 
 
 namespace mn {
@@ -45,6 +47,8 @@ namespace mn {
     MN_TEMPLATE_USING_TWO(lock_ptr_ex, pointer::basic_lock_ptr, typename, T, class, TLOCK);
     MN_TEMPLATE_USING_ONE(weak_ptr, pointer::basic_weak_ptr, typename, T);
     MN_TEMPLATE_USING_ONE(linked_ptr, pointer::basic_linked_ptr, typename, T);
+
+    MN_TEMPLATE_USING(any_ptr, pointer::basic_any_ptr<void>);
 
 
     //----------------------------------------
