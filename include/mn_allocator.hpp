@@ -23,16 +23,16 @@
 //#include "freertos/task.h"
 
 #include "mn_config.hpp"
-#include "mn_allocator_object.hpp"
+#include "allocator/mn_allocator_object.hpp"
 
-#include "mn_allocator_system.hpp"
-#include "mn_allocator_stack.hpp"
-#include "mn_allocator_buffer.hpp"
+#include "allocator/mn_allocator_system.hpp"
+#include "allocator/mn_allocator_stack.hpp"
+#include "allocator/mn_allocator_buffer.hpp"
 
 
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
-#include "mn_allocator_caps.hpp"
-#include "mn_allactor_multiheap.hpp"
+#include "allocator/mn_allocator_caps.hpp"
+#include "allocator/mn_allactor_multiheap.hpp"
 #endif // MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32
 
 namespace mn {
@@ -41,34 +41,34 @@ namespace mn {
 #if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DEFAULT | MALLOC_CAP_8BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         using allocator_internal8_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         using allocator_psram_esp32_t = 
             basic_cap_allocator_esp32<cap_allocator_map::SpiRam, cap_allocator_size::Size8Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DEFAULT | MALLOC_CAP_32BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         using allocator_internal32_esp32_t = 
             basic_cap_allocator_esp32<cap_allocator_map::Default, cap_allocator_size::Size32Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_SPIRAM | MALLOC_CAP_32BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         using allocator_psram32_esp32_t = 
             basic_cap_allocator_esp32<cap_allocator_map::SpiRam, cap_allocator_size::Size32Bit>;
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DMA | MALLOC_CAP_32BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         using allocator_internal_dma_esp32_t = 
             basic_cap_allocator_esp32<cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
@@ -76,7 +76,7 @@ namespace mn {
 
         /**
          * @brief A esp32 cap allocator, config: MALLOC_CAP_DMA | MALLOC_CAP_32BIT 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         allocator_psram_dma_esp32_t = basic_cap_allocator_esp32<cap_allocator_map::DMA, cap_allocator_size::Size32Bit>;
         
@@ -90,7 +90,7 @@ namespace mn {
 
         /**
          * @brief A basic allocator, use the basic alloc system from tde used libc 
-         * @tparam T The value to allocate the allocator
+         * 
          */
         MN_TEMPLATE_USING(allocator_system_t, basic_allocator_system);
 
