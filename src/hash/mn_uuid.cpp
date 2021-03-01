@@ -91,7 +91,7 @@ namespace mn {
                 << std::setw(2) << (int)m_uuidBytes[14]
                 << std::setw(2) << (int)m_uuidBytes[15];
             
-	        return mn::string(str.str());
+	        return mn::string(str.str().c_str());
         }
         void basic_uuid::make_it_zero() {
             m_uuidBytes = array_type({0});
