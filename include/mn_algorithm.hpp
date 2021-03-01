@@ -213,6 +213,29 @@ namespace mn {
         const short y = x >> 15;
         return (x ^ y) - y;
 	}
+    template<typename T>
+    inline bool is_range(const T min, const T max, const T ch) {
+        return (ch > min && ch < max)
+    }
+
+    inline uint8_t hex2char(char ch) {
+        unsigned char _ret = 0;
+	
+	         if ( is_range<char>(47,  58, ch) ) _ret = ch - 48; // 0-9  
+        else if ( is_range<char>(96, 103, ch) ) _ret = ch - 87; // a-f
+        else if ( is_range<char>(64,  71, ch) ) _ret = ch - 55; // A-F
+
+        /*if (ch > 47 && ch < 58) _ret = ch - 48; // 0-9
+	    else if (ch > 96 && ch < 103) _ret =  ch - 87; // a-f
+	    else if (ch > 64 && ch < 71) _ret =  ch - 55; // A-F*/
+
+	    return _ret;
+    } 
+    inline bool is_visible(char ch) {
+        return ( is_range<char>(47,  58, ch) ) || // 0-9  
+               ( is_range<char>(96, 103, ch) ) || // a-f
+               ( is_range<char>(64,  71, ch) );   // A-F
+    }
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline T max(const T& x, const T& y) {
