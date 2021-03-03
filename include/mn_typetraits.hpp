@@ -30,8 +30,8 @@ namespace mn {
         enum { value = v  };
     };
     
-    typedef integral_constant<bool, true> true_type;
-    typedef integral_constant<bool, false> false_type;
+    using  true_type = integral_constant<bool, true>;
+    using false_type =  integral_constant<bool, false> ;
         
     template<typename T> 
     struct is_enum : public integral_constant<bool, __is_enum(T)> { };
@@ -160,5 +160,6 @@ namespace mn {
     MN_RATIONAL(long double);
 
 }
+
 
 #endif
