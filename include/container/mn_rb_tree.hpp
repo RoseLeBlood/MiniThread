@@ -29,10 +29,6 @@ namespace mn {
 	namespace container {
         namespace internal {
 
-            
-
-            
-            
             template<typename TKey> 
             struct rb_tree_key_wrapper {
                 TKey    key;
@@ -47,6 +43,7 @@ namespace mn {
                 using value_type = rb_tree_key_wrapper<TKey>;
             };
         } 
+
         enum class rb_tree_color {
             red,
             black
@@ -57,6 +54,9 @@ namespace mn {
             MNALLOC_OBJECT(TAllocator);
 
             rb_tree_node() { }
+            rb_tree_node(rb_tree_node* node)
+                : left(node), parent(node), right(node), color(rb_tree_color::black) { }
+
             rb_tree_node(rb_tree_color color_, rb_tree_node* left_, rb_tree_node* right_, rb_tree_node* parent_)
                 : left(left_), parent(parent_), right(right_), color(color_) { }
 
@@ -92,7 +92,7 @@ namespace mn {
             using value_type = typename TTreeTraits::value_type;
             using allocator_type = TAllocator;
             using self_type = base_rb_tree<TTreeTraits, TAllocator>;
-            using size_type = size_t;
+            using size_type = mn::size_t;
             using node_type = rb_tree_node<value_type, TAllocator>;
 
             typedef void (*TravFunc)(node_type* n, size_type left, size_type depth);
@@ -480,56 +480,21 @@ namespace mn {
             allocator_type  		m_allocator;
             static node_type        ms_sentinel;
         };
+
         template<class TTreeTraits, class TAllocator>
         typename base_rb_tree<TTreeTraits, TAllocator>::node_type 
-            base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel(rb_tree_color::black, 
-                &base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel,
-                &base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel,
+            base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel( 
                 &base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel);
 
         template<typename TKey, class TAllocator>
         class basic_rb_tree : public base_rb_tree<internal::rb_tree_traits<TKey>, TAllocator> {
         public:
-            explicit basic_rb_tree(TAllocator allocator = TAllocator()) 
+            explicit basic_rb_tree(TAllocator allocator = TAllocator() ) 
                 : base_rb_tree(allocator) {}
         };
 
         template<typename T>
         using rb_tree = basic_rb_tree<T, memory::default_allocator_t>;
-
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
-
-        /**
-         * @brief  List type with allocated in SPI-RAM (8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cps_rb_tree8_t = basic_rb_tree<T, memory::allocator_psram_esp32_t >;
-        /**
-         * @brief  List type with allocated in SPI-RAM (32-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cps_rb_tree32_t = basic_rb_tree<T, memory::allocator_psram32_esp32_t >;
-        /**
-         * @brief  List type with allocated in internal ram (8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cin_rb_tree8_t = basic_rb_tree<T, memory::allocator_internal8_esp32_t >;
-        /**
-         * @brief  List type with allocated in intarnal ram (32-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cin_rb_tree32_t = basic_rb_tree<T, memory::allocator_internal32_esp32_t >;
-        /**
-         * @brief  List type with allocated in DMA section(8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cdma_rb_tree_t = basic_rb_tree<T, memory::allocator_internal_dma_esp32_t >;
-#endif
     }
 }
 

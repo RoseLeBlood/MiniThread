@@ -18,7 +18,7 @@
 #ifndef _MINLIB_f4421533_40ce_492a_a99b_8a7ca77e49bd_H_
 #define _MINLIB_f4421533_40ce_492a_a99b_8a7ca77e49bd_H_
 
-#include "mn_algorithm.hpp"
+#include "../mn_algorithm.hpp"
 
 namespace mn {
     namespace container {
@@ -32,7 +32,7 @@ namespace mn {
             using const_pointer = const value_type*;
             using reference = value_type&;
             using const_reference = const T&;
-            using size_type = size_t;
+            using size_type = mn::size_t;
             using self_type = basic_array<T, N>;
 
             using iterator = pointer;

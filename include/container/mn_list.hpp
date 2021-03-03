@@ -75,13 +75,13 @@ namespace mn {
             using self_type = basic_list<T, TAllocator>;
             using value_type = T;
             using allocator_type = TAllocator;
-            using size_type = size_t;
+            using size_type = mn::size_t;
             using node_type = basic_value_node<T, TAllocator>;
 
             using iterator = list_node_iterator<node_type*, T*, T&>;
             using const_iterator = list_node_iterator<const node_type*, const T*, const T&>;
 
-            static const size_t NodeSize = sizeof(node_type);
+            static const size_type NodeSize = sizeof(node_type);
 
             /**
              * @brief Construct a new basic list object
@@ -245,42 +245,6 @@ namespace mn {
          */
         template<typename T, int TBUFFERSIZE> 
         using stacked_list = basic_list<T, memory::basic_allocator_stack<TBUFFERSIZE> >;
-
-#if MN_THREAD_CONFIG_BOARD ==  MN_THREAD_CONFIG_ESP32 
-
-        /**
-         * @brief  List type with allocated in SPI-RAM (8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cps_list8_t = basic_list<T, memory::allocator_psram_esp32_t >;
-        /**
-         * @brief  List type with allocated in SPI-RAM (32-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cps_list32_t = basic_list<T, memory::allocator_psram32_esp32_t >;
-        /**
-         * @brief  List type with allocated in internal ram (8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cin_list8_t = basic_list<T, memory::allocator_internal8_esp32_t >;
-        /**
-         * @brief  List type with allocated in intarnal ram (32-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cin_list32_t = basic_list<T, memory::allocator_internal32_esp32_t >;
-        /**
-         * @brief  List type with allocated in DMA section(8-Bit) 
-         * @tparam T The holding type for the value 
-         */
-        template<typename T > 
-        using cdma_list_t = basic_list<T, memory::allocator_internal_dma_esp32_t >;
-
-
-#endif
     }
 }
 

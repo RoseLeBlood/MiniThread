@@ -7,9 +7,12 @@
 + Add a any_ptr - basic_any_ptr<void> - can only hold const pointer
 + add uuid_t / guid_t - hash/mn_uuid.hpp
 + remove type usings from mn_container.hpp to the array, list, fixed_array, ... headers. 
-  mn_container include all container types 
+  mn_container include all container types and all special container usings switch to mn_container_esp32.hpp 
 + add a red black tree to the cointainer namespace - find under container/mn_rb_tree.hpp
 + add any_ptr - a pointer to hold a const any-variant type
++ add at mn::cointainer a Template queue with iterator-support
++ add new algorythmen and mn::functinal support
++ 
   
 ## Version 2.10 Februar 2021
 + add pointer suppert - weak, shared, clone_ptr, and other
