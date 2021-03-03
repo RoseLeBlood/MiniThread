@@ -23,23 +23,30 @@
 namespace mn {
     namespace queue {
         /**
-         *  Binary queue with overwrite. This queue can only hold one item.
-         *  If sucessive Enqueue operations are called, that item is overwritten
-         *  with whatever the last item was.
+         * @brief Binary queue with overwrite. This queue can only hold one item.
+         * If sucessive Enqueue operations are called, that item is overwritten
+         * with whatever the last item was.
          * 
          * @ingroup queue
          */
         class basic_binaryqueue : public basic_queue {
         public:
             /**
-             *  ctor
+             * @brief Construct a new basic binaryqueue object
              * 
-             *  @param itemSize Size of an item in a queue.
+             * @param itemSize Size of an item in a queue.
              */
             explicit basic_binaryqueue(unsigned int itemSize) 
                         : basic_queue(1, itemSize) { }
-
-            
+            /**
+             * @brief Construct a new basic binaryqueue object
+             * @note Only use for mn::container::basic_queue
+             * 
+             * @param unused This variable never used
+             * @param itemSize Size of an item in a queue.
+             */
+            explicit basic_binaryqueue(int unused, unsigned int itemSize) 
+                        : basic_queue(1, itemSize) { }
             /**
              *  Add an item to the queue.
              *

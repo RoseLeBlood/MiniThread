@@ -25,8 +25,10 @@
 #include "utils/mn_inttokey.hpp"
 #include "utils/mn_utils.hpp"
 
+
 #include "mn_typetraits.hpp"
 #include "mn_iterator.hpp"
+#include "mn_functional.hpp"
 
 namespace mn {
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
@@ -107,10 +109,8 @@ namespace mn {
     void destruct_n(T* src, size_t n) {
 	    internal::destruct_n(src, n, int_to_type<has_trivial_destructor<T>::value>());
 	}
-	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-    inline void fill_n(T* src, size_t n, const T& val) {
-        T* last = src + n;
-       
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline void fill(T* src, T* last, const T& val) {
         while (src != last) {
             switch (n & 0x7) {
                 case 0: *src = val; ++src;
@@ -124,6 +124,13 @@ namespace mn {
             }
         }
 	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline void fill_n(T* src, size_t n, const T& val) {
+        T* last = src + n;
+        fill(src, last, val);
+	}
+    
 
 	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TDist) 
     inline void distance(TIter src, TIter last, TDist& dist) {
@@ -192,10 +199,8 @@ namespace mn {
 
 	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T) 
     void accumulate(TIter src, TIter last, T& dest) {
-        while (src != last)
-        {
-            dest += *src;
-            ++src;
+        while (src != last)  {
+            dest += *src; ++src;
         }
 	}
 
@@ -203,16 +208,47 @@ namespace mn {
     T abs(const T& t) {
 	    return t >= T(0) ? t : -t;
 	}
-
-	inline int abs(int x) {
+    template<int>
+	inline int abs(const int& x) {
         const int y = x >> 31;
         return (x ^ y) - y;
 	}
-
-	inline short abs(short x) {
+    template<short>
+	inline short abs(const short& x) {
         const short y = x >> 15;
         return (x ^ y) - y;
 	}
+
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline bool is_range(const T ch, const T min, const T max) { return (ch >= min && ch <= max); }
+
+    inline bool islower(char ch) { return (is_range<char>(ch, 0x61, 0x7A); }
+    
+    inline bool isupper(char ch) { return (is_range<char>(ch, 0x41, 0x5A); }
+    
+    inline bool isalpha(char ch) { return (isupper(ch) ||  islower(ch) ); }
+
+    inline bool isdigit(char ch) { return is_range<char>(ch, 0x30,  0x39); }
+
+    inline bool iscntrl(char ch) { return is_range<char>(ch, 0x00,  0x1F) || ch == 0x7F; }
+
+    inline bool isspace(char ch) { return is_range<char>(ch, 0x09,  0x0D) || ch == 0x20; }
+
+    inline bool isblank(char ch) { return ch == 0x09 || ch == 0x20; }
+
+    inline bool isgraph(char ch) { return is_range<char>(ch, 0x21,  0x7E); }
+
+    inline bool isprint(char ch) { return  (isgraph(ch)  || ch == 0x20 ); }
+
+    inline bool isxdigit(char ch){ return isdigit(ch) || is_range<char>(ch, 0x41,  0x46) || is_range<char>(ch, 0x61,  0x66);   }
+
+    inline bool isalnum(char ch)  { return isdigit(ch) || isalpha(ch); }
+
+    inline char hex2char(char ch) {
+        return ( isdigit(ch) ) ?  ch - 48 :  ( islower(ch) ) ?  ch - 87 : 
+               ( isupper(ch) ) ?  ch - 55 :  0;
+    } 
+    
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline T max(const T& x, const T& y) {

@@ -146,6 +146,11 @@ namespace mn {
         inline basic_value_node<T, TAllocator>* upcast(basic_node<TAllocator>* n) {
 	        return static_cast<basic_value_node<T, TAllocator>*>(n);
 	    }
+
+        /**
+         * @brief Node type witch allocated in global heap
+         */
+        using node = basic_node<memory::default_allocator_t>;
     }
 }
 

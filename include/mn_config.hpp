@@ -129,6 +129,13 @@
 
 //Start Config section
 //==================================
+#ifndef MN_THREAD_CONFIG_SIZE_TYPE 
+    /**
+     * The type for mn::size_t 
+     */ 
+    #define MN_THREAD_CONFIG_SIZE_TYPE          long unsigned int
+#endif
+
 
 #ifndef MN_THREAD_CONFIG_USE_EXCEPTIONS 
     /**

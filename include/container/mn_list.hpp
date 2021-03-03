@@ -75,13 +75,13 @@ namespace mn {
             using self_type = basic_list<T, TAllocator>;
             using value_type = T;
             using allocator_type = TAllocator;
-            using size_type = size_t;
+            using size_type = mn::size_t;
             using node_type = basic_value_node<T, TAllocator>;
 
             using iterator = list_node_iterator<node_type*, T*, T&>;
             using const_iterator = list_node_iterator<const node_type*, const T*, const T&>;
 
-            static const size_t NodeSize = sizeof(node_type);
+            static const size_type NodeSize = sizeof(node_type);
 
             /**
              * @brief Construct a new basic list object
@@ -229,6 +229,22 @@ namespace mn {
             allocator_type  m_allocator;
             node_type       m_root;
         };
+
+        /**
+         * @brief List type witch allocated in global heap
+         * @tparam T The holding type for the value 
+         */
+        template<typename T > 
+        using list = basic_list<T, memory::default_allocator_t >;
+
+        /**
+         * @brief List type witch allocated on the staked memory buffer
+         * 
+         * @tparam T The holding type for the value 
+         * @tparam TBUFFERSIZE The size of the memory buffer
+         */
+        template<typename T, int TBUFFERSIZE> 
+        using stacked_list = basic_list<T, memory::basic_allocator_stack<TBUFFERSIZE> >;
     }
 }
 

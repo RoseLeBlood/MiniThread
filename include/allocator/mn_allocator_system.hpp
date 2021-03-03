@@ -30,7 +30,7 @@ namespace mn {
              * Allocate SIZE bytes of memory 
              * @return A pointer of the allocated ram
              */ 
-            void* alloc(size_t n, unsigned int xTime) override {
+            void* alloc(size_t n, unsigned int xTime = __UINT32_MAX__) override {
                 void* buf = NULL;
 
                 if(is_free(n)) {
@@ -44,7 +44,7 @@ namespace mn {
              * Allocate n elements of SIZE bytes each, all initialized to 0. 
              * @return A pointer of the allocated mem
              */ 
-            size_t calloc(size_t n, size_t b, void** buf, unsigned int xTime) override {
+            size_t calloc(size_t n, size_t b, void** buf, unsigned int xTime = __UINT32_MAX__) override {
                 size_t _size = n*b;
 
                 if(is_free(_size)) {
@@ -57,7 +57,7 @@ namespace mn {
             /**
              * Free a block allocated by `malloc', `realloc' or `calloc'. 
              */ 
-            void free(void* mem, unsigned int xTime) override {
+            void free(void* mem, unsigned int xTime = __UINT32_MAX__) override {
                 ::free(mem); rm_allocatedsize(sizeof(mem));
             }
         };

@@ -41,7 +41,7 @@ namespace mn {
              * @param nSize The size of the stack
              */ 
             explicit basic_stack(size_t nSize) { 
-                internal_create(nSize, (basic_type_t*)malloc(basic_type_t * nSize), 0 ); }
+                internal_create(nSize, (basic_type_t*)malloc( size_of(basic_type_t) * nSize), 0 ); }
 
             /**
              * This constructor use a given address as buffer

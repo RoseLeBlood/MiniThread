@@ -53,8 +53,8 @@ static allocator_type m_acObject; \
 public:  \
     void* operator new (size_t size) { return m_acObject.alloc(size, __UINT32_MAX__ ); }  \
     void* operator new[] (unsigned int n) { return m_acObject.alloc(size, __UINT32_MAX__ ); }  \
-    void  operator delete(void* pObject) { m_acObject.free(pObject); } \
-    void  operator delete[] (void* p) { m_acObject.free(pObject); } \
+    void  operator delete(void* pObject) { m_acObject.free(pObject, __UINT32_MAX__); } \
+    void  operator delete[] (void* p) { m_acObject.free(pObject, __UINT32_MAX__); } \
     allocator_type get_allocator() { return m_acObject; } \
     void set_allocator(allocator_type alloc) { m_acObject = alloc; } 
     

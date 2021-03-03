@@ -23,7 +23,7 @@
 namespace mn {
     namespace queue {
         /**
-         *  Queue class wrapper for FreeRTOS queues
+         *  @brief Queue class wrapper for FreeRTOS queues
          *  @note can use at the ISR Context, too. This wrapper switch automatic 
          * 
          * @ingroup queue
