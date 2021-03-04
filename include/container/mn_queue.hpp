@@ -81,6 +81,7 @@ namespace mn {
             using value_type = T;
             using pointer = T*;
             using reference = T&;
+            using const_reference = const T&;
             using self_type = basic_queue<T, TMAXITEMS, TQUEUE>;
             using iterator = basic_queue_iterator<T, queue_type>;
             using const_iterator = const T*;
@@ -101,8 +102,7 @@ namespace mn {
              * @return The begin iterator 
              */
             iterator begin() {
-                m_queue.peek(m_pFront, MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
-                return basic_queue_iterator(m_pFront, m_queue);
+                return basic_queue_iterator( intern_getfront(), m_queue);
             }
             /**
              * @brief Get the end iterator
@@ -117,8 +117,7 @@ namespace mn {
              * @return The begin iterator 
              */
             const_iterator begin() const {
-                m_queue.peek(m_pFront, MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
-                return basic_queue_iterator(m_pFront);
+                return basic_queue_iterator( intern_getfront(), m_queue);
             }
             /**
              * @brief Get the end iterator
@@ -127,12 +126,17 @@ namespace mn {
             const_iterator end() const {
                 return basic_queue_iterator(m_pEnd, &m_queue, true);
             }
+            const_reference front() const          { assert(!empty()); return *intern_getfront(); }
+            reference front()                      { assert(!empty()); return *intern_getfront(); }
+
+            const_reference back() const           { assert(!empty()); return m_pEnd; }
+            reference back()                       { assert(!empty()); return m_pEnd; }
 
             /**
              * @brief Push a element to the queue
              * @param pElement The element 
              */
-            void push(contst reference _Element) {
+            void push(reference _Element) {
                 if( m_queue.enqueue(&_Element) == ERR_QUEUE_OK) {
                     m_pEnd = &_Element;
                 }
@@ -158,21 +162,21 @@ namespace mn {
              * 
              * @return true The queue is empty and false when not
              */
-            inline bool is_empty() {
+            inline const bool empty() const {
                 return m_queue.is_empty();
             }
             /**
              * @brief How many items can queue
              * @return The maximal number of entries can queue
              */
-            inline  mn::size_t length() {
+            inline const  mn::size_t length() const {
                 return TMAXITEMS;
             }
             /**
              *  How many items are currently in the queue.
              *  @return the number of items in the queue.
              */
-            inline mn::size_t size() {
+            inline const mn::size_t size() const {
                 return m_queue.get_num_items();
             }
 
@@ -180,10 +184,14 @@ namespace mn {
              *  How many empty spaves are currently left in the queue.
              *  @return the number of remaining spaces.
              */
-            inline mn::size_t left() {
+            inline const mn::size_t left() const {
                 return m_queue.get_left();
             }
-
+        private:
+            T* intern_getfront() {
+                m_queue.peek(m_pFront, MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
+                return m_pFront;
+            }
         private:
             queue_type m_queue;
             pointer m_pEnd;
