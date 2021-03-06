@@ -39,15 +39,6 @@ namespace mn {
             explicit basic_binaryqueue(unsigned int itemSize) 
                         : basic_queue(1, itemSize) { }
             /**
-             * @brief Construct a new basic binaryqueue object
-             * @note Only use for mn::container::basic_queue
-             * 
-             * @param unused This variable never used
-             * @param itemSize Size of an item in a queue.
-             */
-            explicit basic_binaryqueue(int unused, unsigned int itemSize) 
-                        : basic_queue(1, itemSize) { }
-            /**
              *  Add an item to the queue.
              *
              *  @param item The item you are adding.
