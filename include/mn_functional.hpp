@@ -22,12 +22,12 @@
 #include "../mn_defines.hpp"
 #include "../mn_config.hpp"
 #include "../mn_typetraits.hpp"
-
+#include "../mn_def.hpp"
 
 using nullptr_t = decltype(nullptr);
 
 namespace mn {
-    using size_t = decltype(sizeof(MN_THREAD_CONFIG_SIZE_TYPE));
+    
 
     template <typename T> struct tag { using type = T; };
     template <typename Tag> using type_t = typename Tag::type;

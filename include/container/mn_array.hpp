@@ -37,6 +37,8 @@ namespace mn {
 
             using iterator = pointer;
             using const_iterator = const_pointer;
+
+            using iterator_category = random_access_iterator_tag;
               
             basic_array() { }
             basic_array(const_value_type a[N])    { mn::copy_n(&a[0], N, m_data); }

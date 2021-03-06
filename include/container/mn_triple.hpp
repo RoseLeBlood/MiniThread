@@ -15,8 +15,8 @@
 * License along with the Mini Thread  Library; if not, see
 * <https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINILIB_19ee7665_8c63_48b7_803f_9c056afce956_H_
-#define _MINILIB_19ee7665_8c63_48b7_803f_9c056afce956_H_
+#ifndef _MINILIB_96612aaf_c4c6_4113_b496_477cb506a2b8_H_
+#define _MINILIB_96612aaf_c4c6_4113_b496_477cb506a2b8_H_
 
 #include "../mn_typetraits.hpp"
 
@@ -24,8 +24,9 @@
 namespace mn {
 
 	namespace container {
-		template <typename TFIRST, typename TSECOND> 
-		struct basic_pair {
+        
+		template <typename TFIRST, typename TSECOND, typename TTHIRD> 
+		struct basic_triple {
 			using first_type = TFIRST;
 			using pointer_first = TFIRST*;
 			using reference_first = TFIRST&;
@@ -34,17 +35,21 @@ namespace mn {
 			using pointer_second = TSECOND*;
 			using reference_second = TSECOND&;
 
-			using self_type = basic_pair<TFIRST, TSECOND>;
+            using third_type = TTHIRD;
+            using pointer_third = TTHIRD*;
+			using reference_third = TTHIRD&;
 
-			basic_pair() { }
+			using self_type = basic_triple<TFIRST, TSECOND, TTHIRD>;
 
-			explicit basic_pair(const reference_first a) 
+			basic_triple() { }
+
+			explicit basic_triple(const reference_first a) 
 				: first(a) { }
-			basic_pair(const reference_first a, reference_second b)
-				: first(a), second(b) { }
+			basic_triple(const reference_first a, reference_second b, reference_third c)
+				: first(a), second(b), third(c) { }
 
-			basic_pair(const self_type& other) 
-				: first(other.first), second(other.second) { }
+			basic_triple(const self_type& other) 
+				: first(other.first), second(other.second), third(other.third) { }
 			
 			void swap(const self_type& other) {
 				self_type _temp(this);
@@ -54,6 +59,7 @@ namespace mn {
 			self_type& operator = (const self_type& rhs) {
 				first = rhs.first;
 				second = rhs.second;
+                third = rhs.third;
 				return *this;
 			}
 
@@ -69,21 +75,23 @@ namespace mn {
 
 			first_type first;
 			second_type second;
+            third_type third;
 		};
 
-		template<typename TFIRST, typename TSECOND> 
-        using pair = basic_pair<TFIRST, TSECOND>;
+		template<typename TFIRST, typename TSECOND, typename TTHIRD> 
+        using triple = basic_triple<TFIRST, TSECOND, TTHIRD>;
 
-		template<typename TFIRST, typename TSECOND> 
-        pair<TFIRST, TSECOND> make_pair(const TFIRST& a, const TSECOND& b) {
-            return pair<TFIRST, TSECOND>(a, b);
+		template<typename TFIRST, typename TSECOND, typename TTHIRD> 
+        triple<TFIRST, TSECOND, TTHIRD> make_triple(const TFIRST& a, const TSECOND& b, const TTHIRD& c) {
+            return triple<TFIRST, TSECOND>(a, b, c);
         }
 	}
-	template <typename TFIRST, typename TSECOND> 
-    struct is_pod< container::pair<TFIRST, TSECOND> > {
+	template<typename TFIRST, typename TSECOND, typename TTHIRD> 
+    struct is_pod< container::triple<TFIRST, TSECOND, TTHIRD> > {
         enum { 
             value = ( (is_pod<TFIRST>::value || is_fundamental<TFIRST>::value) && 
-                        (is_pod<TSECOND>::value || is_fundamental<TSECOND>::value) )
+                      (is_pod<TSECOND>::value || is_fundamental<TSECOND>::value) &&
+                      (is_pod<TTHIRD>::value || is_fundamental<TTHIRD>::value) )
         };
     };
 }

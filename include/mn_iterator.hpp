@@ -18,6 +18,8 @@
 #ifndef MINLIB_77a7a837_8b20_44ce_8a17_e432d8f6f902_H_
 #define MINLIB_77a7a837_8b20_44ce_8a17_e432d8f6f902_H_
 
+#include "mn_def.hpp"
+
 /// Shorthand for container iteration.
 #define for_each(type,i,ctr) for (type i = (ctr).begin(); i != (ctr).end(); ++ i)
 /// Shorthand for container reverse iteration.
@@ -27,55 +29,102 @@
 namespace mn {
     struct input_iterator_tag {};
 	struct output_iterator_tag {};
-	struct forward_iterator_tag: public input_iterator_tag {};
-	struct bidirectional_iterator_tag: public forward_iterator_tag {};
-	struct random_access_iterator_tag: public bidirectional_iterator_tag {};
+	struct forward_iterator_tag : public input_iterator_tag {};
+	struct bidirectional_iterator_tag : public forward_iterator_tag {};
+	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+
+    template<typename TCategory, typename T, typename TDistance = ptrdiff_t,
+             typename TPointer = T*, typename TReference = T&>
+    struct iterator {
+        /// One of the @link iterator_tags tag types@endlink.
+        using iterator_category = TCategory ;
+        /// The type "pointed to" by the iterator.
+        using value_type = T;
+        /// Distance between iterators is represented as this type.
+        using difference_type = TDistance; 
+        /// This type represents a pointer-to-value_type.
+        using pointer = TPointer;
+        /// This type represents a reference-to-value_type.
+        using reference = TReference ;
+    };
 
     template<typename IterT>
 	struct iterator_traits {
-	   typedef typename IterT::iterator_category iterator_category;
+	   using iterator_category = typename IterT::iterator_category ;
+       using difference_type = ptrdiff_t; /* TODO: typename IterT::difference_type ;*/
+       using value_type = typename IterT::value_type ;
 	};
 
 	template<typename T>          
 	struct iterator_traits<T*>  {
-	   typedef random_access_iterator_tag iterator_category;
+	   using iterator_category = random_access_iterator_tag;
+       using difference_type = ptrdiff_t;
 	};
 
 	//-----------------------------------------------------------------------------
-	namespace internal {
-        template<typename TIter, typename TDist> inline
-        void distance(TIter first, TIter last, TDist& dist, mn::random_access_iterator_tag) {
-            dist = TDist(last - first);
+	
+    namespace internal {
+        template<typename TIter> 
+        inline typename iterator_traits<TIter>::difference_type 
+        distance(TIter first, TIter last, mn::random_access_iterator_tag) {
+            return last - first;
         }
 
-        template<typename TIter, typename TDist> inline
-        void distance(TIter first, TIter last, TDist& dist, mn::input_iterator_tag) {
-            dist = 0;
+        template<typename TIter> 
+        inline typename iterator_traits<TIter>::difference_type   
+        distance(TIter first, TIter last, mn::input_iterator_tag) {
+            typename iterator_traits<_InputIterator>::difference_type _n = 0;
+
             while (first != last) {
-                    ++dist;
-                    ++first;
+                ++first;
+                ++_n;
             }
+            return _n;
         }
 
-        template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, mn::random_access_iterator_tag) {
+        template<typename TIter, typename TDistance = typename iterator_traits<TIter>::difference_type> 
+        inline void advance(TIter& iter, TDistance d, mn::random_access_iterator_tag) {
             iter += d;
         }
-
-        template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, mn::bidirectional_iterator_tag) {
+        template<typename TIter, typename TDistance = typename iterator_traits<TIter>::difference_type> 
+        inline void advance(TIter& iter, TDistance d, mn::bidirectional_iterator_tag) {
             if (d >= 0) {
                 while (d--) ++iter;
             } else {
                 while (d++)  --iter;
             }
         }
-        template<typename TIter, typename TDist> inline
-        void advance(TIter& iter, TDist d, mn::input_iterator_tag) {
+        template<typename TIter, typename TDistance = typename iterator_traits<TIter>::difference_type> 
+        inline void advance(TIter& iter, TDistance d, mn::input_iterator_tag) {
             assert(d >= 0);
             while (d--)  ++iter;
         }
-	} 
+    }
+
+    template<typename TIter>
+    inline typename iterator_traits<TIter>::difference_type
+    distance(TIter first, TIter last) {
+        return internal::distance(first, last, typename iterator_traits<TIter>::iterator_category() );
+    }
+
+    template<typename TIter, typename TDistance = typename iterator_traits<TIter>::difference_type> 
+    inline void advance(TIter& iter, TDistance d) {
+        return internal::advance(iter, d, typename iterator_traits<TIter>::iterator_category() );
+    }
+
+    
+    template<typename TForwardIter, typename TDistance = typename iterator_traits<TForwardIter>::difference_type>
+    TForwardIter next(TForwardIter x, TDistance n = 1) {
+        advance<TForwardIter, TDistance> (x, n);
+        return x;
+    }
+
+    template<typename TBidirectionalIter, typename TDistance = typename iterator_traits<TBidirectionalIter>::difference_type>
+    TBidirectionalIter prev(TBidirectionalIter x, TDistance n = 1) {
+        intarnal::advance<TBidirectionalIter, TDistance> (x, -n);
+        return x;
+    }
+
 }
 
 #endif
