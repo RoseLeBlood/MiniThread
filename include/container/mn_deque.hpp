@@ -27,14 +27,15 @@ namespace mn {
         template <class T, class TQUEUE> 
         class basic_deque_iterator {
         public:
+            using iterator_category = mn::forward_iterator_tag;
             using value_type = T;
-            using pointer = T*;
+            using pointer = value_type*;
+            using reference = value_type&;
+            using difference_type = ptrdiff_t;
+
             using deque_type = TQUEUE;
             using self_type = basic_deque_iterator<T, TQUEUE>;
             using pointer_deque  = TQUEUE*;
-            using iterator_category = mn::forward_iterator_tag;
-            using difference_type = ptrdiff_t;
-            
 
             explicit basic_deque_iterator(pointer_deque _pQueue, bool isEnd = false) 
                 : m_pValue(NULL), m_pQueue(_pQueue), m_bIsEnd(isEnd) { }

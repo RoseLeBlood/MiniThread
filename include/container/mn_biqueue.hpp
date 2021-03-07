@@ -27,10 +27,23 @@ namespace mn {
         template<class T>
         class basic_binary_queue_iterator  {
         public:
+            using iterator_category = forward_iterator_tag;
             using value_type = T;
-            using pointer = T*;
-            using reference = T&;
+            using pointer = value_type*;
+            using reference = value_type&;
             using self_type = basic_binary_queue_iterator<T>;
+            using difference_type = ptrdiff_t;
+
+            /// One of the @link iterator_tags tag types@endlink.
+            using iterator_category = TCategory ;
+            /// The type "pointed to" by the iterator.
+            using value_type = T;
+            /// Distance between iterators is represented as this type.
+            using difference_type = ptrdiff_t; 
+            /// This type represents a pointer-to-value_type.
+            using pointer = value_type*;
+            /// This type represents a reference-to-value_type.
+            using reference = value_type& ;
 
             explicit basic_binary_queue_iterator(T* pValue)
                 : m_pValue(pValue) { }

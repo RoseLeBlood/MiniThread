@@ -19,6 +19,7 @@
 #define _MINLIB_37360095_2231_4183_8f0e_f55524c5cda1_H_
 
 #include <stddef.h>
+#include "mn_config.hpp"
 
 namespace mn {
     using size_t = decltype(sizeof(MN_THREAD_CONFIG_SIZE_TYPE));
