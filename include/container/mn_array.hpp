@@ -26,6 +26,8 @@ namespace mn {
         template <typename T, size_t N>
         class basic_array  {
         public:
+            using iterator_category = random_access_iterator_tag;
+
             using value_type = T;
             using const_value_type = const T;
             using pointer = value_type*;
@@ -34,11 +36,10 @@ namespace mn {
             using const_reference = const T&;
             using size_type = mn::size_t;
             using self_type = basic_array<T, N>;
+            using difference_type = ptrdiff_t; 
 
             using iterator = pointer;
             using const_iterator = const_pointer;
-
-            using iterator_category = random_access_iterator_tag;
               
             basic_array() { }
             basic_array(const_value_type a[N])    { mn::copy_n(&a[0], N, m_data); }

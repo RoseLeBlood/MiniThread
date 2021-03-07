@@ -28,8 +28,10 @@ namespace mn {
         class list_node_iterator {
 	    public:
             using  iterator_category = bidirectional_iterator_tag ;
+            using  value_type = TNodePtr;
             using  pointer = TPtr;
             using  reference = TRef;
+            using  difference_type = ptrdiff_t;
             using  node_type = TNodePtr;
             using  self_type = list_node_iterator<TNodePtr, TPtr, TRef>;
 
@@ -48,10 +50,10 @@ namespace mn {
             pointer operator->() const { return &m_node->value; }
 
             self_type& operator++() { 
-                m_node = upcast(m_node->Next); return *this; }
+                m_node = m_node->Next; return *this; }
 
             self_type& operator--()  { 
-                m_node = upcast(m_node->Prev); return *this; }
+                m_node = m_node->Prev; return *this; }
 
             self_type operator++(int) { 
                 self_type copy(*this); ++(*this); return copy; }
@@ -76,10 +78,10 @@ namespace mn {
             using value_type = T;
             using allocator_type = TAllocator;
             using size_type = mn::size_t;
-            using node_type = basic_value_node<T, TAllocator>;
+            using node_type = basic_node<T, TAllocator>;
 
-            using iterator = list_node_iterator<node_type*, T*, T&>;
-            using const_iterator = list_node_iterator<const node_type*, const T*, const T&>;
+            using iterator = list_node_iterator<node_type*, const value_type*, const value_type&>;
+            using const_iterator = list_node_iterator<const node_type*, const value_type*, const value_type&>;
 
             static const size_type NodeSize = sizeof(node_type);
 
@@ -113,17 +115,17 @@ namespace mn {
                 clear();
             }
 
-            iterator begin()                { return iterator(upcast(m_root.Next)); }
-            const_iterator begin() const    { return const_iterator(upcast(m_root.Next));  }
+            iterator begin()                { return iterator((m_root.Next)); }
+            const_iterator begin() const    { return const_iterator((m_root.Next));  }
 
             iterator end()                  { return iterator(&m_root); }
             const_iterator end() const      { return const_iterator(&m_root); }
 
-            const T& front() const          { assert(!empty()); return upcast(m_root.Next)->Value; }
-            T& front()                      { assert(!empty()); return upcast(m_root.Next)->Value; }
+            const T& front() const          { assert(!empty()); return (m_root.Next)->Value; }
+            T& front()                      { assert(!empty()); return (m_root.Next)->Value; }
 
-            const T& back() const           { assert(!empty()); return upcast(m_root.Prev)->Value; }
-            T& back()                       { assert(!empty()); return upcast(m_root.Prev)->Value; }
+            const T& back() const           { assert(!empty()); return (m_root.Prev)->Value; }
+            T& back()                       { assert(!empty()); return (m_root.Prev)->Value; }
 
             void push_front(const T& value) {
                 node_type* newNode = construct_node(value);
@@ -131,7 +133,7 @@ namespace mn {
             }
             inline void pop_front() {
                 assert(!empty());
-                node_type* frontNode = upcast(m_root.Next);
+                node_type* frontNode = (m_root.Next);
                 frontNode->remove();
                 destruct_node(frontNode);
             }
@@ -142,7 +144,7 @@ namespace mn {
             }
             inline void pop_back() {
                 assert(!empty());
-                node_type* backNode = upcast(m_root.Prev);
+                node_type* backNode = (m_root.Prev);
                 backNode->remove();
                 destruct_node(backNode);
             }
@@ -181,10 +183,10 @@ namespace mn {
             }
 
             void clear() {
-                node_type* it = upcast(m_root.Next);
+                node_type* it = (m_root.Next);
 
                 while (it != &m_root) {
-                    node_type* nextIt = upcast(it->Next);
+                    node_type* nextIt = (it->Next);
                     destruct_node(it);
                     it = nextIt;
                 }
@@ -192,12 +194,12 @@ namespace mn {
             }
 
             size_type size() const {
-                const node_type* it = upcast(m_root.Next);
+                const node_type* it = (m_root.Next);
                 size_type size(0);
 
                 while (it != &m_root) {
                     ++size;
-                    it = upcast(it->Next);
+                    it = (it->Next);
                 }
                 return size;
             }
