@@ -17,7 +17,7 @@
 */
 #ifndef _MINILIB_4b715a5a_43d4_4442_88e5_4dcc9d8860bb_H_
 #define _MINILIB_4b715a5a_43d4_4442_88e5_4dcc9d8860bb_H_
-s
+
 #include "../mn_config.hpp"
 #include "../mn_typetraits.hpp"
 #include <stddef.h>
@@ -61,7 +61,7 @@ namespace mn {
                 : left(left_), parent(parent_), right(right_), color(color_) { }
 
             rb_tree_node(const rb_tree_node& other) 
-                : left(other.left), parent(other.parent)), right(other.right)), color(other.color)) { }
+                : left(other.left), parent(other.parent), right(other.right), color(other.color) { }
 
             void swap(rb_tree_node& other) {
                 rb_tree_node tmp(this);
@@ -123,7 +123,7 @@ namespace mn {
                             return iter;
                 }
 
-                node_type* new_node = new new_node();
+                node_type* new_node = new node_type();
                 new_node->color = rb_tree_color::red;
                 new_node->value = v;
                 new_node->left  = &ms_sentinel;
@@ -486,15 +486,10 @@ namespace mn {
             base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel( 
                 &base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel);
 
-        template<typename TKey, class TAllocator>
-        class basic_rb_tree : public base_rb_tree<internal::rb_tree_traits<TKey>, TAllocator> {
-        public:
-            explicit basic_rb_tree(TAllocator allocator = TAllocator() ) 
-                : base_rb_tree(allocator) {}
-        };
+        
 
-        template<typename T>
-        using rb_tree = basic_rb_tree<T, memory::default_allocator_t>;
+        template<typename TKey, class TAllocator>
+        using rb_tree = base_rb_tree<internal::rb_tree_traits<TKey>, TAllocator>;
     }
 }
 

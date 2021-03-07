@@ -21,14 +21,14 @@
 
 #include "mn_inttokey.hpp"
 #include "../mn_defines.hpp"
-
+#include "../mn_def.hpp"
 
 
 namespace mn {
     namespace internal {
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void copy_n(const T* first, size_t n, T* result, int_to_type<false>) {
+        void copy_n(const T* first, mn::size_t n, T* result, int_to_type<false>) {
             const T* last = first + n;
 
             while (first != last) {
@@ -42,7 +42,7 @@ namespace mn {
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void copy_n(const T* first, size_t n, T* result, int_to_type<true>) {
+        void copy_n(const T* first, mn::size_t n, T* result, int_to_type<true>) {
             assert(result >= first + n || result < first);
             memcpy(result, first, n * sizeof(T));
         }
@@ -55,18 +55,18 @@ namespace mn {
         }
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
         void copy(const T* first, const T* last, T* result, int_to_type<true>) {
-            const size_t n = reinterpret_cast<const char*>(last) - reinterpret_cast<const char*>(first);
+            const mn::size_t n = reinterpret_cast<const char*>(last) - reinterpret_cast<const char*>(first);
             memcpy(result, first, n);
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        inline void move_n(const T* from, size_t n, T* result, int_to_type<false>) {
+        inline void move_n(const T* from, mn::size_t n, T* result, int_to_type<false>) {
             for (int i = int(n) - 1; i >= 0; --i)
                     result[i] = from[i];
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        inline void move_n(const T* first, size_t n, T* result, int_to_type<true>) {
+        inline void move_n(const T* first, mn::size_t n, T* result, int_to_type<true>) {
             memmove(result, first, n * sizeof(T));
         }
 
@@ -78,32 +78,32 @@ namespace mn {
         }
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
         inline  void move(const T* first, const T* last, T* result, int_to_type<true>) {
-            const size_t n = reinterpret_cast<uintptr_t>(last) - reinterpret_cast<uintptr_t>(first);
+            const mn::size_t n = reinterpret_cast<uintptr_t>(last) - reinterpret_cast<uintptr_t>(first);
             memmove(result, first, n);
         }
 		
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void copy_construct_n(const T* first, size_t n, T* result, int_to_type<false>) {
+        void copy_construct_n(const T* first, mn::size_t n, T* result, int_to_type<false>) {
             for (size_t i = 0; i < n; ++i)
                 new (result + i) T(first[i]);
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void copy_construct_n(const T* first, size_t n, T* result, int_to_type<true>) {
+        void copy_construct_n(const T* first, mn::size_t n, T* result, int_to_type<true>) {
             assert(result >= first + n || result < first);
             memcpy(result, first, n * sizeof(T));
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void destruct_n(T* first, size_t n, int_to_type<false>) {
+        void destruct_n(T* first, mn::size_t n, int_to_type<false>) {
             sizeof(first);
             for (size_t i = 0; i < n; ++i)
                     (first + i)->~T();
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        inline void destruct_n(T*, size_t, int_to_type<true>) {
+        inline void destruct_n(T*, mn::size_t, int_to_type<true>) {
             // Nothing to do, no destructor needed.
         }
 
@@ -139,7 +139,7 @@ namespace mn {
         }
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        void construct_n(T* to, size_t count, int_to_type<false>) {
+        void construct_n(T* to, mn::size_t count, int_to_type<false>) {
             sizeof(to);
             for (size_t i = 0; i < count; ++i)
                     new (to + i) T();

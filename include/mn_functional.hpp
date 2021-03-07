@@ -19,15 +19,15 @@
 #ifndef _MINLIB_423a6056_5421_4f39_85b0_41c5bada4730_H_
 #define _MINLIB_423a6056_5421_4f39_85b0_41c5bada4730_H_
 
-#include "../mn_defines.hpp"
-#include "../mn_config.hpp"
-#include "../mn_typetraits.hpp"
-
+#include "mn_defines.hpp"
+#include "mn_config.hpp"
+#include "mn_typetraits.hpp"
+#include "mn_def.hpp"
 
 using nullptr_t = decltype(nullptr);
 
 namespace mn {
-    using size_t = decltype(sizeof(MN_THREAD_CONFIG_SIZE_TYPE));
+    
 
     template <typename T> struct tag { using type = T; };
     template <typename Tag> using type_t = typename Tag::type;
@@ -122,7 +122,7 @@ namespace mn {
 
     
     template <typename From, typename To>
-    struct is_convertible : internal::can_apply<details::try_convert, From, To> {};
+    struct is_convertible : internal::can_apply<internal::try_convert, From, To> {};
 
     template <> struct is_convertible<void, void> : true_type {};
 

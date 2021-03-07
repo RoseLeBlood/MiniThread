@@ -33,7 +33,7 @@
 namespace mn {
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void  copy_construct(T* mem, const T& orig) {
-	        internal::copy_construct(mem, orig, int_to_type<has_trivial_copy<T>::value>());
+	        internal::copy_construct(mem, orig, int_to_type <has_trivial_copy<T>::value> ());
 	}
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
@@ -112,6 +112,14 @@ namespace mn {
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void fill(T* src, T* last, const T& val) {
         while (src != last) {
+            *src = val; src = src + 1;
+        }
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline void fill_n(T* src, size_t n, const T& val) {
+        T* last = src + n;
+        while (src != last) {
             switch (n & 0x7) {
                 case 0: *src = val; ++src;
                 case 7: *src = val; ++src;
@@ -123,23 +131,6 @@ namespace mn {
                 case 1: *src = val; ++src;
             }
         }
-	}
-
-	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-    inline void fill_n(T* src, size_t n, const T& val) {
-        T* last = src + n;
-        fill(src, last, val);
-	}
-    
-
-	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TDist) 
-    inline void distance(TIter src, TIter last, TDist& dist) {
-	        internal::distance(src, last, dist, typename iterator_traits<TIter>::iterator_category());
-	}
-
-	MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TDist) 
-    inline void advance(TIter& iter, TDist off) {
-	        internal::advance(iter, off, typename iterator_traits<TIter>::iterator_category());
 	}
 
 	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred) 
@@ -222,9 +213,9 @@ namespace mn {
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline bool is_range(const T ch, const T min, const T max) { return (ch >= min && ch <= max); }
 
-    inline bool islower(char ch) { return (is_range<char>(ch, 0x61, 0x7A); }
+    inline bool islower(char ch) { return is_range<char>(ch, 0x61, 0x7A); }
     
-    inline bool isupper(char ch) { return (is_range<char>(ch, 0x41, 0x5A); }
+    inline bool isupper(char ch) { return is_range<char>(ch, 0x41, 0x5A); }
     
     inline bool isalpha(char ch) { return (isupper(ch) ||  islower(ch) ); }
 

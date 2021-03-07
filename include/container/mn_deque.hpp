@@ -15,36 +15,36 @@
 * License along with the Mini Thread  Library; if not, see
 * <https://www.gnu.org/licenses/>.  
 */
-#ifndef _MINILIB_51e64b00_707b_44f3_93dc_0b4c69dfd91c_H_
-#define _MINILIB_51e64b00_707b_44f3_93dc_0b4c69dfd91c_H_
+#ifndef _MINILIB_19dfc60c_16c2_4ec9_8b2d_8c9f1617631a_H_
+#define _MINILIB_19dfc60c_16c2_4ec9_8b2d_8c9f1617631a_H_
 
 #include "../mn_config.hpp"
-#include "../queue/mn_queue.hpp"
+#include "../queue/mn_deque.hpp"
 #include "../mn_algorithm.hpp"
 
 namespace mn {
 	namespace container {
         template <class T, class TQUEUE> 
-        class basic_queue_iterator {
+        class basic_deque_iterator {
         public:
             using iterator_category = mn::forward_iterator_tag;
             using value_type = T;
             using pointer = value_type*;
             using reference = value_type&;
             using difference_type = ptrdiff_t;
-            
-            using queue_type = TQUEUE;
-            using self_type = basic_queue_iterator<T, TQUEUE>;
-            using pointer_queue = TQUEUE*;
 
-            explicit basic_queue_iterator(pointer_queue _pQueue, bool isEnd = false) 
+            using deque_type = TQUEUE;
+            using self_type = basic_deque_iterator<T, TQUEUE>;
+            using pointer_deque  = TQUEUE*;
+
+            explicit basic_deque_iterator(pointer_deque _pQueue, bool isEnd = false) 
                 : m_pValue(NULL), m_pQueue(_pQueue), m_bIsEnd(isEnd) { }
 
-            explicit basic_queue_iterator(pointer value, pointer_queue _pQueue, bool isEnd = false) 
+            explicit basic_deque_iterator(pointer value, pointer_deque _pQueue, bool isEnd = false) 
                 : m_pValue(value), m_pQueue(_pQueue), m_bIsEnd(isEnd) { }
 
             template<class U, class UQUEUE> 
-            basic_queue_iterator(const basic_queue_iterator<U, UQUEUE>& rhs)
+            basic_deque_iterator(const basic_deque_iterator<U, UQUEUE>& rhs)
                 : m_pValue(rhs.m_pValue), m_pQueue(rhs._pQueue), m_bIsEnd(rhs.isEnd) { }
 
             pointer get() const { return m_pValue; }
@@ -65,57 +65,57 @@ namespace mn {
                 return !(rhs == *this); }
         private:
             pointer*      m_pValue;
-            pointer_queue m_pQueue;
+            pointer_deque m_pQueue;
             bool          m_bIsEnd;
         };
 
-
         /**
-         * @brief A basic wrapper for the MiniLib queue's as Template queue
+         * @brief A basic wrapper for the MiniLib deque's as Template deque
          * 
          * @tparam T         The type of an element
          * @tparam TMAXITEMS Maximal items can queue 
          * @tparam TITEMSIZE A size of a item
          */
         template <class T, mn::size_t TMAXITEMS, mn::size_t TITEMSIZE = sizeof(T) > 
-        class basic_queue {
+        class basic_deque {
         public:
-            using queue_type = mn::queue::queue_t;
+            using deque_type = mn::queue::deque_t;
             using value_type = T;
             using pointer = T*;
             using reference = T&;
             using const_reference = const T&;
-            using self_type = basic_queue<T, TMAXITEMS, TITEMSIZE>;
-            using iterator = basic_queue_iterator<T, queue_type>;
+            using self_type = basic_deque<T, TMAXITEMS, TITEMSIZE>;
+            using iterator = basic_deque_iterator<T, deque_type>;
             using const_iterator = const iterator;
             using size_type = mn::size_t;
 
             /**
              * @brief Construct a new basic queue object
              */
-            basic_queue() : m_queue(TMAXITEMS, TITEMSIZE) { m_queue.create(); }
+            basic_deque() : m_deque(TMAXITEMS, TITEMSIZE) { m_deque.create(); }
 
-            basic_queue(const self_type& other) 
+            basic_deque(const self_type& other) 
                 : m_deque(other.m_deque), m_pEnd(other.m_pEnd), m_pFront(other.m_pFront) { }
-
+                
             /**
              * @brief Destroy the basic queue object
              */
-            ~basic_queue() { m_queue.destroy(); }
+            ~basic_deque() { m_deque.destroy(); }
 
+            
             /**
              * @brief Get the begin iterator
              * @return The begin iterator 
              */
             iterator begin() {
-                return basic_queue_iterator( intern_getfront(), m_queue);
+                return basic_deque_iterator( intern_getfront(), m_deque);
             }
             /**
              * @brief Get the end iterator
              * @return The end iterator 
              */
             iterator end() {
-                return basic_queue_iterator(m_pEnd, &m_queue, true);
+                return basic_deque_iterator(m_pEnd, &m_deque, true);
             }
 
             /**
@@ -123,20 +123,20 @@ namespace mn {
              * @return The begin iterator 
              */
             const_iterator begin() const {
-                return basic_queue_iterator( intern_getfront(), m_queue);
+                return basic_deque_iterator( intern_getfront(), m_deque);
             }
             /**
              * @brief Get the end iterator
              * @return The end iterator 
              */
             const_iterator end() const {
-                return basic_queue_iterator(m_pEnd, &m_queue, true);
+                return basic_deque_iterator(m_pEnd, &m_deque, true);
             }
             const_reference front() const  { 
-                assert(!empty()); return *intern_getfront(); }
+                assert(!empty()); return *m_pFront; }
 
             reference front() { 
-                assert(!empty()); return *intern_getfront(); }
+                assert(!empty()); return *m_pFront; }
 
             const_reference back() const {
                  assert(!empty()); return *m_pEnd; }
@@ -145,21 +145,33 @@ namespace mn {
                 assert(!empty()); return *m_pEnd; }
 
             /**
-             * @brief Push a element to the queue
+             * @brief Push a element to the end of the queue
              * @param pElement The element 
              */
-            void push(reference _Element) {
-                if( m_queue.enqueue(&_Element) == ERR_QUEUE_OK) {
+            void push_back(reference _Element) {
+                if( m_deque.enqueue(&_Element) == ERR_QUEUE_OK) {
                     m_pEnd = &_Element;
+                }
+                intern_getfront();
+            }
+            /**
+             * @brief Push a element to the front of the queue
+             * @param pElement The element 
+             */
+            void push_front(reference _Element) {
+                if( m_deque.enqueue_front(&_Element) == ERR_QUEUE_OK) {
+                    m_pFront = &_Element;
                 }
             }
             /**
              * @brief Pop the oldest entry from the queue.
              * @return The oldest entry from the queue  
              */
-            inline pointer pop() { 
+            inline pointer pop_front() { 
                 pointer tmp = NULL;
-                m_queue.dequeue(tmp);
+                m_deque.dequeue(tmp);
+                
+                intern_getfront();
 
                 return tmp;
             }
@@ -167,7 +179,7 @@ namespace mn {
              * @brief Clear the queue
              */
             inline void clear() {
-                m_queue.clear();
+                m_deque.clear();
             }
             /**
              * @brief Check, if queue is empty.
@@ -175,7 +187,7 @@ namespace mn {
              * @return true The queue is empty and false when not
              */
             inline const bool empty() const {
-                return m_queue.is_empty();
+                return m_deque.is_empty();
             }
             /**
              * @brief How many items can queue
@@ -189,7 +201,7 @@ namespace mn {
              *  @return the number of items in the queue.
              */
             inline const mn::size_t size() const {
-                return m_queue.get_num_items();
+                return m_deque.get_num_items();
             }
 
             /**
@@ -197,7 +209,7 @@ namespace mn {
              *  @return the number of remaining spaces.
              */
             inline const mn::size_t left() const {
-                return m_queue.get_left();
+                return m_deque.get_left();
             }
 
             void swap(const self_type& other) {
@@ -205,42 +217,33 @@ namespace mn {
 				other = this;
 				this = _temp;
 			}
-
+            
             self_type& operator = (const self_type& other) {
-                m_queue = other.m_queue;
+                m_deque = other.m_deque;
                 m_pEnd = other.m_pEnd;
                 m_pFront = other.m_pFront;
                 return *this;
             }
-
         private:
             T* intern_getfront() {
-                m_queue.peek(m_pFront, MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
+                m_deque.peek(m_pFront, MN_THREAD_CONFIG_TIMEOUT_QUEUE_DEFAULT);
                 return m_pFront;
             }
         private:
-            queue_type m_queue;
+            deque_type m_deque;
             pointer m_pEnd;
             pointer m_pFront;
         };
 
         template <class T, mn::size_t TMAXITEMS, mn::size_t TITEMSIZE> 
-        void swap(basic_queue<T, TMAXITEMS, TITEMSIZE>& a, 
-                  basic_queue<T, TMAXITEMS, TITEMSIZE>& b) {
+        void swap(basic_deque<T, TMAXITEMS, TITEMSIZE>& a, 
+                  basic_deque<T, TMAXITEMS, TITEMSIZE>& b) {
             a.swap(b);
         }
 
-        /**
-         * @tparam T The type of an Item to queue
-         * @tparam TMAXITEMS Maximal items can queue 
-         * @tparam TITEMSIZE A size of a item
-         */
-        template <class T, mn::size_t TMAXITEMS, mn::size_t TITEMSIZE = sizeof(T)>
-        using queue = basic_queue<T, TMAXITEMS, TITEMSIZE>;
-
+        template <class T, mn::size_t TMAXITEMS, mn::size_t TITEMSIZE = sizeof(T)> 
+        using deque = basic_deque<T, TMAXITEMS, TITEMSIZE>;
     }
 }
-
-
 
 #endif
