@@ -122,7 +122,7 @@ namespace mn {
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     void heap_sort(T* begin, T* end) {
-		heap_sort(begin, end, std::less<T>());
+		heap_sort(begin, end, mn::less<T>());
 	}
 
     MN_TEMPLATE_FULL_DECL_TWO(typename, TIter, typename, TPredicate)

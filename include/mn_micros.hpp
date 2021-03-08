@@ -90,8 +90,8 @@ namespace mn {
      * @param rhs The right operater timeval
      */ 
     static inline struct timeval operator - (const struct timeval &lhs, const struct timeval &rhs) {
-        int32_t s = lhs.tv_sec - rhs.tv_sec;		
-        int32_t ns = lhs.tv_usec - rhs.tv_usec;	
+        int s = lhs.tv_sec - rhs.tv_sec;		
+        int ns = lhs.tv_usec - rhs.tv_usec;	
         if (ns < 0) {			
             s--;				
             ns += 1000000;			
@@ -107,8 +107,8 @@ namespace mn {
      * @param rhs The right operater timeval
      */ 
     static inline struct timeval operator + (const struct timeval &lhs, const struct timeval &rhs) {
-        int32_t s = lhs.tv_sec + rhs.tv_sec;		
-        int32_t ns = lhs.tv_usec + rhs.tv_usec;	
+        int s = lhs.tv_sec + rhs.tv_sec;		
+        int ns = lhs.tv_usec + rhs.tv_usec;	
         if (ns >= 1000000) {			
             s++;				
             ns -= 1000000;			
