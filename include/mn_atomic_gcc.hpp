@@ -38,7 +38,7 @@ namespace mn {
         basic_atomic_gcc() : _m_value(0) { }
         explicit basic_atomic_gcc(value_type value) : _m_value(value) { }
     
-        basic_atomic_gcc(const self_type& self) : _m_value( self.get() ) { }
+        basic_atomic_gcc(const self_type& self) : _m_value( self._m_value ) { }
     
         value_type get() { return _m_value; }
         
@@ -54,10 +54,13 @@ namespace mn {
         value_type exchange (value_type v, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst)
             { return __atomic_exchange_n (&_m_value, v, order); }
 
-        bool compare_exchange (value_type& expected, T desired, bool b, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst)
+        bool compare_exchange_n (value_type& expected, value_type desired, bool b, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst)
             { return __atomic_compare_exchange_n (&_m_value, &expected, desired, b, order, order); }
 
-        value_type fetch_add (T v, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst )
+        bool compare_exchange(value_type& expected, value_type desired, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst) {
+            return _atomic_compare_exchange (&_m_value, &expected, &max, 0, order, order);
+        }
+        value_type fetch_add (value_type v, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst )
             { return __atomic_fetch_add (&_m_value, v, order); }
 
         value_type fetch_sub (value_type v, basic_atomic_gcc_memory_order order = basic_atomic_gcc_memory_order::SeqCst )
@@ -88,7 +91,9 @@ namespace mn {
             { return __atomic_xor_fetch (&_m_value, v, order); }
         
         void swap(self_type& other) {
-            mn::swap<value_type>(_m_value, other._m_value);
+            value_type _tmp(_m_value);
+            _m_value = other._m_value;
+            other._m_value = _tmp;
         }
         
         inline                  operator value_type (void) const	
@@ -125,7 +130,7 @@ namespace mn {
 
         basic_atomic_gcc& operator = (const basic_atomic_gcc&) = delete;
     private:
-        T _m_value;
+        value_type _m_value;
     };
 }
 
