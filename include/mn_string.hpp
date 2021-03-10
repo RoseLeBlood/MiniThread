@@ -69,7 +69,7 @@ namespace mn {
     namespace internal {
 
         template<typename E, class TAllocator, typename TStorage = strings::string_storage<E, TAllocator> >
-        inline strings::basic_string<E, TAllocator, TStorage> __flagstostring(mn::flags_t f = mn::flags_t::dec ) {
+        inline strings::basic_string<E, TAllocator, TStorage> flagstostring(mn::flags_t f = mn::flags_t::dec ) {
             if (f & flags_t::dec)
                 return strings::basic_string<E, TAllocator, TStorage>("d");
             else if (f & flags_t::hex && f & flags_t::showbase)
@@ -83,13 +83,13 @@ namespace mn {
             return strings::basic_string<E, TAllocator, TStorage>("%d");
         }
         template<class TAllocator = memory::default_allocator_t, typename TStorage = strings::string_storage<char, TAllocator> >
-        inline strings::basic_string<char, TAllocator, TStorage> __flagstostring(mn::flags_t f = mn::flags_t::dec ) {
-            return __flagstostring<char, TAllocator, TStorage>(f); 
+        inline strings::basic_string<char, TAllocator, TStorage> flagstostring(mn::flags_t f = mn::flags_t::dec ) {
+            return flagstostring<char, TAllocator, TStorage>(f); 
         }
 
         template<typename TStorage = strings::string_storage<char, memory::default_allocator_t> >
-        inline strings::basic_string<char, memory::default_allocator_t, TStorage> __flagstostring(mn::flags_t f = mn::flags_t::dec ) {
-            return __flagstostring<char, memory::default_allocator_t, TStorage>(f); 
+        inline strings::basic_string<char, memory::default_allocator_t, TStorage> flagstostring(mn::flags_t f = mn::flags_t::dec ) {
+            return flagstostring<char, memory::default_allocator_t, TStorage>(f); 
         }
 
     }
@@ -145,25 +145,25 @@ namespace mn {
     template<typename E = char, class TAllocator = memory::default_allocator_t, typename TStorage = strings::string_storage<char, TAllocator> >
     inline strings::basic_string<E, TAllocator, TStorage> to_string(const int32_t v, flags_t f = flags_t::dec  ) { 
         strings::basic_string<E, TAllocator, TStorage> fmt = 
-                internal::__flagstostring<E, TAllocator, TStorage >(f);
+                internal::flagstostring<E, TAllocator, TStorage >(f);
         return frmstring<E, TAllocator, TStorage>(fmt.c_str(), v); }
     
     template<typename E = char, class TAllocator = memory::default_allocator_t, typename TStorage = strings::string_storage<char, TAllocator> >
     inline strings::basic_string<E, TAllocator, TStorage> to_string(const int64_t v, flags_t f = flags_t::dec  ) { 
         strings::basic_string<E, TAllocator, TStorage> fmt = 
-                internal::__flagstostring<E, TAllocator, TStorage >(f);
+                internal::flagstostring<E, TAllocator, TStorage >(f);
         return frmstring<E, TAllocator, TStorage>(fmt.c_str(), v); }
     
     template<typename E = char, class TAllocator = memory::default_allocator_t, typename TStorage = strings::string_storage<char, TAllocator> >
     inline strings::basic_string<E, TAllocator, TStorage> to_string(const uint32_t v, flags_t f = flags_t::dec  ) { 
         strings::basic_string<E, TAllocator, TStorage> fmt = 
-                internal::__flagstostring<E, TAllocator, TStorage >(f);
+                internal::flagstostring<E, TAllocator, TStorage >(f);
         return frmstring<E, TAllocator, TStorage>(fmt.c_str(), v); }
     
     template<typename E = char, class TAllocator = memory::default_allocator_t, typename TStorage = strings::string_storage<char, TAllocator> >
     inline strings::basic_string<E, TAllocator, TStorage> to_string(const uint64_t v, flags_t f = flags_t::dec  ) { 
         strings::basic_string<E, TAllocator, TStorage> fmt = 
-                internal::__flagstostring<E, TAllocator, TStorage >(f);
+                internal::flagstostring<E, TAllocator, TStorage >(f);
         return frmstring<E, TAllocator, TStorage>(fmt.c_str(), v); }
     
     template<typename E = char, class TAllocator, typename TStorage>

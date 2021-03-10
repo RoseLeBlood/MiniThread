@@ -15,8 +15,8 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.  
 */
-#ifndef _d778eba9_4f4c_412d_90f7_10d7b8f99c49_H_
-#define _d778eba9_4f4c_412d_90f7_10d7b8f99c49_H_
+#ifndef _MINLIB_d778eba9_4f4c_412d_90f7_10d7b8f99c49_H_
+#define _MINLIB_d778eba9_4f4c_412d_90f7_10d7b8f99c49_H_
 
 
 #include "mn_string_storage.hpp"
@@ -145,10 +145,8 @@ namespace mn {
             int compare(const basic_string& rhs) const {
                 const size_type thisLen = length();
                 const size_type rhsLen = rhs.length();
-                if (thisLen < rhsLen)
-                        return -1;
-                if (thisLen > rhsLen)
-                        return 1;
+                if (thisLen < rhsLen) return -1;
+                if (thisLen > rhsLen) return 1;
 
                 return strcmp(c_str(), rhs.c_str(), thisLen);
             }
@@ -214,15 +212,13 @@ namespace mn {
                 size_type retIndex(basic_string::npos);
                 const E* ptr = c_str();
                 size_type currentIndex(0);
-                while (*ptr != value_type(0))
-                {
-                        if (*ptr == ch)
-                        {
-                                retIndex = currentIndex;
-                                break;
-                        }
-                        ++ptr;
-                        ++currentIndex;
+                while (*ptr != value_type(0)) {
+                    if (*ptr == ch) {
+                        retIndex = currentIndex;
+                        break;
+                    }
+                    ++ptr;
+                    ++currentIndex;
                 }
                 return retIndex;
             }
@@ -231,12 +227,11 @@ namespace mn {
                 size_type retIndex(basic_string::npos);
                 const value_type* ptr = c_str();
                 size_type currentIndex(0);
-                while (*ptr != value_type(0))
-                {
-                        if (*ptr == ch)
-                                retIndex = currentIndex;
-                        ++ptr;
-                        ++currentIndex;
+                while (*ptr != value_type(0)) {
+                    if (*ptr == ch) 
+                        retIndex = currentIndex;
+                    ++ptr;
+                    ++currentIndex;
                 }
                 return retIndex;
             }
@@ -244,17 +239,14 @@ namespace mn {
             size_type find(const value_type* needle) const {       
                 const value_type* s(c_str());    
                 size_type si(0);
-                while(*s)
-                {
+
+                while(*s) {
                     const value_type* n = needle;
-                    if( *s == *n ) //first character matches
-                    {
+                    if( *s == *n ) {//first character matches 
                         const value_type* x = s; 
                         size_type match = 0;
-                        while(*x && *n) 
-                        {
-                            if( *n == *x )
-                                ++match;
+                        while(*x && *n) {
+                            if( *n == *x ) ++match;
                             ++n;
                             ++x;
                         }
@@ -271,23 +263,20 @@ namespace mn {
                 const value_type* s(c_str() + length());
                 size_type si(length()+1); 
 
-                while(--si >= 0) 
-                {
-                        if( *s-- == *needle ) 
-                        {
-                                const value_type* x = c_str() + si; 
-                                const value_type* n = needle;
-                                size_type match = 0;
-                                while(*x && *n) 
-                                {
-                                        if( *n == *x )
-                                                ++match;
-                                        ++n;
-                                        ++x;
-                                }
-                                if( match == strlen(needle) )
-                                        return si;
+                while(--si >= 0) {
+                    if( *s-- == *needle ) {
+                        const value_type* x = c_str() + si; 
+                        const value_type* n = needle;
+                        size_type match = 0;
+
+                        while(*x && *n) {
+                            if( *n == *x ) ++match;
+                            ++n;
+                            ++x;
                         }
+                        if( match == strlen(needle) )
+                            return si;
+                    }
                 }
                 return basic_string::npos;
             }

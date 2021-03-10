@@ -29,23 +29,16 @@ namespace mn {
         using value_type = T;
         using pointer = value_type*;
         using reference = value_type&;
-        using atomic_type = typename atomic_t<bool>::value_type;
+        using lock_guard = basic_autolock<self_type> ;
 
-        atomic_spinlock() 
-            : m_locked(false), m_value(0) { }
-        
-        explicit atomic_spinlock(value_type value, atomic_type avalue = false)
-            : m_locked(avalue), m_value(value) { }
-        
+        atomic_spinlock() : m_locked(false) { }
         /**
          *  lock (take) a atomic_spinlock
          *  @param timeout Not use
          */
         virtual int lock(unsigned int not_use = 0) {
-            bool _unlcd = false;
-
-            while(! m_locked.compare_exchange(_unlcd, true, 
-                   basic_atomic_gcc_memory_order::Acquire) ) { }
+            while(! m_locked.compare_exchange_t(false, true, 
+                atomic_bool::memory_order::Acquire) ) { }
             return 0;
         }
 
@@ -59,7 +52,6 @@ namespace mn {
             m_locked.store(false, basic_atomic_gcc_memory_order::Release);
             return 0;
         }
-
         /**
          * Try to lock the atomic_spinlock
          * 
@@ -68,14 +60,12 @@ namespace mn {
          * @return true if the Lock was acquired, false when not
          */
         virtual bool try_lock() {
-            bool _unlcd = false;
-            if( m_locked.compare_exchange(_unlcd, true, basic_atomic_gcc_memory_order::Acquire) )
+            if( m_locked.compare_exchange_t(false, true, atomic_bool::memory_order::Acquire) )
                 return false;
             else
                 lock();
             return true;
         }
-
         /**
          * Is the atomic_spinlock created (initialized) ?
          * 
@@ -84,36 +74,27 @@ namespace mn {
         virtual bool is_initialized() const {
             return true;
         }
+        operator value_type() { return m_value; }
 
-        self_type& operator ++() {
-            lock(); m_value++; unlock();
+        self_type& operator = (const value_type& oValue) { 
+            lock_guard lock(*this);
+            m_value = oValue;
             return *this;
-        }
-        self_type& operator --() {
-            lock(); m_value--; unlock();
-            return *this;
-        }
-        self_type& operator -() {
-            lock(); -m_value; unlock();
-            return *this;
-        }
-        bool operator ==(self_type& other) {
-            lock(); 
-            bool _ret = false;
-            if(other.m_locked.get() != m_locked.get()) _ret = false;
-            else _ret = m_value == other.m_value;
-            unlock();
-            return _ret;
         }
 
-        bool operator !=(self_type& other) {
-            return !(*this==other);
+        bool operator == (const value_type& oValue) { 
+            lock_guard lock(*this);
+            return m_value == oValue;
+        }
+        bool operator != (const value_type& oValue) { 
+            lock_guard lock(*this);
+            return m_value != oValue;
         }
 
         atomic_spinlock(const self_type&) = delete;
         self_type& operator=(const self_type&) = delete; 
     protected:
-        atomic_t<bool> m_locked;
+        atomic_bool m_locked;
         value_type m_value;
     };
 }

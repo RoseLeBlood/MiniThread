@@ -22,9 +22,12 @@
 #include "mn_config.hpp"
 
 namespace mn {
-    using size_t = decltype(sizeof(MN_THREAD_CONFIG_SIZE_TYPE));
-    using ptrdiff_t = decltype(sizeof(int));
-    using max_­align_­t = decltype(sizeof(int));
+    using size_t = MN_THREAD_CONFIG_SIZE_TYPE;
+    using ptrdiff_t = long;
+    using uptrdiff_t = unsigned long;
+    using intmax_t = int;
+    using uintmax_t = unsigned int;
+    using max_­align_­t = int;
     using nullptr_­t = decltype(nullptr);
 
     enum class byte : unsigned char { };

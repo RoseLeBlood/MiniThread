@@ -18,10 +18,6 @@
 
 #include "hash/mn_uuid.hpp"
 
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-
 #define HEXPAIR2CHAR(A, B) (mn::hex2char(A) * 16 + mn::hex2char(B))
 
 namespace mn {
@@ -40,10 +36,10 @@ namespace mn {
             bool lookingForFirstChar = true;
             unsigned nextByte = 0;
 
-            for(int i = 0; i < fromString.size(); i++) {
+            for(int i = 0; i < fromString.length(); i++) {
                 if (fromString[i] == '-') continue;
 
-                if (nextByte >= 16 || !is_visible(fromString[i])) {
+                if (nextByte >= 16 || !isprint(fromString[i])) {
                     make_it_zero();
                     break;
                 }
@@ -67,31 +63,18 @@ namespace mn {
 	        return *this != basic_uuid::Empty;
         }
         typename basic_uuid::string_type basic_uuid::to_string (string_type seperator) {
-            std::stringstream str;
+            string_type str;
 
-            str << std::hex << std::setfill('0')
-                << std::setw(2) << (int)m_uuidBytes[0]
-                << std::setw(2) << (int)m_uuidBytes[1]
-                << std::setw(2) << (int)m_uuidBytes[2]
-                << std::setw(2) << (int)m_uuidBytes[3]
-                << seperator
-                << std::setw(2) << (int)m_uuidBytes[4]
-                << std::setw(2) << (int)m_uuidBytes[5]
-                << seperator
-                << std::setw(2) << (int)m_uuidBytes[6]
-                << std::setw(2) << (int)m_uuidBytes[7]
-                << seperator
-                << std::setw(2) << (int)m_uuidBytes[8]
-                << std::setw(2) << (int)m_uuidBytes[9]
-                << seperator
-                << std::setw(2) << (int)m_uuidBytes[10]
-                << std::setw(2) << (int)m_uuidBytes[11]
-                << std::setw(2) << (int)m_uuidBytes[12]
-                << std::setw(2) << (int)m_uuidBytes[13]
-                << std::setw(2) << (int)m_uuidBytes[14]
-                << std::setw(2) << (int)m_uuidBytes[15];
-            
-	        return mn::string(str.str().c_str());
+            str <<  frmstring("%X%X%X%X", m_uuidBytes[0], m_uuidBytes[1], 
+                                          m_uuidBytes[2], m_uuidBytes[3]);
+
+            str << seperator << frmstring("%X%X", m_uuidBytes[4], m_uuidBytes[5]);
+            str << seperator << frmstring("%X%X", m_uuidBytes[6], m_uuidBytes[7]);
+            str << seperator << frmstring("%X%X", m_uuidBytes[8], m_uuidBytes[9]);
+            str << seperator << frmstring("%X%X%X%X%X%X", m_uuidBytes[10], m_uuidBytes[11], 
+                                                          m_uuidBytes[12], m_uuidBytes[13],
+                                                          m_uuidBytes[14], m_uuidBytes[15]);
+	        return str;
         }
         void basic_uuid::make_it_zero() {
             m_uuidBytes = array_type({0});

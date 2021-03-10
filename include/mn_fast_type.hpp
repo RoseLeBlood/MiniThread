@@ -20,7 +20,7 @@
 
 #include "mn_config.hpp"
 #include <stdint.h>
-#include <stddef.h>
+#include "mn_def.hpp"
 
 #include "mn_uint128.hpp"
 #include "mn_algorithm.hpp"
