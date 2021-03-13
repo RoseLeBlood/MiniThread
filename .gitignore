@@ -42,8 +42,12 @@ test-ccc/
 test-ccc/*
 
 Makefile
+release/*
+make.log
 
 # For build test
 CMakeLists.txt
 platformio.ini
 sdkconfig
+
+

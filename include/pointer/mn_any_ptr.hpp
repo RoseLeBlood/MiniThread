@@ -104,7 +104,7 @@ namespace mn {
              * @return true The pointer hold a null pointer
              * @return false The pointer is set
              */
-            const bool is_null()     { return (m_pObject == 0); }
+            bool is_null()     { return (m_pObject == 0); }
 
         private:
             const_pointer m_pObject;
