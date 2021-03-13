@@ -19,12 +19,13 @@
 #define MINLIB_de6432e5_32f4_4ce2_bec3_0a8f4e20a0f4_H_
 
 #include <stddef.h>
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
 
         template <typename T>
-        class basic_any_ptr {   
+        class basic_any_ptr : pointer_ptr<T> {   
         public:
             using size_type = size_t;
             using pointer = T*;
@@ -99,17 +100,11 @@ namespace mn {
             operator const U*()             { return static_cast<U*>( m_pObject ); }
 
             /**
-             * @brief Implicit cast to const object pointer
-             */
-            template <class U>
-            operator const U *const() const { return static_cast<const U *const>( m_pObject ); }
-
-            /**
              * @brief Is the pointer null
              * @return true The pointer hold a null pointer
              * @return false The pointer is set
              */
-            const bool is_null() const     { return (m_pObject == 0); }
+            const bool is_null()     { return (m_pObject == 0); }
 
         private:
             const_pointer m_pObject;

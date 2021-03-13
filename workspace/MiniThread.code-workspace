@@ -95,7 +95,8 @@
 			"stop_token": "cpp",
 			"shared_mutex": "cpp",
 			"span": "cpp",
-			"cassert": "cpp"
+			"cassert": "cpp",
+			"*.inc": "cpp"
 		}
 	}
 }

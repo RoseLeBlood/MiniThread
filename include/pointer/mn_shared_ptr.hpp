@@ -18,74 +18,66 @@
 #ifndef _MINLIB_831159bd_3f35_4a00_8d46_f3fd737a5797_H_
 #define _MINLIB_831159bd_3f35_4a00_8d46_f3fd737a5797_H_
 
-
-#include "../mn_atomic.hpp"
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
 
-        template < typename T > 
-        class basic_shared_ptr {
+        template < typename T, typename TRefType = atomic_size_t > 
+        class basic_shared_ptr  : pointer_ptr<T>  {
+            using base_type = pointer_ptr<T>;
         public:
-            using value_type = T;
-            using ref_type = T&;
-            using const_value_type = const value_type;
-            using pointer = value_type*;
-            using self_type = basic_shared_ptr<T>;
-            using atomic_type = long;
+            using value_type = typename base_type::value_type;
+            using ref_type = typename base_type::ref_type;
+            using const_value_type = typename base_type::const_value_type;
+            using pointer = typename base_type::pointer;
+            using reference_type = TRefType;
+
+            using self_type = basic_shared_ptr<value_type, reference_type>;
             
-            explicit basic_shared_ptr(pointer ptr ) : _m_ptr(ptr), _m_ref(1)  { }
+            using base_type::__ptr;
+            using base_type::operator bool;
+            using base_type::operator*;
+            using base_type::operator->;
+            using base_type::get;
+
+            explicit basic_shared_ptr(pointer ptr ) 
+                : base_type(ptr), _m_ref(1)  { }
             
             basic_shared_ptr(const self_type& sp) {
                 assert( (++_m_ref != 0) );
-                _m_ptr = sp._m_ptr;
+                __ptr = sp.__ptr;
             }
 
             ~basic_shared_ptr() { 
-                if (--_m_ref == 0) delete _m_ptr;
+                if (--_m_ref == 0) delete __ptr;
             }
 
             pointer release() {
                 pointer __px = this->get();
-                if (--_m_ref == 0) delete _m_ptr;
+                if (--_m_ref == 0) delete __ptr;
 
                 return __px;
             }
             void reset( pointer pValue = 0) 
                 { self_type(pValue).swap(*this); }
-           
-            pointer get() const { 
-		        return static_cast<T*>(_m_ptr);
-	        }
 
-            atomic_type ref() {
-                return _m_ref.get();
+            reference_type ref() {
+                return _m_ref;
             }
             void swap(self_type& b) {
-                mn::swap<value_type*>(_m_ptr, b._m_ptr);
-                mn::swap<atomic_t<atomic_type> >(_m_ref, b._m_ref);
+                mn::swap<pointer>(__ptr, b.__ptr);
+                mn::swap<reference_type >(_m_ref, b._m_ref);
             }
 
             self_type& operator = (self_type& sp) {
                 release();                
-                _m_ptr = sp._m_ptr;
+                __ptr = sp.__ptr;
                 _m_ref = sp._m_ref;
                 return *this;
-            }
-            pointer operator->() const {
-                assert(get() != 0);
-                return this->get();
-            }
-            const_value_type& operator*() {
-                assert(get() != 0);
-                return *this->get();
-            }
-            operator bool() {
-                return _m_ptr != 0;
-            }
+            }  
         private:
-            pointer  _m_ptr;
-            atomic_t<atomic_type> _m_ref;
+            reference_type _m_ref;
         };
     }
 }

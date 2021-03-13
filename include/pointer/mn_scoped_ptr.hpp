@@ -20,13 +20,13 @@
 #define _MINLIB_c5301b07_8f99_414e_83fd_742896aab4d6_H_
 
 #include "../mn_algorithm.hpp"
-
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
 
         template <typename T>
-        class basic_scoped_ptr {
+        class basic_scoped_ptr  : pointer_ptr<T>  {
         public:
             using value_type = T;
             using pointer = value_type*;

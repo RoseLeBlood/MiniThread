@@ -18,7 +18,10 @@
 #ifndef _MINLIB_ILOCK_INTERFACE_H_
 #define _MINLIB_ILOCK_INTERFACE_H_
 
+#include "freertos/FreeRTOS.h"
+
 #include <time.h>
+#include "mn_error.hpp"
 #include "mn_micros.hpp"
 
 namespace mn {

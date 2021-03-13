@@ -19,12 +19,13 @@
 #define MINLIB_aff55cd7_915b_4f3d_82b9_124e264a3df5_H_
 
 #include <container/mn_node.hpp>
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
 
         template <typename T, class TAllocator>
-        class node_ptr {
+        class node_ptr  : pointer_ptr<T>  {
         public:
             using self_type = node_ptr<T, TAllocator>;
             using value_type = T;

@@ -25,7 +25,6 @@
 #include "mn_config.hpp"
 #include "mn_autolock.hpp"
 #include "mn_allocator.hpp"
-#include "mn_array.hpp"
 
 
 namespace mn {

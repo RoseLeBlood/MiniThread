@@ -19,8 +19,8 @@
 #define _MINLIB_b780618e_dce7_4154_a2e0_bcb2b286318d_H_
 
 #include "../mn_algorithm.hpp"
-#include "../container/mn_array.hpp"
-#include "../mn_string.hpp"
+#include <array>
+#include <string>
 
 namespace mn {
     namespace hash {
@@ -36,8 +36,8 @@ namespace mn {
              */
             static const basic_uuid Empty;
         public:
-            using array_type = mn::container::array<uint8_t, 16>;
-            using string_type = mn::string;
+            using array_type = std::array<uint8_t, 16>;
+            using string_type = std::string;
 
             explicit basic_uuid(string_type fromString);
             explicit basic_uuid(array_type &bytes);
@@ -82,11 +82,6 @@ namespace mn {
                 m_uuidBytes = other.m_uuidBytes;
                 return *this;
             }
-            string_type to_string (string_type seperator = "-");
-
-            operator string_type() { 
-                return to_string(); 
-            }
         private:
             /**
              * @brief Create a null GUID/UUID
@@ -100,8 +95,7 @@ namespace mn {
         /**
          * @brief Template specialization for mn::swap<basic_uuid>() 
          */ 
-        template<>
-        void swap(basic_uuid &a, basic_uuid  &b) {
+        inline void swap(basic_uuid &a, basic_uuid  &b) {
             a.swap(b);
         }
 

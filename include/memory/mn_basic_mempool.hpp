@@ -30,8 +30,8 @@
 #include "mn_basic_mempool_chunk.hpp"
 
 #define _MEMPOOL_CLASS_LOCK(Mutex, xTicksRemaining) if(Mutex.lock(xTicksRemaining) != NO_ERROR) break;
-#define _MEMPOOL_CLASS_UNLOCK(Mutex) Mutex.unlock();
-#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) Mutex.unlock(); break;
+#define _MEMPOOL_CLASS_UNLOCK(Mutex) { Mutex.unlock(); }
+#define _MEMPOOL_CLASS_UNLOCK_BREAK(Mutex) { Mutex.unlock(); break; }
 
 
 namespace mn {
@@ -75,11 +75,11 @@ namespace mn {
 
                 int _retError = ERR_MEMPOOL_OK;
             
-                for(int i = 0; i < sSizeOf; i++) {
+                for(int i = 0; i < nElements; i++) {
                     m_vChunks.push_back(new chunk_type() );
                 }
             
-                return m_vChunks.size() == sSizeOf ? _retError : ERR_MEMPOOL_CREATE;
+                return m_vChunks.size() == nElements ? _retError : ERR_MEMPOOL_CREATE;
             }
 
             virtual bool add_memory(unsigned int elements) {
@@ -87,7 +87,7 @@ namespace mn {
 
                 size_t _oldEle = m_vChunks.size();
 
-                for(int i = 0; i < sSizeOf; i++) {
+                for(int i = 0; i < elements; i++) {
                     m_vChunks.push_back(new chunk_type() );
                 }
 
@@ -122,8 +122,9 @@ namespace mn {
                         else 
                             buffer = static_cast<pointer>( entry->construct(false, 0 ) );
 
-                        if(buffer != NULL) 
+                        if(buffer != nullptr) {
                             _MEMPOOL_CLASS_UNLOCK_BREAK(m_mutex);
+                        }
 
                     }
                     if (xTicksToWait != portMAX_DELAY) {

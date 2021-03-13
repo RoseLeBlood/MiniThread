@@ -18,6 +18,8 @@
 #ifndef _MINLIB_2ff65886_2d7d_47f2_a507_67ea8a480dfd_H_
 #define _MINLIB_2ff65886_2d7d_47f2_a507_67ea8a480dfd_H_
 
+#include "freertos/FreeRTOS.h"
+
 namespace mn {
     namespace memory {
         /**
@@ -43,12 +45,14 @@ namespace mn {
         public:
             union {
                 struct {
+                    void* theBuffer;
                     char theMagicGuard[2];              /*!< The magic guard bytes for detect heap memory corruption */
                     vmempool_chunk_state state;          /*!< The state for a memory chunk */
-                    void* theBuffer;
+                    
                 };
                 void* theRealBuffer;
-            }
+            };
+
             vmempool_chunk() 
                 : theBuffer(0), 
                   theMagicGuard { MN_THREAD_CONFIG_MEMPOOL_MAGIC_START,  MN_THREAD_CONFIG_MEMPOOL_MAGIC_END},
@@ -85,14 +89,14 @@ namespace mn {
                     set_owner( taskID );
                     set_free( (oFreedSelf) ? VMEM_CHUNK_OWNER_FREE : VMEM_CHUNK_ALL_FREE );
 
-                    _retBuffer = entry->TheValue;
+                    _retBuffer = theBuffer;
                 }
                 return _retBuffer;
             }
             bool deconstruct(void* buffer, int taskID, bool& wasCorrubted) {
                 if(m_cfree == VMEM_CHUNK_OWNER_FREE && m_ownerTask != taskID) return false;
 
-                if(buffer == entry->TheValue) {
+                if(buffer == theBuffer) {
                     wasCorrubted = is_corupted();
 
                     theMagicGuard[0] = MN_THREAD_CONFIG_MEMPOOL_MAGIC_START;
@@ -118,7 +122,7 @@ namespace mn {
 
             bool is_corupted() {
                 return !(theMagicGuard[0] == MN_THREAD_CONFIG_MEMPOOL_MAGIC_START &&
-                         theMagicGuard[1] == MN_THREAD_CONFIG_MEMPOOL_MAGIC_END)
+                         theMagicGuard[1] == MN_THREAD_CONFIG_MEMPOOL_MAGIC_END);
             }
 
             vmempool_chunk(const vmempool_chunk& other) = delete;
@@ -130,9 +134,9 @@ namespace mn {
                 std::cout << "addreoss of chunk @" << chunk 
                     << " with size of: " << sizeof(chunk[0]) <<  std::endl;
                 std::cout << "address of theBuffer @ " << chunk->theBuffer
-                    << " with size of: " << sizeof(chunk->theBuffer[0]) <<  std::endl;
+                    << " with size of: " << sizeof(chunk->theBuffer) <<  std::endl;
                 std::cout << "address of realBuffer@ " << chunk->theRealBuffer 
-                    << " with size of: " << sizeof(chunk->theRealBuffer[0]) <<  std::endl;
+                    << " with size of: " << sizeof(chunk->theRealBuffer) <<  std::endl;
                 
             
                 std::cout << "magic start: " << (int)chunk->theMagicGuard[0] << std::endl;

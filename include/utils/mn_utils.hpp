@@ -23,6 +23,7 @@
 #include "../mn_defines.hpp"
 #include "../mn_def.hpp"
 
+#include <string.h>
 
 namespace mn {
     namespace internal {

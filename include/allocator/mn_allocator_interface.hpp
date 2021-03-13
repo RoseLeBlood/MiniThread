@@ -62,7 +62,7 @@ namespace mn {
             virtual void free(void* mem, unsigned int xTime) = 0;
 
 
-            virtual void* alloc(size_t n, size_t alignment) { 
+            virtual void* alloc_alignment(size_t n, size_t alignment) { 
                 void* buf = NULL; 
             
                 if((alignment <= (sizeof(char*)*2) ) ) {
@@ -79,7 +79,7 @@ namespace mn {
              * @brief Get the limit of bytes to use
              * @return The limit of bytes to use, when 0 then use no limit 
              */
-            const size_t limit() const { return m_szeMaxSize; }
+            size_t limit()  { return m_szeMaxSize; }
             /**
              * @brief Have the allocator a limit?
              * 
@@ -116,8 +116,8 @@ namespace mn {
             void add_allocatedsize  (size_t size) { m_szeAllocted += size;}
             void rm_allocatedsize  (size_t size)  { m_szeAllocted -= size;}
         protected:
-            size_t m_szeAllocted;
             size_t m_szeMaxSize;
+            size_t m_szeAllocted;
         };
     }
 }

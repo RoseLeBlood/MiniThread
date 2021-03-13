@@ -18,11 +18,13 @@
 #ifndef _MINILIB_7bee8ff5_abe8_4176_bc96_f42b0e71632b_H_
 #define _MINILIB_7bee8ff5_abe8_4176_bc96_f42b0e71632b_H_
 
+#include "mn_base_ptr.hpp"
+
 namespace mn {
     namespace pointer {
 
         template <typename T>
-        class basic_save_ptr {
+        class basic_save_ptr  : pointer_ptr<T>  {
         public:
             using value_type = T;
             using pointer = T*;

@@ -18,6 +18,8 @@
 #ifndef MINLIB_ee040f46_b480_4f16_a0f8_c6765774ff00_H_
 #define MINLIB_ee040f46_b480_4f16_a0f8_c6765774ff00_H_
 
+#include "mn_base_ptr.hpp"
+
 namespace mn {
     namespace pointer {
 
@@ -25,7 +27,7 @@ namespace mn {
          * @brief This class allows basic_linked_ptr<T> and basic_linked_ptr<U> to
          *  share the same base nodes.
          */
-        struct basic_linked_ptr_node {
+        struct basic_linked_ptr_node  {
             mutable basic_linked_ptr_node* Prev;
 		    mutable basic_linked_ptr_node* Next;
         };
@@ -38,7 +40,7 @@ namespace mn {
          * @note Is not thread-safe.
          */
         template <typename T >
-	    class basic_linked_ptr : public basic_linked_ptr_node {
+	    class basic_linked_ptr : public basic_linked_ptr_node,  pointer_ptr<T> {
             template <typename U> friend class basic_linked_ptr;
         public:
             using self_type = basic_linked_ptr<T>;
@@ -173,10 +175,7 @@ namespace mn {
             pointer m_pValue;
         };
 
-        * get_pointer
-        * Returns basic_linked_ptr::get() via the input basic_linked_ptr. Provided for compatibility
-        * with certain well-known libraries that use this functionality.
-
+        
         /**
          * @brief Get the pointer object
          * @tparam T    The type of the value

@@ -21,6 +21,7 @@
 #include "mn_algorithm.hpp"
 #include "../mn_autolock.hpp"
 
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
@@ -31,7 +32,7 @@ namespace mn {
          * @tparam TLOCK lock class @see defalt_lock 
          */
         template <typename T, class TLOCK = LockType_t>
-        class basic_lock_ptr {
+        class basic_lock_ptr  {
         public:
             using value_type = T;
             using const_value_type = const T;

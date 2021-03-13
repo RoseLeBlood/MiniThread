@@ -66,7 +66,7 @@ namespace mn {
                 }
                 return 0;
             }
-            void free(void* ptr) { ptr = NULL; }
+            void free(void*) {  }
 
             basic_allocator_buffer(const basic_allocator_buffer&) = delete;
             basic_allocator_buffer& operator=(const basic_allocator_buffer&) = delete;
@@ -77,9 +77,9 @@ namespace mn {
              */
             virtual void set_limit(size_t) {  }
         private:
-            char            *m_buffer;
             size_t          m_bufferTop;
             size_t          m_BufferSize;
+            char            *m_buffer;
         };
     }
 }

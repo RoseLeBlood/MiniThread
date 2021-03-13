@@ -3,7 +3,7 @@
   "name":"mini-thread-esp32-framework",
   "description":"Mini Thread is a library for creating easy tasks and other useful thinks for the esp32 microcontroller",
   "url":"https://github.com/roseleblood/MiniThread",
-  "version":"2.20.0",
+  "version":"2.20.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/RoseLeBlood/MiniThread.git"

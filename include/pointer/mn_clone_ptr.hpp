@@ -20,7 +20,7 @@
 
 #include "mn_algorithm.hpp"
 #include <stdlib.h>
-
+#include "mn_base_ptr.hpp"
 
 namespace mn {
     namespace pointer {
@@ -43,7 +43,7 @@ namespace mn {
         };
 
         template<typename T, class TInterface = clone_ptr_interface<T> >
-        class basic_clone_ptr : public TInterface
+        class basic_clone_ptr : public TInterface,  pointer_ptr<T> 
         {
         public:
             using value_type = T;

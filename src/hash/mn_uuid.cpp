@@ -22,8 +22,6 @@
 
 namespace mn {
     namespace hash {
-        const basic_uuid basic_uuid::Empty = basic_uuid({0});
-
         basic_uuid::basic_uuid(array_type &bytes) 
             : m_uuidBytes(bytes) { }
 
@@ -61,20 +59,6 @@ namespace mn {
 
         bool basic_uuid::is_valid() {
 	        return *this != basic_uuid::Empty;
-        }
-        typename basic_uuid::string_type basic_uuid::to_string (string_type seperator) {
-            string_type str;
-
-            str <<  frmstring("%X%X%X%X", m_uuidBytes[0], m_uuidBytes[1], 
-                                          m_uuidBytes[2], m_uuidBytes[3]);
-
-            str << seperator << frmstring("%X%X", m_uuidBytes[4], m_uuidBytes[5]);
-            str << seperator << frmstring("%X%X", m_uuidBytes[6], m_uuidBytes[7]);
-            str << seperator << frmstring("%X%X", m_uuidBytes[8], m_uuidBytes[9]);
-            str << seperator << frmstring("%X%X%X%X%X%X", m_uuidBytes[10], m_uuidBytes[11], 
-                                                          m_uuidBytes[12], m_uuidBytes[13],
-                                                          m_uuidBytes[14], m_uuidBytes[15]);
-	        return str;
         }
         void basic_uuid::make_it_zero() {
             m_uuidBytes = array_type({0});

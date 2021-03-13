@@ -22,69 +22,70 @@
 #include "mn_config.hpp"
 
 namespace mn {
+    using max_align_t = int;
+    using nullptr_t = decltype(nullptr);
+
     using size_t = MN_THREAD_CONFIG_SIZE_TYPE;
     using ptrdiff_t = long;
     using uptrdiff_t = unsigned long;
     using intmax_t = int;
     using uintmax_t = unsigned int;
-    using max_­align_­t = int;
-    using nullptr_­t = decltype(nullptr);
 
     enum class byte : unsigned char { };
  
     
     template<typename IntegerType>
-    constexpr byte& operator <<= (byte& b, IntegerType shift) { 
+    inline byte& operator <<= (byte& b, IntegerType shift) { 
         return b = byte(static_cast<unsigned char>(b) << shift); 
     }
 
     template<typename IntegerType>
-    constexpr byte& operator << (byte& b, IntegerType shift) { 
+    inline byte& operator << (byte& b, IntegerType shift) { 
         return b = byte(static_cast<unsigned char>(b) << shift); 
     }
 
     template<typename IntegerType>
-    constexpr byte& operator >>= (byte& b, IntegerType shift) { 
+    inline byte& operator >>= (byte& b, IntegerType shift) { 
         return b = byte(static_cast<unsigned char>(b) >> shift); 
     }
 
     template<typename IntegerType>
-    constexpr byte& operator >> (byte& b, IntegerType shift) { 
+    inline byte& operator >> (byte& b, IntegerType shift) { 
         return b = byte(static_cast<unsigned char>(b) >> shift); 
     }
 
 
    
-    constexpr byte& operator |= (byte& lhr, byte rhr)  {
+    inline byte& operator |= (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) | static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte& operator | (byte& lhr, byte rhr)  {
+    inline byte& operator | (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) | static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte& operator &= (byte& lhr, byte rhr)  {
+    inline byte& operator &= (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) & static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte& operator & (byte& lhr, byte rhr)  {
+    inline byte& operator & (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) & static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte& operator ^= (byte& lhr, byte rhr)  {
+    inline byte& operator ^= (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) ^ static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte& operator ^ (byte& lhr, byte rhr)  {
+    inline byte& operator ^ (byte& lhr, byte rhr)  {
         return lhr = byte(static_cast<unsigned char>(lhr) ^ static_cast<unsigned char>(rhr));
     }
 
-    constexpr byte operator ~ (byte b) { 
+    inline byte operator ~ (byte b) { 
         return byte(~static_cast<unsigned char>(b)); 
     }
     
     template<typename IntegerType>
-    constexpr IntegerType to_integer(byte b) { 
+    inline IntegerType to_integer(byte b) { 
         return IntegerType(b); 
     }
 }

@@ -12,7 +12,7 @@
 + add any_ptr - a pointer to hold a const any-variant type
 + add at mn::cointainer a Template queue with iterator-support
 + add new algorythmen and mn::functinal support
-+ 
++ make atomic ready
   
 ## Version 2.10 Februar 2021
 + add pointer suppert - weak, shared, clone_ptr, and other
