@@ -1,7 +1,5 @@
 #!/bin/sh
-
 prefix=/opt
-version=2.20.6
 
 for arg in "$@"; do
     case "$arg" in
@@ -24,8 +22,13 @@ for arg in "$@"; do
     esac
 done
 
+jsondata=$(cat library.json)
+LIB_VERSION=$(echo "$jsondata"|grep -w \"version\" |tail -1 | cut -d\" -f4)
+
 echo 'generating makefile ...'
 echo "PREFIX = $prefix" > Makefile
-echo "VERSION = $version" >> Makefile
+echo "PREFIX = $prefix" 
+echo "VERSION = $LIB_VERSION" >> Makefile
+echo "VERSION = $LIB_VERSION"
 cat Makefile.in >> Makefile
 echo 'configuration complete, type make to build.'

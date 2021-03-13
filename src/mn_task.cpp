@@ -24,7 +24,17 @@
 
 #include "mn_task_list.hpp"
 
+
+
 namespace mn {
+  namespace internal {
+    int32_t __id_rnioeu = 0;
+
+    inline int32_t get_new_id() {
+      __id_rnioeu++;
+      return __id_rnioeu;
+    }
+  }
   //-----------------------------------
   //  construtor
   //-----------------------------------
@@ -130,7 +140,7 @@ namespace mn {
 
     m_runningMutex.lock();
 
-    m_iID = uxTaskGetTaskNumber(m_pHandle); //get_new_id();
+    m_iID = internal::get_new_id();
     on_start();
     m_continuemutex.unlock();
     m_runningMutex.unlock();
@@ -315,7 +325,7 @@ namespace mn {
     basic_task* _task = new basic_task();
 
     _task->m_runningMutex.lock();
-    _task->m_iID = uxTaskGetTaskNumber(_pHandle);
+    _task->m_iID = -1;
     _task->m_pHandle = _pHandle;
     _task->m_runningMutex.unlock();
 

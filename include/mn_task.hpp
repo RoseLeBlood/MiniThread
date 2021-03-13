@@ -87,7 +87,7 @@ namespace mn {
     /**
      * @brief Task priority 
      */
-    enum priority {
+    enum  priority {
       PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
       PriorityLow = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,             /*!< Priority for low operation  */
       PriorityNormal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,         /*!< Priority for tasks for normal operatins - user interfaces for example */
