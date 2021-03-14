@@ -79,59 +79,59 @@ namespace mn {
         value_type get() { return __tValue; }
 
         void store (value_type v, memory_order order = memory_order::SeqCst)
-            { __atomic_store_n (&__tValue, v, order); }
+            { __atomic_store_n (&__tValue, v, static_cast<int>(order)); }
 
         value_type load (memory_order order = memory_order::SeqCst) const
-            { return __atomic_load_n (&__tValue, order); }
+            { return __atomic_load_n (&__tValue, static_cast<int>(order)); }
 
         value_type exchange (value_type v, memory_order order = memory_order::SeqCst)
-            { return __atomic_exchange_n (&__tValue, v, order); }
+            { return __atomic_exchange_n (&__tValue, v, static_cast<int>(order)); }
 
         bool compare_exchange_n (value_type& expected, value_type& desired, bool b, memory_order order = memory_order::SeqCst)
-            { return __atomic_compare_exchange_n (&__tValue, &expected, desired, b, order, order); }
+            { return __atomic_compare_exchange_n (&__tValue, &expected, desired, b, order, static_cast<int>(order)); }
 
         bool compare_exchange_t (value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return compare_exchange_n (&expected, desired, true, order); }
+            { return compare_exchange_n (&expected, desired, true, static_cast<int>(order)); }
 
         bool compare_exchange_f (value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return compare_exchange_n (&expected, desired, false, order); }
+            { return compare_exchange_n (&expected, desired, false, static_cast<int>(order)); }
 
 
         bool compare_exchange_strong(value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 0, order, order); }
+            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 0, order, static_cast<int>(order)); }
 
         bool compare_exchange_weak(value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 1, order, order); }
+            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 1, order, static_cast<int>(order)); }
 
         value_type fetch_add (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_fetch_add (&__tValue, v, order); }
+            { return __atomic_fetch_add (&__tValue, v, static_cast<int>(order)); }
 
         value_type fetch_sub (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_fetch_sub (&__tValue, v, order); }
+            { return __atomic_fetch_sub (&__tValue, v, static_cast<int>(order)); }
 
         value_type fetch_and (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_fetch_and (&__tValue, v, order); }
+            { return __atomic_fetch_and (&__tValue, v, static_cast<int>(order)); }
 
         value_type fetch_or (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_fetch_or (&__tValue, v, order); }
+            { return __atomic_fetch_or (&__tValue, v, static_cast<int>(order)); }
 
         value_type fetch_xor (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_fetch_xor (&__tValue, v, order); }
+            { return __atomic_fetch_xor (&__tValue, v, static_cast<int>(order)); }
 
         value_type add_fetch (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_add_fetch (&__tValue, v, order); }
+            { return __atomic_add_fetch (&__tValue, v, static_cast<int>(order)); }
 
         value_type sub_fetch (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_sub_fetch (&__tValue, v, order); }
+            { return __atomic_sub_fetch (&__tValue, v, static_cast<int>(order)); }
 
         value_type and_fetch (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_and_fetch (&__tValue, v, order); }
+            { return __atomic_and_fetch (&__tValue, v, static_cast<int>(order)); }
 
         value_type or_fetch (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_or_fetch (&__tValue, v, order); }
+            { return __atomic_or_fetch (&__tValue, v, static_cast<int>(order)); }
 
         value_type xor_fetch (value_type v, memory_order order = memory_order::SeqCst )
-            { return __atomic_xor_fetch (&__tValue, v, order); }
+            { return __atomic_xor_fetch (&__tValue, v, static_cast<int>(order)); }
 
         bool is_lock_free() const
             { return __atomic_is_lock_free (sizeof(value_type), &__tValue); }

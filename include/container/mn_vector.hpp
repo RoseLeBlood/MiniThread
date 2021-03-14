@@ -144,23 +144,23 @@ namespace mn {
             iterator begin()                        { return m_begin; }
             const_iterator cbegin() const           { return m_begin; }
             iterator end()                          { return m_end; }
-            const_iterator cend() const             { return m_end; }
+            const_iterator cend()  const            { return m_end; }
 
             size_type size() const                  { return size_type(m_end - m_begin); }
             bool empty() const                      { return m_begin == m_end; }
 
-            size_type capacity() const              { return size_type(m_capacityEnd - m_begin); }
+            size_type capacity()                    { return size_type(m_capacityEnd - m_begin); }
 
             pointer data()                          { return empty() ? 0 : m_begin; }
-            const pointer data() const              { return empty() ? 0 : m_begin; }
+            const pointer cdata()                   { return empty() ? 0 : m_begin; }
 
             reference front()                       { assert(!empty()); return *begin(); }
-            const reference cfront() const          { assert(!empty());  return *begin(); }
+            const reference cfront()                { assert(!empty());  return *begin(); }
             reference back()                        { assert(!empty()); return *(end() - 1);  }
-            const reference cback() const           { assert(!empty()); return *(end() - 1); }
+            const reference cback()                 { assert(!empty()); return *(end() - 1); }
 
-            reference at(size_type i)               { assert(i < size()); return m_begin[i]; }
-            const reference at(size_type i) const   { assert(i < size()); return m_begin[i]; }
+            reference at(size_type i)                { assert(i < size()); return m_begin[i]; }
+            const reference const_at(size_type i)    { assert(i < size()); return m_begin[i]; }
             
             void push_back(const reference v) {
                 if (m_end >= m_capacityEnd) grow(); 

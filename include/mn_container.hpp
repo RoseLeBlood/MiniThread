@@ -20,10 +20,10 @@
 
 #include "container/mn_node.hpp"
 #include "container/mn_pair.hpp"
-
 #include "container/mn_list.hpp"
-#include "container/mn_array.hpp"
-#include "container/mn_fixed_array.hpp"
+#include "container/mn_vector.hpp"
+#include "container/mn_queue.hpp"
+
 
 #include "container/mn_rb_tree.hpp"
 

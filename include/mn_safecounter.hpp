@@ -94,3 +94,5 @@ namespace mn {
      */
     using safe_counter_t = basic_safe_counter<uint64_t, LockType_t>;
 }
+
+#endif

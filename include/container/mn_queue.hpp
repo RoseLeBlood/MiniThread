@@ -53,7 +53,7 @@ namespace mn {
             pointer operator->() const  { return m_pValue; }
 
             self_type& operator++()     { 
-                if(m_bIsEnd) return *this; _pQueue.dequeue(m_pValue); return *this; }
+                if(!m_bIsEnd) { m_pQueue.dequeue(m_pValue); } return *this; }
 
             self_type operator++(int)   { 
                 self_type copy(*this); ++(*this); return copy; }
@@ -96,7 +96,7 @@ namespace mn {
             basic_queue() : m_queue(TMAXITEMS, TITEMSIZE) { m_queue.create(); }
 
             basic_queue(const self_type& other) 
-                : m_deque(other.m_deque), m_pEnd(other.m_pEnd), m_pFront(other.m_pFront) { }
+                : m_queue(other.m_queue), m_pEnd(other.m_pEnd), m_pFront(other.m_pFront) { }
 
             /**
              * @brief Destroy the basic queue object
@@ -108,14 +108,14 @@ namespace mn {
              * @return The begin iterator 
              */
             iterator begin() {
-                return basic_queue_iterator( intern_getfront(), m_queue);
+                return iterator( intern_getfront(), m_queue);
             }
             /**
              * @brief Get the end iterator
              * @return The end iterator 
              */
             iterator end() {
-                return basic_queue_iterator(m_pEnd, &m_queue, true);
+                return iterator(m_pEnd, &m_queue, true);
             }
 
             /**
@@ -123,14 +123,14 @@ namespace mn {
              * @return The begin iterator 
              */
             const_iterator begin() const {
-                return basic_queue_iterator( intern_getfront(), m_queue);
+                return iterator( intern_getfront(), m_queue);
             }
             /**
              * @brief Get the end iterator
              * @return The end iterator 
              */
             const_iterator end() const {
-                return basic_queue_iterator(m_pEnd, &m_queue, true);
+                return iterator(m_pEnd, &m_queue, true);
             }
             const_reference front() const  { 
                 assert(!empty()); return *intern_getfront(); }
@@ -174,21 +174,21 @@ namespace mn {
              * 
              * @return true The queue is empty and false when not
              */
-            inline const bool empty() const {
+            inline bool empty() {
                 return m_queue.is_empty();
             }
             /**
              * @brief How many items can queue
              * @return The maximal number of entries can queue
              */
-            inline const  mn::size_t length() const {
+            inline  mn::size_t length()  {
                 return TMAXITEMS;
             }
             /**
              *  How many items are currently in the queue.
              *  @return the number of items in the queue.
              */
-            inline const mn::size_t size() const {
+            inline  mn::size_t size() {
                 return m_queue.get_num_items();
             }
 
@@ -196,7 +196,7 @@ namespace mn {
              *  How many empty spaves are currently left in the queue.
              *  @return the number of remaining spaces.
              */
-            inline const mn::size_t left() const {
+            inline  mn::size_t left()  {
                 return m_queue.get_left();
             }
 
