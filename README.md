@@ -1,5 +1,5 @@
 
-# Mini Thread 2.22.3
+# Mini Thread 2.22.0
 Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++. All in the background of a more secure and consistent workflow. 
 So that your application will be smaller and more effective.
 
