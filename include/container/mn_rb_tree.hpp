@@ -2,18 +2,18 @@
 * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 * Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-* The Mini Thread Library is free software; you can redistribute it and/or modify  
-* it under the terms of the GNU Lesser General Public License as published by  
+* The Mini Thread Library is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
 * the Free Software Foundation, version 3, or (at your option) any later version.
 
-* The Mini Thread Library is distributed in the hope that it will be useful, but 
-* WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+* The Mini Thread Library is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 * General Public License for more details.
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with the Mini Thread  Library; if not, see
-* <https://www.gnu.org/licenses/>.  
+* <https://www.gnu.org/licenses/>.
 */
 #ifndef _MINILIB_4b715a5a_43d4_4442_88e5_4dcc9d8860bb_H_
 #define _MINILIB_4b715a5a_43d4_4442_88e5_4dcc9d8860bb_H_
@@ -29,7 +29,7 @@ namespace mn {
 	namespace container {
         namespace internal {
 
-            template<typename TKey> 
+            template<typename TKey>
             struct rb_tree_key_wrapper {
                 TKey    key;
                 rb_tree_key_wrapper() {}
@@ -37,18 +37,18 @@ namespace mn {
                 const TKey& get_key() const { return key; }
             };
 
-            template<typename TKey> 
+            template<typename TKey>
             struct rb_tree_traits {
                 using key_type = TKey;
                 using value_type = rb_tree_key_wrapper<TKey>;
             };
-        } 
+        }
 
         enum class rb_tree_color {
             red,
             black
         };
-        
+
         template<typename TVALUE, class TAllocator>
         struct rb_tree_node {
             MNALLOC_OBJECT(TAllocator);
@@ -60,7 +60,7 @@ namespace mn {
             rb_tree_node(rb_tree_color color_, rb_tree_node* left_, rb_tree_node* right_, rb_tree_node* parent_)
                 : left(left_), parent(parent_), right(right_), color(color_) { }
 
-            rb_tree_node(const rb_tree_node& other) 
+            rb_tree_node(const rb_tree_node& other)
                 : left(other.left), parent(other.parent), right(other.right), color(other.color) { }
 
             void swap(rb_tree_node& other) {
@@ -79,7 +79,7 @@ namespace mn {
             rb_tree_color           color;
         };
         MNALLOC_OBJECT_DTWO(rb_tree_node, typename, TVALUE, class, TAllocator );
-        
+
         template<typename TVALUE, class TAllocator>
         void swap(rb_tree_node<TVALUE, TAllocator>& a, rb_tree_node<TVALUE, TAllocator>& b) {
             a.swap(b);
@@ -219,8 +219,8 @@ namespace mn {
                 }
             }
 
-            bool empty() const { 
-                return m_size == 0; 
+            bool empty() const {
+                return m_size == 0;
             }
             size_type size() const {
                 return m_size;
@@ -264,7 +264,7 @@ namespace mn {
                 }
                 return next;
             }
-            const size_type size(const node_type* n) const {
+            size_type size(const node_type* n) {
        		    return n == &ms_sentinel ? 0 : 1 + size(n->left) + size(n->right);
             }
             void validate() {
@@ -309,7 +309,7 @@ namespace mn {
 
                 node_type* leftChild(n->left);
                 n->left = leftChild->right;
-                
+
                 if (n->left != &ms_sentinel) n->left->parent = n;
 
                 leftChild->parent = n->parent;
@@ -338,7 +338,7 @@ namespace mn {
 
 
             base_rb_tree(const base_rb_tree&) = delete;
-            base_rb_tree& operator=(const base_rb_tree&) = delete; 
+            base_rb_tree& operator=(const base_rb_tree&) = delete;
         public:
             void traverse_node(node_type* n, TravFunc func, int depth) {
                 int left(-1);
@@ -356,13 +356,13 @@ namespace mn {
             void traverse(TravFunc func) {
                 int depth(0);
                 traverse_node(m_root, func, depth);
-            } 
+            }
         protected:
             inline void rebalance(node_type* new_node) {
                 assert(new_node->color == rb_tree_color::red);
 
                 node_type* iter(new_node);
-                
+
                 while (iter->parent->color == rb_tree_color::red) {
 
                     node_type* grandparent(iter->parent->parent);
@@ -376,7 +376,7 @@ namespace mn {
                             grandparent->color = rb_tree_color::red;
                             iter = grandparent;
                         } else  {
-                            
+
                             if (iter == iter->parent->right) {
                                 iter = iter->parent;
                                 rotate_left(iter);
@@ -423,7 +423,7 @@ namespace mn {
                             sibling = iter->parent->right;
                         }
 
-                        if (sibling->left->color == rb_tree_color::black && 
+                        if (sibling->left->color == rb_tree_color::black &&
                            sibling->right->color == rb_tree_color::black) {
                             sibling->color = rb_tree_color::red;
                             iter = iter->parent;
@@ -451,7 +451,7 @@ namespace mn {
                             rotate_right(iter->parent);
                             sibling = iter->parent->left;
                         }
-                        if (sibling->left->color == rb_tree_color::black && 
+                        if (sibling->left->color == rb_tree_color::black &&
                             sibling->right->color == rb_tree_color::black) {
                             sibling->color = rb_tree_color::red;
                             iter = iter->parent;
@@ -482,11 +482,11 @@ namespace mn {
         };
 
         template<class TTreeTraits, class TAllocator>
-        typename base_rb_tree<TTreeTraits, TAllocator>::node_type 
-            base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel( 
+        typename base_rb_tree<TTreeTraits, TAllocator>::node_type
+            base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel(
                 &base_rb_tree<TTreeTraits, TAllocator>::ms_sentinel);
 
-        
+
 
         template<typename TKey, class TAllocator>
         using rb_tree = base_rb_tree<internal::rb_tree_traits<TKey>, TAllocator>;

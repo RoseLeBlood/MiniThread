@@ -17,7 +17,7 @@
 */
 
 #include "mn_eventgroup.hpp"
-
+#include "esp_log.h"
 
 namespace mn {
     //-----------------------------------

@@ -53,7 +53,7 @@ namespace mn {
           m_pHandle(NULL),
           m_pChild(NULL),
           m_pParent(NULL)
-          { m_event = new basic_event_group(); }
+          { }
   //-----------------------------------
   //  deconstrutor
   //-----------------------------------
@@ -61,7 +61,6 @@ namespace mn {
     if(m_pHandle != NULL)
       vTaskDelete(m_pHandle);
 
-	if(m_event) { delete m_event; m_event = NULL; }
   #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
     basic_task_list::instance().remove_task(this);
   #endif
@@ -153,47 +152,6 @@ namespace mn {
   #endif
 
     return ERR_TASK_OK;
-  }
-
-
-
-  //-----------------------------------
-  //  join
-  //-----------------------------------
-  void basic_task::join(unsigned int timeout) {
-    while(m_event->wait(EventJoin | EventStarted, false, true, timeout) == 0) {
-
-    }
-  }
-  //-----------------------------------
-  //  join
-  //-----------------------------------
-  void basic_task::join(const struct timeval *abs_time) {
-    struct timeval now, _time;
-    gettimeofday(&now, NULL);
-
-    _time = (*abs_time) - now;
-
-    join(time_to_ticks(&_time));
-  }
-  //-----------------------------------
-  //  wait
-  //-----------------------------------
-  void basic_task::wait(unsigned int timeout) {
-    while(m_event->wait(EventJoin | EventStarted, false, true, timeout) == 0) {
-
-    }
-  }
-  //-----------------------------------
-  //  wait
-  //-----------------------------------
-  void basic_task::wait(const struct timeval *abs_time) {
-    struct timeval now, _time;
-    gettimeofday(&now, NULL);
-
-    _time = (*abs_time) - now;
-
-    wait(time_to_ticks(&_time));
   }
   //-----------------------------------
   //  kill
@@ -356,9 +314,6 @@ namespace mn {
     autolock_t autolock(m_runningMutex);
     vTaskResume(m_pHandle);
   }
-  void basic_task::set_state(const EventBits_t uxBitsToSet) {
-	if(m_event) m_event->set(uxBitsToSet);
-  }
   //-----------------------------------
   //  runtaskstub
   //-----------------------------------
@@ -369,8 +324,6 @@ namespace mn {
     esp_task = (static_cast<basic_task*>(parm));
 
 	if(esp_task) {
-		esp_task->set_state(EventStarted);
-
 		esp_task->m_runningMutex.lock();
 		esp_task->m_bRunning = true;
 		esp_task->m_runningMutex.unlock();
@@ -388,8 +341,6 @@ namespace mn {
 
 		esp_task->m_runningMutex.unlock();
 		esp_task->m_continuemutex.unlock();
-
-		esp_task->set_state(EventJoin);
 	}
   }
 }

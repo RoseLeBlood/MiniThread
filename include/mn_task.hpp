@@ -104,11 +104,6 @@ namespace mn {
       StateSuspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
       StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
     };
-    /** The using events for wait() and join(). */
-    enum event {
-      EventStarted = 1 << 24,     /*!< Event for task started */
-      EventJoin = 1 << 25         /*!< Event for task joined */
-    };
 
   public:
     /**
@@ -165,25 +160,6 @@ namespace mn {
      */
     int                   kill();
 
-    /**
-     * join the task
-     * Wait in a other task to end this task
-     *
-     * @param timeval The maximum amount of time to wait.
-     *
-     * @note call never in this task, then wait this task to end this task
-     */
-    void                  join(const struct timeval *abs_time);
-
-    /**
-     * join the task
-     * Wait in a other task to end this task
-     *
-     * @param timeval The maximum amount of time (specified in 'ticks') to wait.
-     *
-     * @note call never in this task, then wait this task to end this task
-     */
-    void                  join(unsigned int timeout = portMAX_DELAY);
 
     /**
      * Is the Task  running?
@@ -191,17 +167,6 @@ namespace mn {
      * @return true If the task  running, false If not
      */
     bool                  is_running();
-
-    /**
-     * Wait for start the task
-     * @param timeval The maximum amount of time to wait.
-     */
-    void                  wait(unsigned int timeout);
-    /**
-     * Wait for start the task
-     * @param timeval The maximum amount of time to wait.
-     */
-    void                  wait(const struct timeval *abs_time);
 
     /**
      * Get the debug name of this task
@@ -430,7 +395,6 @@ namespace mn {
      *  specific on_task() function that interfaces with FreeRTOS.
      */
     static void runtaskstub(void* parm);
-    void set_state(const EventBits_t uxBitsToSet);
   protected:
     /**
      * Lock Objekt for task safty
@@ -480,11 +444,6 @@ namespace mn {
      */
     basic_task *m_pParent;
 
-    /**
-     * The event group for this task
-     * used or wait() and join()
-     */
-    event_group_t* m_event;
 
     #if( configSUPPORT_STATIC_ALLOCATION == 1 )
       StaticTask_t m_TaskBuffer;
