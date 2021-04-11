@@ -54,7 +54,6 @@ namespace mn {
           m_pChild(NULL),
           m_pParent(NULL)
           { m_event = new basic_event_group(); }
-
   //-----------------------------------
   //  deconstrutor
   //-----------------------------------
@@ -62,7 +61,7 @@ namespace mn {
     if(m_pHandle != NULL)
       vTaskDelete(m_pHandle);
 
-
+	if(m_event) { delete m_event; m_event = NULL; }
   #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
     basic_task_list::instance().remove_task(this);
   #endif

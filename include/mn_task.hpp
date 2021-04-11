@@ -116,7 +116,6 @@ namespace mn {
      * The priority is PriorityNormal and use 2048 for the stack size
      */
     basic_task() : basic_task(" ", PriorityNormal, 2048) { }
-
     /**
      * Constructor for this task.
      *
