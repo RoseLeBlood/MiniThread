@@ -26,9 +26,11 @@ jsondata=$(cat library.json)
 LIB_VERSION=$(echo "$jsondata"|grep -w \"version\" |tail -1 | cut -d\" -f4)
 
 echo 'generating makefile ...'
-echo "PREFIX = $prefix" > Makefile
-echo "PREFIX = $prefix" 
+echo "PREFIX  = $prefix" > Makefile
 echo "VERSION = $LIB_VERSION" >> Makefile
-echo "VERSION = $LIB_VERSION"
 cat Makefile.in >> Makefile
+
+echo "VERSION = $LIB_VERSION"
+echo "PREFIX  = $prefix" 
+echo "INSTALL = $prefix/miniThread/miniThread-$LIB_VERSION.tar.gz"
 echo 'configuration complete, type make to build.'

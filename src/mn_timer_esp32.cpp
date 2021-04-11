@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 
 
@@ -27,7 +27,7 @@
 
 namespace mn {
     namespace esp32 {
-        
+
         basic_esp32_timer::basic_esp32_timer(const char * strName, unsigned int uiPeriod, bool bIsOneShot) {
             m_bIsOneShot = bIsOneShot;
             m_uiPeriod = uiPeriod;
@@ -49,38 +49,38 @@ namespace mn {
             _timerArgs.arg = (void*) this;
             _timerArgs.callback = &runtimerstub;
             _timerArgs.name = m_strName;
-        
+
 
             if(esp_timer_create(&_timerArgs, &m_pHandle) != ESP_OK) return ERR_TIMER_CANTCREATE;
 
             m_bIsInit = true;
 
             return ERR_TIMER_OK;
-        }  
+        }
         int basic_esp32_timer::destroy(unsigned int timeout) {
             if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
 
             if(m_bIsRunning) {
-                if(esp_timer_stop(m_pHandle) != ESP_OK) 
+                if(esp_timer_stop(m_pHandle) != ESP_OK)
                     return ERR_TIMER_INAKTIVATE;
             }
-            if(esp_timer_delete(m_pHandle) != ESP_OK) 
-                return ERR_UNKN;
+            if(esp_timer_delete(m_pHandle) != ESP_OK)
+                return ERR_MNTHREAD_UNKN;
 
             return ERR_TIMER_OK; //
-        } 
+        }
         int basic_esp32_timer::active(unsigned int timeout) {
             if(!m_bIsInit) return ERR_TIMER_NOTCREATED;
             if(!m_bIsRunning) return ERR_TIMER_OK;
 
-            
+
             if(!m_bIsOneShot) {
                 if(esp_timer_start_periodic(m_pHandle, m_uiPeriod) != ESP_OK) return ERR_TIMER_AKTIVATE;
             } else {
                 if(esp_timer_start_once(m_pHandle, m_uiPeriod)  != ESP_OK)  return ERR_TIMER_AKTIVATE;
             }
             m_bIsRunning = true;
-            
+
 
             return ERR_TIMER_OK;
         }
@@ -123,7 +123,7 @@ namespace mn {
                 timer->on_timer();
                 timer->on_exit();
 
-                if(timer->m_bIsOneShot) 
+                if(timer->m_bIsOneShot)
                     timer->m_bIsRunning = false;
             }
         }

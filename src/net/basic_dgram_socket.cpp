@@ -15,20 +15,11 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#include "freertos/FreeRTOS.h"
-#include "mn_schedular.hpp"
+#include "net/basic_dgram_socket.hpp"
 
 
 namespace mn {
-    int basic_schedular::start() {
-        return (xPortStartScheduler() == pdTRUE) ? NO_ERROR : ERR_MNTHREAD_UNKN;
-    }
-    void basic_schedular::stop() {
-    #if MN_THREAD_CONFIG_BOARD == MN_THREAD_CONFIG_ESP32
+	namespace net {
 
-    #else
-        vPortEndScheduler();
-    #endif
-    }
+	}
 }
-

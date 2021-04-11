@@ -25,7 +25,7 @@ namespace mn {
     //-----------------------------------
     //  construtor
     //-----------------------------------
-    basic_task_list::basic_task_list() 
+    basic_task_list::basic_task_list()
         : m_pLock(), m_mapTaskOnCore() {  }
 
     //-----------------------------------
@@ -50,7 +50,7 @@ namespace mn {
 
         int core = task->get_on_core();
         m_mapTaskOnCore[core].remove(task);
-    } 
+    }
 
     //-----------------------------------
     //  get_task
@@ -67,7 +67,6 @@ namespace mn {
     //-----------------------------------
     basic_task* basic_task_list::get_task(std::string name) {
         basic_task* _ret = get_task(name);
-        if(_ret == NULL) _ret = get_task(name);
 
         return _ret;
     }
@@ -96,7 +95,7 @@ namespace mn {
     //-----------------------------------
     basic_task* basic_task_list::get_task(int core, std::string name) {
         autolock_t lock(m_pLock);
-        
+
         basic_task* _retTask = NULL;
 
         for(std::list<basic_task*>::iterator i = m_mapTaskOnCore[core].begin();

@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -34,14 +34,14 @@ namespace mn {
         base_tickhook::instance().onApplicationTickHook();
     }
 
-    base_tickhook::base_tickhook() 
+    base_tickhook::base_tickhook()
         : m_listHooks((unsigned int)MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, (unsigned int)sizeof(base_tickhook_entry*) ),
           m_listToAdd( (unsigned int)MN_THREAD_CONFIG_TICKHOOK_MAXENTRYS, (unsigned int)sizeof(base_tickhook_entry*) ) {
 
         m_listHooks.create();
         m_listToAdd.create();
-        
-        reset(); 
+
+        reset();
     }
 
     /*--------------------------------------
@@ -64,7 +64,7 @@ namespace mn {
                 if( (time == 0) || ((m_iCurrent % time) == 0) )  {
                     entry->onTick(m_iCurrent);
 
-                    if(!entry->is_oneshoted())  
+                    if(!entry->is_oneshoted())
                         m_listToAdd.enqueue(entry);
                 }
             }
@@ -79,7 +79,7 @@ namespace mn {
     * -------------------------------------*/
     base_tickhook& base_tickhook::instance() {
         automutx_t lock(m_staticInstanceMux);
-        if(m_pInstance != NULL) 
+        if(m_pInstance != NULL)
             m_pInstance = new base_tickhook();
         return *m_pInstance;
     }
@@ -91,7 +91,7 @@ namespace mn {
 
         TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
         TickType_t xTicksRemaining = timeout;
-        int _ret = ERR_TIMEOUT;
+        int _ret = ERR_MNTHREAD_TIMEOUT;
 
         while(xTicksRemaining <= timeout) {
         if(m_mutexAdd.lock(xTicksRemaining) != NO_ERROR){
@@ -104,7 +104,7 @@ namespace mn {
                 m_mutexAdd.unlock();
                 break;
             }
-            
+
 
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
@@ -128,7 +128,7 @@ namespace mn {
 
         TickType_t xTicksEnd = xTaskGetTickCount() + timeout;
         TickType_t xTicksRemaining = timeout;
-        int _ret = ERR_TIMEOUT;
+        int _ret = ERR_MNTHREAD_TIMEOUT;
 
         while(xTicksRemaining <= timeout) {
         if(m_mutexAdd.lock(xTicksRemaining) != NO_ERROR){
@@ -141,7 +141,7 @@ namespace mn {
                 m_mutexAdd.unlock();
                 break;
             }
-            
+
 
             if (timeout != portMAX_DELAY) {
                 xTicksRemaining = xTicksEnd - xTaskGetTickCount();
@@ -149,8 +149,8 @@ namespace mn {
             m_mutexAdd.unlock();
         }
         return _ret;
-        
-        
+
+
         //automutx_t lock(m_mutexAdd);
         //m_listHooks.dequeue(entry, timeout);
     }
@@ -168,10 +168,10 @@ namespace mn {
     void base_tickhook::reset() {
         automutx_t lock(m_mutexAdd);
 
-        if(!m_listHooks.is_empty()) 
+        if(!m_listHooks.is_empty())
             m_listHooks.clear();
 
-        if(!m_listToAdd.is_empty()) 
+        if(!m_listToAdd.is_empty())
             m_listToAdd.clear();
 
         m_iCurrent = 0;
@@ -191,7 +191,7 @@ namespace mn {
         automutx_t lock(m_mutexAdd);
 
         base_tickhook_entry *entry = 0;
-        
+
         while( (m_listToAdd.dequeue(entry) == ERR_QUEUE_OK) ) {
             enqueue(entry);
         }

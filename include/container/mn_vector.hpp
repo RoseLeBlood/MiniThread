@@ -2,18 +2,18 @@
 * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 * Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-* The Mini Thread Library is free software; you can redistribute it and/or modify  
-* it under the terms of the GNU Lesser General Public License as published by  
+* The Mini Thread Library is free software; you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
 * the Free Software Foundation, version 3, or (at your option) any later version.
 
-* The Mini Thread Library is distributed in the hope that it will be useful, but 
-* WITHOUT ANY WARRANTY; without even the implied warranty of 
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+* The Mini Thread Library is distributed in the hope that it will be useful, but
+* WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 * General Public License for more details.
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with the Mini Thread  Library; if not, see
-* <https://www.gnu.org/licenses/>.  
+* <https://www.gnu.org/licenses/>.
 */
 #ifndef _MINILIB_4dcc23da_d2cf_41da_9e29_571d9f17efbe_H_
 #define _MINILIB_4dcc23da_d2cf_41da_9e29_571d9f17efbe_H_
@@ -25,7 +25,7 @@
 namespace mn {
 	namespace container {
 
-        template<typename T, class TAllocator> 
+        template<typename T, class TAllocator>
         struct basic_vector_storage {
             using allocator_type = TAllocator;
             using self_type = basic_vector_storage<T, TAllocator>;
@@ -102,7 +102,7 @@ namespace mn {
 
             static const size_type  npos = size_type(-1);
             static const size_type  kInitialCapacity = 16;
-    
+
             explicit basic_vector(const allocator_type& allocator = allocator_type())
                 : TStorage(allocator) { }
 
@@ -127,24 +127,22 @@ namespace mn {
                 if (TStorage::m_begin != 0) TStorage::destroy(TStorage::m_begin, size());
             }
 
-            
-        
+
+
             void copy(const basic_vector& rhs) {
                 const size_type newSize = rhs.size();
 
                 if (newSize > capacity())
                      reallocate_discard_old(rhs.capacity());
-                
+
                 mn::copy_construct_n(rhs.m_begin, newSize, m_begin);
                 m_end = m_begin + newSize;
-                
+
                 assert(invariant());
             }
 
             iterator begin()                        { return m_begin; }
-            const_iterator cbegin() const           { return m_begin; }
             iterator end()                          { return m_end; }
-            const_iterator cend()  const            { return m_end; }
 
             size_type size() const                  { return size_type(m_end - m_begin); }
             bool empty() const                      { return m_begin == m_end; }
@@ -152,7 +150,6 @@ namespace mn {
             size_type capacity()                    { return size_type(m_capacityEnd - m_begin); }
 
             pointer data()                          { return empty() ? 0 : m_begin; }
-            const pointer cdata()                   { return empty() ? 0 : m_begin; }
 
             reference front()                       { assert(!empty()); return *begin(); }
             const reference cfront()                { assert(!empty());  return *begin(); }
@@ -161,9 +158,9 @@ namespace mn {
 
             reference at(size_type i)                { assert(i < size()); return m_begin[i]; }
             const reference const_at(size_type i)    { assert(i < size()); return m_begin[i]; }
-            
+
             void push_back(const reference v) {
-                if (m_end >= m_capacityEnd) grow(); 
+                if (m_end >= m_capacityEnd) grow();
                 mn::copy_construct(m_end++, v);
             }
             void push_back() {
@@ -188,7 +185,7 @@ namespace mn {
 
                 mn::copy_n(first, count, m_begin);
                 m_end = m_begin + count;
-                
+
                 assert(invariant());
             }
 
@@ -227,7 +224,7 @@ namespace mn {
                         insertPos[i] = val;
                     }
                 }
-                m_end += n; 
+                m_end += n;
             }
 
             void insert(iterator it, size_type n, const reference val) {
@@ -264,7 +261,7 @@ namespace mn {
                 *it = val;
                 ++m_end;
                 assert(invariant());
-                
+
                 return it;
             }
 
@@ -287,7 +284,7 @@ namespace mn {
                 assert(invariant());
 
                 if (last <= first) return end();
-                
+
                 const size_type indexFirst = size_type(first - m_begin);
                 const size_type toRemove = size_type(last - first);
 
@@ -319,7 +316,7 @@ namespace mn {
                 shrink(0);
                 assert(invariant());
             }
-            
+
             void reset() {
                 TStorage::reset();
                 assert(invariant());
@@ -333,8 +330,8 @@ namespace mn {
                 size_type _pos = npos;
 
                 for ( ; index < size(); ++index) {
-                    if (m_begin[index] == item) { 
-                        _pos = index; break; 
+                    if (m_begin[index] == item) {
+                        _pos = index; break;
                     }
                 }
                 return _pos;
@@ -347,8 +344,8 @@ namespace mn {
                 return itEnd;
             }
 
-            const allocator_type& get_allocator() const { 
-                return m_allocator; 
+            const allocator_type& get_allocator() const {
+                return m_allocator;
             }
 
             void set_allocator(const allocator_type& allocator) {
@@ -360,7 +357,7 @@ namespace mn {
             }
 
             basic_vector& operator=(const basic_vector& rhs) {
-                copy(rhs);              
+                copy(rhs);
                 return *this;
             }
             reference operator[](size_type i) {
@@ -417,47 +414,47 @@ namespace mn {
 
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator + (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator + (const basic_vector<T, TAllocator, TStorage>& a,
                                                                  const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
 
-            for(int i = 0; i < size; i++) 
+            for(int i = 0; i < size; i++)
                 c.push_back(a[i] + b[i]);
-            return c;    
+            return c;
         }
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator + (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator + (const basic_vector<T, TAllocator, TStorage>& a,
                                                         const T& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] + b);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator + (const T& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator + (const T& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : b.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a + b[i]);
-            return c;    
+            return c;
         }
 
         //sub ------
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator - (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator - (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] - b[i]);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
@@ -467,103 +464,103 @@ namespace mn {
 
             for(int i = 0; i < size; i++)
                 c.push_back(-a[i]);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator - (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator - (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const T& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
-        
+
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] - b);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator - (const T& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator - (const T& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : b.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a - b[i]);
-            return c;    
+            return c;
         }
 
         //mul ----
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator * (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator * (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] * b[i]);
-            return c;    
+            return c;
         }
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator * (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator * (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const T& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
-        
+
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] * b);
-            return c;    
+            return c;
         }
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator * (const T& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator * (const T& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : b.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a * b[i]);
-            return c;    
+            return c;
         }
 
         // div -----
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator / (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator / (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
-        
+
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] / b[i]);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator / (const basic_vector<T, TAllocator, TStorage>& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator / (const basic_vector<T, TAllocator, TStorage>& a,
                                                     const T& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : a.size());
 
             for(int i = 0; i < size; i++)
                 c.push_back(a[i] / b);
-            return c;    
+            return c;
         }
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
-        inline basic_vector<T, TAllocator, TStorage> operator / (const T& a, 
+        inline basic_vector<T, TAllocator, TStorage> operator / (const T& a,
                                                     const basic_vector<T, TAllocator, TStorage>& b) {
             basic_vector<T, TAllocator, TStorage> c = basic_vector<T, TAllocator, TStorage>();
             int size = (calc != 0 ? calc : b.size());
-        
+
             for(int i = 0; i < size; i++)
                 c.push_back(a / b[i]);
-            return c;    
+            return c;
         }
-        
+
         // scale ----
         template<typename T, class TAllocator =  mn::memory::default_allocator_t, class TStorage = basic_vector_storage<T, TAllocator> >
         inline basic_vector<T, TAllocator, TStorage> scale(const basic_vector<T, TAllocator, TStorage>& v,
                                                     const T s) {
-            return v * s;        
+            return v * s;
         }
     }
 }
-#endif 
+#endif

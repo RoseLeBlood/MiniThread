@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2021 Amber-Sophia Schroeck
+*Copyright (c) 2018 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify
 *it under the terms of the GNU Lesser General Public License as published by
@@ -15,20 +15,15 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#include "freertos/FreeRTOS.h"
-#include "mn_schedular.hpp"
+#ifndef _MINILIB_BASIC_DGRAM_SOCKET_H_
+#define _MINILIB_BASIC_DGRAM_SOCKET_H_
 
+#include "../mn_config.hpp"
 
 namespace mn {
-    int basic_schedular::start() {
-        return (xPortStartScheduler() == pdTRUE) ? NO_ERROR : ERR_MNTHREAD_UNKN;
-    }
-    void basic_schedular::stop() {
-    #if MN_THREAD_CONFIG_BOARD == MN_THREAD_CONFIG_ESP32
+	namespace net {
 
-    #else
-        vPortEndScheduler();
-    #endif
-    }
+	}
 }
 
+#endif // _MINILIB_BASIC_DGRAM_SOCKET_H_

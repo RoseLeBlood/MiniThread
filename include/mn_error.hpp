@@ -30,16 +30,16 @@
 /**
  * Timed out
  */ 
-#define ERR_TIMEOUT                     0x0001
+#define ERR_MNTHREAD_TIMEOUT                     0x0001
 /**
  * The given param was null or error in malloc
  */ 
-#define ERR_NULL                        0x0002
+#define ERR_MNTHREAD_NULL                        0x0002
 
 /**
  * Currently not defined error
  */ 
-#define ERR_UNKN                        0x0003
+#define ERR_MNTHREAD_UNKN                        0x0003
 
 /**
  * No Error in one of the mutex function
