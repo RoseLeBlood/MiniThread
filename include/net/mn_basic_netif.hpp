@@ -9,7 +9,7 @@
 #include <esp_netif.h>
 #include "sdkconfig.h"
 
-//#include "ip_address.h"
+#include "mn_basic_ip_address.hpp"
 
 #if CONFIG_ETH_USE_SPI_ETHERNET
 #include "driver/spi_master.h"
@@ -33,10 +33,10 @@ namespace mn {
 				bool 			is_down();
 
 				esp_err_t		get_impl_name(char name[6]);
-				//virtual ip4_address     get_ip() = 0;
-				//virtual ip4_address     get_broadcast() = 0;
-				//virtual ip4_address     get_gateway() = 0;
-				//virtual ip4_address     get_netmask() = 0;
+				virtual ip4_address     get_ip() = 0;
+				virtual ip4_address     get_broadcast() = 0;
+				virtual ip4_address     get_gateway() = 0;
+				virtual ip4_address     get_netmask() = 0;
 
 				virtual esp_netif_t*    get_netif() { return m_pNetIf; }
 

@@ -4,13 +4,11 @@ BINDIR = $(PREFIX)/miniThread/
 all: build
 clean:
 	rm -r release/*
-	rm make.log
 build:
-	pio package pack > make.log
+	pio package pack
 	mv *.tar.gz release/$(NAME)
 install:
-	mkdir -p $(BINDIR)/miniThread/ 
-	rm -r $(BINDIR)/miniThread/*
+	mkdir -p $(BINDIR)/miniThread/
 	install --mode=666 release/$(NAME) $(BINDIR)/$(NAME)
 	@printf "\e[1;32mAdd \"lib_deps = $(BINDIR)/$(NAME)\" to your platformio.ini\n\n\e[0m"
 uninstall:

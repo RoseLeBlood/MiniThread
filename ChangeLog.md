@@ -1,6 +1,8 @@
 # Changelog
 ## Versoin 2.25 März 2021 (unstable beta)
-+ add network support
++ add sockets support -> see mn_socket.hpp
++ rename ERR_TIMEOUT => ERR_MINILIB_TIMEOUT - build bug
+
 
 ## Version 2.20 März 2021
 + add allocator helpor macros: MNALLOC_OBJECT, MNALLOC_OBJECT_D ... @see MNALLOC_OBJECT

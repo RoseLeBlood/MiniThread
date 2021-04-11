@@ -1,7 +1,6 @@
 
 # Mini Thread 2.25.0
-Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++. All in the background of a more secure and consistent workflow.
-So that your application will be smaller and more effective.
+Mini Thread is a library for creating safe tasks, queues and other useful things for the esp32, in c ++.
 
 Many of the standard STL containers are replaced with their own optimized versions. Recognizable by its own namespace mn.
 All containers, such as vector, list, queue, rb-tree  can be found in the namespace mn::container.
@@ -11,6 +10,9 @@ Certain allocation in addition to a limit, the bytes used to be limited.
 All allocator find you under the namespace mn::memory.
 
 The containers and pointers use as default the mn::memory::default_allocator_t.
+
+For network programming see mn::net. (net/mn_socket.hpp) they contains a asy to use network socket wrapper for lwip,
+IPv4 and IPv6 support. Currently only dgram_socket_ip{4,6} and  stream_socket_ip{4,6} support, raw socket are follow in version 2.30, with class for wifi AP and Wifi STA support
 
 The license that applies to the library is the LGPL.The license texts of these
 licenses can be found in the files [LICENSE](LICENSE.md) of the

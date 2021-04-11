@@ -57,6 +57,13 @@ namespace mn {
 
         	operator int () 			{ return m_iHandle; }
         	basic_ip_socket& operator = (const basic_ip_socket& other);
+
+        	void set_nocheak(bool value) {
+				set_options(socket_option_level::socket, socket_option_name::no_check, value);
+        	}
+        	bool get_nocheak() {
+				return get_option_bool(socket_option_level::socket, socket_option_name::no_check);
+        	}
 		public:
 			int set_options(const socket_option_level& opt, const socket_option_name& name, int value);
         	int set_options(const socket_option_level& opt, const socket_option_name& name, bool value);
@@ -73,6 +80,8 @@ namespace mn {
 		class basic_ip4_socket : public basic_ip_socket {
 		public:
 			using handle_type = typename basic_ip_socket::handle_type;
+			using endpoint_type = ip4_endpoint;
+			using ipaddress_type = ip4_address;
 
         	basic_ip4_socket(handle_type& hndl, ip4_endpoint* endp = nullptr);
         	basic_ip4_socket(const socket_type& type, const protocol_type& protocol);
@@ -98,6 +107,8 @@ namespace mn {
 		class basic_ip6_socket : public basic_ip_socket {
 		public:
 			using handle_type = typename basic_ip_socket::handle_type;
+			using endpoint_type = ip6_endpoint;
+			using ipaddress_type = ip6_address;
 
         	basic_ip6_socket(handle_type& hndl, ip6_endpoint* endp = nullptr);
         	basic_ip6_socket(const socket_type& type, const protocol_type& protocol);

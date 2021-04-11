@@ -270,6 +270,7 @@ namespace mn {
 			 * @return the ip6 address as array
 			 */
 			virtual uint8_t*        get_bytes();
+			virtual uint32_t		get_int(int index)  { return index < 4 ? as_int[index] : 0; }
 
 			inline void				set_zero()
 				{ as_int[0] = 0; as_int[1] = 0; as_int[2] = 0; as_int[3] = 0; }
@@ -317,13 +318,34 @@ namespace mn {
 			 * @return If true then equel and if false then not
 			 */
 			virtual bool            is_equel(const basic_ip6_address& ipOther);
+			/**
+			 * Compare this ip6 address with (ipOther & netmask)
+			 *
+			 * @return true if they match, integer different than zero otherwise
+			 */
+			virtual bool            is_equel(const basic_ip6_address& ipOther, const basic_ip6_address& mask);
 
 			basic_ip6_address& 	operator = (const basic_ip6_address& ip);
 			uint8_t 			operator[](int index) const { return m_Numbers[index]; }
 			uint8_t& 			operator[](int index) { return m_Numbers[index]; }
 			bool 				operator == (const basic_ip6_address& ipOther){ return  is_equel(ipOther); }
 			bool 				operator != (const basic_ip6_address& ipOther){ return !is_equel(ipOther); }
+
+
+
+			static basic_ip4_address to_ip4(const basic_ip6_address& ip4) {
+				return basic_ip4_address(lwip_ntohl(ip4.as_int[3]) );
+			}
+			static basic_ip6_address from_ip4(const basic_ip4_address& ip4) {
+				return basic_ip6_address(0x00000000, 0x00000000, htonl(0xffff), (uint32_t)ip4);
+			}
+			/**
+			 * Create an IPv6 netmask
+			 */
+			static basic_ip6_address netmask(int mask);
 		};
+
+
 		using ip6_address = basic_ip6_address;
 #endif
 		using ip4_address = basic_ip4_address;
