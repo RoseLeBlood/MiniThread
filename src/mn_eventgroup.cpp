@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 
 #include "mn_eventgroup.hpp"
@@ -30,13 +30,18 @@ namespace mn {
         #else
             m_pHandle = xEventGroupCreate();
         #endif
+
+        if( m_pHandle == NULL )
+        	ESP_LOGE("event_group", "out of mem xEventGroupCreate - failed");
     }
 
     //-----------------------------------
     //  construtor
     //-----------------------------------
-    basic_event_group::basic_event_group(EventGroupHandle_t handle) 
-        : m_pHandle(handle) { }
+    basic_event_group::basic_event_group(EventGroupHandle_t handle)
+        : m_pHandle(handle) {
+        	if( m_pHandle == NULL ) ESP_LOGE("event_group", "the given handle is NULL this group will not work!!");
+	}
 
     //-----------------------------------
     //  deconstrutor
@@ -52,7 +57,7 @@ namespace mn {
     //-----------------------------------
     EventBits_t basic_event_group::sync( const EventBits_t bitstoset, const EventBits_t bitstowaitfor,
                                         TickType_t timeout) {
-        
+
         return xEventGroupSync( m_pHandle, bitstoset, bitstowaitfor, timeout);
     }
 
@@ -61,7 +66,7 @@ namespace mn {
     //-----------------------------------
     EventBits_t basic_event_group::wait( const EventBits_t uxBitsToWaitFor,
                                         bool xClearOnExit, bool xWaitForAllBits, uint32_t timeout) {
-        
+
         return xEventGroupWaitBits( m_pHandle,
                                     uxBitsToWaitFor,
                                     xClearOnExit ? pdTRUE : pdFALSE,
@@ -103,7 +108,7 @@ namespace mn {
             if(xHigherPriorityTaskWoken)
                 _frxt_setup_switch();
         } else {
-            success = xEventGroupSetBits(m_pHandle, uxBitsToSet);
+            success = xEventGroupSetBits(m_pHandle, (EventBits_t)uxBitsToSet);
         }
         return success;
     }

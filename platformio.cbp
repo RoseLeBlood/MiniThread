@@ -170,12 +170,6 @@
 		<Unit filename="Makefile.in" />
 		<Unit filename="README.md" />
 		<Unit filename="configure" />
-		<Unit filename="examples/empty/src/empty-project.cpp" />
-		<Unit filename="examples/mempool/src/mempool.cpp" />
-		<Unit filename="examples/simple-mutex/src/simple-mutex.cpp" />
-		<Unit filename="examples/simple-task/src/simple-task.cpp" />
-		<Unit filename="examples/simple-tasklet/src/simple-tasklet.cpp" />
-		<Unit filename="examples/simple-timer/src/simple-timer.cpp" />
 		<Unit filename="include/allocator/mn_allactor_multiheap.hpp" />
 		<Unit filename="include/allocator/mn_allocator_buffer.hpp" />
 		<Unit filename="include/allocator/mn_allocator_caps.hpp" />
@@ -188,7 +182,6 @@
 		<Unit filename="include/atomic/mn_atomic_gcc.hpp" />
 		<Unit filename="include/atomic/mn_atomic_primary_types.hpp" />
 		<Unit filename="include/atomic/mn_atomic_weak_ptr.hpp" />
-		<Unit filename="include/atomic/test.cpp" />
 		<Unit filename="include/container/mn_biqueue.hpp" />
 		<Unit filename="include/container/mn_deque.hpp" />
 		<Unit filename="include/container/mn_fixed_sorted_vector.hpp" />

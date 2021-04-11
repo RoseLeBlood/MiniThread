@@ -32,41 +32,41 @@
 #include <string>
 
 namespace mn {
-    
+
   /**
    * @brief Wrapper class around FreeRTOS's implementation of a task.
    *
    * @note To use this, you need to subclass it. All of your task should
    * be derived from the basic_task class. Then implement the virtual on_task
    * function.
-   * 
-   * @code 
-   * 
+   *
+   * @code
+   *
    * #include <miniThread.hpp>
    * // The number of test tasks
    * #define NUMBER_OF_TEST_TASK      2
-   * 
+   *
    * // The tost task class
    * class hello_world_task : public basic_task {
    * public:
    *     hello_world_task() : basic_task("HelloWorld", 1) { }
-   * 
-   *     virtual void*  on_task() override { 
+   *
+   *     virtual void*  on_task() override {
    *         int id = get_id(); // get the task id from this task
    *         int core = get_on_core(); // get the core on run this task
-   * 
+   *
    *         while(true) { // infinity run
-   *             // print the hello world message to the std output 
-   *             // out on core: 0 and with id: 0: "[0 @ 0] Hello World!" 
+   *             // print the hello world message to the std output
+   *             // out on core: 0 and with id: 0: "[0 @ 0] Hello World!"
    *             printf("[%d @ %d] Hello World!!\n", id, core );
    *         }
-   *          
-   *         return NULL; 
+   *
+   *         return NULL;
    *     }
    * };
    * extern "C" void app_main() {
    *     hello_world_task tasks[NUMBER_OF_TEST_TASK];
-   * 
+   *
    *     for(int i = 0; i < NUMBER_OF_TEST_TASK; i++) {
    *         tasks[i].start( i % 2 );
    *     }
@@ -78,14 +78,14 @@ namespace mn {
    * // [0 @ 0] Hello World!
    * // ...
    * @endcode
-   * 
+   *
    * @author Amber-Sophia Schröck
    * @ingroup task
    */
   class  basic_task {
   public:
     /**
-     * @brief Task priority 
+     * @brief Task priority
      */
     enum  priority {
       PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
@@ -105,9 +105,9 @@ namespace mn {
       StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
     };
     /** The using events for wait() and join(). */
-    enum event { 
-      EventStarted = 1 << 24,     /*!< Event for task started */ 
-      EventJoin = 1 << 25         /*!< Event for task joined */ 
+    enum event {
+      EventStarted = 1 << 24,     /*!< Event for task started */
+      EventJoin = 1 << 25         /*!< Event for task joined */
     };
 
   public:
@@ -149,9 +149,9 @@ namespace mn {
      * be pinned to. Specifying values larger than (portNUM_PROCESSORS - 1) will
      * cause the function to fail.
      *
-     * @return 
-     *  - ERR_TASK_OK The task are creating, 
-     *  - ERR_TASK_CANTINITMUTEX on error creating the using LockObjets, the task is not created, 
+     * @return
+     *  - ERR_TASK_OK The task are creating,
+     *  - ERR_TASK_CANTINITMUTEX on error creating the using LockObjets, the task is not created,
      *  - ERR_TASK_ALREADYRUNNING the Task is allready running
      *  - ERR_TASK_CANTSTARTTHREAD can't create the task
      */
@@ -160,28 +160,28 @@ namespace mn {
     /**
      * Destroy and delete the task and call the function 'on_kill'
      *
-     * @return 
-     *  - ERR_TASK_OK The task are destroyed 
+     * @return
+     *  - ERR_TASK_OK The task are destroyed
      *  - ERR_TASK_NOTRUNNING The task was not running
      */
     int                   kill();
 
     /**
      * join the task
-     * Wait in a other task to end this task 
-     * 
+     * Wait in a other task to end this task
+     *
      * @param timeval The maximum amount of time to wait.
-     * 
+     *
      * @note call never in this task, then wait this task to end this task
-     */ 
+     */
     void                  join(const struct timeval *abs_time);
 
     /**
      * join the task
-     * Wait in a other task to end this task 
-     * 
+     * Wait in a other task to end this task
+     *
      * @param timeval The maximum amount of time (specified in 'ticks') to wait.
-     * 
+     *
      * @note call never in this task, then wait this task to end this task
      */
     void                  join(unsigned int timeout = portMAX_DELAY);
@@ -196,12 +196,12 @@ namespace mn {
     /**
      * Wait for start the task
      * @param timeval The maximum amount of time to wait.
-     */ 
+     */
     void                  wait(unsigned int timeout);
     /**
      * Wait for start the task
      * @param timeval The maximum amount of time to wait.
-     */ 
+     */
     void                  wait(const struct timeval *abs_time);
 
     /**
@@ -317,9 +317,9 @@ namespace mn {
 
     /**
      * Get the state of the task
-     * 
+     *
      * @return The state of the task at the time the function was called.
-     */ 
+     */
     state               get_state();
 
     /**
@@ -341,7 +341,7 @@ namespace mn {
     /**
        * Operator to get the ID assigned to the task.
        * @return The ID assigned to the task being queried.
-       */ 
+       */
     operator int () { return get_id(); }
   public:
     bool operator == (const basic_task &r) const {
@@ -362,7 +362,7 @@ namespace mn {
   public:
     /**
      * Suspend the given task.
-     * 
+     *
      * @param t The given task to suspend
      *
      * @note While a task can suspend() itself, it cannot resume()
@@ -403,27 +403,27 @@ namespace mn {
 
     /**
      * Get current number of tasks
-     * 
+     *
      * @return The number of tasks that the real time kernel is currently managing.
      * This includes all ready, blocked and suspended tasks.  A task that
      * has been deleted but not yet freed by the idle task will also be
      * included in the count.
-     */ 
+     */
     static uint32_t get_tasks();
 
     /**
      * Is the given task the current running task ?
-     * 
-     */ 
+     *
+     */
     static bool is_current(basic_task* task) {
       return basic_task::get_self()->m_pHandle == task->m_pHandle;
     }
 
     /**
      * Get the current task
-     * 
+     *
      * @return The current task
-     */ 
+     */
     static basic_task* get_self();
   protected:
     /**
@@ -431,6 +431,7 @@ namespace mn {
      *  specific on_task() function that interfaces with FreeRTOS.
      */
     static void runtaskstub(void* parm);
+    void set_state(const EventBits_t uxBitsToSet);
   protected:
     /**
      * Lock Objekt for task safty
@@ -472,19 +473,19 @@ namespace mn {
     xTaskHandle m_pHandle;
 
     /**
-     * The child task pointer 
+     * The child task pointer
      */
     basic_task *m_pChild;
     /**
-     * The parent task pointer 
+     * The parent task pointer
      */
     basic_task *m_pParent;
 
     /**
-     * The event group for this task 
+     * The event group for this task
      * used or wait() and join()
-     */ 
-    event_group_t m_event;
+     */
+    event_group_t* m_event;
 
     #if( configSUPPORT_STATIC_ALLOCATION == 1 )
       StaticTask_t m_TaskBuffer;

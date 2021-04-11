@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -39,21 +39,21 @@ namespace mn {
   //  construtor
   //-----------------------------------
   basic_task::basic_task(std::string strName, basic_task::priority uiPriority,
-      unsigned short  usStackDepth) 
-        : m_runningMutex(), 
-          m_contextMutext(), 
+      unsigned short  usStackDepth)
+        : m_runningMutex(),
+          m_contextMutext(),
           m_continuemutex(),
-          m_strName(strName), 
+          m_strName(strName),
           m_uiPriority(uiPriority),
-          m_usStackDepth(usStackDepth), 
+          m_usStackDepth(usStackDepth),
           m_retval(NULL),
           m_bRunning(false),
-          m_iID(0),  
-          m_iCore(-1), 
+          m_iID(0),
+          m_iCore(-1),
           m_pHandle(NULL),
           m_pChild(NULL),
-          m_pParent(NULL),
-          m_event() { }
+          m_pParent(NULL)
+          { m_event = new basic_event_group(); }
 
   //-----------------------------------
   //  deconstrutor
@@ -61,7 +61,7 @@ namespace mn {
   basic_task::~basic_task() {
     if(m_pHandle != NULL)
       vTaskDelete(m_pHandle);
-    
+
 
   #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
     basic_task_list::instance().remove_task(this);
@@ -148,7 +148,7 @@ namespace mn {
 
     //xTaskNotify(m_pHandle, 0, eNoAction);
     task_utils::notify(this, 0, task_utils::action::no_action);
-    
+
   #if MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST == MN_THREAD_CONFIG_YES
     basic_task_list::instance().add_task(this);
   #endif
@@ -162,7 +162,7 @@ namespace mn {
   //  join
   //-----------------------------------
   void basic_task::join(unsigned int timeout) {
-    while(m_event.wait(EventJoin | EventStarted, false, true, timeout) == 0) { 
+    while(m_event->wait(EventJoin | EventStarted, false, true, timeout) == 0) {
 
     }
   }
@@ -181,7 +181,7 @@ namespace mn {
   //  wait
   //-----------------------------------
   void basic_task::wait(unsigned int timeout) {
-    while(m_event.wait(EventJoin | EventStarted, false, true, timeout) == 0) { 
+    while(m_event->wait(EventJoin | EventStarted, false, true, timeout) == 0) {
 
     }
   }
@@ -215,7 +215,7 @@ namespace mn {
 
     m_runningMutex.unlock();
     m_continuemutex.unlock();
-    
+
     return ERR_TASK_OK;
   }
 
@@ -257,7 +257,7 @@ namespace mn {
   //-----------------------------------
   basic_task::priority basic_task::get_priority() {
     autolock_t autolock(m_runningMutex);
-    
+
     if(m_pHandle == NULL) return m_uiPriority;
 
     if (xPortInIsrContext()) {
@@ -321,7 +321,7 @@ namespace mn {
     auto _pHandle = xTaskGetCurrentTaskHandle();
 
     if (_pHandle == 0) return NULL;
-    
+
     basic_task* _task = new basic_task();
 
     _task->m_runningMutex.lock();
@@ -357,7 +357,9 @@ namespace mn {
     autolock_t autolock(m_runningMutex);
     vTaskResume(m_pHandle);
   }
-
+  void basic_task::set_state(const EventBits_t uxBitsToSet) {
+	if(m_event) m_event->set(uxBitsToSet);
+  }
   //-----------------------------------
   //  runtaskstub
   //-----------------------------------
@@ -367,27 +369,28 @@ namespace mn {
 
     esp_task = (static_cast<basic_task*>(parm));
 
-    esp_task->m_event.set(EventStarted); 
+	if(esp_task) {
+		esp_task->set_state(EventStarted);
 
-    esp_task->m_runningMutex.lock();
-    esp_task->m_bRunning = true;
-    esp_task->m_runningMutex.unlock();
+		esp_task->m_runningMutex.lock();
+		esp_task->m_bRunning = true;
+		esp_task->m_runningMutex.unlock();
 
-    esp_task->m_continuemutex.lock();
-    esp_task->m_continuemutex.unlock();
+		esp_task->m_continuemutex.lock();
 
-    
-    ret = esp_task->on_task();
-    esp_task->on_cleanup();
+		ret = esp_task->on_task();
+		esp_task->on_cleanup();
 
-    esp_task->m_runningMutex.lock();
-    esp_task->m_bRunning = false;
-    esp_task->m_retval = ret;
-    vTaskDelete(esp_task->m_pHandle);
-    esp_task->m_pHandle = 0;
+		esp_task->m_runningMutex.lock();
+		esp_task->m_bRunning = false;
+		esp_task->m_retval = ret;
+		vTaskDelete(esp_task->m_pHandle);
+		esp_task->m_pHandle = 0;
 
-    esp_task->m_runningMutex.unlock();
+		esp_task->m_runningMutex.unlock();
+		esp_task->m_continuemutex.unlock();
 
-    esp_task->m_event.set(EventJoin);
+		esp_task->set_state(EventJoin);
+	}
   }
 }
