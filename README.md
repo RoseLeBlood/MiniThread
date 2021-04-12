@@ -83,4 +83,4 @@ Mini Thread follows the [Semantic Versioning guidelines](http://semver.org/) for
 
 ## License
 
-Mini Thread is released under the [LGPL](LICENSE) file for more information.
+Mini Thread is released under the [LGPL](LICENSE.md) file for more information.

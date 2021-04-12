@@ -13,7 +13,7 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "2.26.32",
+    "version": "2.27.0",
     "frameworks": "espidf",
     "platforms": "espressif32",
     "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
@@ -48,5 +48,27 @@
             "base": "examples/mempool",
             "files": [ "src/mempool.cpp" ]
         }
-    ]
+    ],
+    "export": {
+		"exclude":
+		[
+			"doc/*",
+			"doc",
+			"images",
+			"release",
+			"workspace",
+			"*.sh",
+			"configure",
+			"Makefile.in",
+			"Makefile",
+			".git",
+			".pio",
+			"platformio.*",
+			".gitignore",
+			"example/.git"
+		]
+	},
+	"build": {
+		"flags": "-DRELEASE"
+	}
 }
