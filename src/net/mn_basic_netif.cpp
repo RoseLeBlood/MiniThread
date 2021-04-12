@@ -51,13 +51,13 @@ namespace mn {
 		basic_wifi_net_if::basic_wifi_net_if(esp_interface_t type)
 			: m_ifInterface(type) {		}
 
-		esp_netif_t* basic_wifi_net_if::create_default() {
+		bool basic_wifi_net_if::create_default() {
 			if(get_mode()  == WIFI_MODE_AP) {
 				m_pNetIf = esp_netif_create_default_wifi_ap();
 			} else if(get_mode()  == WIFI_MODE_STA) {
 				m_pNetIf = esp_netif_create_default_wifi_sta();
 			}
-			return m_pNetIf;
+			return m_pNetIf != NULL;
 		}
 		const char* basic_wifi_net_if::get_ssid(char ssid[32]) {
 			wifi_config_t info;
@@ -76,17 +76,6 @@ namespace mn {
 			return m_ifInterface == ESP_IF_WIFI_AP ? WIFI_MODE_AP : WIFI_MODE_STA;
 		}
 
-		///----------------------------PPP
-
-		esp_netif_t* basic_ppp_net_if::create_default() {
-			esp_netif_config_t cfg = ESP_NETIF_DEFAULT_PPP();
-			m_pNetIf = esp_netif_new(&cfg);
-			//esp_eth_set_default_handlers(m_pNetIf)
-
-			//memcpy(m_ifConfig, &cfg, sizeof(cfg));
-
-			return m_pNetIf;
-		}
 
 		///----------------------------ETH
 #if 0
@@ -96,12 +85,22 @@ namespace mn {
 		}
 #endif // CONFIG_ETH_ENABLED
 
-
-		/*esp_netif_t*    basic_slip_net_if::create_default() {
+#if CONFIG_LWIP_SLIP_SUPPORT
+		bool basic_slip_net_if::create_default() {
 			esp_netif_config_t cfg = ESP_NETIF_BASE_DEFAULT_SLIP();
 			m_pNetIf = esp_netif_new(&cfg);
 
-			return m_pNetIf;
-		}*/
+			return m_pNetIf != NULL;
+		}
+#endif // CONFIG_LWIP_SLIP_SUPPORT
+
+#ifdef CONFIG_LWIP_PPP_SUPPORT
+		bool basic_slip_net_ppp::create_default() {
+			esp_netif_config_t cfg = ESP_NETIF_BASE_DEFAULT_PPP();
+			m_pNetIf = esp_netif_new(&cfg);
+
+			return m_pNetIf != NULL;
+		}
+#endif // CONFIG_LWIP_PPP_SUPPORT
 	}
 }

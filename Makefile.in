@@ -3,6 +3,7 @@ BINDIR = $(PREFIX)/miniThread/
 
 all: build
 clean:
+	pio run -t clean
 	rm -r release/*
 build:
 	pio package pack

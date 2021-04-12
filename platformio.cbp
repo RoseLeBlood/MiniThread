@@ -169,6 +169,7 @@
 		<Unit filename="ChangeLog.md" />
 		<Unit filename="Makefile.in" />
 		<Unit filename="README.md" />
+		<Unit filename="bash/make-pretty" />
 		<Unit filename="configure" />
 		<Unit filename="include/allocator/mn_allactor_multiheap.hpp" />
 		<Unit filename="include/allocator/mn_allocator_buffer.hpp" />
@@ -262,6 +263,7 @@
 		<Unit filename="include/net/mn_basic_endpoint.hpp" />
 		<Unit filename="include/net/mn_basic_ip_address.hpp" />
 		<Unit filename="include/net/mn_basic_netif.hpp" />
+		<Unit filename="include/net/mn_basic_slip_driver.hpp" />
 		<Unit filename="include/net/mn_basic_socket.hpp" />
 		<Unit filename="include/net/mn_basic_stream_ip_socket.hpp" />
 		<Unit filename="include/net/mn_net_types.hpp" />
@@ -297,6 +299,7 @@
 		<Unit filename="library.json" />
 		<Unit filename="platformio.ini" />
 		<Unit filename="platformio.layout" />
+		<Unit filename="sdkconfig" />
 		<Unit filename="src/CMakeLists.txt" />
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />
 		<Unit filename="src/hash/mn_uuid.cpp" />
@@ -330,6 +333,7 @@
 		<Unit filename="src/net/mn_basic_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip_address.cpp" />
 		<Unit filename="src/net/mn_basic_netif.cpp" />
+		<Unit filename="src/net/mn_basic_slip_driver.cpp" />
 		<Unit filename="src/net/mn_basic_socket.cpp" />
 		<Unit filename="src/net/mn_basic_stream_ip_socket.cpp" />
 		<Unit filename="src/net/mn_socket.cpp" />

@@ -1,6 +1,7 @@
 #ifndef _MINTHREAH_BASIC_NETIF_HPP_
 #define _MINTHREAH_BASIC_NETIF_HPP_
 
+#include "sdkconfig.h"
 #include "mn_config.hpp"
 #include "mn_lock.hpp"
 
@@ -23,7 +24,7 @@ namespace mn {
 				basic_net_if(const basic_net_if& other)
 					:  m_ifConfig(other.m_ifConfig), m_pNetIf(other.m_pNetIf) { }
 
-				virtual esp_netif_t*    create_default() = 0;
+				virtual bool    create_default() = 0;
 
 				esp_err_t    	set_mac(uint8_t mac[6]);
 				esp_err_t       get_mac(uint8_t mac[6]);
@@ -59,7 +60,7 @@ namespace mn {
 		protected:
 			basic_wifi_net_if(esp_interface_t type);
 
-			virtual esp_netif_t*    create_default();
+			virtual bool    create_default();
 
 			virtual wifi_mode_t     get_mode();
 			virtual const char*     get_ssid(char ssid[32]);
@@ -71,20 +72,26 @@ namespace mn {
 		protected:
 			esp_interface_t 	m_ifInterface;
 		};
-
+#ifdef CONFIG_LWIP_PPP_SUPPORT
 		class basic_ppp_net_if : public basic_net_if {
 		protected:
 			basic_ppp_net_if() : basic_net_if() { }
 
-			virtual esp_netif_t*    create_default();
+			virtual bool    create_default() {
+				esp_netif_config_t cfg = ESP_NETIF_DEFAULT_PPP();
+				return esp_netif_new(&cfg);
+			}
 		};
+#endif // CONFIG_LWIP_PPP_SUPPORT
 
-		/*class basic_slip_net_if : public basic_net_if {
+#ifdef CONFIG_LWIP_SLIP_SUPPORT
+		class basic_slip_net_if : public basic_net_if {
 		protected:
 			basic_slip_net_if() : basic_net_if() { }
 
-			virtual esp_netif_t*    create_default();
-		};*/
+			virtual bool    create_default();
+		};
+#endif
 	}
 }
 
