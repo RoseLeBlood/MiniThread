@@ -1,6 +1,6 @@
 # Contributing to MiniThread
 
-We would love for you to contribute to OpenThread and help make it even better than it is today! As a contributor, here are the guidelines we would like you to follow.
+We would love for you to contribute to MiniThread and help make it even better than it is today! As a contributor, here are the guidelines we would like you to follow.
 
 - [1 Code of Conduct](#code-of-conduct)
 - [2 Bugs](#bugs)
@@ -30,7 +30,7 @@ If you would like to implement a new feature, please consider the scope of the n
 
 ## Contributing Code
 
-The OpenThread Project follows the "Fork-and-Pull" model for accepting contributions.
+The MiniThread Project follows the "Fork-and-Pull" model for accepting contributions.
 
 ### Initial Setup
 
@@ -102,8 +102,8 @@ This will open up a text editor where you can specify which commits to squash.
 
 #### Coding Conventions and Style
 
-MiniThread uses and enforces the [OpenThread Coding Conventions and Style](STYLE_GUIDE.md) on all code.
-MiniThread currently requires [platform-io](https://platform.io/) for building, testing and uplaod the firmware to the esp32
+MiniThread uses and enforces the [Coding Conventions and Style](STYLE_GUIDE.md) on all code.
+MiniThread currently requires [platform-io](https://platform.io/) for building, testing and uplaod the firmware on the device
 
 #### Push and Test
 
@@ -121,4 +121,4 @@ Once you've validated that all continuous-integration checks have passed, go to 
 
 ## Contributing Documentation
 
-Documentation undergoes the same review process as code and contributions may be mirrored on our [openthread.io](https://openthread.io) website. See the [Documentation Style Guide](/doc/STYLE_GUIDE.md) for more information on how to author and format documentation for contribution.
+Documentation undergoes the same review process as code and contributions may be mirrored on our [https://roseleblood.github.io/mnthread-docs/](https://roseleblood.github.io/mnthread-docs/) website. See the [Documentation Style Guide](/doc/STYLE_GUIDE.md) for more information on how to author and format documentation for contribution.

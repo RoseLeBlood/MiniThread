@@ -551,4 +551,9 @@
 
 #include "mn_defines.hpp"
 
+#define MN_UNUSED_VARIABLE(var)		do { (void)(var); } while (false)
+#define MN_ZERO_SET(var, size)	    memset(var, 0, size)
+#define MN_SAFE_DELETE(var)			if((var)) { delete var; var = NULL; }
+#define MN_SAFE_FREE(var)			if((var)) { free(var); var = NULL; }
+
 #endif //__MINLIB_MNTHREAD_CONFIG_H__

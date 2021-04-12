@@ -166,10 +166,11 @@
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/lib/gcc/xtensa-esp32-elf/5.2.0/include" />
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/xtensa-esp32-elf/include" />
 		</Compiler>
+		<Unit filename="CONTRIBUTING.md" />
 		<Unit filename="ChangeLog.md" />
 		<Unit filename="Makefile.in" />
 		<Unit filename="README.md" />
-		<Unit filename="bash/make-pretty" />
+		<Unit filename="STYLE_GUIDE.md" />
 		<Unit filename="configure" />
 		<Unit filename="include/allocator/mn_allactor_multiheap.hpp" />
 		<Unit filename="include/allocator/mn_allocator_buffer.hpp" />
