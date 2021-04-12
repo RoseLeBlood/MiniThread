@@ -36,6 +36,7 @@ function copy_move_3third_data() {
 }
 function git_push() {
 	git commit -a -m "update to version ${MN_DEF_VERSION}"
+	git push
 }
 function print_help() {
 	echo "using:
