@@ -167,6 +167,7 @@
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/xtensa-esp32-elf/include" />
 		</Compiler>
 		<Unit filename="CODE_OF_CONDUCT.md" />
+		<Unit filename="CODE_OF_CONDUCT_de.md" />
 		<Unit filename="CONTRIBUTING.md" />
 		<Unit filename="ChangeLog.md" />
 		<Unit filename="Makefile.in" />
