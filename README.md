@@ -71,7 +71,7 @@ lib_deps =
 For more see [ChangeLog](ChangeLog.md)
 
 
-# Contributing
+## Contributing
 
 We would love for you to contribute to Mini Thread and help make it even better than it is today! See our [Contributing Guidelines](CONTRIBUTING.md) for more information.
 
@@ -81,6 +81,6 @@ Contributors are required to abide by our [Code of Conduct](CODE_OF_CONDUCT.md) 
 
 Mini Thread follows the [Semantic Versioning guidelines](http://semver.org/) for release cycle transparency and to maintain backwards compatibility.
 
-# License
+## License
 
 Mini Thread is released under the [LGPL](LICENSE) file for more information.
