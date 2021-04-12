@@ -1,105 +1,124 @@
-# Contributing
+# Contributing to MiniThread
 
-First off, thank you for thinking so highly of [Mini Thread](https://github.com/RoseLeBlood/MiniThread) that you want to contribute to it! When I started this project, I was amazed that so many people asked for examples. I never expected that, thank you very much.
+We would love for you to contribute to OpenThread and help make it even better than it is today! As a contributor, here are the guidelines we would like you to follow.
 
-Since I currently do not have the resources to write more examples more quickly in the foreseeable future, you are welcome to help me. The examples are provided at [Mini Thread examples](https://github.com/RoseLeBlood/mnthread-examples).
-
-## Pull Request Process
-
-The code is licensed under the GPLv3, so you always have access to it. You can also create as many derivative works as you want. However, in order for your code to get back into the official codebase, you must provide a copyright assignment for that code.
-
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
-   build.
-2. Update the README.md with details of changes to the interface, this includes new environment 
-   variables, exposed ports, useful file locations and container parameters.
-3. Increase the version numbers in any examples files and the README.md to the new version that this
-   Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).  
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
-   do not have permission to do that, you may request the second reviewer to merge it for you.
-
-## Documentation
-
-Please document every new function and class, we use doxygen for the automatic generation of the documentation. Please adhere to this standard. Please refer: https://mesos.readthedocs.io/en/latest/doxygen-style-guide/
-Sections of code that are difficult to understand must be provided with comments in order to be able to understand the function.
-
-## Bug reporting
-
-The preferred bug reporting channel is via [Github Issues](https://github.com/RoseLeBlood/MiniThread/issues) 
-
+- [1 Code of Conduct](#code-of-conduct)
+- [2 Bugs](#bugs)
+- [3 New Features](#new-features)
+- [4 Contributing Code](#contributing-code)
+  - [4.1 Initial Setup](#initial-setup)
+  - [4.2 Submitting a Pull Request](#submitting-a-pull-request)
+- [5 Contributing Documentation](#contributing-documentation)
 
 ## Code of Conduct
 
-### Our Pledge
+Help us keep MiniThread open and inclusive. Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, gender identity and expression, level of experience,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
+## Bugs
 
-### Our Standards
+If you find a bug in the source code, you can help us by [submitting a GitHub Issue](https://github.com/RoseLeBlood/MiniThread/issues/new). The best bug reports provide a detailed description of the issue and step-by-step instructions for predictably reproducing the issue. Even better, you can [submit a Pull Request](#submitting-a-pull-request) with a fix.
 
-Examples of behavior that contributes to creating a positive environment
-include:
+## New Features
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+You can request a new feature by [submitting a GitHub Issue](https://github.com/RoseLeBlood/MiniThread/issues/new).
 
-Examples of unacceptable behavior by participants include:
+If you would like to implement a new feature, please consider the scope of the new feature:
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
+- _Large feature_: first [submit a GitHub Issue](https://github.com/RoseLeBlood/MiniThread/issues/new) and communicate your proposal so that the community can review and provide feedback. Getting early feedback will help ensure your implementation work is accepted by the community. This will also allow us to better coordinate our efforts and minimize duplicated effort.
 
+- _Small feature_: can be implemented and directly [submitted as a Pull Request](#submitting-a-pull-request).
 
-### Our Responsibilities
+## Contributing Code
 
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
+The OpenThread Project follows the "Fork-and-Pull" model for accepting contributions.
 
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
+### Initial Setup
 
-### Scope
+Setup your GitHub fork and continuous-integration services:
 
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
+1. Fork the [MiniThread repository](https://github.com/RoseLeBlood/MiniThread/) by clicking "Fork" on the web UI.
 
-### Enforcement
+Setup your local development environment:
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at [ambersophia.amshop@outlook.de]. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
+```bash
+# Clone your fork
+git clone git@github.com:<username>/minithread.git
 
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
+# Configure upstream alias
+git remote add upstream git@github.com:roseleblood/minithread.git
+```
 
-### Attribution
+### Submitting a Pull Request
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at [http://contributor-covenant.org/version/1/4][version]
+#### Branch
 
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+For each new feature, create a working branch:
 
+```bash
+# Create a working branch for your new feature
+git branch --track <branch-name> origin/main
+
+# Checkout the branch
+git checkout <branch-name>
+```
+
+#### Create Commits
+
+```bash
+# Add each modified file you'd like to include in the commit
+git add <file1> <file2>
+
+# Create a commit
+git commit
+```
+
+This will open up a text editor where you can craft your commit message.
+
+#### Upstream Sync and Clean Up
+
+Prior to submitting your pull request, you might want to do a few things to clean up your branch and make it as simple as possible for the original repo's maintainer to test, accept, and merge your work.
+
+If any commits have been made to the upstream main branch, you should rebase your development branch so that merging it will be a simple fast-forward that won't require any conflict resolution work.
+
+```bash
+# Fetch upstream main and merge with your repo's main branch
+git checkout main
+git pull upstream main
+
+# If there were any new commits, rebase your development branch
+git checkout <branch-name>
+git rebase main
+```
+
+Now, it may be desirable to squash some of your smaller commits down into a small number of larger more cohesive commits. You can do this with an interactive rebase:
+
+```bash
+# Rebase all commits on your development branch
+git checkout
+git rebase -i main
+```
+
+This will open up a text editor where you can specify which commits to squash.
+
+#### Coding Conventions and Style
+
+MiniThread uses and enforces the [OpenThread Coding Conventions and Style](STYLE_GUIDE.md) on all code.
+MiniThread currently requires [platform-io](https://platform.io/) for building, testing and uplaod the firmware to the esp32
+
+#### Push and Test
+
+```bash
+# Checkout your branch
+git checkout <branch-name>
+
+# Push to your GitHub fork:
+git push origin <branch-name>
+```
+
+#### Submit Pull Request
+
+Once you've validated that all continuous-integration checks have passed, go to the page for your fork on GitHub, select your development branch, and click the pull request button. If you need to make any adjustments to your pull request, just push the updates to GitHub. Your pull request will automatically track the changes on your development branch and update.
+
+## Contributing Documentation
+
+Documentation undergoes the same review process as code and contributions may be mirrored on our [openthread.io](https://openthread.io) website. See the [Documentation Style Guide](/doc/STYLE_GUIDE.md) for more information on how to author and format documentation for contribution.
