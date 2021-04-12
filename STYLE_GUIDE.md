@@ -1,4 +1,4 @@
-# OpenThread Coding Conventions and Style
+# Mini Thread Coding Conventions and Style
 
 - [1 C and C++](#c-and-c)
   - [Standards](#standards)
@@ -106,7 +106,7 @@
 
 ## Format and Style
 
-- OpenThread uses `script/make-pretty` to reformat code and enforce code format and style. `script/make-pretty check` build target is included in OpenThread's continuous integration and must pass before a pull request is merged.
+- Mini Thread uses `script/make-pretty` to reformat code and enforce code format and style. `script/make-pretty check` build target is included in Mini Thread's continuous integration and must pass before a pull request is merged.
 
 - `script/make-pretty` requires [clang-format v9.0.0](https://releases.llvm.org/download.html#9.0.0) for C/C++ and [yapf v0.31.0](https://github.com/google/yapf) for Python.
 
@@ -123,10 +123,10 @@
 - Names shall not give any idea of type, such as is done with System Hungarian notation.
 - Case
   - C preprocessor symbols should be all uppercase.
-  - All OpenThread class, namespace, structure, method, function, enumeration, and type names in the C/C++ language shall be in _upper camel case_. Exception: the top level OpenThread namespace 'ot'.
-  - All OpenThread instantiated names of instances of classes, namespaces, structures, methods, functions, enumerations, and types as well as method and function parameters in the C++ language shall be in _lower camel case_.
+  - All Mini Thread class, namespace, structure, method, function, enumeration, and type names in the C/C++ language shall be in _upper camel case_. Exception: the top level Mini Thread namespace 'ot'.
+  - All Mini Thread instantiated names of instances of classes, namespaces, structures, methods, functions, enumerations, and types as well as method and function parameters in the C++ language shall be in _lower camel case_.
 - Symbol Qualification
-  - All OpenThread C++ code should be in the ‘mn’ top-level namespace.
+  - All Mini Thread C++ code should be in the ‘mn’ top-level namespace.
 - Scope
   - All global data shall have a `_g` prepended to the name to denote global scope.
   - All static data shall have a `ms_` or `_sg` prepended to the name to denote static scope.
