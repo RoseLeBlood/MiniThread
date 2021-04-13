@@ -104,12 +104,6 @@
 - Code shall not use exceptions.
 - Code shall not use C++ runtime type information (RTTI), including facilities that rely upon it, such as `dynamic_cast` and `typeid`.
 
-## Format and Style
-
-- Mini Thread uses `script/make-pretty` to reformat code and enforce code format and style. `script/make-pretty check` build target is included in Mini Thread's continuous integration and must pass before a pull request is merged.
-
-- `script/make-pretty` requires [clang-format v9.0.0](https://releases.llvm.org/download.html#9.0.0) for C/C++ and [yapf v0.31.0](https://github.com/google/yapf) for Python.
-
 ### File Names
 
 - File names should match the names and types of what is described in the file. If a file contains many declarations and definitions, the author should choose the one that predominantly describes or that makes the most sense.

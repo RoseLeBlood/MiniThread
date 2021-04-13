@@ -32,7 +32,15 @@
 
 namespace mn {
 	namespace net {
-		class basic_slip_driver : public basic_ppp_net_if {
+
+		class basic_slip_net_if : public basic_net_if {
+		protected:
+			basic_slip_net_if() : basic_net_if() { }
+
+			virtual bool    create_default();
+		};
+
+		class basic_slip_driver : public basic_slip_net_if {
 		public:
 			basic_slip_driver(uint8_t uart_num = UART_NUM_2)
 				: basic_slip_driver(uart_num, 4, 36, 115200, 1024) { }

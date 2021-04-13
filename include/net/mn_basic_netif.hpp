@@ -8,7 +8,6 @@
 #include <esp_interface.h>
 #include <esp_wifi.h>
 #include <esp_netif.h>
-#include "sdkconfig.h"
 
 #include "mn_basic_ip_address.hpp"
 
@@ -85,12 +84,7 @@ namespace mn {
 #endif // CONFIG_LWIP_PPP_SUPPORT
 
 #ifdef CONFIG_LWIP_SLIP_SUPPORT
-		class basic_slip_net_if : public basic_net_if {
-		protected:
-			basic_slip_net_if() : basic_net_if() { }
 
-			virtual bool    create_default();
-		};
 #endif
 	}
 }

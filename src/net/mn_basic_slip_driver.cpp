@@ -15,6 +15,7 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
+#include "mn_config.hpp"
 #include "net/mn_basic_slip_driver.hpp"
 
 #ifdef CONFIG_LWIP_PPP_SUPPORT
@@ -22,7 +23,7 @@ namespace mn {
 	namespace net {
 
 		basic_slip_driver::basic_slip_driver(uint32_t uart_num, uint8_t tx_pin, uint8_t rx_pin, uint32_t baud, uint32_t buffer_len)
-			: basic_ppp_net_if() {
+			: basic_slip_net_if() {
 			m_slipConfig.uart_tx_pin = tx_pin;
 			m_slipConfig.uart_rx_pin = rx_pin;
 			m_slipConfig.uart_dev = uart_num;
@@ -42,7 +43,7 @@ namespace mn {
 			m_slipConfig.rx_buffer_len = buffer_len;
 		}
 		void basic_slip_driver::set_ip(const ip4_address& ip) {
-
+			MN_UNUSED_VARIABLE(ip);
 		}
 		int basic_slip_driver::start() {
 			if(!create_default() ) return ERR_MNTHREAD_NULL;
@@ -56,6 +57,8 @@ namespace mn {
 			//ESP_ERROR_CHECK(esp_slip_driver_install(&config, &slip_ctx));
 
 			ESP_ERROR_CHECK(esp_netif_attach(m_pNetIf, slip_driver));
+
+			return ESP_OK;
 		}
 	}
 }
