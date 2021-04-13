@@ -19,17 +19,12 @@
 #ifndef __LIBMIN_THREAD_H_
 #define __LIBMIN_THREAD_H_
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+#include <freertos/queue.h>
+
 #include "mn_config.hpp"
-
-#define configUSE_IDLE_HOOK 1
-#define configUSE_DAEMON_TASK_STARTUP_HOOK 1
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "freertos/task.h"
-#include "freertos/queue.h"
-
-
 #include "mn_version.hpp"
 #include "mn_autolock.hpp"
 #include "mn_micros.hpp"

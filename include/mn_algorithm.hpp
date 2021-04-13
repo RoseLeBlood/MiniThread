@@ -1,31 +1,29 @@
-/** 
+/**
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2021 Amber-Sophia Schroeck
  *
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
 
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
+ * <https://www.gnu.org/licenses/>.
 */
 
 #ifndef _MINLIB_STL_ALGORITHM_H_
 #define _MINLIB_STL_ALGORITHM_H_
 
-#include "mn_defines.hpp"
+#include "mn_config.hpp"
 
 #include "utils/mn_alignment.hpp"
 #include "utils/mn_inttokey.hpp"
 #include "utils/mn_utils.hpp"
-
-
 #include "mn_typetraits.hpp"
 #include "mn_iterator.hpp"
 #include "mn_functional.hpp"
@@ -48,9 +46,9 @@ namespace mn {
 
     /**
      * @brief Copy N elements from src to dest
-     * 
+     *
      * @tparam T The type of element
-     * @param src The source 
+     * @param src The source
      * @param n How many elements are copy te destination
      * @param dest The destination
      */
@@ -93,12 +91,12 @@ namespace mn {
         }
 	}
 
-	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TFn) 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TFn)
     TFn foreach(TIter src, TIter last, TFn fn) {
         while (src!=last)  {
             fn (*src); ++src;
         }
-        return (fn);      
+        return (fn);
 	}
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
@@ -133,7 +131,7 @@ namespace mn {
         }
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred) 
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred)
     inline TIter lower_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
@@ -151,7 +149,7 @@ namespace mn {
 	        return src;
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred) 
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred)
     inline TIter upper_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
@@ -169,7 +167,7 @@ namespace mn {
 	        return src;
 	}
 
-	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T) 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T)
     TIter find(TIter src, TIter last, const T& val) {
         while (src != last) {
             if ((*src) == val) return src;
@@ -178,7 +176,7 @@ namespace mn {
         return last;
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class ,TIter, typename, T, class, TPred) 
+	MN_TEMPLATE_FULL_DECL_THREE(class ,TIter, typename, T, class, TPred)
     TIter find_if(TIter src, TIter last, const T& val, const TPred& pred) {
         while (src != last) {
             if (pred(*src, val))
@@ -188,7 +186,7 @@ namespace mn {
         return last;
 	}
 
-	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T) 
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T)
     void accumulate(TIter src, TIter last, T& dest) {
         while (src != last)  {
             dest += *src; ++src;
@@ -214,9 +212,9 @@ namespace mn {
     inline bool is_range(const T ch, const T min, const T max) { return (ch >= min && ch <= max); }
 
     inline bool islower(char ch) { return is_range<char>(ch, 0x61, 0x7A); }
-    
+
     inline bool isupper(char ch) { return is_range<char>(ch, 0x41, 0x5A); }
-    
+
     inline bool isalpha(char ch) { return (isupper(ch) ||  islower(ch) ); }
 
     inline bool isdigit(char ch) { return is_range<char>(ch, 0x30,  0x39); }
@@ -236,10 +234,10 @@ namespace mn {
     inline bool isalnum(char ch)  { return isdigit(ch) || isalpha(ch); }
 
     inline char hex2char(char ch) {
-        return ( isdigit(ch) ) ?  ch - 48 :  ( islower(ch) ) ?  ch - 87 : 
+        return ( isdigit(ch) ) ?  ch - 48 :  ( islower(ch) ) ?  ch - 87 :
                ( isupper(ch) ) ?  ch - 55 :  0;
-    } 
-    
+    }
+
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline T max(const T& x, const T& y) {
@@ -251,7 +249,7 @@ namespace mn {
 	    return x < y ? x : y;
 	}
 
-	MN_TEMPLATE_FULL_DECL_ONE(typename, TAssignable) 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, TAssignable)
     void swap(TAssignable& a, TAssignable& b) {
         TAssignable tmp(a);
         a = b;

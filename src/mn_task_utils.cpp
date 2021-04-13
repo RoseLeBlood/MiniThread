@@ -2,21 +2,23 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "mn_config.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #include "mn_task_utils.hpp"
 #include "mn_task.hpp"
@@ -75,7 +77,7 @@ namespace mn {
     //  notify_take
     //-----------------------------------
     uint32_t task_utils::notify_take(bool bClearCountOnExit, TickType_t xTicksToWait) {
-        return ulTaskNotifyTake( bClearCountOnExit ? pdTRUE : pdFALSE, 
+        return ulTaskNotifyTake( bClearCountOnExit ? pdTRUE : pdFALSE,
                                 xTicksToWait );
     }
 
@@ -94,7 +96,7 @@ namespace mn {
         void* handler = (task != 0) ? task->get_handle() : xTaskGetCurrentTaskHandle();
 
         vTaskSetThreadLocalStoragePointer( handler, index, value );
-        
+
     }
     void* task_utils::get_storage_pointer(basic_task* task, unsigned short index) {
         void* handler = (task != 0) ? task->get_handle() : xTaskGetCurrentTaskHandle();

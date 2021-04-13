@@ -2,34 +2,35 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
-#include "mn_sleep.hpp"
+#include "mn_config.hpp"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_log.h"
-#include "esp_err.h"
-#include "nvs_flash.h"
-#include "esp_system.h"
-#include "esp_spi_flash.h"
-#include "sdkconfig.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
+#include <freertos/task.h>
 
-#include "esp_attr.h"
-#include "esp_partition.h"
+#include <esp_log.h>
+#include <esp_err.h>
+#include <nvs_flash.h>
+#include <esp_system.h>
+#include <esp_spi_flash.h>
+#include <esp_attr.h>
+#include <esp_partition.h>
 #include <sys/time.h>
+
+#include "mn_sleep.hpp"
 
 namespace mn {
 	//-----------------------------------
@@ -45,7 +46,7 @@ namespace mn {
 	//-----------------------------------
 	int usleep(useconds_t usec) {
 		vTaskDelay(usec / ((TickType_t) 1000000 / configTICK_RATE_HZ));
-		return 0; 
+		return 0;
 	}
 
 	//-----------------------------------
@@ -71,7 +72,7 @@ namespace mn {
 		}
 
 		vTaskDelay(msecs / portTICK_PERIOD_MS);
-		
+
 		if (rem != NULL) {
 			rem->tv_sec = 0;
 			rem->tv_nsec = 0;

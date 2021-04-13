@@ -2,28 +2,30 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
-#ifndef _MINLIB_CRITICAL_H_ 
+#ifndef _MINLIB_CRITICAL_H_
 #define _MINLIB_CRITICAL_H_
+
+#include "mn_config.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #include "mn_error.hpp"
 #include "mn_micros.hpp"
 #include "mn_autolock.hpp"
-
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 
 #include "slock/mn_criticalsection.hpp"
 #include "slock/mn_interrupts_lock.hpp"
@@ -31,8 +33,8 @@
 
 namespace mn {
     namespace system {
-                
-        /** 
+
+        /**
          * @code{c}
          * void function() {
          *  critical_section_t critical_section;
@@ -40,9 +42,9 @@ namespace mn {
          *      // locked section code goes hier
          *  }
          *  // unlocked section  code goes hier
-         * } 
+         * }
          * @endcode
-         */ 
+         */
         #define CRITICAL_SECTION(OBJECT) if( (bool)(auto_critical_t lock(OBJECT)) )
 
         /**
@@ -53,9 +55,9 @@ namespace mn {
          *      // locked section code goes hier
          *  }
          *  // unlocked section  code goes hier
-         * } 
+         * }
          * @endcode
-         */ 
+         */
         #define CRITICAL_SECTION_TIMEDOUT(OBJECT) if( (bool)(auto_critical_section_timedout_t lock(OBJECT)) )
         /**
          * @code{c}
@@ -65,13 +67,13 @@ namespace mn {
          *      // locked section code goes hier
          *  }
          *  // unlocked section  code goes hier
-         * } 
+         * }
          * @endcode
          */
         #define CRITICAL_SECTION_NESTED(OBJECT) if( (bool)(auto_critical_section_nested_t lock(OBJECT)) )
 
 
-        /** 
+        /**
          * @code{c}
          * void function() {
          *  interrupts_lock_t interrupts_lock;
@@ -79,12 +81,12 @@ namespace mn {
          *      // locked section code goes hier
          *  }
          *  // unlocked section  code goes hier
-         * } 
+         * }
          * @endcode
-         */ 
+         */
         #define INTERRUPTS_LOCK(OBJECT) if( (bool)(auto_interrupts_lock_t lock(OBJECT)) )
 
-        /** 
+        /**
          * @code{c}
          * void function() {
          *  schedular_lock_t schedlock;
@@ -92,9 +94,9 @@ namespace mn {
          *      // locked section code goes hier
          *  }
          *  // unlocked section  code goes hier
-         * } 
+         * }
          * @endcode
-         */ 
+         */
         #define SCHEDULAR_LOCK(OBJECT) if( (bool)(auto_schedular_lock_t lock(OBJECT)) )
 
         /** using for the basic_critical_section class, for miniTask type design */

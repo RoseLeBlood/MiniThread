@@ -1,19 +1,19 @@
 #ifndef _MINTHREAH_BASIC_NETIF_HPP_
 #define _MINTHREAH_BASIC_NETIF_HPP_
 
-#include "sdkconfig.h"
 #include "mn_config.hpp"
-#include "mn_lock.hpp"
+
 
 #include <esp_interface.h>
-#include <esp_wifi.h>
 #include <esp_netif.h>
-
-#include "mn_basic_ip_address.hpp"
+#include <esp_wifi.h>
 
 #if CONFIG_ETH_USE_SPI_ETHERNET
-#include "driver/spi_master.h"
+#include <driver/spi_master.h>
 #endif // CONFIG_ETH_USE_SPI_ETHERNET
+
+#include "mn_basic_ip_address.hpp"
+#include "mn_lock.hpp"
 
 namespace mn {
 	namespace net {
@@ -71,7 +71,7 @@ namespace mn {
 		protected:
 			esp_interface_t 	m_ifInterface;
 		};
-#ifdef CONFIG_LWIP_PPP_SUPPORT
+#if CONFIG_LWIP_PPP_SUPPORT
 		class basic_ppp_net_if : public basic_net_if {
 		protected:
 			basic_ppp_net_if() : basic_net_if() { }
@@ -83,9 +83,6 @@ namespace mn {
 		};
 #endif // CONFIG_LWIP_PPP_SUPPORT
 
-#ifdef CONFIG_LWIP_SLIP_SUPPORT
-
-#endif
 	}
 }
 

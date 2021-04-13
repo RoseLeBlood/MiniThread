@@ -2,27 +2,28 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
-#include <vector>
+
 #include "mn_config.hpp"
-#include "mn_task.hpp"
-
-
-
 #include "queue/mn_workqueue.hpp"
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/queue.h>
+#include <vector>
+
+#include "mn_task.hpp"
 namespace mn {
     namespace queue {
         //-----------------------------------
@@ -39,7 +40,7 @@ namespace mn {
             m_uiMaxWorkItems(uiMaxWorkItems),
             m_uiNumWorks(0),
             m_uiErrorsNumWorks(0),
-            m_bRunning(false) { 
+            m_bRunning(false) {
 
             m_pWorkItemQueue = new queue_t(uiMaxWorkItems, sizeof(work_queue_item_t *));
         }
@@ -65,8 +66,8 @@ namespace mn {
             }
 
             m_ThreadJob.unlock();
-            
-            
+
+
             return ERR_WORKQUEUE_OK;
         }
 
@@ -101,7 +102,7 @@ namespace mn {
             work_queue_item_t* job = 0;
 
             if(m_pWorkItemQueue->is_empty()) return NULL;
-            
+
             m_pWorkItemQueue->dequeue(&job, timeout);
 
             return job;
@@ -110,16 +111,16 @@ namespace mn {
         //-----------------------------------
         //  get_num_items_worked
         //-----------------------------------
-        uint8_t basic_work_queue::get_num_items_worked() { 
+        uint8_t basic_work_queue::get_num_items_worked() {
             automutx_t lock(m_ThreadStatus);
 
-            return m_uiNumWorks; 
+            return m_uiNumWorks;
         }
 
         //-----------------------------------
         //  get_num_items_error
         //-----------------------------------
-        uint8_t basic_work_queue::get_num_items_error() { 
+        uint8_t basic_work_queue::get_num_items_error() {
             automutx_t lock(m_ThreadStatus);
 
             return m_uiErrorsNumWorks;

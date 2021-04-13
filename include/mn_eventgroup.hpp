@@ -2,31 +2,31 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ESP32_EVENT_GROUP_
 #define MINLIB_ESP32_EVENT_GROUP_
 
 #include "mn_config.hpp"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/event_groups.h>
 
 namespace mn {
     /**
      * @ingroup base
-     */ 
+     */
     class basic_event_group {
     public:
         /**
@@ -39,16 +39,16 @@ namespace mn {
          * 0 to bit 7).  If configUSE_16_BIT_TICKS is set to 0 then each event group has
          * 24 usable bits (bit 0 to bit 23).  The EventBits_t type is used to store
          * event bits within an event group.
-         * 
-         */ 
+         *
+         */
         basic_event_group();
         /**
          * Create from a FreeRTOS created event group
-         */ 
+         */
         basic_event_group(EventGroupHandle_t handle);
 
         /**
-         * Delete an event group 
+         * Delete an event group
          * Tasks that are blocked on the event group will be
          * unblocked and obtain 0 as the event group's value.
          */

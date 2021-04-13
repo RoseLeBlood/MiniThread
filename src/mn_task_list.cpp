@@ -15,6 +15,8 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
+#include "mn_config.hpp"
+
 #include "mn_task.hpp"
 #include "mn_task_list.hpp"
 

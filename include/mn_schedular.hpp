@@ -19,8 +19,9 @@
 #ifndef _MINLIB_VECTOR_SCHEDULAR_H_
 #define _MINLIB_VECTOR_SCHEDULAR_H_
 
-#include "mn_error.hpp"
 #include "mn_config.hpp"
+#include "mn_error.hpp"
+
 
 namespace mn {
     /**

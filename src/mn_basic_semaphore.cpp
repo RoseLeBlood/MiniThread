@@ -15,22 +15,26 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#include "mn_basic_semaphore.hpp"
-#include "mn_error.hpp"
+#include "mn_config.hpp"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "freertos/queue.h"
-#include "freertos/task.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/queue.h>
+#include <freertos/task.h>
+
 #include <stdio.h>
-
-#include "esp_attr.h"
-
-#include "mn_micros.hpp"
-
 #include <time.h>
 #include <sys/time.h>
+
+#include <esp_attr.h>
 #include <esp_timer.h>
+
+#include "mn_basic_semaphore.hpp"
+#include "mn_error.hpp"
+#include "mn_micros.hpp"
+
+
+
 
 namespace mn {
   //-----------------------------------

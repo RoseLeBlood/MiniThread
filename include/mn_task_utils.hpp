@@ -2,23 +2,23 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ESP32_THREAD_UTILS_
 #define MINLIB_ESP32_THREAD_UTILS_
 
-
+#include "mn_config.hpp"
 #include "mn_autolock.hpp"
 
 namespace mn {
@@ -27,7 +27,7 @@ namespace mn {
   /**
    * FreeRTOS wrapper for notify and broadcast a task
    * \ingroup task
-   */ 
+   */
   class task_utils {
   public:
     /** Actions that can be performed when task_utils::notify() is called. */
@@ -41,7 +41,7 @@ namespace mn {
 
     /**
      * Send task notification.
-     * 
+     *
      * @param pTaskToNotify The task being notified.
      *
      * @param ulValue Data that can be sent with the notification. How the data is
@@ -49,19 +49,19 @@ namespace mn {
      *
      * @param eAction Specifies how the notification updates the task's notification
      * value, if at all.
-     * 
+     *
      * @return true If task notify and false If not
-     */ 
+     */
     static bool notify(basic_task* pTaskToNotify, uint32_t ulValue, task_utils::action eAction);
 
     /**
      * Recive a task notification.
-     * 
+     *
      * @param bClearCountOnExit if is false then the task's
      * notification value is decremented when the function exits.
      * If true then the task's notification value is cleared to zero when the
      * function exits.
-     * 
+     *
      * @param xTicksToWait The maximum amount of time that the task should wait in
      * the Blocked state for the task's notification value to be greater than zero,
      * should the count not already be greater than zero when
@@ -69,26 +69,26 @@ namespace mn {
      * time while it is in the Blocked state. This is specified in kernel ticks,
      * the function ms_to_ticks( value_in_ms ) can be used to convert a time
      * specified in milliseconds to a time specified in ticks.
-     * 
-     * 
+     *
+     *
      * @return The task's notification count before it is either cleared to zero or
-     * decremented 
-     */ 
-    static uint32_t notify_take(bool bClearCountOnExit, TickType_t xTicksToWait); 
+     * decremented
+     */
+    static uint32_t notify_take(bool bClearCountOnExit, TickType_t xTicksToWait);
 
     /**
      * Send a task notification.
      *
-     * 
+     *
      * @param pTaskToNotify The task being notified.
-     * 
-     * @return true if give and else if not 
+     *
+     * @return true if give and else if not
      */
     static bool notify_give(basic_task* pTaskToNotify);
 
     /**
      * Wait for task notification
-     * 
+     *
      * A task can use notify_wait() to block
      * to wait for its notification value to have a non-zero value.
      * The task does not consume any CPU time while it is in the Blocked state.
@@ -97,7 +97,7 @@ namespace mn {
      * will be cleared in the calling task's notification value before the task
      * checks to see if any notifications are pending, and optionally blocks if no
      * notifications are pending.
-     * 
+     *
      * @param ulBitsToClearOnExit If a notification is pending or received before
      * the calling task exits the notify_wait() function then the task's
      * notification value is passed out using the pulNotificationValue parameter.
@@ -110,9 +110,9 @@ namespace mn {
      * the Blocked state for a notification to be received, should a notification
      * not already be pending when notify_wait() was called.
      *
-     * @return If a notification was received then true is returned. 
+     * @return If a notification was received then true is returned.
      * Otherwise false is returned.
-     */ 
+     */
     static bool notify_wait(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit,
                             uint32_t *pulNotificationValue, TickType_t xTicksToWait );
 
@@ -131,7 +131,7 @@ namespace mn {
     static void set_storage_pointer(basic_task* task, unsigned short index, void* value);
     /**
      * Get local storage pointer specific to the given task.
-     * 
+     *
      * The kernel does not use the pointers itself, so the application writer
      * can use the pointers for any purpose they wish.
      *
@@ -140,8 +140,8 @@ namespace mn {
      *               configNUM_THREAD_LOCAL_STORAGE_POINTERS - 1.
      * @return  Pointer value
      */
-    static void* get_storage_pointer(basic_task* task, unsigned short index); 
-    #endif                       
+    static void* get_storage_pointer(basic_task* task, unsigned short index);
+    #endif
   };
 
   using task_utils_t = task_utils;

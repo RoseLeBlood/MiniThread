@@ -2,21 +2,23 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ESP32_ERROR_
 #define MINLIB_ESP32_ERROR_
+
+#include "mn_config.hpp"
 
 /**
  * @ingroup base
@@ -29,16 +31,16 @@
 
 /**
  * Timed out
- */ 
+ */
 #define ERR_MNTHREAD_TIMEOUT                     0x0001
 /**
  * The given param was null or error in malloc
- */ 
+ */
 #define ERR_MNTHREAD_NULL                        0x0002
 
 /**
  * Currently not defined error
- */ 
+ */
 #define ERR_MNTHREAD_UNKN                        0x0003
 
 /**
@@ -47,27 +49,27 @@
 #define ERR_MUTEX_OK                    NO_ERROR
 /**
  * The mutex allready created
- */ 
+ */
 #define ERR_MUTEX_ALREADYINIT			0x1001
 /**
  * The mutex is not created, please call create first
- */ 
+ */
 #define ERR_MUTEX_NOTINIT				0x1002
 /**
  * The mutex can't create
- */ 
+ */
 #define ERR_MUTEX_CANTCREATEMUTEX		0x1003
 /**
  * It timed out on lock the mutex - mutex are not locked
- */ 
+ */
 #define ERR_MUTEX_LOCK                  0x1004
 /**
  * Error to unlock the mutex, call lock first
- */ 
+ */
 #define ERR_MUTEX_UNLOCK                0x1005
 
 
-// -------------------------------- 
+// --------------------------------
 
 /**
  * No Error in one of the spinlock or semaphore function
@@ -75,27 +77,27 @@
 #define ERR_SPINLOCK_OK                 NO_ERROR
 /**
  * The spinlock or semaphore allready created
- */ 
+ */
 #define ERR_SPINLOCK_ALREADYINIT		0x2001
 /**
  * The spinlock or semaphore is not created, please call create first
- */ 
+ */
 #define ERR_SPINLOCK_NOTINIT			0x2002
 /**
  * The spinlock or semaphore can't create
- */ 
+ */
 #define ERR_SPINLOCK_CANTCREATESPINLOCK	0x2003
 /**
  * It timed out on lock the spinlock or semaphore - spinlock or semaphore are not locked
- */ 
+ */
 #define ERR_SPINLOCK_LOCK               0x2004
 /**
  * Error to unlock the spinlock or semaphore, call lock first
- */ 
+ */
 #define ERR_SPINLOCK_UNLOCK             0x2005
 /**
  * Count is bigger are the max count - spinlock not created
- */ 
+ */
 #define ERR_SPINLOCK_BAD_INITIALCOUNT   0x2006
 
 // --------------------------------
@@ -105,8 +107,8 @@
  */
 #define ERR_TASK_OK                   NO_ERROR
 /**
- * The Lock objects are maked error 
- */ 
+ * The Lock objects are maked error
+ */
 #define ERR_TASK_CANTINITMUTEX		    0x3001
 /**
  * The thread (i.e. task) can not start unknown error
@@ -136,8 +138,8 @@
  */
 #define ERR_COROUTINE_CANTINITLOCKT  		0x4001
 /**
- * Tasklet can not created 
- */ 
+ * Tasklet can not created
+ */
 #define ERR_COROUTINE_CANSHEDULE   		    0x4002
 
 // --------------------------------
@@ -172,7 +174,7 @@
 #define ERR_QUEUE_PEEK                  0x5006
 /**
  * Can not create the lock object for the blocking queue
- */ 
+ */
 #define ERR_QUEUE_CANTCREATE_LOCK       0x5007
 
 /**
@@ -217,11 +219,11 @@
  */
 #define ERR_WORKQUEUE_CANTCREATE			0x7002
 /**
- * Warning 
+ * Warning
  */
 #define ERR_WORKQUEUE_WARNING               0x7003
 /**
- * The mutex are not 
+ * The mutex can not init
  */
 #define ERR_WORKQUEUE_CANTINITMUTEX         0x7004
 /**
@@ -230,24 +232,52 @@
 #define ERR_WORKQUEUE_ADD                   0x7005
 
 
-
+/**
+ * Basis error - no error
+ */
 #define ERR_SYSTEM_OK                         NO_ERROR
-
+/**
+ * Basis error - error can not lock
+ */
 #define ERR_SYSTEM_LOCK                       0x0001
-
+/**
+ * Basis error - error can not unlock
+ */
 #define ERR_SYSTEM_UNLOCK                     0x0002
-
+/**
+ * Basis error - error in called functions
+ */
 #define ERR_SYSTEM_NO_RETURN                  0x0003
 
 
-
+/**
+ * No error
+ */
 #define ERR_MEMPOOL_OK                    NO_ERROR
+/**
+ * The given ligent im mempool are bad
+ */
 #define ERR_MEMPOOL_BADALIGNMENT          0x8003
+/**
+ * The mempool can not create
+ */
 #define ERR_MEMPOOL_CREATE                0x8004
+/**
+ * Reserve
+ */
 #define ERR_MEMPOOL_MIN                   0x8005
 
+/**
+ * No Error in one of the tickhook function
+ */
 #define ERR_TICKHOOK_OK                   NO_ERROR
-#define ERR_TICKHOOK_ADD                  0x9001 
-#define ERR_TICKHOOK_ENTRY_NULL           0x900A       
+/**
+ * Error to add a new tickhook
+ */
+#define ERR_TICKHOOK_ADD                  0x9001
+/**
+ * The entry is null
+ */
+#define ERR_TICKHOOK_ENTRY_NULL           0x900A
 
 #endif

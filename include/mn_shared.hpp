@@ -2,31 +2,32 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ESP32_SHARED_OBJECT_
 #define MINLIB_ESP32_SHARED_OBJECT_
 
 #include "mn_config.hpp"
-#include "mn_autolock.hpp"
 
 #include <stdint.h>
-#include <esp_types.h>
 #include <string>
+#include <esp_types.h>
+
+#include "mn_autolock.hpp"
 
 namespace mn {
-    /** 
+    /**
      * Template class used to protect a shared resource with a Mutex.
      * @ingroup preview
      */
@@ -36,13 +37,13 @@ namespace mn {
         using object_t = TOBJECT;
         using ref_object_t = TOBJECT&;
 
-        /** 
+        /**
          * Resource constructor.
          * @param value sets the initial value of the resource.
          */
-        basic_shared_object (const ref_object_t refValue) 
+        basic_shared_object (const ref_object_t refValue)
             : m_refValue(refValue)  { }
-        /** 
+        /**
          * Get the value of the shared resource.
          * @return The value of the shared resource.
          */
@@ -51,7 +52,7 @@ namespace mn {
 
             return m_refValue;
         }
-        /** 
+        /**
          * Sets the value of the shared resource with the specified new_value.
          * @param refNewValue The new value for this shared resource
          */
@@ -62,7 +63,7 @@ namespace mn {
         /**
          * Operator to set the value of the shared resource.
          * @param refNewValue The new value for this shared resource
-         */ 
+         */
         void operator = (const ref_object_t refNewValue)  {
             set_object(refNewValue);
         }
@@ -75,11 +76,11 @@ namespace mn {
         }
 
     protected:
-        /** 
+        /**
          * the controll mutex
          */
         mutex_t m_pReadWriteLock;
-        /** 
+        /**
          * reference of the object
          */
         ref_object_t m_refValue;

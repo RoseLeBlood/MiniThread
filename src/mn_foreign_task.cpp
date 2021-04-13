@@ -2,19 +2,20 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
+#include "mn_config.hpp"
 #include "mn_foreign_task.hpp"
 
 #if MN_THREAD_CONFIG_FOREIGIN_TASK_SUPPORT == MN_THREAD_CONFIG_YES
@@ -24,8 +25,8 @@ namespace mn {
     //-----------------------------------
     //  construtor
     //-----------------------------------
-    foreign_task::foreign_task() 
-      : foreign_task(xTaskGetCurrentTaskHandle()) { 
+    foreign_task::foreign_task()
+      : foreign_task(xTaskGetCurrentTaskHandle()) {
 
       m_strName = "current_foreign_task";
     }
@@ -34,8 +35,8 @@ namespace mn {
     //  construtor
     //-----------------------------------
     foreign_task::foreign_task(void* t)
-      : basic_task() { 
-      
+      : basic_task() {
+
       m_pHandle = t;
 
       m_strName = "foreign_task";
@@ -85,7 +86,7 @@ namespace mn {
       foreign_task* thread = foreign_task::create_from(rawHandle);
 
       if(thread) thread->m_iCore = cpuid;
-      
+
       return thread;
     }
 

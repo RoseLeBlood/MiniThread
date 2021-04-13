@@ -18,18 +18,21 @@
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "freertos/task.h"
+#include "mn_config.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/semphr.h>
+#include <freertos/task.h>
+
+#include <string>
 
 #include "mn_autolock.hpp"
 #include "mn_error.hpp"
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
-
 #include "mn_eventgroup.hpp"
 
-#include <string>
+
 
 namespace mn {
 

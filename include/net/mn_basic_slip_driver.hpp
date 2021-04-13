@@ -19,16 +19,17 @@
 #define __MINILIB_BASIC_SLIP_DRIVER_H__
 
 #include "../mn_config.hpp"
-#include "net/mn_basic_netif.hpp"
+
 
 #ifdef CONFIG_LWIP_PPP_SUPPORT
 
-
 #include <esp_netif.h>
-#include <esp_log.h>
 #include <esp_netif_slip.h>
 #include <esp_netif_net_stack.h>
 #include <esp_netif_lwip_slip.h>
+#include <esp_log.h>
+
+#include "net/mn_basic_netif.hpp"
 
 namespace mn {
 	namespace net {

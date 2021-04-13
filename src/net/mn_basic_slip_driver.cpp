@@ -18,7 +18,7 @@
 #include "mn_config.hpp"
 #include "net/mn_basic_slip_driver.hpp"
 
-#ifdef CONFIG_LWIP_PPP_SUPPORT
+#if CONFIG_LWIP_SLIP_SUPPORT
 namespace mn {
 	namespace net {
 

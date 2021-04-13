@@ -18,6 +18,8 @@
 #ifndef _MINLIB_cfc6e05b_d8d4_4a9d_ae4b_42fa56cd3443_H_
 #define _MINLIB_cfc6e05b_d8d4_4a9d_ae4b_42fa56cd3443_H_
 
+#include "mn_config.hpp"
+
 #define MN_TEMPLATE_FULL_DECL()                                     template< >
 #define MN_TEMPLATE_FULL_DECL_ONE(d1,t1)		                    template <d1 t1>
 #define MN_TEMPLATE_FULL_DECL_TWO(d1,t1,d2,t2)	                    template <d1 t1, d2 t2>
@@ -36,4 +38,4 @@
 
 
 
-#endif
+#endif // _MINLIB_cfc6e05b_d8d4_4a9d_ae4b_42fa56cd3443_H_

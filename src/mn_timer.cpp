@@ -2,21 +2,23 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
-#include "freertos/FreeRTOS.h"
-#include "freertos/timers.h"
+#include "mn_config.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/timers.h>
 
 #include "mn_error.hpp"
 #include "mn_timer.hpp"
@@ -37,19 +39,19 @@ namespace mn {
 
         #if( configSUPPORT_STATIC_ALLOCATION == 1 )
 
-        m_pHandle = xTimerCreateStatic(m_strName, m_uiPeriod, 
+        m_pHandle = xTimerCreateStatic(m_strName, m_uiPeriod,
                                 m_bIsOneShot ? pdFALSE : pdTRUE,
-                                this, runtimerstub, 
+                                this, runtimerstub,
                                 &m_xTimerBuffer);
 
         #else
-        
-        m_pHandle = xTimerCreate(m_strName, m_uiPeriod, 
+
+        m_pHandle = xTimerCreate(m_strName, m_uiPeriod,
                                 m_bIsOneShot ? pdFALSE : pdTRUE,
                                 this, runtimerstub);
         #endif
-        
-        if (m_pHandle == NULL) 
+
+        if (m_pHandle == NULL)
             return ERR_TIMER_CANTCREATE;
 
         m_iTimerID = ( int32_t )pvTimerGetTimerID(m_pHandle);
@@ -73,7 +75,7 @@ namespace mn {
     //-----------------------------------
     int basic_timer::active(unsigned int timeout) {
         if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
-        
+
         BaseType_t success = 0;
 
         if (xPortInIsrContext()) {
@@ -93,7 +95,7 @@ namespace mn {
     //-----------------------------------
     int basic_timer::inactive(unsigned int timeout) {
         if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
-        
+
         BaseType_t success = 0;
 
         if (xPortInIsrContext()) {
@@ -113,7 +115,7 @@ namespace mn {
     //-----------------------------------
     int basic_timer::reset(unsigned int timeout) {
         if (m_pHandle == NULL) return ERR_TIMER_NOTCREATED;
-        
+
         BaseType_t success = 0;
 
         if (xPortInIsrContext()) {
@@ -135,7 +137,7 @@ namespace mn {
         if (m_pHandle == NULL) return false;
 
         BaseType_t success = 0;
-        
+
         if (xPortInIsrContext()) {
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
             success = xTimerChangePeriodFromISR( m_pHandle, uiNewPeriod, &xHigherPriorityTaskWoken );

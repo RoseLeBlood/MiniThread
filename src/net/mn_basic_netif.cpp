@@ -1,3 +1,4 @@
+#include "mn_config.hpp"
 #include "net/mn_basic_netif.hpp"
 
 #include <esp_eth.h>
@@ -7,6 +8,7 @@
 #include <esp_log.h>
 
 #include <esp_netif_ppp.h>
+
 #include <cstring>
 
 
@@ -77,24 +79,7 @@ namespace mn {
 		}
 
 
-		///----------------------------ETH
-#if 0
-		esp_netif_t* basic_ethernet_nef_if::create_default() {
-
-			return nullptr;
-		}
-#endif // CONFIG_ETH_ENABLED
-
-#if CONFIG_LWIP_SLIP_SUPPORT
-		bool basic_slip_net_if::create_default() {
-			esp_netif_config_t cfg = ESP_NETIF_BASE_DEFAULT_SLIP();
-			m_pNetIf = esp_netif_new(&cfg);
-
-			return m_pNetIf != NULL;
-		}
-#endif // CONFIG_LWIP_SLIP_SUPPORT
-
-#ifdef CONFIG_LWIP_PPP_SUPPORT
+#if CONFIG_LWIP_PPP_SUPPORT && 0
 		bool basic_slip_net_ppp::create_default() {
 			esp_netif_config_t cfg = ESP_NETIF_BASE_DEFAULT_PPP();
 			m_pNetIf = esp_netif_new(&cfg);

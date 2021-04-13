@@ -2,31 +2,33 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>;.  
+*<https://www.gnu.org/licenses/>;.
 */
 #ifndef _MINLIB_08365b25_a93f_4c7e_81f8_38958486f7b2_H_
 #define _MINLIB_08365b25_a93f_4c7e_81f8_38958486f7b2_H_
 
-#include "mn_def.hpp"
+#include "mn_config.hpp"
+
 #include <stdint.h>
 
+#include "mn_def.hpp"
 #include "atomic/mn_atomic_flags.hpp"
 #include "atomic/mn_atomic_primary_types.hpp"
 
 
 namespace mn {
-    
+
 
     template<typename T>
     using atomic_ptr            = _atomic_ptr<T*>;
@@ -34,11 +36,11 @@ namespace mn {
 
     // Signad basic types
     using atomic_bool           = _atomic<bool>;
-    using atomic_char	        = _atomic<char>; 
-    using atomic_schar	        = _atomic<signed char>; 
-    using atomic_short	        = _atomic<short>; 
-    using atomic_int	        = _atomic<int>; 
-    using atomic_long	        = _atomic<long>; 
+    using atomic_char	        = _atomic<char>;
+    using atomic_schar	        = _atomic<signed char>;
+    using atomic_short	        = _atomic<short>;
+    using atomic_int	        = _atomic<int>;
+    using atomic_long	        = _atomic<long>;
     using atomic_int_least8_t	= _atomic<int_least8_t>;
     using atomic_int_least16_t	= _atomic<int_least16_t>;
     using atomic_int_least32_t	= _atomic<int_least32_t>;
@@ -70,7 +72,7 @@ namespace mn {
     using atomic_uint32_t       = _atomic<uint32_t>;
     using atomic_uint64_t       = _atomic<uint64_t>;
 
-    
+
     // Spzial types
     using atomic_intptr_t	    = _atomic<intptr_t>;
     using atomic_uintptr_t	    = _atomic<uintptr_t>;

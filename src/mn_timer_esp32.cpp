@@ -16,14 +16,16 @@
 *<https://www.gnu.org/licenses/>.
 */
 
+#include "mn_config.hpp"
 
-#include "mn_error.hpp"
-#include "esp_timer.h"
-#include "mn_timer_esp32.hpp"
-
+#include <esp_timer.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+
+
+#include "mn_error.hpp"
+#include "mn_timer_esp32.hpp"
 
 namespace mn {
     namespace esp32 {

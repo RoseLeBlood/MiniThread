@@ -18,17 +18,16 @@
 #ifndef MINLIB_ESP32_TICK_HOOK_
 #define MINLIB_ESP32_TICK_HOOK_
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "mn_config.hpp"
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #if ( configUSE_TICK_HOOK == 1 )
 
-#include "mn_config.hpp"
-#include "mn_task.hpp"
 #include "mn_error.hpp"
-
 #include "queue/mn_queue.hpp"
-
+#include "mn_task.hpp"
 #include "mn_tickhook_entry.hpp"
 
 
