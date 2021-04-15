@@ -30,7 +30,7 @@ namespace mn {
     : basic_semaphore(), m_uiCount(count), m_uiMaxCount(maxcount) {
 
       if ( (m_uiMaxCount < m_uiCount) && (m_uiMaxCount == 0) ) {
-        THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
+        MN_THROW_LOCK_EXP(ERR_SPINLOCK_BAD_INITIALCOUNT);
       } else {
       #if( configSUPPORT_STATIC_ALLOCATION == 1 )
         m_pSpinlock = xSemaphoreCreateCountingStatic(m_uiMaxCount, m_uiCount, &m_SemaphoreBasicBuffer);
@@ -41,7 +41,7 @@ namespace mn {
         if (m_pSpinlock) {
           unlock();
         } else {
-          THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
+          MN_THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
         }
       }
   }
@@ -53,7 +53,7 @@ namespace mn {
     if(m_pSpinlock) {
       vSemaphoreDelete(m_pSpinlock);
     } else {
-      THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+      MN_THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
     }
   }
 

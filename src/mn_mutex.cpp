@@ -41,7 +41,7 @@ namespace mn {
     if (m_pSpinlock) {
       unlock();
     } else {
-      THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
+      MN_THROW_LOCK_EXP(ERR_MUTEX_CANTCREATEMUTEX);
     }
   }
 

@@ -21,6 +21,33 @@
 #include "mn_config.hpp"
 
 /**
+ * Begin the helper macro to switch ESP_ERRORS to MNTHREAD_ERROR errors
+ * @param _error The holder of the error value
+ *
+ * @code
+ *  int _error = esp_netif_set_mac(m_pNetIf, mac);
+ * MN_ESP2MNTHREAD_ERROR_BEGIN(_error)
+ * MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_OK, NO_ERROR);
+ * MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_ERR_ESP_NETIF_IF_NOT_READY, ERR_MNTHREAD_NETIF_NOT_INIT);
+ * MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_ERR_NOT_SUPPORTED, ERR_MNTHREAD_NOT_SUPPORTED);
+ * MN_ESP2MNTHREAD_ERROR_END(_error);
+ * @endcode
+ */
+#define MN_ESP2MNTHREAD_ERROR_BEGIN(_error)  			switch(_error) {
+/**
+ * the helper macro to switch ESP_ERRORS to MNTHREAD_ERROR errors
+ * @param _error The holder of the error value and holder of the MNTHREAD_ERROR code
+ * @param esp The esp value to find
+ * @param mnt The MNTHREAD_ERROR to set
+ */
+#define MN_ESP2MNTHREAD_ERROR_VAL(_error, esp, mnt) 	case (esp): _error = (mnt); break;
+/**
+ * End the helper macro to switch ESP_ERRORS to MNTHREAD_ERROR errors
+ * @param _error The holder of the error value - set to ERR_MNTHREAD_UNKN
+ */
+#define MN_ESP2MNTHREAD_ERROR_END(_error) 				default:  _error = (ERR_MNTHREAD_UNKN); break; }
+
+/**
  * @ingroup base
  */
 
@@ -37,12 +64,20 @@
  * The given param was null or error in malloc
  */
 #define ERR_MNTHREAD_NULL                        0x0002
-
+/**
+ * The function is not supported
+ */
+#define ERR_MNTHREAD_NOT_SUPPORTED               0x0005
 /**
  * Currently not defined error
  */
 #define ERR_MNTHREAD_UNKN                        0x0003
+/**
+ * Invalig Arguments
+ */
+#define ERR_MNTHREAD_INVALID_ARG				 0x0004
 
+#define ERR_MNTHREAD_NETIF_NOT_INIT 			 0x0006
 /**
  * No Error in one of the mutex function
  */

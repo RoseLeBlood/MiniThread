@@ -25,12 +25,14 @@ namespace mn {
 	//======================== basic_dgram_ip_socket ========================
 
 		int basic_dgram_ip_socket::recive_from(char* buffer, int offset, int size,
-			socket_flags socketFlags, typename basic_dgram_ip_socket::endpoint_type* ep) {
+			const socket_flags& socketFlags, typename basic_dgram_ip_socket::endpoint_type* ep) {
 
 			if(m_iHandle == -1) return -1;
 
 			typename basic_dgram_ip_socket::ipaddress_type ip = ep->get_ip();
 			unsigned int port = ep->get_port();
+
+			int _flags = static_cast<int>(socketFlags);
 
 			struct sockaddr_in addr;
 			unsigned int addrlen=sizeof(addr);
@@ -40,19 +42,21 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			m_iLastError = lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
+			m_iLastError = lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, _flags,
 						  (struct sockaddr*)&addr,
 						  &addrlen );
 			return m_iLastError;
 		}
 
 		int basic_dgram_ip_socket::send_to(char* buffer, int offset, int size,
-			socket_flags socketFlags, typename basic_dgram_ip_socket::endpoint_type* ep) {
+			const socket_flags& socketFlags, typename basic_dgram_ip_socket::endpoint_type& ep) {
 
 			if(m_iHandle == -1) return -1;
 
-			typename basic_dgram_ip_socket::ipaddress_type ip = ep->get_ip();
-			unsigned int port = ep->get_port();
+			typename basic_dgram_ip_socket::ipaddress_type ip = ep.get_ip();
+			unsigned int port = ep.get_port();
+
+			int _flags = static_cast<int>(socketFlags);
 
 			struct sockaddr_in addr;
 			unsigned int addrlen=sizeof(addr);
@@ -62,7 +66,7 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			m_iLastError = lwip_sendto(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
+			m_iLastError = lwip_sendto(m_iHandle, &buffer[offset], size-offset, _flags,
 							   (struct sockaddr*)&addr,
 							   addrlen );
 			return m_iLastError;

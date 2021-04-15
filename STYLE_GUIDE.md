@@ -73,7 +73,7 @@
 ### C
 
 - C / C++ Linkage Wrappers
-  - All header files intended to have C symbol linkage shall use “extern C” linkage wrappers.
+  - All header files intended to have C symbol linkage shall use “extern C” linkage wrappers. Using the `MN_EXTERNC_BEGINN` and `MN_EXTERNC_END` macros.
 
 ### C++
 

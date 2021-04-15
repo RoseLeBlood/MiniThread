@@ -16,30 +16,35 @@
 *<https://www.gnu.org/licenses/>.
 */
 #include "mn_config.hpp"
+
+#include <cstdio>
 #include "excp/mn_lock_exptions.hpp"
 
+#if MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES
 namespace mn {
-//-----------------------------------
-//  Constructor
-//-----------------------------------
-lockcreate_exception::lockcreate_exception(int code)
-    : m_iCode(code), m_iLine(0), m_strFile("nofile")  { }
+	namespace error {
+		//-----------------------------------
+		//  Constructor
+		//-----------------------------------
+		lockcreate_exception::lockcreate_exception(int code)
+			: m_iCode(code), m_iLine(0), m_strFile("nofile")  { }
 
-//-----------------------------------
-//  Constructor - debug
-//-----------------------------------
-lockcreate_exception::lockcreate_exception(int code, int line, const char* file)
-        : m_iCode(code), m_iLine(line), m_strFile(file) { }
+		//-----------------------------------
+		//  Constructor - debug
+		//-----------------------------------
+		lockcreate_exception::lockcreate_exception(int code, int line, const char* file)
+				: m_iCode(code), m_iLine(line), m_strFile(file) { }
 
-//-----------------------------------
-//  to_string
-//-----------------------------------
-std::string lockcreate_exception::to_string() {
-    /*std::string __text = std::string("Error on creating the lock object, on ");
-                __text += std::string(m_iLine) + std::string(" at ") + std::string(m_strFile);
-                __text += std::string(" with code ") + std::string(m_iCode);*/
+		//-----------------------------------
+		//  to_string
+		//-----------------------------------
+		const char* lockcreate_exception::what() {
+			char *_g_buffer = new char[64];
 
-    return "__text";
+			snprintf(_g_buffer, 64, "[%d @ %s] Error on creating the lock object: %d", m_iLine, m_strFile, m_iCode);
+			return _g_buffer;
+		}
+	}
 }
 
-}
+#endif // MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES

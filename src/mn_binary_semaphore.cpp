@@ -38,7 +38,7 @@ namespace mn {
     if (m_pSpinlock) {
       unlock();
     } else {
-      THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
+      MN_THROW_LOCK_EXP(ERR_SPINLOCK_CANTCREATESPINLOCK);
     }
 
   }

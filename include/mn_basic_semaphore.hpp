@@ -26,30 +26,7 @@
 #include "mn_lock.hpp"
 #include "excp/mn_lock_exptions.hpp"
 
-#if MN_THREAD_CONFIG_USE_EXCEPTIONS ==  MN_THREAD_CONFIG_YES
-    #if MN_THREAD_CONFIG_DEBUG  == MN_THREAD_CONFIG_YES
-        /**
-         * Macro to throw the lockcreate_exception exception, debug version
-         */
-        #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE, __LINE__, __FILE__);
-        #define THROW_LOCK_EXP(CODE, RET) throw lockcreate_exception(CODE, __LINE__, __FILE__);
-    #else
-        /**
-         * Macro to throw the lockcreate_exception exception, only the code
-         */
-        #define THROW_LOCK_EXP(CODE) throw lockcreate_exception(CODE);
-        #define THROW_LOCK_EXP(CODE, RET) throw lockcreate_exception(CODE);
-    #endif // MN_THREAD_CONFIG_DEBUG
-#else
-    /**
-     * This Macro util set only the error code
-     */
-    #define THROW_LOCK_EXP(CODE) set_error(CODE);
-    /**
-     * This Macro util set only the error code, and return setted return code
-     */
-    #define THROW_LOCK_EXP2(CODE, RET)  { set_error(CODE); return RET; }
-#endif //MN_THREAD_CONFIG_USE_EXCEPTIONS
+
 
 namespace mn {
 

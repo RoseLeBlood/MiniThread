@@ -19,6 +19,8 @@
 #define _MINILIB_SOCKET_BASE_H_
 
 #include "mn_basic_netif.hpp"
+#include "mn_basic_wifi_net_if.hpp"
+
 #include "mn_basic_endpoint.hpp"
 #include "mn_basic_dgram_socket.hpp"
 #include "mn_basic_stream_ip_socket.hpp"
@@ -26,7 +28,7 @@
 namespace mn {
 	namespace net {
 		using wifi_net_if = basic_wifi_net_if;
-		using ppp_net_if = basic_ppp_net_if;
+		//using ppp_net_if = basic_ppp_net_if;
 		//using ethernet_nef_if = basic_ethernet_nef_if;
 
 		using ip4_address = basic_ip4_address;

@@ -13,8 +13,8 @@ function create_and_push_doxy() {
 	cd $MN_DEF_BUILD_PATH
 	doxygen
 
-	cd "{$MN_DEF_BASE_DIR/doc/$MN_DEF_GIT_PATH}"
-	git commit -a -m "update to version ${MN_DEF_VERSION}"
+	cd "$MN_DEF_BASE_DIR/doc/$MN_DEF_GIT_PATH"
+	git commit -a -m "update to version $MN_DEF_VERSION"
 	git push
 }
 

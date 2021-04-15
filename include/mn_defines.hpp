@@ -36,6 +36,17 @@
 #define MN_TEMPLATE_USING_THREE(name,basic_name,d1,t1,d2,t2,d3,t3)  template <d1 t1, d2 t2, d3 t3> using name = basic_name<t1, t2, t3>;
 #define MN_TEMPLATE_USING(name, basic_name)                         using name = basic_name;
 
+#define MN_UNUSED_VARIABLE(var)		do { (void)(var); } while (false)
+#define MN_ZERO_SET(var, size)	    memset(var, 0, size)
+#define MN_SAFE_DELETE(var)			if((var)) { delete var; var = NULL; }
+#define MN_SAFE_FREE(var)			if((var)) { free(var); var = NULL; }
 
+#ifdef __cplusplus
+#define MN_EXTERNC_BEGINN			extern "C" {
+#define MN_EXTERNC_END				}
+#else
+#define MN_EXTERNC_BEGINN
+#define MN_EXTERNC_END
+#endif
 
 #endif // _MINLIB_cfc6e05b_d8d4_4a9d_ae4b_42fa56cd3443_H_

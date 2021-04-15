@@ -2,6 +2,9 @@
 ## Versoin 2.25 März 2021 (unstable beta)
 + add sockets support -> see mn_socket.hpp
 + rename ERR_TIMEOUT => ERR_MINILIB_TIMEOUT - build bug
+### 2.25.30
+	+ remove container -(mn_container) and netzwerk header file (mn_socket.hpp) from mn_minithread.hpp header file,
+	  when use then include it in your project manual
 
 
 ## Version 2.20 März 2021

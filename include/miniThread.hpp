@@ -49,13 +49,9 @@
 #include "memory/mn_mempool.hpp"
 #include "mn_shared.hpp"
 
-
-#include "mn_container.hpp"
 #include "mn_atomic.hpp"
 #include "mn_safecounter.hpp"
 #include "mn_pointer.hpp"
-
-#include "net/mn_socket.hpp"
 
 #if MN_THREAD_CONFIG_PREVIEW_FUTURE == MN_THREAD_CONFIG_YES
 

@@ -47,7 +47,7 @@ namespace mn {
     : m_pSpinlock(other.m_pSpinlock) {
 
     if(!is_initialized()) {
-      THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
+      MN_THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
     }
   }
 
