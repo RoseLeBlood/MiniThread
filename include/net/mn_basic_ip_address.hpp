@@ -45,13 +45,13 @@
 #define MNNET_IPV4_ADDRESS_BROADCAST    mn::net::basic_ip4_address( IPADDR_BROADCAST )
 #define MNNET_IPV4_ADDRESS_NONE         mn::net::basic_ip4_address( IPADDR_NONE )
 
-#define MNNET_IS_CLASSA(ipa)  		IP_CLASSA( ((uint32_t)ipa) )
-#define MNNET_IS_CLASSB(ipa)  		IP_CLASSB( ((uint32_t)ipa) )
-#define MNNET_IS_CLASSC(ipa)  		IP_CLASSC( ((uint32_t)ipa) )
-#define MNNET_IS_CLASSD(ipa)  		IP_CLASSD( ((uint32_t)ipa) )
-#define MNNET_IP_MULTICAST(ipa) 	MNNET_IS_CLASSD(ipa)
-#define MNNET_IP_EXPERIMENTAL(ipa)	IP_EXPERIMENTAL( ((uint32_t)ipa) )
-#define MNNET_IP_BADCLASS(ipa)		IP_BADCLASS( ((uint32_t)ipa) )
+#define MNNET_IS_CLASSA(ipa)  			IP_CLASSA( ((uint32_t)ipa) )
+#define MNNET_IS_CLASSB(ipa)  			IP_CLASSB( ((uint32_t)ipa) )
+#define MNNET_IS_CLASSC(ipa)  			IP_CLASSC( ((uint32_t)ipa) )
+#define MNNET_IS_CLASSD(ipa)  			IP_CLASSD( ((uint32_t)ipa) )
+#define MNNET_IP_MULTICAST(ipa) 		MNNET_IS_CLASSD(ipa)
+#define MNNET_IP_EXPERIMENTAL(ipa)		IP_EXPERIMENTAL( ((uint32_t)ipa) )
+#define MNNET_IP_BADCLASS(ipa)			IP_BADCLASS( ((uint32_t)ipa) )
 
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 	#define MNNET_IPV6_NEW_ARRAY_NULL		new uint8_t[MNNET_IPV6_ADDRESS_BYTES]{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
@@ -70,19 +70,58 @@
 namespace mn {
 	namespace net {
 
+		/**
+		 * @brief Wrapper class around lwip implementation of a ip address.
+		 *
+		 * @note To use this, you need to subclass it. All of your ip address should
+   		 * be derived from the basic_ip_address class. Then implement the all virtual abstracted
+		 * functions.
+		 *
+		 * @ingroup socket
+		 * @author Amber-Sophia Schröck
+		 */
 		class basic_ip_address {
 		public:
+			/**
+			 * @brief Constructor
+			 */
 			basic_ip_address(address_family fam) : m_aFamily(fam) { }
 
+			/**
+			 * @brief Get the ip address as string
+			 *
+			 * @return The ip address as string
+			 */
 			virtual const char*     to_string() = 0;
+			/**
+			 * @brief Get the ip address as byte array
+			 *
+			 * @return The ip address as byte array
+			 */
 			virtual uint8_t*        get_bytes() = 0;
+			/**
+			 * @brief Is the this address a loopback address?
+			 *
+			 * @return if true then yes and false if not
+			 */
 			virtual bool            is_loopback() = 0;
+			/**
+			 * @brief Is the this address a broadcast address?
+			 *
+			 * @return if true then yes and false if not
+			 */
 			virtual bool            is_broadcast() = 0;
+			/**
+			 * @brief Get the address family
+			 *
+			 * @return The address family
+			 */
 			virtual address_family  get_family()    { return m_aFamily; }
 
 		protected:
 			address_family  m_aFamily;
 		};
+
 		/**
 		 * @brief Class for the Internet Protocal version 4
 		 */
@@ -170,10 +209,21 @@ namespace mn {
 			 */
 			virtual const char* to_string();
 			/**
-			 * calculate a ip4 address from this address and the given subnet address
+			 * calculate a broadcast address from this address and the given subnet address
 			 * @return The calculated broadcast address
 			 */
 			basic_ip4_address 	calc_broadcast(const basic_ip4_address& subnet);
+			/**
+			 * calculate a  network id address from this address and the given subnet address
+			 * @return The calculated network id address
+			 */
+			basic_ip4_address 	calc_network_id(const basic_ip4_address& subnet);
+			/**
+			 * @brief Get the subnet_cidr from the given netmask
+			 *
+			 * @return The calculate subnet_cidr
+			 */
+			static uint8_t 		get_subnet_cidr(const basic_ip4_address& subnet);
 
 			uint8_t 			operator[](int index) const { return as_array[index]; }
 			uint8_t& 			operator[](int index) { return as_array[index]; }

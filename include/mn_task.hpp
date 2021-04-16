@@ -128,12 +128,12 @@ namespace mn {
     basic_task& operator=(const basic_task&) = delete;
 
     /**
-     *  Our destructor. Delete the task
+     * @brief Our destructor. Delete the task
      */
     virtual ~basic_task();
 
     /**
-     * Create and starts the Task.
+     * @brief Create and starts the Task.
      *
      * This is the API call that actually starts the Task running.
      * It creates a backing FreeRTOS task. By separating object creation
@@ -155,7 +155,7 @@ namespace mn {
     virtual int           start(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
     /**
-     * Destroy and delete the task and call the function 'on_kill'
+     * @brief Destroy and delete the task and call the function 'on_kill'
      *
      * @return
      *  - ERR_TASK_OK The task are destroyed
@@ -165,32 +165,32 @@ namespace mn {
 
 
     /**
-     * Is the Task  running?
+     * @brief Is the Task  running?
      *
      * @return true If the task  running, false If not
      */
     bool                  is_running();
 
     /**
-     * Get the debug name of this task
+     * @brief Get the debug name of this task
      *
      * @return The name of this task
      */
     std::string          get_name();
     /**
-     * Get the priority of this task
+     * @brief Get the priority of this task
      *
      * @return The priority
      */
     basic_task::priority get_priority();
     /**
-     * Get the stack depth of this task
+     * @brief Get the stack depth of this task
      *
      * @return The stack depth
      */
     unsigned short        get_stackdepth();
     /**
-     * Accessor to get the task's backing task handle.
+     * @brief Accessor to get the task's backing task handle.
      * There is no setter, on purpose.
      *
      * @return FreeRTOS task handle.
@@ -198,62 +198,62 @@ namespace mn {
     xTaskHandle           get_handle();
 
     /**
-     * Get the return value of this task  - after run
+     * @brief Get the return value of this task  - after run
      *
      * @return The return value
      */
     void*                 get_return_value();
     /**
-     * Get the time since start of this task
+     * @brief Get the time since start of this task
      *
      * @return The time since start of this task
      */
     uint32_t              get_time_since_start();
     /**
-     * Get the FreeRTOS task Numberid of this task
+     * @brief Get the FreeRTOS task Numberid of this task
      *
      * @return The FreeRTOS task   Number
      */
     int32_t              get_id();
     /**
-     * Get the core number of this task  run
+     * @brief Get the core number of this task  run
      *
      * @return The core number
      */
     int32_t              get_on_core();
 
     /**
-     *  Set the priority of this task.
+     * @brief Set the priority of this task.
      *
-     *  @param uiPriority The task's new priority.
+     * @param uiPriority The task's new priority.
      */
     void                  set_priority(basic_task::priority uiPriority);
 
     /**
-     *  Suspend this task.
+     * @brief Suspend this task.
      *
-     *  @note While a task can suspend() itself, it cannot resume()
-     *  itself, becauseit's suspended.
+     * @note While a task can suspend() itself, it cannot resume()
+     * itself, becauseit's suspended.
      */
     void                  suspend();
     /**
-     *  Resume a specific task.
+     * @brief Resume a specific task.
      */
     void                  resume();
 
     /**
-     * This virtual function call on creating, use for user code
+     * @brief This virtual function call on creating, use for user code
      * It is optional whether you implement this or not.
      */
     virtual void          on_start() {  }
     /**
-     * This virtual function call on kill, use for user code
+     * @brief This virtual function call on kill, use for user code
      * It is optional whether you implement this or not.
      */
     virtual void          on_kill()   {  }
 
     /**
-     * Implementation of your actual task code.
+     * @brief Implementation of your actual task code.
      * You must override this function.
      *
      * @return Your return your task function, get with get_return_value()
@@ -261,54 +261,30 @@ namespace mn {
     virtual void*         on_task() { return NULL; }
 
     /**
-     *  Called on exit from your on_task() routine.
+     * @brief Called on exit from your on_task() routine.
      *
-     *  It is optional whether you implement this or not.
-     *
-     *  If you allow your task to exit its on_task method,
+     * @note It is optional whether you implement this or not.
+     * If you allow your task to exit its on_task method,
      */
     virtual void          on_cleanup() { }
 
     /**
-     * Get the root task of this task list
-     *
-     * @return The root task
-     */
-    basic_task*         get_root();
-    /**
-     * Get the child task of this task
-     *
-     * @return The child task
-     */
-    basic_task*         get_child();
-
-    /**
-     * Get the state of the task
+     * @brief Get the state of the task
      *
      * @return The state of the task at the time the function was called.
      */
     state               get_state();
 
     /**
-     * Add a child task to this task.
-     *
-     * @return True The child tasx are add and false when not
-     *
-     * @note For example this task for the WiFi connection and the child the TCP Connection
-     * on signal or broadcast this task, will signal and broadcast the child too.
-     */
-    bool                  add_child_task(basic_task* task);
-
-    /**
-     * Operator to get the task's backing task handle.
+     *  @brief Operator to get the task's backing task handle.
      * @return FreeRTOS task handle.
      */
     operator xTaskHandle () { return (xTaskHandle)get_handle(); }
 
     /**
-       * Operator to get the ID assigned to the task.
-       * @return The ID assigned to the task being queried.
-       */
+	 * @brief Operator to get the ID assigned to the task.
+     * @return The ID assigned to the task being queried.
+     */
     operator int () { return get_id(); }
   public:
     bool operator == (const basic_task &r) const {
@@ -328,7 +304,7 @@ namespace mn {
     }
   public:
     /**
-     * Suspend the given task.
+     * @brief Suspend the given task.
      *
      * @param t The given task to suspend
      *
@@ -338,38 +314,38 @@ namespace mn {
     static void suspend(basic_task *t)  { t->suspend(); }
 
     /**
-     * Resume the given task.
+     * @brief Resume the given task.
      *
      * @param t The given task to resume
      */
     static void resume(basic_task *t)   {   t->resume(); }
 
     /**
-     *  Yield the scheduler.
+     * @brief Yield the scheduler.
      */
     static void yield()                   { taskYIELD(); }
     /**
-     *  sleep this task for n seconds
+     * @brief sleep this task for n seconds
      *
-     *  @param secs How long seconds to sleep the task.
+     * @param secs How long seconds to sleep the task.
      */
     static void sleep(unsigned int secs)     { ::mn::sleep(secs); }
     /**
-     *  sleep this task for n micro seconds
+     * @brief sleep this task for n micro seconds
      *
-     *  @param secs How long micro seconds to sleep the task.
+     * @param secs How long micro seconds to sleep the task.
      */
     static void usleep(unsigned int usec)     { ::mn::usleep(usec); }
     /**
-     * pause execution for a specified time
+     * @brief pause execution for a specified time
      * @note see Linux nanosleep function
-    */
+     */
     static void nsleep(const struct timespec *req, struct timespec *rem)     {
       ::mn::nsleep(req, rem);
     }
 
     /**
-     * Get current number of tasks
+     * @brief Get current number of tasks
      *
      * @return The number of tasks that the real time kernel is currently managing.
      * This includes all ready, blocked and suspended tasks.  A task that
@@ -379,7 +355,7 @@ namespace mn {
     static uint32_t get_tasks();
 
     /**
-     * Is the given task the current running task ?
+     * @brief Is the given task the current running task ?
      *
      */
     static bool is_current(basic_task* task) {
@@ -387,65 +363,56 @@ namespace mn {
     }
 
     /**
-     * Get the current task
+     * @brief Get the current task
      *
      * @return The current task
      */
     static basic_task* get_self();
   protected:
     /**
-     *  Adapter function that allows you to write a class
-     *  specific on_task() function that interfaces with FreeRTOS.
+     * @brief Adapter function that allows you to write a class
+     * specific on_task() function that interfaces with FreeRTOS.
      */
     static void runtaskstub(void* parm);
   protected:
     /**
-     * Lock Objekt for task safty
+     * @brief Lock Objekt for task safty
      */
     LockType_t m_runningMutex, m_contextMutext, m_continuemutex;
   protected:
     /**
-     *  The name of this task.
+     * @brief The name of this task.
      */
     std::string m_strName;
     /**
-     *  A saved / cached copy of what the task's priority is.
+     * @brief A saved / cached copy of what the task's priority is.
      */
     basic_task::priority m_uiPriority;
     /**
-     *  Stack depth of this task, in words.
+     *@brief  Stack depth of this task, in words.
      */
     unsigned short m_usStackDepth;
     /**
-     * The return value from user task routine
+     * @brief The return value from user task routine
      */
     void* m_retval;
     /**
-     *  Flag whether or not the task was started.
+     *  @brief Flag whether or not the task was started.
      */
     bool m_bRunning;
     /**
-     * The FreeRTOS task Number
+     * @brief The FreeRTOS task Number
      */
     int32_t m_iID;
     /**
-     * A saved / cached copy of which core this task is running on
+     * @brief A saved / cached copy of which core this task is running on
      */
     int32_t m_iCore;
     /**
-     *  Reference to the underlying task handle for this task.
-     *  Can be obtained from get_handle().
+     * @brief Reference to the underlying task handle for this task.
+     * @note Can be obtained from get_handle().
      */
     xTaskHandle m_pHandle;
-
-    /**
-     * The child task pointer
-     */
-    basic_task *m_pChild;
-    /**
-     * The parent task pointer
-     */
-    basic_task *m_pParent;
 
 
     #if( configSUPPORT_STATIC_ALLOCATION == 1 )
@@ -453,7 +420,9 @@ namespace mn {
       StackType_t  m_stackBuffer[MN_THREAD_CONFIG_STACK_DEPTH];
     #endif
   };
-
+  /**
+   * @brief using the basic_task as task_t type
+   */
   using task_t = basic_task;
 }
 

@@ -24,16 +24,18 @@
 namespace mn {
 	namespace net {
 
+		/**
+		 * @brief Basic class for esp32 wifi in station mode
+		 * @ingroup device
+		 */
+		class basic_wifi_sta_net_if : public basic_wifi_net_if {
+		public:
+			basic_wifi_sta_net_if();
+			virtual ~basic_wifi_sta_net_if();
 
-		class basic_wifi_sta_net_if : public basic_wifi_net_if
-		{
-			public:
-				basic_wifi_sta_net_if();
-				virtual ~basic_wifi_sta_net_if();
+		protected:
 
-			protected:
-
-			private:
+		private:
 		};
 	}
 }

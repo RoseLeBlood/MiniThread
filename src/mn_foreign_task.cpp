@@ -49,8 +49,6 @@ namespace mn {
       } else {
         m_uiPriority = (basic_task::priority)uxTaskPriorityGet(m_pHandle);
       }
-      m_pChild = NULL;
-      m_pParent = NULL;
     }
 
     //-----------------------------------

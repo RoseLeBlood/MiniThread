@@ -52,23 +52,6 @@ namespace mn {
         }
 
         //-----------------------------------
-        //  signal_all
-        //-----------------------------------
-        void basic_convar_task::signal_all() {
-            autolock_t autolock(m_runningMutex);
-
-            m_waitSem.unlock();
-            task_utils::notify_give(this);
-
-            on_signal();
-
-            basic_convar_task* __child = (basic_convar_task*)(m_pChild);
-
-            if(__child)
-                __child->signal_all();
-        }
-
-        //-----------------------------------
         //  wait
         //-----------------------------------
         int basic_convar_task::wait(convar_t& cv, mutex_t& cvl, TickType_t timeOut)  {

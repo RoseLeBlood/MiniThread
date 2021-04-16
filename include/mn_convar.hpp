@@ -65,21 +65,13 @@ namespace mn {
 
             /**
              *  Signal a thread waiting on this condition_variable (FIFO list).
-             *
-             *  @param with_child_thread If true then signal the thread (i.e. task)
-             *  with all childs threads (i.e. tasks), if false then signal the thread (i.e. task)
-             *  without all childs threads (i.e. tasks)
              */
-            void signal(bool with_child_thread = true);
+            void signal();
 
             /**
              * Signal all threads waiting on this condition_variable.
-             *
-             * @param with_child_thread If true then signal the threads (i.e. tasks)
-             *  with all childs threads (i.e. tasks), if false then signal the threads (i.e. tasks)
-             *  without all childs threads (i.e. tasks)
              */
-            void broadcast(bool with_child_thread = true);
+            void broadcast();
 
         private:
             /**

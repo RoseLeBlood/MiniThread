@@ -41,7 +41,7 @@ namespace mn {
         void basic_message_task::post_msg(task_message* msg, unsigned int timeout) {
             automutx_t lock(m_ltMessageQueueLock);
             m_qeMessageQueue.enqueue(msg, timeout);
-            m_cvMessage.signal(false);
+            m_cvMessage.signal();
         }
 
         //-----------------------------------
@@ -54,39 +54,21 @@ namespace mn {
             while(m_bRunning) {
                 msg = NULL;
 
-                {
-                    m_ltMessageQueueLock.lock();
+				m_ltMessageQueueLock.lock();
 
-                    while (m_qeMessageQueue.is_empty())
-                        wait(m_cvMessage, m_ltMessageQueueLock);
+				while (m_qeMessageQueue.is_empty())
+					wait(m_cvMessage, m_ltMessageQueueLock);
 
-                    if(m_qeMessageQueue.is_empty())
-                        continue;
+				if(m_qeMessageQueue.is_empty())
+					continue;
 
-                    m_qeMessageQueue.dequeue(msg);
+				m_qeMessageQueue.dequeue(msg);
 
-                    m_ltMessageQueueLock.unlock();
-                }
+				if(msg) {
+					on_message(msg->id, msg->message);
+				}
 
-                if(msg) {
-                    switch (msg->id) {
-                    case Message_Exit:
-                        m_bRunning = false;
-                        break;
-                    case Message_Child_Exit:
-                        if(m_pChild) m_pChild->kill();
-                        break;
-                    case Message_Child_Resume:
-                        if(m_pChild) m_pChild->resume();
-                        break;
-                    case Message_Child_Suspend:
-                        if(m_pChild) m_pChild->suspend();
-                        break;
-                    default:
-                        on_message(msg->id, msg->message);
-                        break;
-                    }; //switch (msg->id)
-                } // if(msg)
+				m_ltMessageQueueLock.unlock();
             } //while(m_bRunning)
 
             return NULL;

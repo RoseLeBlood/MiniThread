@@ -20,24 +20,37 @@
 
 namespace mn {
 	namespace net {
-		/* ======================== basic_ip_socket ======================== */
-		basic_ip_socket::basic_ip_socket()
-			: m_iHandle(0), m_iLastError(-1) { }
-
+		//-----------------------------------
+		// basic_ip_socket::basic_ip_socket
+		//-----------------------------------
 		basic_ip_socket::basic_ip_socket(const handle_type& hndl)
 			: m_iHandle(hndl), m_iLastError(-1) { }
 
-		basic_ip_socket::basic_ip_socket(const address_family& fam, const socket_type& type, const protocol_type& protocol) {
+		//-----------------------------------
+		// basic_ip_socket::basic_ip_socket
+		//-----------------------------------
+		basic_ip_socket::basic_ip_socket(const address_family& fam, const socket_type& type,
+										const protocol_type& protocol) {
 			 m_iHandle = lwip_socket(static_cast<int>(fam), static_cast<int>(type), static_cast<int>(protocol) );
 			 m_iLastError = m_iHandle != -1 ? 0 : m_iHandle;
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::basic_ip_socket
+		//-----------------------------------
 		basic_ip_socket::~basic_ip_socket() {
 			close();
 		}
 
+		//-----------------------------------
+		// basic_ip_socket::basic_ip_socket
+		//-----------------------------------
 		basic_ip_socket::basic_ip_socket(const basic_ip_socket& other)
 			: m_iHandle(other.m_iHandle), m_iLastError(other.m_iLastError) { }
 
+		//-----------------------------------
+		// basic_ip_socket::available
+		//-----------------------------------
 		int basic_ip_socket::available() {
 			if(m_iHandle == -1) return 0;
 			int cBytes = 0;
@@ -46,19 +59,36 @@ namespace mn {
 
 			return cBytes;
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
 		int basic_ip_socket::set_options(const socket_option_level& opt, const socket_option_name& name, int value) {
 			if(m_iHandle == -1) return -1;
 
 			socklen_t _size = sizeof(value);
 			return (m_iLastError = setsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), &value, _size));
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
 		int basic_ip_socket::set_options(const socket_option_level& opt, const socket_option_name& name, bool value) {
 			return set_options(opt, name, value ? 1 : 0 );
 		}
-		int basic_ip_socket::set_options(const socket_option_level& opt, const socket_option_name& name, void* value, uint32_t size) {
+
+		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
+		int basic_ip_socket::set_options(const socket_option_level& opt, const socket_option_name& name,
+										void* value, uint32_t size) {
 			if(m_iHandle == -1) return -1;
 			return (m_iLastError = setsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), value, size));
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::get_option_int
+		//-----------------------------------
 		int basic_ip_socket::get_option_int(const socket_option_level& opt, const socket_option_name& name) {
 			if(m_iHandle == -1) return -1;
 
@@ -68,35 +98,60 @@ namespace mn {
 
 			return value;
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::get_option_bool
+		//-----------------------------------
 		bool basic_ip_socket::get_option_bool(const socket_option_level& opt, const socket_option_name& name) {
 			return get_option_int(opt, name) == 1;
 		}
 
-		void basic_ip_socket::get_option_ex(const socket_option_level& opt, const socket_option_name& name, void* value, uint32_t size) {
+		//-----------------------------------
+		// basic_ip_socket::get_option_ex
+		//-----------------------------------
+		void basic_ip_socket::get_option_ex(const socket_option_level& opt, const socket_option_name& name,
+											void* value, uint32_t size) {
 			if(m_iHandle == -1) { value = NULL; return; }
 			m_iLastError = getsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), &value, &size);
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::operator =
+		//-----------------------------------
 		basic_ip_socket& basic_ip_socket::operator = (const basic_ip_socket& other) {
 			m_iHandle = other.m_iHandle;
 			m_iLastError = other.m_iLastError;
 			return *this;
 		}
-	/* ======================== basic_ip4_socket ======================== */
 
+		//-----------------------------------
+		// basic_ip4_socket::basic_ip4_socket
+		//-----------------------------------
 		basic_ip4_socket::basic_ip4_socket(handle_type& hndl, ip4_endpoint* endp)
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 				m_iLastError = 0;
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::basic_ip4_socket
+		//-----------------------------------
 		basic_ip4_socket::basic_ip4_socket(const socket_type& type, const protocol_type& protocol)
 			: basic_ip_socket(address_family::inet_v4, type, protocol) {
 				m_pEndPoint = nullptr;
 		}
 
+		//-----------------------------------
+		// basic_ip4_socket::basic_ip4_socket
+		//-----------------------------------
 		basic_ip4_socket::basic_ip4_socket(const basic_ip4_socket& other)
 			: basic_ip_socket( other.m_iHandle), m_pEndPoint(other.m_pEndPoint) {
 			m_iLastError = other.m_iLastError;
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::operator =
+		//-----------------------------------
 		basic_ip4_socket& basic_ip4_socket::operator = (const basic_ip4_socket& other) {
 			m_iHandle = other.m_iHandle;
 			m_iLastError = other.m_iLastError;
@@ -105,6 +160,9 @@ namespace mn {
 			return *this;
 		}
 
+		//-----------------------------------
+		// basic_ip4_socket::get_endpoint
+		//-----------------------------------
 		ip4_endpoint* basic_ip4_socket::get_endpoint(bool local) {
 			if(m_iHandle == -1) return nullptr;
 			ip4_endpoint *_ret = nullptr;
@@ -125,6 +183,9 @@ namespace mn {
 			return _ret;
 		}
 
+		//-----------------------------------
+		// basic_ip4_socket::bind
+		//-----------------------------------
 		bool basic_ip4_socket::bind(ip4_endpoint local_ep) {
 			if(m_iHandle == -1) return false;
 
@@ -146,19 +207,31 @@ namespace mn {
 
 			return true;
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::bind
+		//-----------------------------------
 		bool basic_ip4_socket::bind(const unsigned int& port) {
 			return bind(MNNET_IPENDPOINT4_ANY(port) );
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::bind
+		//-----------------------------------
 		bool basic_ip4_socket::bind(ip4_address ip, const unsigned int& port) {
 			return bind(MNNET_IPENDPOINT4(ip, port) );
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::get_peername
+		//-----------------------------------
 		bool basic_ip4_socket::get_peername(ip4_address& ipPeerAddress, uint16_t& iPeerPort) {
 			bool _ret = false;
 			struct sockaddr_in stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
 			socklen_t iLen = sizeof(sockaddr);
 
-			m_iLastError = getpeername(m_iHandle, (struct sockaddr *)&stPeer, &iLen);
+			m_iLastError = lwip_getpeername(m_iHandle, (struct sockaddr *)&stPeer, &iLen);
 			if(m_iLastError != 0) {
 				ESP_LOGE("socket", "could not getpeername: %d", errno);
 			} else {
@@ -168,13 +241,17 @@ namespace mn {
 			}
 			return _ret;
 		}
+
+		//-----------------------------------
+		// basic_ip4_socket::get_peername
+		//-----------------------------------
 		bool basic_ip4_socket::get_peername(ip4_endpoint& endpoint) {
 			bool _ret = false;
 			struct sockaddr_in stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
 			socklen_t iLen = sizeof(sockaddr);
 
-			m_iLastError = getpeername(m_iHandle, (struct sockaddr *)&stPeer, &iLen);
+			m_iLastError = lwip_getpeername(m_iHandle, (struct sockaddr *)&stPeer, &iLen);
 			if(m_iLastError != 0) {
 				ESP_LOGE("socket", "could not getpeername: %d", errno);
 			} else {
@@ -184,23 +261,35 @@ namespace mn {
 			return _ret;
 		}
 
-		/* ======================== basic_ip6_socket ======================== */
 
-
+		//-----------------------------------
+		// basic_ip6_socket::basic_ip6_socket
+		//-----------------------------------
 		basic_ip6_socket::basic_ip6_socket(handle_type& hndl, ip6_endpoint* endp)
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 				m_iLastError = 0;
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::basic_ip6_socket
+		//-----------------------------------
 		basic_ip6_socket::basic_ip6_socket(const socket_type& type, const protocol_type& protocol)
 			: basic_ip_socket(address_family::inet_v6, type, protocol) {
 				m_pEndPoint = nullptr;
 		}
 
+		//-----------------------------------
+		// basic_ip6_socket::basic_ip6_socket
+		//-----------------------------------
 		basic_ip6_socket::basic_ip6_socket(const basic_ip6_socket& other)
 			: basic_ip_socket( other.m_iHandle), m_pEndPoint(other.m_pEndPoint) {
 			m_iLastError = other.m_iLastError;
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::operator =
+		//-----------------------------------
 		basic_ip6_socket& basic_ip6_socket::operator = (const basic_ip6_socket& other) {
 			m_iHandle = other.m_iHandle;
 			m_iLastError = other.m_iLastError;
@@ -209,6 +298,9 @@ namespace mn {
 			return *this;
 		}
 
+		//-----------------------------------
+		// basic_ip6_socket::get_endpoint
+		//-----------------------------------
 		ip6_endpoint* basic_ip6_socket::get_endpoint(bool local) {
 			if(m_iHandle == -1) return nullptr;
 			ip6_endpoint *_ret = nullptr;
@@ -235,6 +327,9 @@ namespace mn {
 			return _ret;
 		}
 
+		//-----------------------------------
+		// basic_ip6_socket::bind
+		//-----------------------------------
 		bool basic_ip6_socket::bind(ip6_endpoint local_ep) {
 			if(m_iHandle == -1) return false;
 
@@ -263,12 +358,24 @@ namespace mn {
 
 			return true;
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::bind
+		//-----------------------------------
 		bool basic_ip6_socket::bind(const unsigned int& port) {
 			return bind(MNNET_IPENDPOINT6_ANY(port) );
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::bind
+		//-----------------------------------
 		bool basic_ip6_socket::bind(ip6_address ip, const unsigned int& port) {
 			return bind(MNNET_IPENDPOINT6(ip, port) );
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::get_peername
+		//-----------------------------------
 		bool basic_ip6_socket::get_peername(ip6_address& ipPeerAddress, uint16_t& iPeerPort) {
 			bool _ret = false;
 			struct sockaddr_in6 stPeer;
@@ -288,6 +395,10 @@ namespace mn {
 			}
 			return _ret;
 		}
+
+		//-----------------------------------
+		// basic_ip6_socket::get_peername
+		//-----------------------------------
 		bool basic_ip6_socket::get_peername(ip6_endpoint& endpoint) {
 			bool _ret = false;
 			struct sockaddr_in6 stPeer;

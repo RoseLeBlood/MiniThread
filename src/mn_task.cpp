@@ -52,9 +52,7 @@ namespace mn {
           m_bRunning(false),
           m_iID(0),
           m_iCore(-1),
-          m_pHandle(NULL),
-          m_pChild(NULL),
-          m_pParent(NULL)
+          m_pHandle(NULL)
           { }
   //-----------------------------------
   //  deconstrutor
@@ -68,44 +66,6 @@ namespace mn {
   #endif
   }
 
-  //-----------------------------------
-  //  get_root
-  //-----------------------------------
-  basic_task*  basic_task::get_root() {
-    autolock_t autolock(m_contextMutext);
-
-    basic_task* root = 0;
-
-    if(m_pParent != NULL) root = m_pParent->get_root();
-    else root = m_pParent;
-
-    return root;
-  }
-
-  //-----------------------------------
-  //  get_child
-  //-----------------------------------
-  basic_task*  basic_task::get_child() {
-    autolock_t autolock(m_runningMutex);
-
-    basic_task* child = 0;
-    child = m_pChild;
-    return child;
-  }
-
-  //-----------------------------------
-  //  add_child_task
-  //-----------------------------------
-  bool basic_task::add_child_task(basic_task* task) {
-    autolock_t autolock(m_runningMutex);
-
-    bool ret = true;
-    task->m_pParent = this;
-    if(m_pChild == NULL) m_pChild = task;
-    else ret = m_pChild->add_child_task(task);
-
-    return ret;
-  }
 
   //-----------------------------------
   //  start

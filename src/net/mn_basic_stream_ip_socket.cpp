@@ -22,17 +22,27 @@
 namespace mn {
 	namespace net {
 
+		//-----------------------------------
+		// basic_stream_ip_socket::send
+		//-----------------------------------
 		int basic_stream_ip_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
 			m_iLastError = lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 			return m_iLastError;
 		}
+
+		//-----------------------------------
+		// basic_stream_ip_socket::recive
+		//-----------------------------------
 		int basic_stream_ip_socket::recive(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
 			m_iLastError = lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 			return m_iLastError;
 		}
 
+		//-----------------------------------
+		// basic_stream_ip_socket::connect
+		//-----------------------------------
 		bool basic_stream_ip_socket::connect(ip4_endpoint remote_ep) {
 			if(m_iHandle == -1) return false;
 
@@ -48,12 +58,19 @@ namespace mn {
 			m_iLastError = lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) ;
 			return m_iLastError != -1;
 		}
+
+		//-----------------------------------
+		// basic_stream_ip_socket::listen
+		//-----------------------------------
 		bool basic_stream_ip_socket::listen(int backLog) {
 			if(m_iHandle == -1) return false;
         	m_iLastError = lwip_listen(m_iHandle, backLog) ;
         	return m_iLastError != -1;
 		}
 
+		//-----------------------------------
+		// basic_stream_ip_socket::accept
+		//-----------------------------------
 		typename basic_stream_ip_socket::self_type* basic_stream_ip_socket::accept() {
 			if(m_iHandle == -1) return nullptr;
 
@@ -76,17 +93,26 @@ namespace mn {
 
 	#if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 
+		//-----------------------------------
+		// basic_stream_ip_socket::send
+		//-----------------------------------
 		int basic_stream_ip6_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
 			m_iLastError = lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 			return m_iLastError;
 		}
+		//-----------------------------------
+		// basic_stream_ip_socket::recive
+		//-----------------------------------
 		int basic_stream_ip6_socket::recive(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
 			m_iLastError = lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 			return m_iLastError;
 		}
 
+		//-----------------------------------
+		// basic_stream_ip_socket::connect
+		//-----------------------------------
 		bool basic_stream_ip6_socket::connect(endpoint_type remote_ep) {
 			if(m_iHandle == -1) return false;
 
@@ -105,12 +131,19 @@ namespace mn {
 			m_iLastError = lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) ;
 			return m_iLastError != -1;
 		}
+
+		//-----------------------------------
+		// basic_stream_ip_socket::listen
+		//-----------------------------------
 		bool basic_stream_ip6_socket::listen(int backLog) {
 			if(m_iHandle == -1) return false;
         	m_iLastError = lwip_listen(m_iHandle, backLog) ;
         	return m_iLastError != -1;
 		}
 
+		//-----------------------------------
+		// basic_stream_ip_socket::accept
+		//-----------------------------------
 		typename basic_stream_ip6_socket::self_type* basic_stream_ip6_socket::accept() {
 			if(m_iHandle == -1) return nullptr;
 

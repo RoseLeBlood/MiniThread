@@ -21,7 +21,9 @@
 namespace mn {
 	namespace net {
 
-
+		//-----------------------------------
+		// basic_wifi_sta_net_if::basic_wifi_sta_net_if
+		//-----------------------------------
 		basic_wifi_sta_net_if::basic_wifi_sta_net_if()
 			: basic_wifi_net_if(ESP_IF_WIFI_STA) { }
 	}

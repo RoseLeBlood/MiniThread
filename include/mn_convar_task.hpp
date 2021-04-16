@@ -60,10 +60,6 @@ namespace mn {
              *  helper function to signal this thread.
              */
             virtual void          signal();
-            /**
-             *  helper function to signal this thread, with childs
-             */
-            virtual void          signal_all();
 
             /**
              *  Have this thread wait on a condition variable.

@@ -45,13 +45,8 @@ namespace mn {
              *
              * @note For user ids use Message_User+1, Message_User+2 ...
              */
-            enum message_id {
-                Message_Exit,               /*!< Message to stop this task, without the child */
-                Message_Child_Exit,         /*!< Message to kill the child task */
-                Message_Child_Resume,       /*!< Message to resume the child task */
-                Message_Child_Suspend,      /*!< Message to suspend the child task */
-                Message_User = 100,         /*!< Message for user IDs, run in  on_message() */
-            };
+
+			using message_id = int;
             /**
             * The specific task message
             */
@@ -64,21 +59,15 @@ namespace mn {
             };
         public:
             /**
-            * Basic Constructor for this task.
-            * The priority is PriorityNormal and use 2048 for the stack size
-            */
-            basic_message_task()
-                : basic_message_task(" ", PriorityNormal, 2048) { }
-
-            /**
             * Constructor for this task.
             *
             * @param strName Name of the Task. Only useful for debugging.
             * @param uiPriority FreeRTOS priority of this Task.
             * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
             */
-            explicit basic_message_task(std::string strName, basic_task::priority uiPriority,
-            unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
+            explicit basic_message_task(std::string strName = "message_task",
+										basic_task::priority uiPriority = PriorityNormal,
+										unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
             /**
             * Add a pre-created task message to the task queue
@@ -110,30 +99,8 @@ namespace mn {
                 post_msg(new task_message(msg_id, message_data), timeout );
             }
 
-            /**
-            * Helper to post the exit message
-            */
-            void post_exit(unsigned int timeout) {
-                post_msg(Message_Exit, timeout );
-            }
-            /**
-            * Helper to post the child exit message
-            */
-            void post_child_exit(unsigned int timeout) {
-                post_msg(Message_Child_Exit, timeout );
-            }
-            /**
-            * Helper to post the child resume message
-            */
-            void post_child_resume(unsigned int timeout) {
-                post_msg(Message_Child_Resume, timeout );
-            }
-            /**
-            * Helper to post the child suspend message
-            */
-            void post_child_suspend(unsigned int timeout) {
-                post_msg(Message_Child_Suspend, timeout );
-            }
+            basic_message_task(const basic_message_task&) = delete;
+            basic_message_task& operator=(const basic_message_task&) = delete;
         protected:
             /**
             * The current message handling code
@@ -150,10 +117,6 @@ namespace mn {
             * @param[in] message Pointer of the real message
             */
             virtual void on_message(id_t id, void* message) = 0;
-        private:
-            basic_message_task(const basic_message_task&) = delete;
-            basic_message_task& operator=(const basic_message_task&) = delete;
-
         protected:
             mutex_t m_ltMessageQueueLock;
             queue::queue_t m_qeMessageQueue;

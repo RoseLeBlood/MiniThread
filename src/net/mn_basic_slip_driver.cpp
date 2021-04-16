@@ -22,7 +22,11 @@
 namespace mn {
 	namespace net {
 
-		basic_slip_driver::basic_slip_driver(uint32_t uart_num, uint8_t tx_pin, uint8_t rx_pin, uint32_t baud, uint32_t buffer_len)
+		//-----------------------------------
+		//  basic_slip_driver::basic_slip_driver
+		//-----------------------------------
+		basic_slip_driver::basic_slip_driver(uint32_t uart_num, uint8_t tx_pin, uint8_t rx_pin,
+											uint32_t baud, uint32_t buffer_len)
 			: basic_slip_net_if() {
 			m_slipConfig.uart_tx_pin = tx_pin;
 			m_slipConfig.uart_rx_pin = rx_pin;
@@ -31,20 +35,39 @@ namespace mn {
 			m_slipConfig.rx_buffer_len = buffer_len;
 		}
 
+		//-----------------------------------
+		//  basic_slip_driver::set_pin
+		//-----------------------------------
 		void basic_slip_driver::set_pin(const uint8_t& tx_pin, const uint8_t& rx_pin) {
 			m_slipConfig.uart_tx_pin = tx_pin;
 			m_slipConfig.uart_rx_pin = rx_pin;
 		}
+
+		//-----------------------------------
+		//  basic_slip_driver::set_serial
+		//-----------------------------------
 		void basic_slip_driver::set_serial(const uint8_t& uart_num, const uint32_t& baud) {
 			m_slipConfig.uart_dev = uart_num;
 			m_slipConfig.uart_baud = baud;
 		}
+
+		//-----------------------------------
+		//  basic_slip_driver::set_buffer
+		//-----------------------------------
 		void basic_slip_driver::set_buffer(const uint32_t& buffer_len) {
 			m_slipConfig.rx_buffer_len = buffer_len;
 		}
+
+		//-----------------------------------
+		//  basic_slip_driver::set_ip
+		//-----------------------------------
 		void basic_slip_driver::set_ip(const ip4_address& ip) {
 			MN_UNUSED_VARIABLE(ip);
 		}
+
+		//-----------------------------------
+		//  basic_slip_driver::start
+		//-----------------------------------
 		int basic_slip_driver::start() {
 			if(!create_default() ) return ERR_MNTHREAD_NULL;
 

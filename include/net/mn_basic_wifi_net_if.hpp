@@ -35,6 +35,7 @@ namespace mn {
 		/**
 		 * @brief Wrapper basic WiFi class around esp-idf implementation of a esp-netif device.
 		 * @note Class for STA and soft AP class
+		 * @ingroup device
 		 */
 		class basic_wifi_net_if : public basic_net_if {
 		protected:

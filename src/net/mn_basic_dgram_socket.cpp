@@ -22,8 +22,10 @@
 
 namespace mn {
 	namespace net {
-	//======================== basic_dgram_ip_socket ========================
 
+		//-----------------------------------
+		//  recive_from
+		//-----------------------------------
 		int basic_dgram_ip_socket::recive_from(char* buffer, int offset, int size,
 			const socket_flags& socketFlags, typename basic_dgram_ip_socket::endpoint_type* ep) {
 
@@ -48,6 +50,9 @@ namespace mn {
 			return m_iLastError;
 		}
 
+		//-----------------------------------
+		//  send_to
+		//-----------------------------------
 		int basic_dgram_ip_socket::send_to(char* buffer, int offset, int size,
 			const socket_flags& socketFlags, typename basic_dgram_ip_socket::endpoint_type& ep) {
 
@@ -71,6 +76,10 @@ namespace mn {
 							   addrlen );
 			return m_iLastError;
 		}
+
+		//-----------------------------------
+		//  bind_multicast
+		//-----------------------------------
 		bool basic_dgram_ip_socket::bind_multicast(ip4_endpoint local_ep) {
 			bool _retBool = false;
 
@@ -88,12 +97,20 @@ namespace mn {
 			}
 			return _retBool;
 		}
-		bool basic_dgram_ip_socket::bind_multicast(const typename basic_dgram_ip_socket::ipaddress_type& ip, const unsigned int& port) {
+
+		//-----------------------------------
+		//  bind_multicast
+		//-----------------------------------
+		bool basic_dgram_ip_socket::bind_multicast(const typename basic_dgram_ip_socket::ipaddress_type& ip,
+													const unsigned int& port) {
 			return bind_multicast(ip4_endpoint(ip, port));
 		}
 
 		//======================== basic_dgram_ip6_socket ========================
 
+		//-----------------------------------
+		//  recive_from
+		//-----------------------------------
 		int basic_dgram_ip6_socket::recive_from(char* buffer, int offset, int size,
 			socket_flags socketFlags, typename basic_dgram_ip6_socket::endpoint_type* ep) {
 
@@ -119,6 +136,9 @@ namespace mn {
 			return m_iLastError;
 		}
 
+		//-----------------------------------
+		//  send_to
+		//-----------------------------------
 		int basic_dgram_ip6_socket::send_to(char* buffer, int offset, int size,
 			socket_flags socketFlags, typename basic_dgram_ip6_socket::endpoint_type* ep) {
 

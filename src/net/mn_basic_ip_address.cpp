@@ -24,12 +24,21 @@
 #define TAG "ip_address"
 namespace mn {
 	namespace net {
+		//-----------------------------------
+		//  basic_ip4_address
+		//-----------------------------------
 		basic_ip4_address::basic_ip4_address()
 			: basic_ip4_address(IPADDR_NONE) { }
 
+		//-----------------------------------
+		//  basic_ip4_address
+		//-----------------------------------
 		basic_ip4_address::basic_ip4_address(uint32_t newAddress)
 			: basic_ip_address(address_family::inet_v4), as_int32(newAddress) { }
 
+		//-----------------------------------
+		//  basic_ip4_address
+		//-----------------------------------
 		basic_ip4_address::basic_ip4_address(uint8_t address[MNNET_IPV4_ADDRESS_BYTES])
 			: basic_ip_address(address_family::inet_v4){
 
@@ -38,6 +47,9 @@ namespace mn {
 			as_array[2] = address[2];
 			as_array[3] = address[3];
 		}
+		//-----------------------------------
+		//  basic_ip4_address
+		//-----------------------------------
 		basic_ip4_address::basic_ip4_address(uint8_t a, uint8_t b, uint8_t c, uint8_t d )
 			: basic_ip_address(address_family::inet_v4) {
 			as_array[0] = a;
@@ -45,6 +57,10 @@ namespace mn {
 			as_array[2] = c;
 			as_array[3] = d;
 		}
+
+		//-----------------------------------
+		//  basic_ip4_address
+		//-----------------------------------
 		basic_ip4_address::basic_ip4_address(const char* address)
 			: basic_ip_address(address_family::inet_v4) {
 
@@ -70,22 +86,39 @@ namespace mn {
 			as_array[3] = _acc;
 		}
 
+		//-----------------------------------
+		//  get_bytes
+		//-----------------------------------
 		uint8_t* basic_ip4_address::get_bytes() {
 			return as_array;
 		}
 
+		//-----------------------------------
+		//  is_equel
+		//-----------------------------------
 		bool basic_ip4_address::is_equel(const basic_ip4_address& ipOther) {
 			if(m_aFamily != ipOther.m_aFamily) return false;
 			return as_int32 == ipOther.as_int32;
 		}
+
+		//-----------------------------------
+		//  operator !=
+		//-----------------------------------
 		basic_ip4_address& basic_ip4_address::operator=(uint32_t address) {
 			as_int32 = address;
 			return *this;
 		}
+
+		//-----------------------------------
+		//  operator ==
+		//-----------------------------------
 		bool basic_ip4_address::operator == (const uint8_t* addr) {
 			return memcmp(addr, as_array, sizeof(as_array) )  == 0;
 		}
 
+		//-----------------------------------
+		//  to_string
+		//-----------------------------------
 		const char* basic_ip4_address::to_string() {
 			char* szRet = (char*)malloc(IP4ADDR_STRLEN_MAX * sizeof(char));
 			if(szRet == 0) return "";
@@ -93,16 +126,61 @@ namespace mn {
 			snprintf(szRet, IP4ADDR_STRLEN_MAX, "%u.%u.%u.%u", as_array[0], as_array[1], as_array[2], as_array[3]);
 			return szRet;
 		}
+
+		//-----------------------------------
+		//  calc_broadcast
+		//-----------------------------------
 		basic_ip4_address basic_ip4_address::calc_broadcast(const basic_ip4_address& subnet) {
-			uint8_t broadcast[MNNET_IPV4_ADDRESS_BYTES];
+			uint8_t 		   _broadcast[MNNET_IPV4_ADDRESS_BYTES];
+			basic_ip4_address* _ip = this;
 
 			for (int i = 0; i < MNNET_IPV4_ADDRESS_BYTES; i++) {
-				broadcast[i] = (~(*this)[i] | subnet[i]);
+				_broadcast[i] = ~subnet[i] | _ip[i];
 			}
-			return basic_ip4_address(broadcast);
+			return basic_ip4_address(_broadcast);
+		}
+		//-----------------------------------
+		//  calc_network_id
+		//-----------------------------------
+		basic_ip4_address basic_ip4_address::calc_network_id(const basic_ip4_address& subnet) {
+			uint8_t 		   _network_id[MNNET_IPV4_ADDRESS_BYTES];
+			basic_ip4_address* _ip = this;
+
+			for (int i = 0; i < MNNET_IPV4_ADDRESS_BYTES; i++) {
+				_network_id[i] = subnet[i] & _ip[i];
+			}
+			return basic_ip4_address(_network_id);
+		}
+
+		uint8_t basic_ip4_address::get_subnet_cidr(const basic_ip4_address& subnet) {
+			uint8_t _cidr = 0;
+
+			for (uint8_t i = 0; i < MNNET_IPV4_ADDRESS_BYTES; i++) {
+				if (subnet[i] == 0x80)  // 128
+					_cidr += 1;
+				else if (subnet[i] == 0xC0)  // 192
+					_cidr += 2;
+				else if (subnet[i] == 0xE0)  // 224
+					_cidr += 3;
+				else if (subnet[i] == 0xF0)  // 242
+					_cidr += 4;
+				else if (subnet[i] == 0xF8)  // 248
+					_cidr += 5;
+				else if (subnet[i] == 0xFC)  // 252
+					_cidr += 6;
+				else if (subnet[i] == 0xFE)  // 254
+					_cidr += 7;
+				else if (subnet[i] == 0xFF)  // 255
+					_cidr += 8;
+			}
+
+			return _cidr;
 		}
 
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address()
         	: basic_ip_address(address_family::inet_v6) {
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
@@ -114,6 +192,9 @@ namespace mn {
   			as_int[3] = 0;
 		}
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(uint8_t address[16], int scopid)
 			: basic_ip_address(address_family::inet_v6) {
 
@@ -124,6 +205,9 @@ namespace mn {
 
 		}
 #else
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(uint8_t adress[MNNET_IPV6_ADDRESS_BYTES])
 			: basic_ip_address(address_family::inet_v6) {
 
@@ -133,6 +217,9 @@ namespace mn {
 		}
 #endif
 
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(uint32_t ax, uint32_t bx, uint32_t cx, uint32_t dx)
 			: basic_ip_address(address_family::inet_v6) {
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
@@ -144,6 +231,10 @@ namespace mn {
   			as_int[3] = dx;
 
 		}
+
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(uint32_t aa[4])
 			: basic_ip_address(address_family::inet_v6) {
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
@@ -157,6 +248,9 @@ namespace mn {
 		}
 
 
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(const basic_ip6_address& ip)
 			: basic_ip_address(address_family::inet_v6) {
 			mempcpy(m_Numbers, ip.m_Numbers, sizeof(m_Numbers));
@@ -164,6 +258,10 @@ namespace mn {
 			m_ScopeId = MN_THREAD_CONFIG_NET_IPADDRESS6_SCOPEID_VAL;
 #endif
 		}
+
+		//-----------------------------------
+		//  basic_ip6_address
+		//-----------------------------------
 		basic_ip6_address::basic_ip6_address(const char* str_ip)
 			: basic_ip_address(address_family::inet_v6) {
 			char * _pos = (char*)str_ip;
@@ -183,6 +281,9 @@ namespace mn {
 #endif
 		}
 
+		//-----------------------------------
+		//  get_bytes
+		//-----------------------------------
 		uint8_t* basic_ip6_address::get_bytes() {
 			uint8_t* _retBytes;
 
@@ -195,6 +296,10 @@ namespace mn {
 
 			return _retBytes;
 		}
+
+		//-----------------------------------
+		//  is_ip4mapped
+		//-----------------------------------
 		bool basic_ip6_address::is_ip4mapped() {
 			return (
 						(as_int[0] == 0) &&
@@ -202,6 +307,10 @@ namespace mn {
 						(as_int[2]) == PP_HTONL(0x0000FFFFUL)
 				   );
 		}
+
+		//-----------------------------------
+		//  is_equel
+		//-----------------------------------
 		bool basic_ip6_address::is_equel(const basic_ip6_address& ipOther) {
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			if(m_ScopeId != ipOther.m_ScopeId) return false;
@@ -209,6 +318,10 @@ namespace mn {
 
 			return memcmp(as_int, &ipOther.as_int, sizeof(as_int)) == 0;
 		}
+
+		//-----------------------------------
+		//  is_equel
+		//-----------------------------------
 		bool basic_ip6_address::is_equel(const basic_ip6_address& ipOther, const basic_ip6_address& mask) {
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			if(m_ScopeId != ipOther.m_ScopeId) return false;
@@ -221,6 +334,9 @@ namespace mn {
 			return memcmp(as_int, &masked, sizeof(masked)) == 0;
 		}
 
+		//-----------------------------------
+		//  operator =
+		//-----------------------------------
 		basic_ip6_address& basic_ip6_address::operator = (const basic_ip6_address& ip) {
 			m_aFamily = ip.m_aFamily;
 			mempcpy(m_Numbers, ip.m_Numbers, sizeof(m_Numbers) );
@@ -229,6 +345,10 @@ namespace mn {
 #endif
 			return *this;
 		}
+
+		//-----------------------------------
+		//  netmask
+		//-----------------------------------
 		basic_ip6_address basic_ip6_address::netmask(int mask) {
 			uint32_t _netmask[4] = {0};
 			if (mask < 0) mask = 0; else if (128 < mask) mask = 128;
@@ -243,6 +363,10 @@ namespace mn {
 
 			return basic_ip6_address(_netmask);
 		}
+
+		//-----------------------------------
+		//  to_string
+		//-----------------------------------
 		const char* basic_ip6_address::to_string() {
 			char* szRet = new char[40];
 			sprintf(szRet,"%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x",
