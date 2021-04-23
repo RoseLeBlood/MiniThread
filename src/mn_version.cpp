@@ -18,6 +18,8 @@
 #include "mn_config.hpp"
 
 #include <stdio.h>
+#include <cstring>
+
 #include "mn_version.hpp"
 
 
