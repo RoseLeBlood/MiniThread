@@ -84,5 +84,42 @@ namespace mn {
 			esp_wifi_get_ps(&mode);
 			return wifi_ps_type_t(mode);
 		}
+
+		int	basic_wifi_net_if::set_protocol(const wifi_protocol& prot) {
+			int _error = NO_ERROR;
+
+			if(get_mode()  == WIFI_MODE_AP) {
+				_error = esp_wifi_set_protocol(WIFI_IF_AP, static_cast<uint8_t>(prot) );
+			} else if(get_mode()  == WIFI_MODE_STA) {
+				_error = esp_wifi_set_protocol(WIFI_IF_STA, static_cast<uint8_t>(prot) );
+			}
+
+			MN_ESP2MNTHREAD_ERROR_BEGIN(_error)
+ 			MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_OK, NO_ERROR);
+			MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_ERR_WIFI_NOT_INIT, ERR_MNTHREAD_NULL);
+			MN_ESP2MNTHREAD_ERROR_VAL(_error, ESP_ERR_WIFI_IF, ERR_MNTHREAD_INVALID_ARG);
+			MN_ESP2MNTHREAD_ERROR_END(_error);
+
+
+			return _error;
+		}
+
+		basic_wifi_net_if::wifi_protocol basic_wifi_net_if::get_protocol() {
+			int _error = NO_ERROR;
+			uint8_t _prot = 0;
+
+			if(get_mode()  == WIFI_MODE_AP) {
+				_error = esp_wifi_get_protocol(WIFI_IF_AP, &_prot );
+			} else if(get_mode()  == WIFI_MODE_STA) {
+				_error = esp_wifi_get_protocol(WIFI_IF_STA, &_prot );
+			}
+			if(_error == ESP_OK) {
+				return wifi_protocol(_prot);
+			} else {
+				return wifi_protocol::none;
+			}
+		}
+
 	}
 }
+

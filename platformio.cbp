@@ -211,6 +211,7 @@
 		<Unit filename="include/mn_allocator.hpp" />
 		<Unit filename="include/mn_atomic.hpp" />
 		<Unit filename="include/mn_atomic_spinlock.hpp" />
+		<Unit filename="include/mn_auto_version.hpp" />
 		<Unit filename="include/mn_autolock.hpp" />
 		<Unit filename="include/mn_basic_semaphore.hpp" />
 		<Unit filename="include/mn_binary_semaphore.hpp" />
@@ -302,6 +303,7 @@
 		<Unit filename="include/utils/mn_sort.hpp" />
 		<Unit filename="include/utils/mn_utils.hpp" />
 		<Unit filename="library.json" />
+		<Unit filename="mn_auto_version.h" />
 		<Unit filename="platformio.ini" />
 		<Unit filename="platformio.layout" />
 		<Unit filename="sdkconfig" />
@@ -334,7 +336,6 @@
 		<Unit filename="src/mn_timer.cpp" />
 		<Unit filename="src/mn_timer_esp32.cpp" />
 		<Unit filename="src/mn_version.cpp" />
-		<Unit filename="src/net/mn/basic_ip_socket.cpp" />
 		<Unit filename="src/net/mn_basic_dgram_socket.cpp" />
 		<Unit filename="src/net/mn_basic_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip_address.cpp" />
@@ -360,6 +361,12 @@
 		<Unit filename="src/utils/mn_random_lfsr.cpp" />
 		<Unit filename="update-docs.sh" />
 		<Extensions>
+			<AutoVersioning>
+				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
+				<Settings autoincrement="0" date_declarations="0" use_define="0" update_manifest="1" do_auto_increment="0" ask_to_increment="1" language="C++" svn="0" svn_directory="" header_path="include/mn_auto_version.hpp" />
+				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
+				<Code header_guard="_MINLIB_AUTO_VERSION_H_" namespace="mn" prefix="MN_VERSION" />
+			</AutoVersioning>
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

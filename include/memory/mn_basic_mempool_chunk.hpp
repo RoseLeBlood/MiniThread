@@ -2,29 +2,29 @@
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2021 Amber-Sophia Schroeck
  *
- *The Mini Thread Library is free software; you can redistribute it and/or modify  
- *it under the terms of the GNU Lesser General Public License as published by  
+ *The Mini Thread Library is free software; you can redistribute it and/or modify
+ *it under the terms of the GNU Lesser General Public License as published by
  *the Free Software Foundation, version 3, or (at your option) any later version.
 
- *The Mini Thread Library is distributed in the hope that it will be useful, but 
- *WITHOUT ANY WARRANTY; without even the implied warranty of 
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ *The Mini Thread Library is distributed in the hope that it will be useful, but
+ *WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  *General Public License for more details.
  *
  *You should have received a copy of the GNU Lesser General Public
  *License along with the Mini Thread  Library; if not, see
- *<https://www.gnu.org/licenses/>.  
+ *<https://www.gnu.org/licenses/>.
 */
 #ifndef _MINLIB_2ff65886_2d7d_47f2_a507_67ea8a480dfd_H_
 #define _MINLIB_2ff65886_2d7d_47f2_a507_67ea8a480dfd_H_
 
-#include "freertos/FreeRTOS.h"
+#include "../mn_algorithm.hpp"
 
 namespace mn {
     namespace memory {
         /**
          * The state for a memory chunk
-         */ 
+         */
         enum class vmempool_chunk_state {
             Free,                   /*!< The chunk is free and can allocated */
             Used,                   /*!< The chunk is used */
@@ -39,7 +39,7 @@ namespace mn {
         class vmempool_chunk {
             MNALLOC_OBJECT(TALLOCATOR);
 
-            static const size_t XUnionSize = mn::value2size_raw<char[2]>::size +  
+            static const size_t XUnionSize = mn::value2size_raw<char[2]>::size +
                                              mn::value2size_raw<vmempool_chunk_state>::size +
                                              TBufferSize;
         public:
@@ -48,38 +48,38 @@ namespace mn {
                     void* theBuffer;
                     char theMagicGuard[2];              /*!< The magic guard bytes for detect heap memory corruption */
                     vmempool_chunk_state state;          /*!< The state for a memory chunk */
-                    
+
                 };
                 void* theRealBuffer;
             };
 
-            vmempool_chunk() 
-                : theBuffer(0), 
+            vmempool_chunk()
+                : theBuffer(0),
                   theMagicGuard { MN_THREAD_CONFIG_MEMPOOL_MAGIC_START,  MN_THREAD_CONFIG_MEMPOOL_MAGIC_END},
                   state(vmempool_chunk_state::Free),
                   m_ownerTask(0),
                   m_cfree(VMEM_CHUNK_ALL_FREE) {  theBuffer = m_acObject.alloc(TBufferSize, __UINT32_MAX__ ); }
 
-            vmempool_chunk(void* address) 
-                :theBuffer(address), 
+            vmempool_chunk(void* address)
+                :theBuffer(address),
                  theMagicGuard { MN_THREAD_CONFIG_MEMPOOL_MAGIC_START,  MN_THREAD_CONFIG_MEMPOOL_MAGIC_END},
                  state(vmempool_chunk_state::Free),
                  m_ownerTask(0),
                  m_cfree(VMEM_CHUNK_ALL_FREE) { }
-            
-            
 
-            void set_owner(uint32_t task) { 
+
+
+            void set_owner(uint32_t task) {
                 if(state == vmempool_chunk_state::Free)
-                    m_ownerTask = task; 
+                    m_ownerTask = task;
             }
-            bool can_free(int task) { 
-                return (m_cfree == 1) ? m_ownerTask == task : true; 
+            bool can_free(int task) {
+                return (m_cfree == 1) ? m_ownerTask == task : true;
             }
-            vmempool_chunk_state get_state() { 
+            vmempool_chunk_state get_state() {
                 return state; }
 
-            void set_state(vmempool_chunk_state s) { 
+            void set_state(vmempool_chunk_state s) {
                 state = s; }
 
             void* construct(bool oFreedSelf, int taskID) {
@@ -111,11 +111,11 @@ namespace mn {
                 }
                 return false;
             }
-            
+
 
             /**
              * @brief Can only owner task mark free this chunk?
-             * 
+             *
              * @param t When true then can only the owner mark free the chunk
              */
             void set_free(bool t) { m_cfree = t ? 1 : 0; }
@@ -131,32 +131,32 @@ namespace mn {
             inline void print() {
                 vmempool_chunk* chunk = this;
 
-                std::cout << "addreoss of chunk @" << chunk 
+                std::cout << "addreoss of chunk @" << chunk
                     << " with size of: " << sizeof(chunk[0]) <<  std::endl;
                 std::cout << "address of theBuffer @ " << chunk->theBuffer
                     << " with size of: " << sizeof(chunk->theBuffer) <<  std::endl;
-                std::cout << "address of realBuffer@ " << chunk->theRealBuffer 
+                std::cout << "address of realBuffer@ " << chunk->theRealBuffer
                     << " with size of: " << sizeof(chunk->theRealBuffer) <<  std::endl;
-                
-            
+
+
                 std::cout << "magic start: " << (int)chunk->theMagicGuard[0] << std::endl;
                 std::cout << "magic end: " << (int)chunk->theMagicGuard[1] << std::endl;
 
-                if(chunk->theMagicGuard[1] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_END && 
+                if(chunk->theMagicGuard[1] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_END &&
                 chunk->theMagicGuard[0] != MN_THREAD_CONFIG_MEMPOOL_MAGIC_START)
                     std::cout << "chunk is corrupted" << std::endl;
                 else
-                    std::cout << "chunk is healty" << std::endl;  
+                    std::cout << "chunk is healty" << std::endl;
             }
         protected:
             /**
-             * @brief The task that alloc this chunk 
+             * @brief The task that alloc this chunk
              */
-            uint32_t m_ownerTask; 
+            uint32_t m_ownerTask;
             /**
              * @brief Can only owner task free this chunk? 1 = Yes, 0 = all can free
              */
-            char     m_cfree : 2; 
+            char     m_cfree : 2;
         };
         MNALLOC_OBJECT_DTWO(vmempool_chunk, int, TBufferSize, class, TALLOCATOR);
     }

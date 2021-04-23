@@ -38,11 +38,13 @@ namespace mn {
 		 * @ingroup device
 		 */
 		class basic_wifi_net_if : public basic_net_if {
-		protected:
+		public:
 			/**
 			 * @brief list of the wifi protocols
 			 */
 			enum class wifi_protocol : uint8_t {
+				none = 0,
+
 				b = WIFI_PROTOCOL_11B,			/**< wifi protocoll .11B, use only B */
 				g = WIFI_PROTOCOL_11G,			/**< wifi protocoll .11G, use only G */
 				n = WIFI_PROTOCOL_11N,			/**< wifi protocoll .11N, use only N */
@@ -77,13 +79,26 @@ namespace mn {
 			 * @brief Get current operating mode of WiFi
 			 * @return The current WiFi mode
 			 */
-			virtual wifi_mode_t     get_mode(void);
+			wifi_mode_t     		get_mode(void);
 			/**
 			 * @brief Get the ssid for the wifi
 			 * @param [out] ssid  store the ssid this wifi
 			 * @return the ssid for the wifi
 			 */
-			virtual const char*     get_ssid(char ssid[32]);
+			const char*     		get_ssid(char ssid[32]);
+
+			/**
+			 * @brief Get the current protocol bitmap
+			 *
+			 * @return The current protocol bitmapfx or wifi_protocol::none on error
+			 */
+			wifi_protocol 			get_protocol();
+			/**
+			  * @brief     Get current WiFi power save type
+			  * @attention Default power save type is WIFI_PS_MIN_MODEM.
+			  * @return    The current power save type
+			  */
+			wifi_ps_type_t			get_power_save_mode();
 
 
 			/**
@@ -102,16 +117,10 @@ namespace mn {
 			  *
 			  * @return
 			  *    - NO_ERROR: succeed
-			  *    - ERR_WIFI_NOT_INIT: WiFi is not initialized by esp_wifi_init
-			  *    - ERR_WIFI_INVALID_INTARFACE: invalid interface
+			  *    - ERR_MNTHREAD_NULL: WiFi is not initialized by esp_wifi_init
+			  *    - ERR_MNTHREAD_INVALID_ARG: invalid interface
 			  */
-			int						set_protocol(const wifi_protocol = wifi_protocol::bgn);
-			/**
-			  * @brief     Get current WiFi power save type
-			  * @attention Default power save type is WIFI_PS_MIN_MODEM.
-			  * @return    The current power save type
-			  */
-			wifi_ps_type_t			get_power_save_mode();
+			int						set_protocol(const wifi_protocol& prot = wifi_protocol::bgn);
 
 
 		protected:

@@ -30,20 +30,6 @@
 #include "sdkconfig.h"
 #endif
 
-//#include "freertos/FreeRTOS.h"
-
-//Start helper section - do not edit!
-//==================================
-
-///@brief Major Version, the first number
-#define MN_THREAD_MAJOR_VERSION 2
-/// @brief Minor Version, the 2. number
-#define MN_THREAD_MINOR_VERSION 25
-/// @brief  Debug version
-#define MN_THREAD_DEBUG_VERSION 0
-
-/// @brief The mini thread version as string
-#define MN_THREAD_VERSION_STRING          "2.25.0"
 
 /// @brief Pre defined helper values for config items - Use a mutex
 #define MN_THREAD_CONFIG_MUTEX                1

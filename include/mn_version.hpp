@@ -18,66 +18,33 @@
 #ifndef _MINLIB_VERSION_H_
 #define _MINLIB_VERSION_H_
 
-#include "mn_config.hpp"
-#include "mn_singleton.hpp"
+#define MN_THREAD_VERSION_STRING_LEN sizeof(MN_VERSION_FULLVERSION_STRING) + sizeof(MN_VERSION_STATUS) + 8
+#define MN_THREAD_VERSION_INFO(PRJNAME)  mn::minilib_version_print(PRJNAME)
 
-#include <string>
+
+#include "mn_config.hpp"
+#include "mn_auto_version.hpp"
+
+MN_EXTERNC_BEGINN
 
 namespace mn {
-	/**
-	 * Version wrapper for this library
-	 *
-	 * @ingroup base
-	 */
-	class version : public basic_singleton<version> {
-		friend class basic_singleton<version>;
-		version();
-	public:
+	inline const char* minilib_version_string(char version_string[MN_THREAD_VERSION_STRING_LEN]) {
 
-		/**
-		 * Get the major version
-		 * @return The major version
-		 */
-		int get_major_version() const								{ return m_major; }
-		/**
-		 * Get the minor version
-		 * @return The minor version
-		 */
-		int get_minor_version() const								{ return m_minor; }
-		/**
-		 * Get the debug version
-		 * @return The debug version
-		 */
-		int get_debug_version() const								{ return m_debug; }
-		/**
-		 * Get the license string
-		 * @return The license string
-		 */
-		std::string get_license() const								{ return m_license; }
+		snprintf(version_string, MN_THREAD_VERSION_STRING_LEN, "%s-%s-LGPL", MN_VERSION_FULLVERSION_STRING,
+				MN_VERSION_STATUS);
 
-		/**
-		 * Get the version string with extra informations
-		 * @return The version string with extra informations
-		 */
-		std::string to_string() const;
+		return version_string;
+	}
+	inline void minilib_version_print(const char* strPrjName, const char* strExtraInfo = "") {
+		char _version_string[MN_THREAD_VERSION_STRING_LEN];
+		minilib_version_string(_version_string);
 
-		version(const version&)       	= delete;
-        void operator=(const version&)  = delete;
-	private:
-		/**
-		 * The license string holder
-		 */
-		std::string m_license;
-		/**
-		 * The Version holders
-		 */
-		int m_major, m_minor, m_debug;
-		/**
-		 * The extra versions infomations string holder
-		 */
-		std::string m_extras;
-	};
-
-	using version_t = version;
+		printf("%s using %s\n",strPrjName, _version_string);
+			if(strlen(strExtraInfo) > 0) {
+				printf("%s\n" , strExtraInfo);
+			}
+	}
 }
+MN_EXTERNC_END
+
 #endif
