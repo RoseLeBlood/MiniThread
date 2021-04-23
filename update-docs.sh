@@ -14,6 +14,7 @@ function create_and_push_doxy() {
 	doxygen
 
 	cd "$MN_DEF_BASE_DIR/doc/$MN_DEF_GIT_PATH"
+	git add .
 	git commit -a -m "update to version $MN_DEF_VERSION"
 	git push
 }
