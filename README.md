@@ -33,7 +33,7 @@ Build from git from
 1. ```sh ./configure or ./configure --prefix=<path> # without prefix then install to /opt```
 2. ```sh make build ```
 3. ```sh sudo or doas make install ```
-4. add  "lib_deps = /opt/miniThread/miniThread-2.*.tar.gz"  to your platformio.ini
+4. ```add  "lib_deps = /opt/miniThread/miniThread-2.*.tar.gz"  to your platformio.ini```
 
 ### Example
 ```ini

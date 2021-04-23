@@ -47,11 +47,11 @@ namespace mn {
 		class basic_ip4_endpoint : public basic_endpoint {
 		public:
 			basic_ip4_endpoint(const uint16_t& port = 0);
-			basic_ip4_endpoint(const ip4_address& ip, const uint16_t& port);
+			basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port);
 			basic_ip4_endpoint(const basic_ip4_endpoint& pOther);
 
 			uint16_t 			get_port();
-			ip4_address 		get_ip();
+			basic_ip4_address 		get_ip();
 			void 				set_port(const uint16_t& port);
 			bool 				is_broadcast();
 			bool 				is_loopback();
@@ -62,17 +62,19 @@ namespace mn {
 			basic_ip4_endpoint& operator = (const basic_ip4_endpoint& pOther);
 		private:
 			uint16_t m_iPort;
-			ip4_address m_ipAdress;
+			basic_ip4_address m_ipAdress;
 		};
+
+
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 		class basic_ip6_endpoint : public basic_endpoint {
 		public:
 			basic_ip6_endpoint(const uint16_t& port = 0);
-			basic_ip6_endpoint(const ip6_address& ip, const uint16_t& port);
+			basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port);
 			basic_ip6_endpoint(const basic_ip6_endpoint& pOther);
 
 			uint16_t 			get_port();
-			ip6_address 		get_ip();
+			basic_ip6_address 	get_ip();
 			void 				set_port(const uint16_t& port);
 			bool 				is_multicast();
 			bool 				is_loopback();
@@ -83,12 +85,9 @@ namespace mn {
 			basic_ip6_endpoint& operator = (const basic_ip6_endpoint& pOther);
 		private:
 			uint16_t m_iPort;
-			ip6_address m_ipAdress;
+			basic_ip6_address m_ipAdress;
 		};
-		using ip6_endpoint = basic_ip6_endpoint;
 #endif // MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE
-
-		using ip4_endpoint = basic_ip4_endpoint;
 
 	}
 }

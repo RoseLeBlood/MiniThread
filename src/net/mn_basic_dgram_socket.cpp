@@ -79,7 +79,7 @@ namespace mn {
 		//-----------------------------------
 		//  bind_multicast
 		//-----------------------------------
-		bool basic_dgram_ip_socket::bind_multicast(ip4_endpoint local_ep) {
+		bool basic_dgram_ip_socket::bind_multicast(basic_ip4_endpoint local_ep) {
 			bool _retBool = false;
 
 			if(bind((int)local_ep.get_port())) {
@@ -102,7 +102,7 @@ namespace mn {
 		//-----------------------------------
 		bool basic_dgram_ip_socket::bind_multicast(const typename basic_dgram_ip_socket::ipaddress_type& ip,
 													const unsigned int& port) {
-			return bind_multicast(ip4_endpoint(ip, port));
+			return bind_multicast(basic_ip4_endpoint(ip, port));
 		}
 
 		//======================== basic_dgram_ip6_socket ========================

@@ -1,8 +1,8 @@
 # Changelog
-## Versoin 2.25 März 2021 (unstable beta)
+## Versoin 2.27 März 2021 (unstable beta)
 + add sockets support -> see mn_socket.hpp
 + rename ERR_TIMEOUT => ERR_MINILIB_TIMEOUT - build bug
-#### 2.27.3049
++ 2.27.3049:
 	+ remove container -(mn_container.hpp) and netzwerk header file (mn_socket.hpp) from mn_minithread.hpp header file,
 	  when use then include it in your project manual, for socket support add after miniThread.hpp the socket heaher file mn_socket.hpp and for container support after miniThread.hpp the container header file mn_container.hpp
 	+ update version style and remove the version singleton, see empty example for use. See mn_auto_version.hpp for details

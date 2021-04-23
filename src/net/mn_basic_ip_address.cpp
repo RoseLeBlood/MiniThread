@@ -36,6 +36,7 @@ namespace mn {
 		basic_ip4_address::basic_ip4_address(uint32_t newAddress)
 			: basic_ip_address(address_family::inet_v4), as_int32(newAddress) { }
 
+
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
@@ -114,6 +115,18 @@ namespace mn {
 		//-----------------------------------
 		bool basic_ip4_address::operator == (const uint8_t* addr) {
 			return memcmp(addr, as_array, sizeof(as_array) )  == 0;
+		}
+		basic_ip4_address 	basic_ip4_address::operator & (const basic_ip4_address& other)const {
+			return basic_ip4_address(as_int32 & other.as_int32);
+		}
+		basic_ip4_address 	basic_ip4_address::operator | (const basic_ip4_address& other)const {
+			return basic_ip4_address(as_int32 | other.as_int32);
+		}
+		basic_ip4_address 	basic_ip4_address::operator ^ (const basic_ip4_address& other)const {
+			return basic_ip4_address(as_int32 ^ other.as_int32);
+		}
+		basic_ip4_address 	basic_ip4_address::operator ~ () const {
+			return basic_ip4_address(as_int32 ^ 0xffffffff);
 		}
 
 		//-----------------------------------
@@ -375,6 +388,31 @@ namespace mn {
 					m_Numbers[8], m_Numbers[9], m_Numbers[10], m_Numbers[11],
 					m_Numbers[12], m_Numbers[13], m_Numbers[14], m_Numbers[15]);
 			return szRet;
+		}
+
+		basic_ip6_address 	basic_ip6_address::operator & (const basic_ip6_address& other)const {
+			return basic_ip6_address(as_int[0] & other.as_int[0],
+									 as_int[1] & other.as_int[1],
+									 as_int[2] & other.as_int[2],
+									 as_int[3] & other.as_int[3]);
+		}
+		basic_ip6_address 	basic_ip6_address::operator | (const basic_ip6_address& other)const {
+			return basic_ip6_address(as_int[0] | other.as_int[0],
+									 as_int[1] | other.as_int[1],
+									 as_int[2] | other.as_int[2],
+									 as_int[3] | other.as_int[3]);
+		}
+		basic_ip6_address 	basic_ip6_address::operator ^ (const basic_ip6_address& other)const {
+			return basic_ip6_address(as_int[0] ^ other.as_int[0],
+									 as_int[1] ^ other.as_int[1],
+									 as_int[2] ^ other.as_int[2],
+									 as_int[3] ^ other.as_int[3]);
+		}
+		basic_ip6_address 	basic_ip6_address::operator ~ () const {
+			return basic_ip6_address(as_int[0] ^ 0xffffffff,
+									 as_int[1] ^ 0xffffffff,
+									 as_int[2] ^ 0xffffffff,
+									 as_int[3] ^ 0xffffffff);
 		}
 #endif // MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE
 	}

@@ -16,6 +16,7 @@
 *<https://www.gnu.org/licenses/>.
 */
 #include "mn_config.hpp"
+#include "mn_micros.hpp"
 #include "net/mn_basic_socket.hpp"
 
 namespace mn {
@@ -237,6 +238,8 @@ namespace mn {
 		void basic_ip_socket::set_blocking(bool flag) {
 			int arg = flag ? 0 : 1;
 			ioctl(ioctl_request_type::non_blocking, arg);
+
+			m_bBlocked = flag;
 		}
 		//-----------------------------------
 		// basic_ip_socket::set_nocheak
@@ -244,6 +247,34 @@ namespace mn {
 		void basic_ip_socket::set_nocheak(bool value) {
 			set_options(socket_option_level::socket, socket_option_name::no_check, value);
 		}
+
+		//-----------------------------------
+		// basic_ip_socket::set_send_buffer_size
+		//-----------------------------------
+		void basic_ip_socket::set_send_buffer_size(int value) {
+			set_options(socket_option_level::socket, socket_option_name::sendbuffer, value);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::set_recive_buffer_size
+		//-----------------------------------
+		void basic_ip_socket::set_recive_buffer_size(int value) {
+			set_options(socket_option_level::socket, socket_option_name::recivebuffer, value);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::set_send_timeout
+		//-----------------------------------
+        void basic_ip_socket::set_send_timeout(int value) {
+			set_options(socket_option_level::socket, socket_option_name::send_timeout, value);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::set_recive_timeout
+		//-----------------------------------
+        void basic_ip_socket::set_recive_timeout(int value) {
+			set_options(socket_option_level::socket, socket_option_name::recive_timeout, value);
+        }
 
 		//-----------------------------------
 		// basic_ip_socket::get_reuse_address
@@ -300,6 +331,33 @@ namespace mn {
 		bool basic_ip_socket::get_nocheak() {
 			return get_option_bool(socket_option_level::socket, socket_option_name::no_check);
 		}
+		//-----------------------------------
+		// basic_ip_socket::get_send_buffer_size
+		//-----------------------------------
+		int basic_ip_socket::get_send_buffer_size() {
+			return get_option_int(socket_option_level::socket, socket_option_name::sendbuffer);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::get_recive_buffer_size
+		//-----------------------------------
+		int basic_ip_socket::get_recive_buffer_size() {
+			return get_option_int(socket_option_level::socket, socket_option_name::recivebuffer);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::get_send_timeout
+		//-----------------------------------
+        int basic_ip_socket::get_send_timeout() {
+			return get_option_int(socket_option_level::socket, socket_option_name::send_timeout);
+        }
+
+        //-----------------------------------
+		// basic_ip_socket::get_recive_timeout
+		//-----------------------------------
+        int basic_ip_socket::get_recive_timeout() {
+			return get_option_int(socket_option_level::socket, socket_option_name::recive_timeout);
+        }
 
 
 		//-----------------------------------
@@ -333,6 +391,39 @@ namespace mn {
 			if(!initialized()) return -1;
 
 			return ::fcntl(m_iHandle,F_GETFL);
+		}
+		//-----------------------------------
+		// basic_ip_socket::shutdown
+		//-----------------------------------
+		void basic_ip_socket::shutdown(const socket_shutdown_type& cmd) {
+			 lwip_shutdown(m_iHandle, static_cast<int>(cmd));
+		}
+		//-----------------------------------
+		// basic_ip_socket::poll
+		//-----------------------------------
+		bool basic_ip_socket::poll(const unsigned long& timeout, int mode) {
+			if(!initialized()) return false;
+			handle_type _sock_hdnl = m_iHandle;
+			unsigned long _remainingTime = timeout, _start = micros(), _end = 0, _waited;
+			int _polled = 0;
+
+			pollfd _pollBuf;
+			memset(&_pollBuf, 0, sizeof(pollfd));
+			_pollBuf.fd = _sock_hdnl;
+
+			do {
+				_polled = ::poll(&_pollBuf, 1, _remainingTime);
+				if (_polled < 0) {
+					_end = micros();
+					_waited = (_end - _start);
+
+					if( _waited < _remainingTime ) _remainingTime -= _waited;
+					else _remainingTime = 0;
+				}
+
+	  		} while(_polled < 0);
+
+	  		return _polled > 0;
 		}
 
 	}

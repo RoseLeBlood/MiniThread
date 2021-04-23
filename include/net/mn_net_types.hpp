@@ -151,10 +151,10 @@ namespace mn {
             no_signal = MSG_NOSIGNAL,
         };
         /**
-         * @brief Commands for lwip_..
+         * @brief Commands for lwip_shutdown
          * @ingroup socket
          */
-        enum class socket_select_mode : int {
+        enum class socket_shutdown_type : uint8_t {
         	/**
         	 * @brief receptions will be disallowed
         	 */

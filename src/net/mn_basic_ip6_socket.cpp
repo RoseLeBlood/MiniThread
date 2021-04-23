@@ -26,7 +26,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::basic_ip6_socket
 		//-----------------------------------
-		basic_ip6_socket::basic_ip6_socket(handle_type& hndl, ip6_endpoint* endp)
+		basic_ip6_socket::basic_ip6_socket(handle_type& hndl, basic_ip6_endpoint* endp)
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 		}
@@ -59,9 +59,9 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::get_endpoint
 		//-----------------------------------
-		ip6_endpoint* basic_ip6_socket::get_endpoint(bool local) {
+		basic_ip6_endpoint* basic_ip6_socket::get_endpoint(bool local) {
 			if(m_iHandle == -1) return nullptr;
-			ip6_endpoint *_ret = nullptr;
+			basic_ip6_endpoint *_ret = nullptr;
 
 			struct sockaddr_in6 name;
 			unsigned int name_len = sizeof(name);
@@ -74,8 +74,8 @@ namespace mn {
 				 lwip_getpeername(m_iHandle, (struct sockaddr *) &name, &name_len);
 			}
 
-			_ret = new ip6_endpoint(
-					   ip6_address(name.sin6_addr.un.u32_addr),
+			_ret = new basic_ip6_endpoint(
+					   basic_ip6_address(name.sin6_addr.un.u32_addr),
 					   lwip_htons(name.sin6_port));
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			_ret->set_scopeid(name.sin6_scope_id);
@@ -88,10 +88,10 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::bind
 		//-----------------------------------
-		bool basic_ip6_socket::bind(ip6_endpoint local_ep) {
+		bool basic_ip6_socket::bind(basic_ip6_endpoint local_ep) {
 			if(m_iHandle == -1) return false;
 
-			ip6_address ip = local_ep.get_ip();
+			basic_ip6_address ip = local_ep.get_ip();
 			unsigned int port = local_ep.get_port();
 
 			struct sockaddr_in6 addr;
@@ -127,14 +127,14 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::bind
 		//-----------------------------------
-		bool basic_ip6_socket::bind(ip6_address ip, const unsigned int& port) {
+		bool basic_ip6_socket::bind(basic_ip6_address ip, const unsigned int& port) {
 			return bind(MNNET_IPENDPOINT6(ip, port) );
 		}
 
 		//-----------------------------------
 		// basic_ip6_socket::get_peername
 		//-----------------------------------
-		bool basic_ip6_socket::get_peername(ip6_address& ipPeerAddress, uint16_t& iPeerPort) {
+		bool basic_ip6_socket::get_peername(basic_ip6_address& ipPeerAddress, uint16_t& iPeerPort) {
 			bool _ret = false;
 			struct sockaddr_in6 stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
@@ -144,7 +144,7 @@ namespace mn {
 			if(_iret != 0) {
 				ESP_LOGE("socket v6", "could not getpeername: %d", errno);
 			} else {
-				ipPeerAddress = ip6_address(stPeer.sin6_addr.un.u32_addr);
+				ipPeerAddress = basic_ip6_address(stPeer.sin6_addr.un.u32_addr);
 				iPeerPort = stPeer.sin6_port;
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 				ipPeerAddress.set_scopeid(stPeer.sin6_scope_id);
@@ -157,7 +157,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::get_peername
 		//-----------------------------------
-		bool basic_ip6_socket::get_peername(ip6_endpoint& endpoint) {
+		bool basic_ip6_socket::get_peername(basic_ip6_endpoint& endpoint) {
 			bool _ret = false;
 			struct sockaddr_in6 stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
@@ -167,7 +167,7 @@ namespace mn {
 			if(_iret != 0) {
 				ESP_LOGE("socket", "could not getpeername: %d", errno);
 			} else {
-				endpoint = ip6_endpoint(ip6_address(stPeer.sin6_addr.un.u32_addr), stPeer.sin6_port);
+				endpoint = basic_ip6_endpoint(basic_ip6_address(stPeer.sin6_addr.un.u32_addr), stPeer.sin6_port);
 				_ret = true;
 			}
 			return _ret;

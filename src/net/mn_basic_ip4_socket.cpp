@@ -24,7 +24,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::basic_ip4_socket
 		//-----------------------------------
-		basic_ip4_socket::basic_ip4_socket(handle_type& hndl, ip4_endpoint* endp)
+		basic_ip4_socket::basic_ip4_socket(handle_type& hndl, basic_ip4_endpoint* endp)
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 		}
@@ -57,9 +57,9 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::get_endpoint
 		//-----------------------------------
-		ip4_endpoint* basic_ip4_socket::get_endpoint(bool local) {
+		basic_ip4_endpoint* basic_ip4_socket::get_endpoint(bool local) {
 			if(m_iHandle == -1) return nullptr;
-			ip4_endpoint *_ret = nullptr;
+			basic_ip4_endpoint *_ret = nullptr;
 
 			struct sockaddr_in name;
 			unsigned int name_len = sizeof(name);
@@ -71,7 +71,7 @@ namespace mn {
 				 lwip_getpeername(m_iHandle, (struct sockaddr *) &name, &name_len);
 			}
 
-			_ret = new ip4_endpoint(ip4_address(name.sin_addr.s_addr), lwip_htons(name.sin_port));
+			_ret = new basic_ip4_endpoint(basic_ip4_address(name.sin_addr.s_addr), lwip_htons(name.sin_port));
 			if(local) m_pEndPoint = _ret;
 
 			return _ret;
@@ -80,10 +80,10 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::bind
 		//-----------------------------------
-		bool basic_ip4_socket::bind(ip4_endpoint local_ep, bool reuseAddress, bool reusePort) {
+		bool basic_ip4_socket::bind(basic_ip4_endpoint local_ep, bool reuseAddress, bool reusePort) {
 			if(m_iHandle == -1) return false;
 
-			ip4_address ip = local_ep.get_ip();
+			basic_ip4_address ip = local_ep.get_ip();
 			unsigned int port = local_ep.get_port();
 
 			if (reuseAddress)
@@ -117,7 +117,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::bind
 		//-----------------------------------
-		bool basic_ip4_socket::bind(ip4_address ip, const unsigned int& port,
+		bool basic_ip4_socket::bind(basic_ip4_address ip, const unsigned int& port,
 									bool reuseAddress, bool reusePort) {
 			return bind(MNNET_IPENDPOINT4(ip, port), reuseAddress, reusePort );
 		}
@@ -125,7 +125,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::get_peername
 		//-----------------------------------
-		bool basic_ip4_socket::get_peername(ip4_address& ipPeerAddress, uint16_t& iPeerPort) {
+		bool basic_ip4_socket::get_peername(basic_ip4_address& ipPeerAddress, uint16_t& iPeerPort) {
 			bool _ret = false;
 			struct sockaddr_in stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
@@ -135,7 +135,7 @@ namespace mn {
 			if(_iret != 0) {
 				ESP_LOGE("socket", "could not getpeername: %d", errno);
 			} else {
-				ipPeerAddress = ip4_address(stPeer.sin_addr.s_addr);
+				ipPeerAddress = basic_ip4_address(stPeer.sin_addr.s_addr);
 				iPeerPort = stPeer.sin_port;
 				_ret = true;
 			}
@@ -145,7 +145,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::get_peername
 		//-----------------------------------
-		bool basic_ip4_socket::get_peername(ip4_endpoint& endpoint) {
+		bool basic_ip4_socket::get_peername(basic_ip4_endpoint& endpoint) {
 			bool _ret = false;
 			struct sockaddr_in stPeer;
 			memset(&stPeer, 0, sizeof(struct sockaddr));
@@ -155,7 +155,7 @@ namespace mn {
 			if(_iret != 0) {
 				ESP_LOGE("socket", "could not getpeername: %d", errno);
 			} else {
-				endpoint = ip4_endpoint(ip4_address(stPeer.sin_addr.s_addr), stPeer.sin_port);
+				endpoint = basic_ip4_endpoint(basic_ip4_address(stPeer.sin_addr.s_addr), stPeer.sin_port);
 				_ret = true;
 			}
 			return _ret;

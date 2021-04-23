@@ -145,6 +145,7 @@ namespace mn {
 			 * @param newAddress The ip4 address as uint32_t
 			 */
 			explicit basic_ip4_address(uint32_t newAddress);
+
 			/**
 			 * Construtor
 			 * @brief construct a ip4 address from array
@@ -203,6 +204,7 @@ namespace mn {
 			 * @return If true then yes and false when not
 			 */
 			inline bool 			is_linklocal() { return ( as_int32 & PP_HTONL(0xf0000000UL) ) == PP_HTONL(0xa9fe0000UL); }
+
 			/**
 			 * get the ip adress as string
 			 * @return The ip4 address as string
@@ -231,7 +233,10 @@ namespace mn {
 			bool 				operator != (const basic_ip4_address& ipOther){ return !is_equel(ipOther); }
 			bool 				operator == (const uint8_t* addr);
 			basic_ip4_address& 	operator=(uint32_t address);
-
+			basic_ip4_address 	operator&(const basic_ip4_address& other)const;
+			basic_ip4_address 	operator|(const basic_ip4_address& other)const;
+			basic_ip4_address 	operator^(const basic_ip4_address& other)const;
+			basic_ip4_address 	operator~() const;
 			operator uint32_t() const { return as_int32; }
 		};
 
@@ -381,6 +386,10 @@ namespace mn {
 			bool 				operator == (const basic_ip6_address& ipOther){ return  is_equel(ipOther); }
 			bool 				operator != (const basic_ip6_address& ipOther){ return !is_equel(ipOther); }
 
+			basic_ip6_address 	operator&(const basic_ip6_address& other)const;
+			basic_ip6_address 	operator|(const basic_ip6_address& other)const;
+			basic_ip6_address 	operator^(const basic_ip6_address& other)const;
+			basic_ip6_address 	operator~() const;
 
 
 			static basic_ip4_address to_ip4(const basic_ip6_address& ip4) {
@@ -395,10 +404,7 @@ namespace mn {
 			static basic_ip6_address netmask(int mask);
 		};
 
-
-		using ip6_address = basic_ip6_address;
 #endif
-		using ip4_address = basic_ip4_address;
 	}
 }
 

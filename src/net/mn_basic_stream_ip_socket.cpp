@@ -16,6 +16,8 @@
 *<https://www.gnu.org/licenses/>.
 */
 #include "mn_config.hpp"
+
+#include "mn_task.hpp"
 #include "net/mn_basic_endpoint.hpp"
 #include "net/mn_basic_stream_ip_socket.hpp"
 
@@ -25,9 +27,33 @@ namespace mn {
 		//-----------------------------------
 		// basic_stream_ip_socket::send
 		//-----------------------------------
-		int basic_stream_ip_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
+		int basic_stream_ip_socket::send_bytes(const void* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			return lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
+
+			const char* _pBuf = reinterpret_cast<const char*>(buffer) + offset;
+			int _remaining = size-offset;
+			int _sended = 0;
+			int _sent = 0;
+			bool _blocking = get_blocking();
+
+			while (_remaining > 0) {
+				_sended = lwip_send(m_iHandle, _pBuf, _remaining, static_cast<int>(socketFlags));
+
+				_pBuf += _sended;
+				_sent += _sended;
+
+				_remaining -= _sended;
+
+				if (_blocking && _remaining > 0)
+					mn::basic_task::yield();
+				else
+					break;
+			}
+			return _sent;
+		}
+
+		int basic_stream_ip_socket::send_bytes(const void* buffer, int size, socket_flags socketFlags) {
+			return send_bytes(buffer, 0, size, socketFlags);
 		}
 
 		//-----------------------------------
@@ -42,7 +68,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_stream_ip_socket::connect
 		//-----------------------------------
-		bool basic_stream_ip_socket::connect(ip4_endpoint remote_ep) {
+		bool basic_stream_ip_socket::connect(endpoint_type remote_ep) {
 			if(m_iHandle == -1) return false;
 
 			ipaddress_type ip = remote_ep.get_ip();
@@ -54,7 +80,10 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			return ( lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1) ;
+			bool _ret = ( lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1) ;
+			if(_ret) set_blocking(false);
+
+			return _ret;
 		}
 
 		//-----------------------------------
@@ -79,7 +108,7 @@ namespace mn {
 			clientfd = lwip_accept(m_iHandle, (struct sockaddr*)&client_addr, &addrlen);
 			if(clientfd >= 0) {
 				auto port = lwip_ntohs(client_addr.sin_port);
-				auto ip = ip4_address( (uint32_t)(client_addr.sin_addr.s_addr) );
+				auto ip = basic_ip4_address( (uint32_t)(client_addr.sin_addr.s_addr) );
 
 				socket_return = new self_type(clientfd, new endpoint_type( ip, port) );
 			}
@@ -89,15 +118,38 @@ namespace mn {
 	#if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 
 		//-----------------------------------
-		// basic_stream_ip_socket::send
+		// basic_stream_ip6_socket::send
 		//-----------------------------------
-		int basic_stream_ip6_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
+		int basic_stream_ip6_socket::send_bytes(const void* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			return lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 
+			const char* _pBuf = reinterpret_cast<const char*>(buffer) + offset;
+			int _remaining = size-offset;
+			int _sended = 0;
+			int _sent = 0;
+			bool _blocking = get_blocking();
+
+			while (_remaining > 0) {
+				_sended = lwip_send(m_iHandle, _pBuf, _remaining, static_cast<int>(socketFlags));
+
+				_pBuf += _sended;
+				_sent += _sended;
+
+				_remaining -= _sended;
+
+				if (_blocking && _remaining > 0)
+					mn::basic_task::yield();
+				else
+					break;
+			}
+			return _sent;
+		}
+
+		int basic_stream_ip6_socket::send_bytes(const void* buffer, int size, socket_flags socketFlags) {
+			return send_bytes(buffer, 0, size, socketFlags);
 		}
 		//-----------------------------------
-		// basic_stream_ip_socket::recive
+		// basic_stream_ip6_socket::recive
 		//-----------------------------------
 		int basic_stream_ip6_socket::recive(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
@@ -106,7 +158,7 @@ namespace mn {
 		}
 
 		//-----------------------------------
-		// basic_stream_ip_socket::connect
+		// basic_stream_ip6_socket::connect
 		//-----------------------------------
 		bool basic_stream_ip6_socket::connect(endpoint_type remote_ep) {
 			if(m_iHandle == -1) return false;
@@ -123,11 +175,14 @@ namespace mn {
 			addr.sin6_addr.un.u32_addr[2] = ip.get_int(2);
 			addr.sin6_addr.un.u32_addr[3] = ip.get_int(3);
 
-			return lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1 ;
+			bool _ret = lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1 ;
+			if(_ret) set_blocking(false);
+
+			return _ret;
 		}
 
 		//-----------------------------------
-		// basic_stream_ip_socket::listen
+		// basic_stream_ip6_socket::listen
 		//-----------------------------------
 		bool basic_stream_ip6_socket::listen(int backLog) {
 			if(m_iHandle == -1) return false;
@@ -135,7 +190,7 @@ namespace mn {
 		}
 
 		//-----------------------------------
-		// basic_stream_ip_socket::accept
+		// basic_stream_ip6_socket::accept
 		//-----------------------------------
 		typename basic_stream_ip6_socket::self_type* basic_stream_ip6_socket::accept() {
 			if(m_iHandle == -1) return nullptr;
@@ -150,9 +205,9 @@ namespace mn {
 			if(clientfd >= 0) {
 				auto port = lwip_ntohs(client_addr.sin6_port);
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
-				auto ip = ip6_address( client_addr.sin6_addr.un.u8_addr ,  client_addr.sin6_scope_id );
+				auto ip = basic_ip6_address( client_addr.sin6_addr.un.u8_addr ,  client_addr.sin6_scope_id );
 		#else
-				auto ip = ip6_address( client_addr.sin6_addr.un.u8_addr );
+				auto ip = basic_ip6_address( client_addr.sin6_addr.un.u8_addr );
 		#endif
 				socket_return = new self_type(clientfd, new endpoint_type( ip, port) );
 			}

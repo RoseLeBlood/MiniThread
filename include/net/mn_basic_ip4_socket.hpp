@@ -29,15 +29,15 @@ namespace mn {
 		class basic_ip4_socket : public basic_ip_socket {
 		public:
 			using handle_type = typename basic_ip_socket::handle_type;
-			using endpoint_type = ip4_endpoint;
-			using ipaddress_type = ip4_address;
+			using endpoint_type = basic_ip4_endpoint;
+			using ipaddress_type = basic_ip4_address;
 
 			/**
 			 * @brief Construct the wrapper class from a given lwip socket handle and the endpoint
 			 * @param hndl The raw lwip socket handle.
 			 * @param endp The endpoint for this socket
 			 */
-        	basic_ip4_socket(handle_type& hndl, ip4_endpoint* endp = nullptr);
+        	basic_ip4_socket(handle_type& hndl, endpoint_type* endp = nullptr);
         	/**
         	 * @brief Construct create a IPv4 Socket AF_INET
         	 * @param type The type of the socket
@@ -64,7 +64,7 @@ namespace mn {
 			 * 		- true: bind the socket on the given endpoint
 			 *		- false: bind error
 			 */
-			bool bind(ip4_endpoint local_ep, bool reuseAddress = false, bool reusePort = false);
+			bool bind(endpoint_type local_ep, bool reuseAddress = false, bool reusePort = false);
 			/**
 			 * @brief Bind the socket
 			 * @note bind on MNNET_IPV4_ADDRESS_ANY : port
@@ -86,7 +86,7 @@ namespace mn {
 			 * 		- true: success
 			 *		- false: on error
 			 */
-			bool bind(ip4_address ip, const unsigned int& port, bool reuseAddress = false, bool reusePort = false);
+			bool bind(ipaddress_type ip, const unsigned int& port, bool reuseAddress = false, bool reusePort = false);
 
 			/**
 			 * @brief Get the local or remote ip endpoint
@@ -95,17 +95,17 @@ namespace mn {
 			 *
 			 * @return The local or remote ip endpoint
 			 */
-			ip4_endpoint* 		get_endpoint(bool local);
+			endpoint_type* 		get_endpoint(bool local);
 			/**
 			 * @brief Get the local endpoint
 			 * @return The local endpoint
 			 */
-			ip4_endpoint* 		get_local()   				{ return get_endpoint(true); }
+			endpoint_type* 		get_local()   				{ return get_endpoint(true); }
 			/**
 			 * @brief Get the remote endpoint
 			 * @return The remote endpoint
 			 */
-        	ip4_endpoint* 		get_remote()  				{ return get_endpoint(false); }
+        	endpoint_type* 		get_remote()  				{ return get_endpoint(false); }
 
         	/**
 			 * @brief Get the remote endpoint
@@ -113,7 +113,7 @@ namespace mn {
 			 *
 			 * @return if true then success and if false on error
 			 */
-        	bool 		  		get_peername(ip4_endpoint& endpoint);
+        	bool 		  		get_peername(endpoint_type& endpoint);
         	/**
 			 * @brief Get the remote endpoint
 			 * @param ipPeerAddress The holder of the returned ip4 address
@@ -121,7 +121,7 @@ namespace mn {
 			 *
 			 * @return if true then success and if false on error
 			 */
-        	bool 		   		get_peername(ip4_address& ipPeerAddress, uint16_t& iPeerPort);
+        	bool 		   		get_peername(ipaddress_type& ipPeerAddress, uint16_t& iPeerPort);
         	/**
 			 * @brief Get a copy of this socket
 			 * @return A copy of this socket
@@ -133,12 +133,8 @@ namespace mn {
 			/**
 			 * @brief A saved / cached copy of the endpoint on binde the socket
 			 */
-			ip4_endpoint* m_pEndPoint;
+			endpoint_type* m_pEndPoint;
 		};
-		/**
-		 * @brief using the class basic_ip4_socket as ip4_socket type
-		 */
-		using ip4_socket = basic_ip4_socket;
 	}
 }
 

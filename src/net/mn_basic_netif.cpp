@@ -105,9 +105,9 @@ namespace mn {
 			MN_ESP2MNTHREAD_ERROR_END(_error);
 
 			if(_error == NO_ERROR) {
-				ip_info.gw = ip4_address(_info_t.gw.addr);
-				ip_info.ip = ip4_address(_info_t.ip.addr);
-				ip_info.netmask = ip4_address(_info_t.netmask.addr);
+				ip_info.gw = basic_ip4_address(_info_t.gw.addr);
+				ip_info.ip = basic_ip4_address(_info_t.ip.addr);
+				ip_info.netmask = basic_ip4_address(_info_t.netmask.addr);
 			}
 
 			return _error;

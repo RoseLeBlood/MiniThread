@@ -28,9 +28,9 @@ namespace mn {
 		class basic_net_if {
 			public:
 				struct ip_info {
-					ip4_address ip;      /**< Interface IPV4 address */
-					ip4_address netmask; /**< Interface IPV4 netmask */
-					ip4_address gw;      /**< Interface IPV4 gateway address */
+					basic_ip4_address ip;      /**< Interface IPV4 address */
+					basic_ip4_address netmask; /**< Interface IPV4 netmask */
+					basic_ip4_address gw;      /**< Interface IPV4 gateway address */
 				};
 				using ip_info_t = ip_info;
 

@@ -39,13 +39,14 @@ namespace mn {
 
 			int recive(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
 				{ return recive(buffer, 0, size, socketFlags); }
-			int send(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
-				{ return send(buffer, 0, size, socketFlags); }
-
-			int send(char* buffer, int offset, int size, socket_flags socketFlags);
 			int recive(char* buffer, int offset, int size, socket_flags socketFlags);
 
-			bool connect(ip4_endpoint remote_ep);
+			int send_bytes(const void* buffer, int size, socket_flags socketFlags = socket_flags::none);
+			int send_bytes(const void* buffer, int offset, int size, socket_flags socketFlags = socket_flags::none);
+
+
+
+			bool connect(endpoint_type remote_ep);
 			bool listen(int backLog);
 
 			self_type* accept();
@@ -72,11 +73,10 @@ namespace mn {
 
 			int recive(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
 				{ return recive(buffer, 0, size, socketFlags); }
-			int send(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
-				{ return send(buffer, 0, size, socketFlags); }
-
-			int send(char* buffer, int offset, int size, socket_flags socketFlags);
 			int recive(char* buffer, int offset, int size, socket_flags socketFlags);
+
+			int send_bytes(const void* buffer, int size, socket_flags socketFlags = socket_flags::none);
+			int send_bytes(const void* buffer, int offset, int size, socket_flags socketFlags = socket_flags::none);
 
 			bool connect(endpoint_type remote_ep);
 			bool listen(int backLog);

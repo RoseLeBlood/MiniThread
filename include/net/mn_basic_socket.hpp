@@ -133,7 +133,23 @@ namespace mn {
         	basic_ip_socket& operator = (const basic_ip_socket& other);
 
 
+			/**
+			 * @brief send shutdown
+			 * @param cmd The type of shutdown
+			 */
+			void shutdown(const socket_shutdown_type& cmd);
 
+			/**
+			 * @brief poll the socket
+			 *
+			 * @param timeout How many micros to poll
+			 * @param mode poll mode
+			 *
+			 * @return
+			 *		- true: on success
+			 *		- false: if not success
+			 */
+			bool poll(const unsigned long& timeout, int mode);
 			/**
         	 * @brief Set the option socket_option_name::reuse_addr
         	 * @param flag if true then enable the option and false when not
@@ -175,6 +191,28 @@ namespace mn {
         	 * @param flag if true then enable the option and false when not
         	 */
         	void set_nocheak(bool value);
+			/**
+        	 * @brief Set the size of the send buffer
+        	 * @param value The size of the buffer in bytes
+        	 */
+        	void set_send_buffer_size(int value);
+        	/**
+        	 * @brief Set the size of the recive buffer
+        	 * @param value The size of the buffer in bytes
+        	 */
+        	void set_recive_buffer_size(int value);
+
+        	/**
+        	 * @brief Set the option socket_option_name::send_timeout
+        	 * @param value The value for the option in millis
+        	 */
+        	void set_send_timeout(int value);
+        	/**
+        	 * @brief Set the option socket_option_name::recive_timeout
+        	 * @param value The value for the option in millis
+        	 */
+        	void set_recive_timeout(int value);
+
 
         	/**
         	 * @brief Get the value of the option socket_option_name::reuse_addr
@@ -214,6 +252,32 @@ namespace mn {
         	 */
         	bool get_nocheak();
 
+        	/**
+        	 * @brief Is the socket blocking enabled
+        	 * @return If true then blocking and if false when not
+        	 */
+        	bool get_blocking() { return m_bBlocked; }
+        	/**
+        	 * @brief Get the size of the send buffer
+        	 * @return The size of the buffer in bytes
+        	 */
+        	int get_send_buffer_size();
+        	/**
+        	 * @brief Get the size of the recive buffer
+        	 * @return The size of the buffer in bytes
+        	 */
+        	int get_recive_buffer_size();
+
+        	/**
+        	 * @brief Set the option socket_option_name::send_timeout
+        	 * @return The millis for the option in millis
+        	 */
+        	int get_send_timeout();
+        	/**
+        	 * @brief Set the option socket_option_name::recive_timeout
+        	 * @return The millis for the option in millis
+        	 */
+        	int get_recive_timeout();
 		public:
 			/**
         	 * @brief Sets the socket option specified by level and option to the given integer value.
@@ -310,6 +374,8 @@ namespace mn {
 			address_family 	m_eFam;
 			socket_type 	m_eType;
 			protocol_type 	m_eProtocol;
+
+			bool m_bBlocked;
 		};
 
 	}

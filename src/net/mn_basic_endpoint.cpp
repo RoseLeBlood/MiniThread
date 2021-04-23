@@ -31,7 +31,7 @@ namespace mn {
 		//-----------------------------------
 		//  ip4_endpoint::basic_ip4_endpoint
 		//-----------------------------------
-		basic_ip4_endpoint::basic_ip4_endpoint(const ip4_address& ip, const uint16_t& port)
+		basic_ip4_endpoint::basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port)
 			:  m_iPort(8289), m_ipAdress(ip)  {
 			if(port < 9999) m_iPort = port; else m_iPort = 0;
 		}
@@ -52,7 +52,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip4_endpoint::get_ip()
 		//-----------------------------------
-		ip4_address basic_ip4_endpoint::get_ip() {
+		basic_ip4_address basic_ip4_endpoint::get_ip() {
 			return m_ipAdress;
 		}
 
@@ -120,7 +120,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_endpoint
 		//-----------------------------------
-		basic_ip6_endpoint::basic_ip6_endpoint(const ip6_address& ip, const uint16_t& port)
+		basic_ip6_endpoint::basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port)
 			:  m_iPort(8289), m_ipAdress(ip)  {
 			if(port < 9999) m_iPort = port; else m_iPort = 0;
 		}
@@ -139,7 +139,7 @@ namespace mn {
 		//-----------------------------------
 		//  get_ip
 		//-----------------------------------
-		ip6_address basic_ip6_endpoint::get_ip() {
+		basic_ip6_address basic_ip6_endpoint::get_ip() {
 			return m_ipAdress;
 		}
 
