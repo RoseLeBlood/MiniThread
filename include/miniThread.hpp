@@ -19,12 +19,16 @@
 #ifndef __LIBMIN_THREAD_H_
 #define __LIBMIN_THREAD_H_
 
+#include <cstring>
+#include <stdio.h>
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 #include <freertos/task.h>
 #include <freertos/queue.h>
 
 #include "mn_config.hpp"
+#include "mn_def.hpp"
 #include "mn_version.hpp"
 #include "mn_autolock.hpp"
 #include "mn_micros.hpp"
