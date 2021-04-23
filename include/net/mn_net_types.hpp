@@ -420,6 +420,17 @@ namespace mn {
 			low_cost = IPTOS_LOWCOST,			/*!<  */
 			min_cost = IPTOS_MINCOST,			/*!<  */
         };
+		/**
+		 * @brief Commands for ioctlsocket(),  taken from the BSD file fcntl.h.
+ 		 * lwip_ioctl only supports FIONREAD and FIONBIO, for now
+ 		 *
+         * @ingroup socket
+         */
+		enum class ioctl_request_type  {
+			available = FIONREAD,				/*!< get # bytes to read */
+			non_blocking = FIONBIO,				/*!< set/clear non-blocking i/o */
+		};
+
 
 	}
 }

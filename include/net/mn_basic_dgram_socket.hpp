@@ -20,6 +20,8 @@
 
 #include "../mn_config.hpp"
 #include "mn_basic_socket.hpp"
+#include "mn_basic_ip4_socket.hpp"
+#include "mn_basic_ip6_socket.hpp"
 
 namespace mn {
 	namespace net {
@@ -27,19 +29,20 @@ namespace mn {
 		 * Basic dram socket class, for ip4adress
 		 * @ingroup socket
 		 */
-		class basic_dgram_ip_socket : public ip4_socket {
+		class basic_dgram_ip_socket : public basic_ip4_socket {
 		public:
 			using self_typ = basic_dgram_ip_socket;
+			using base_type = basic_ip4_socket;
 
-			using endpoint_type = typename ip4_socket::endpoint_type;
-			using ipaddress_type = typename ip4_socket::ipaddress_type;
-			using handle_type = typename ip4_socket::handle_type;
+			using endpoint_type = typename base_type::endpoint_type;
+			using ipaddress_type = typename base_type::ipaddress_type;
+			using handle_type = typename base_type::handle_type;
 
 			/**
 			 * @brief Construt
 			 */
 			basic_dgram_ip_socket()
-				: ip4_socket( socket_type::dgram, protocol_type::unspec) { }
+				: base_type( socket_type::dgram, protocol_type::unspec) { }
 
 			/**
 			 * @brief send a buffer of data to the given enpoint
@@ -70,9 +73,9 @@ namespace mn {
         	bool bind_multicast(const ipaddress_type& ip, const unsigned int& port);
 		protected:
 			basic_dgram_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
-				: ip4_socket(hndl, endp) { }
+				: base_type(hndl, endp) { }
 			basic_dgram_ip_socket(const protocol_type& protocol)
-				: ip4_socket(socket_type::dgram, protocol) { }
+				: base_type(socket_type::dgram, protocol) { }
 		private:
         	ipaddress_type m_ipMultiCast;
 		};
@@ -92,16 +95,17 @@ namespace mn {
 		 * Basic dram socket class, for ip6adress
 		 * @ingroup socket
 		 */
-		class basic_dgram_ip6_socket : public ip6_socket {
+		class basic_dgram_ip6_socket : public basic_ip6_socket {
 		public:
 			using self_typ = basic_dgram_ip_socket;
+			using base_type = basic_ip6_socket;
 
-			using endpoint_type = typename ip6_socket::endpoint_type;
-			using ipaddress_type = typename ip6_socket::ipaddress_type;
-			using handle_type = typename ip6_socket::handle_type;
+			using endpoint_type = typename base_type::endpoint_type;
+			using ipaddress_type = typename base_type::ipaddress_type;
+			using handle_type = typename base_type::handle_type;
 
 			basic_dgram_ip6_socket()
-				: ip6_socket( socket_type::dgram, protocol_type::unspec) { }
+				: base_type( socket_type::dgram, protocol_type::unspec) { }
 
 			int send_to(char* buffer, int size, endpoint_type* ep, socket_flags socketFlags  = socket_flags::none)
 				{ return send_to(buffer, 0, size, socketFlags, ep); }
@@ -113,9 +117,9 @@ namespace mn {
 			int send_to(char* buffer, int offset, int size, socket_flags socketFlags, endpoint_type* ep);
 		protected:
 			basic_dgram_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
-				: ip6_socket(hndl, endp) { }
+				: base_type(hndl, endp) { }
 			basic_dgram_ip6_socket(const protocol_type& protocol)
-				: ip6_socket(socket_type::dgram, protocol) { }
+				: base_type(socket_type::dgram, protocol) { }
 		private:
         	ipaddress_type m_ipMultiCast;
 		};

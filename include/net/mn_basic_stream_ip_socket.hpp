@@ -20,20 +20,22 @@
 
 #include "../mn_config.hpp"
 #include "mn_basic_socket.hpp"
+#include "mn_basic_ip4_socket.hpp"
+#include "mn_basic_ip6_socket.hpp"
 
 namespace mn {
 	namespace net {
-		class basic_stream_ip_socket : public ip4_socket  {
+		class basic_stream_ip_socket : public basic_ip4_socket  {
 		public:
 			using self_type = basic_stream_ip_socket;
-			using base_type = ip4_socket;
+			using base_type = basic_ip4_socket;
 
 			using endpoint_type = typename base_type::endpoint_type;
 			using ipaddress_type = typename base_type::ipaddress_type;
 			using handle_type = typename base_type::handle_type;
 
 			basic_stream_ip_socket()
-				: ip4_socket( socket_type::stream, protocol_type::unspec) { }
+				: base_type( socket_type::stream, protocol_type::unspec) { }
 
 			int recive(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
 				{ return recive(buffer, 0, size, socketFlags); }
@@ -49,31 +51,24 @@ namespace mn {
 			self_type* accept();
 		protected:
 			basic_stream_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
-				: ip4_socket(hndl, endp) { }
+				: base_type(hndl, endp) { }
 			basic_stream_ip_socket(const protocol_type& protocol)
-				: ip4_socket(socket_type::dgram, protocol) { }
+				: base_type(socket_type::dgram, protocol) { }
 
-		private:
 		};
 
 	#if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
-		class basic_stream_ip6_socket : public ip6_socket  {
+		class basic_stream_ip6_socket : public basic_ip6_socket  {
 		public:
 			using self_type = basic_stream_ip6_socket;
-			using base_type = ip6_socket;
+			using base_type = basic_ip6_socket;
 
 			using endpoint_type = typename base_type::endpoint_type;
 			using ipaddress_type = typename base_type::ipaddress_type;
 			using handle_type = typename base_type::handle_type;
 
 			basic_stream_ip6_socket()
-				: ip6_socket( socket_type::stream, protocol_type::unspec) { }
-
-		protected:
-			basic_stream_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
-				: ip6_socket(hndl, endp) { }
-			basic_stream_ip6_socket(const protocol_type& protocol)
-				: ip6_socket(socket_type::dgram, protocol) { }
+				: base_type( socket_type::stream, protocol_type::unspec) { }
 
 			int recive(char* buffer, int size, socket_flags socketFlags = socket_flags::none)
 				{ return recive(buffer, 0, size, socketFlags); }
@@ -87,7 +82,11 @@ namespace mn {
 			bool listen(int backLog);
 
 			self_type* accept();
-		private:
+		protected:
+			basic_stream_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
+				: base_type(hndl, endp) { }
+			basic_stream_ip6_socket(const protocol_type& protocol)
+				: base_type(socket_type::dgram, protocol) { }
 		};
 	#endif // MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE
 	}

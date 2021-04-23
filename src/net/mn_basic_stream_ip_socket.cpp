@@ -27,8 +27,7 @@ namespace mn {
 		//-----------------------------------
 		int basic_stream_ip_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			m_iLastError = lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
-			return m_iLastError;
+			return lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
 		}
 
 		//-----------------------------------
@@ -36,8 +35,8 @@ namespace mn {
 		//-----------------------------------
 		int basic_stream_ip_socket::recive(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			m_iLastError = lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
-			return m_iLastError;
+			return lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
+
 		}
 
 		//-----------------------------------
@@ -55,8 +54,7 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			m_iLastError = lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) ;
-			return m_iLastError != -1;
+			return ( lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1) ;
 		}
 
 		//-----------------------------------
@@ -64,8 +62,7 @@ namespace mn {
 		//-----------------------------------
 		bool basic_stream_ip_socket::listen(int backLog) {
 			if(m_iHandle == -1) return false;
-        	m_iLastError = lwip_listen(m_iHandle, backLog) ;
-        	return m_iLastError != -1;
+        	return lwip_listen(m_iHandle, backLog) != -1;
 		}
 
 		//-----------------------------------
@@ -85,8 +82,6 @@ namespace mn {
 				auto ip = ip4_address( (uint32_t)(client_addr.sin_addr.s_addr) );
 
 				socket_return = new self_type(clientfd, new endpoint_type( ip, port) );
-			} else {
-				m_iLastError = clientfd;
 			}
 			return socket_return;
 		}
@@ -98,16 +93,16 @@ namespace mn {
 		//-----------------------------------
 		int basic_stream_ip6_socket::send(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			m_iLastError = lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
-			return m_iLastError;
+			return lwip_send(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
+
 		}
 		//-----------------------------------
 		// basic_stream_ip_socket::recive
 		//-----------------------------------
 		int basic_stream_ip6_socket::recive(char* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
-			m_iLastError = lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
-			return m_iLastError;
+			return lwip_recv(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags));
+
 		}
 
 		//-----------------------------------
@@ -128,8 +123,7 @@ namespace mn {
 			addr.sin6_addr.un.u32_addr[2] = ip.get_int(2);
 			addr.sin6_addr.un.u32_addr[3] = ip.get_int(3);
 
-			m_iLastError = lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) ;
-			return m_iLastError != -1;
+			return lwip_connect(m_iHandle, (struct sockaddr*)&addr, sizeof(addr) ) != -1 ;
 		}
 
 		//-----------------------------------
@@ -137,8 +131,7 @@ namespace mn {
 		//-----------------------------------
 		bool basic_stream_ip6_socket::listen(int backLog) {
 			if(m_iHandle == -1) return false;
-        	m_iLastError = lwip_listen(m_iHandle, backLog) ;
-        	return m_iLastError != -1;
+        	return lwip_listen(m_iHandle, backLog) != -1;
 		}
 
 		//-----------------------------------
@@ -162,8 +155,6 @@ namespace mn {
 				auto ip = ip6_address( client_addr.sin6_addr.un.u8_addr );
 		#endif
 				socket_return = new self_type(clientfd, new endpoint_type( ip, port) );
-			} else {
-				m_iLastError = clientfd;
 			}
 			return socket_return;
 		}

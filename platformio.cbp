@@ -265,6 +265,8 @@
 		<Unit filename="include/mn_version.hpp" />
 		<Unit filename="include/net/mn_basic_dgram_socket.hpp" />
 		<Unit filename="include/net/mn_basic_endpoint.hpp" />
+		<Unit filename="include/net/mn_basic_ip4_socket.hpp" />
+		<Unit filename="include/net/mn_basic_ip6_socket.hpp" />
 		<Unit filename="include/net/mn_basic_ip_address.hpp" />
 		<Unit filename="include/net/mn_basic_netif.hpp" />
 		<Unit filename="include/net/mn_basic_slip_driver.hpp" />
@@ -338,6 +340,8 @@
 		<Unit filename="src/mn_version.cpp" />
 		<Unit filename="src/net/mn_basic_dgram_socket.cpp" />
 		<Unit filename="src/net/mn_basic_endpoint.cpp" />
+		<Unit filename="src/net/mn_basic_ip4_socket.cpp" />
+		<Unit filename="src/net/mn_basic_ip6_socket.cpp" />
 		<Unit filename="src/net/mn_basic_ip_address.cpp" />
 		<Unit filename="src/net/mn_basic_netif.cpp" />
 		<Unit filename="src/net/mn_basic_slip_driver.cpp" />

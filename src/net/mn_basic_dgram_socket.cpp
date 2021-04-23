@@ -44,10 +44,10 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			m_iLastError = lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, _flags,
+			return lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, _flags,
 						  (struct sockaddr*)&addr,
 						  &addrlen );
-			return m_iLastError;
+
 		}
 
 		//-----------------------------------
@@ -71,10 +71,9 @@ namespace mn {
 			addr.sin_port = htons(port);
 			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			m_iLastError = lwip_sendto(m_iHandle, &buffer[offset], size-offset, _flags,
+			return lwip_sendto(m_iHandle, &buffer[offset], size-offset, _flags,
 							   (struct sockaddr*)&addr,
 							   addrlen );
-			return m_iLastError;
 		}
 
 		//-----------------------------------
@@ -130,10 +129,10 @@ namespace mn {
 			addr.sin6_addr.un.u32_addr[2] = ip.get_int(2);
 			addr.sin6_addr.un.u32_addr[3] = ip.get_int(3);
 
-			m_iLastError = lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
+			return lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
 						  (struct sockaddr*)&addr,
 						  &addrlen );
-			return m_iLastError;
+
 		}
 
 		//-----------------------------------
@@ -158,10 +157,10 @@ namespace mn {
 			addr.sin6_addr.un.u32_addr[2] = ip.get_int(2);
 			addr.sin6_addr.un.u32_addr[3] = ip.get_int(3);
 
-			m_iLastError = lwip_sendto(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
+			return lwip_sendto(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
 							   (struct sockaddr*)&addr,
 							   addrlen );
-			return m_iLastError;
+
 		}
 	}
 }

@@ -137,14 +137,14 @@ namespace mn {
 		//  start
 		//-----------------------------------
 		bool basic_net_if::start() {
-			return esp_netif_init() == 0;
+			return esp_netif_init() == ESP_OK;
 		}
 
 		//-----------------------------------
 		//  stop
 		//-----------------------------------
 		bool basic_net_if::stop() {
-			return esp_netif_deinit() == 0;
+			return esp_netif_deinit() == ESP_OK;
 		}
 
 		//-----------------------------------
