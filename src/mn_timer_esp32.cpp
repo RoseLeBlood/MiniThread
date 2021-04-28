@@ -1,3 +1,6 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <string>
+// *** END ***
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2018-2020 Amber-Sophia Schroeck

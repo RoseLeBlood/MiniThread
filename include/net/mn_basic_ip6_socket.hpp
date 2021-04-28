@@ -20,13 +20,15 @@
 
 #include "../mn_config.hpp"
 #include "mn_basic_socket.hpp"
+#include "mn_basic_ip6_endpoint.hpp"
 
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 
 namespace mn {
 	namespace net {
 		/**
-		 * Wrapper class around lwip implementation of a ip6 socket.
+		 * @brief This class represents an internet (IP) version 6 host socket.
+		 * @ingroup socket
 		 */
 		class basic_ip6_socket : public basic_ip_socket {
 		public:
@@ -129,7 +131,7 @@ namespace mn {
 			 * @brief Get a copy of this socket
 			 * @return A copy of this socket
 			 */
-        	basic_ip_socket*	get_copy() 					{ return new basic_ip6_socket(*this); }
+        	virtual basic_ip_socket*	get_copy() 					{ return new basic_ip6_socket(*this); }
 		protected:
 			/**
 			 * @brief A saved / cached copy of the endpoint on binde the socket

@@ -371,10 +371,22 @@ namespace mn {
         	 */
 			handle_type m_iHandle;
 
+			/**
+			 * @brief  A saved / cached copy of the address family type of this socket.
+			 */
 			address_family 	m_eFam;
+			/**
+			 * @brief  A saved / cached copy of the socket type of this socket.
+			 */
 			socket_type 	m_eType;
+			/**
+			 * @brief  A saved / cached copy of the protocal type of this socket.
+			 */
 			protocol_type 	m_eProtocol;
 
+			/**
+			 *  @brief A saved / cached copy  of a blocked flag
+			 */
 			bool m_bBlocked;
 		};
 

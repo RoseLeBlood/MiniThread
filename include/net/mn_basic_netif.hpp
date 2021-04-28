@@ -13,6 +13,9 @@
 #endif // CONFIG_ETH_USE_SPI_ETHERNET
 
 #include "mn_basic_ip_address.hpp"
+#include "mn_basic_ip4_address.hpp"
+#include "mn_basic_ip6_address.hpp"
+
 #include "mn_lock.hpp"
 
 namespace mn {
@@ -24,6 +27,8 @@ namespace mn {
 		 * @note To use this, you need to subclass it. All of your task should
    		 * be derived from the basic_net_if class. Then implement the virtual
 		 * create_default function.
+		 *
+		 * @ingroup device
 		 */
 		class basic_net_if {
 			public:
@@ -219,28 +224,6 @@ namespace mn {
 				 */
 				esp_netif_t*    	m_pNetIf;
 		};
-
-
-
-#if 0
-		class basic_ppp_net_if : public basic_net_if {
-		protected:
-			basic_ppp_net_if() : basic_net_if() { }
-
-			virtual bool    create_default() {
-				esp_netif_config_t cfg = ESP_NETIF_DEFAULT_PPP();
-				return esp_netif_new(&cfg);
-			}
-		};
-
-		class basic_ethernet_nef_if : public basic_net_if {
-		protected:
-			ethernet_interface() : basic_net_if() { }
-
-			virtual esp_netif_t* create_default();
-		};
-#endif // 0
-
 	}
 }
 

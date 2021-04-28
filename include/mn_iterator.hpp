@@ -1,3 +1,7 @@
+// *** ADDED BY HEADER FIXUP ***
+#include <algorithm>
+#include <iterator>
+// *** END ***
 /**
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2021 Amber-Sophia Schroeck

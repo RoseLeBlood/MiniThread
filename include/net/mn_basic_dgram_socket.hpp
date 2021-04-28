@@ -26,7 +26,7 @@
 namespace mn {
 	namespace net {
 		/**
-		 * Basic dram socket class, for ip4adress
+		 * @brief Basic dram socket class
 		 * @ingroup socket
 		 */
 		class basic_dgram_ip_socket : public basic_ip4_socket {
@@ -51,37 +51,59 @@ namespace mn {
 			 * @param size The size of sending buffer
 			 * @param ep The endpoint to send the biffer
 			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes sent, which may be less than the number of bytes specified.
 			 */
 			int send_to(char* buffer, int size, endpoint_type& ep, const socket_flags& socketFlags  = socket_flags::none)
 				{ return send_to(buffer, 0, size, socketFlags, ep); }
+
+			/**
+			 * @brief recive a buffer of data
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param[out] ep The endpoint from recive the data
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes received.
+			 */
+			int recive_from(char* buffer, int size, endpoint_type* ep, const socket_flags& socketFlags  = socket_flags::none)
+				{ return recive_from(buffer, 0, size, socketFlags, ep); }
+
+			/**
+			 * @brief recive a buffer of data
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param[out] ep The endpoint from recive the data
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes received.
+			 */
+			int recive_from(char* buffer, int offset, int size, const socket_flags& socketFlags, endpoint_type* ep);
 
 			/**
 			 * @brief send a buffer of data to the given enpoint
 			 *
 			 * @param buffer The buffer to send
 			 * @param size The size of sending buffer
+			 * @param offset sending buffer offset (buffer + offset)
 			 * @param ep The endpoint to send the biffer
 			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes sent, which may be less than the number of bytes specified.
 			 */
-			int recive_from(char* buffer, int size, endpoint_type* ep, const socket_flags& socketFlags  = socket_flags::none)
-				{ return recive_from(buffer, 0, size, socketFlags, ep); }
-
-			int recive_from(char* buffer, int offset, int size, const socket_flags& socketFlags, endpoint_type* ep);
 			int send_to(char* buffer, int offset, int size, const socket_flags& socketFlags, endpoint_type& ep);
 
-        	bool bind_multicast(endpoint_type local_ep);
-        	bool bind_multicast(const ipaddress_type& ip, const unsigned int& port);
+        	//bool bind_multicast(endpoint_type local_ep);
+        	//bool bind_multicast(const ipaddress_type& ip, const unsigned int& port);
 		protected:
 			basic_dgram_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
 			basic_dgram_ip_socket(const protocol_type& protocol)
 				: base_type(socket_type::dgram, protocol) { }
 		private:
-        	ipaddress_type m_ipMultiCast;
+        	//ipaddress_type m_ipMultiCast;
 		};
 #if LWIP_UDP && LWIP_UDPLITE
 		/**
-		 * Basic dram lite socket class, for ip4adress
+		 * @brief Basic dram lite socket class
 		 * @ingroup socket
 		 */
 		class basic_dgramlite_ip_socket : public basic_dgram_ip_socket {
@@ -92,7 +114,7 @@ namespace mn {
 
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 		/**
-		 * Basic dram socket class, for ip6adress
+		 * @brief Basic dram socket class
 		 * @ingroup socket
 		 */
 		class basic_dgram_ip6_socket : public basic_ip6_socket {
@@ -107,21 +129,56 @@ namespace mn {
 			basic_dgram_ip6_socket()
 				: base_type( socket_type::dgram, protocol_type::unspec) { }
 
+			/**
+			 * @brief send a buffer of data to the given enpoint
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param ep The endpoint to send the biffer
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes sent, which may be less than the number of bytes specified.
+			 */
 			int send_to(char* buffer, int size, endpoint_type* ep, socket_flags socketFlags  = socket_flags::none)
 				{ return send_to(buffer, 0, size, socketFlags, ep); }
 
+			/**
+			 * @brief recive a buffer of data
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param[out] ep The endpoint from recive the data
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes received.
+			 */
 			int recive_from(char* buffer, int size, endpoint_type* ep, socket_flags socketFlags  = socket_flags::none)
 				{ return recive_from(buffer, 0, size, socketFlags, ep); }
 
+			/**
+			 * @brief recive a buffer of data
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param[out] ep The endpoint from recive the data
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes received.
+			 */
 			int recive_from(char* buffer, int offset, int size, socket_flags socketFlags, endpoint_type* ep);
+			/**
+			 * @brief send a buffer of data to the given enpoint
+			 *
+			 * @param buffer The buffer to send
+			 * @param size The size of sending buffer
+			 * @param offset sending buffer offset (buffer + offset)
+			 * @param ep The endpoint to send the biffer
+			 * @param socketFlags The options for send
+			 * @return Returns the number of bytes sent, which may be less than the number of bytes specified.
+			 */
 			int send_to(char* buffer, int offset, int size, socket_flags socketFlags, endpoint_type* ep);
 		protected:
 			basic_dgram_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
 			basic_dgram_ip6_socket(const protocol_type& protocol)
 				: base_type(socket_type::dgram, protocol) { }
-		private:
-        	ipaddress_type m_ipMultiCast;
 		};
 	#if LWIP_UDP && LWIP_UDPLITE
 		/**

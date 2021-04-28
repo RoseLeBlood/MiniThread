@@ -31,22 +31,21 @@ namespace mn {
 
 			if(m_iHandle == -1) return -1;
 
-			typename basic_dgram_ip_socket::ipaddress_type ip = ep->get_ip();
-			unsigned int port = ep->get_port();
-
-			int _flags = static_cast<int>(socketFlags);
-
 			struct sockaddr_in addr;
 			unsigned int addrlen=sizeof(addr);
-
 			memset((char *) &addr, 0, sizeof(addr));
-			addr.sin_family = AF_INET;
-			addr.sin_port = htons(port);
-			addr.sin_addr.s_addr = (in_addr_t)ip;
 
-			return lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, _flags,
+			int _iret = lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
 						  (struct sockaddr*)&addr,
 						  &addrlen );
+
+			if(_iret > 0) {
+				if(ep != NULL) {
+					ep->set_host( basic_ip4_address( (uint32_t) addr.sin_addr.s_addr ) ) ;
+					ep->set_port(addr.sin_port);
+				}
+			}
+			return _iret;
 
 		}
 
@@ -58,7 +57,7 @@ namespace mn {
 
 			if(m_iHandle == -1) return -1;
 
-			typename basic_dgram_ip_socket::ipaddress_type ip = ep.get_ip();
+			typename basic_dgram_ip_socket::ipaddress_type ip = ep.get_host();
 			unsigned int port = ep.get_port();
 
 			int _flags = static_cast<int>(socketFlags);
@@ -79,7 +78,7 @@ namespace mn {
 		//-----------------------------------
 		//  bind_multicast
 		//-----------------------------------
-		bool basic_dgram_ip_socket::bind_multicast(basic_ip4_endpoint local_ep) {
+		/*bool basic_dgram_ip_socket::bind_multicast(basic_ip4_endpoint local_ep) {
 			bool _retBool = false;
 
 			if(bind((int)local_ep.get_port())) {
@@ -96,7 +95,6 @@ namespace mn {
 			}
 			return _retBool;
 		}
-
 		//-----------------------------------
 		//  bind_multicast
 		//-----------------------------------
@@ -104,9 +102,10 @@ namespace mn {
 													const unsigned int& port) {
 			return bind_multicast(basic_ip4_endpoint(ip, port));
 		}
+	*/
 
 		//======================== basic_dgram_ip6_socket ========================
-
+	#if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES
 		//-----------------------------------
 		//  recive_from
 		//-----------------------------------
@@ -115,24 +114,29 @@ namespace mn {
 
 			if(m_iHandle == -1) return -1;
 
-			typename basic_dgram_ip6_socket::ipaddress_type ip = ep->get_ip();
-			unsigned int port = ep->get_port();
-
 			struct sockaddr_in6 addr;
 			unsigned int addrlen=sizeof(addr);
-
 			memset((char *) &addr, 0, sizeof(addr));
-			addr.sin6_family = AF_INET6;
-			addr.sin6_port = htons(port);
-			addr.sin6_addr.un.u32_addr[0] = ip.get_int(0);
-			addr.sin6_addr.un.u32_addr[1] = ip.get_int(1);
-			addr.sin6_addr.un.u32_addr[2] = ip.get_int(2);
-			addr.sin6_addr.un.u32_addr[3] = ip.get_int(3);
 
-			return lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
+			int _iret =  lwip_recvfrom(m_iHandle, &buffer[offset], size-offset, static_cast<int>(socketFlags),
 						  (struct sockaddr*)&addr,
 						  &addrlen );
 
+
+			if(_iret > 0) {
+				if(ep != NULL) {
+					basic_ip6_address _ipx( addr.sin6_addr.un.u32_addr[0],  addr.sin6_addr.un.u32_addr[1],
+											addr.sin6_addr.un.u32_addr[2],  addr.sin6_addr.un.u32_addr[3]  );
+
+				#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
+					_ipx->set_scopeid(addr.sin6_scope_id);
+
+				#endif // MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID
+					ep->set_host(_ipx) ;
+					ep->set_port(addr.sin6_port);
+				}
+			}
+			return _iret;
 		}
 
 		//-----------------------------------
@@ -143,7 +147,7 @@ namespace mn {
 
 			if(m_iHandle == -1) return -1;
 
-			typename basic_dgram_ip6_socket::ipaddress_type ip = ep->get_ip();
+			typename basic_dgram_ip6_socket::ipaddress_type ip = ep->get_host();
 			unsigned int port = ep->get_port();
 
 			struct sockaddr_in6 addr;
@@ -162,5 +166,6 @@ namespace mn {
 							   addrlen );
 
 		}
+	#endif // MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE
 	}
 }

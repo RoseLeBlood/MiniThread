@@ -25,7 +25,7 @@ namespace mn {
 	namespace net {
 
 		//-----------------------------------
-		// basic_stream_ip_socket::send
+		// basic_stream_ip_socket::send_bytes
 		//-----------------------------------
 		int basic_stream_ip_socket::send_bytes(const void* buffer, int offset, int size, socket_flags socketFlags) {
 			if(m_iHandle == -1) return -1;
@@ -51,7 +51,9 @@ namespace mn {
 			}
 			return _sent;
 		}
-
+		//-----------------------------------
+		// basic_stream_ip_socket::send_bytes
+		//-----------------------------------
 		int basic_stream_ip_socket::send_bytes(const void* buffer, int size, socket_flags socketFlags) {
 			return send_bytes(buffer, 0, size, socketFlags);
 		}
@@ -71,7 +73,7 @@ namespace mn {
 		bool basic_stream_ip_socket::connect(endpoint_type remote_ep) {
 			if(m_iHandle == -1) return false;
 
-			ipaddress_type ip = remote_ep.get_ip();
+			ipaddress_type ip = remote_ep.get_host();
 			unsigned int port = remote_ep.get_port();
 
 			struct sockaddr_in addr;
@@ -163,7 +165,7 @@ namespace mn {
 		bool basic_stream_ip6_socket::connect(endpoint_type remote_ep) {
 			if(m_iHandle == -1) return false;
 
-			ipaddress_type ip = remote_ep.get_ip();
+			ipaddress_type ip = remote_ep.get_host();
 			unsigned int port = remote_ep.get_port();
 
 			struct sockaddr_in6 addr;

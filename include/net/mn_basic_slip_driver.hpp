@@ -21,7 +21,7 @@
 #include "../mn_config.hpp"
 
 
-#ifdef CONFIG_LWIP_PPP_SUPPORT
+#ifdef CONFIG_LWIP_SLIP_SUPPORT
 
 #include <esp_netif.h>
 #include <esp_netif_slip.h>
@@ -67,5 +67,5 @@ namespace mn {
 		};
 	}
 }
-#endif // CONFIG_LWIP_PPP_SUPPORT
+#endif // CONFIG_LWIP_SLIP_SUPPORT
 #endif // __MINILIB_BASIC_SLIP_DRIVER_H__

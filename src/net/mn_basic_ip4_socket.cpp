@@ -110,8 +110,8 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::bind
 		//-----------------------------------
-		bool basic_ip4_socket::bind(const unsigned int& port, bool reuseAddress, bool reusePort) {
-			return bind(MNNET_IPENDPOINT4_ANY(port), reuseAddress, reusePort );
+		bool basic_ip4_socket::bind(const unsigned int& port, bool reusePort) {
+			return bind(MNNET_IPENDPOINT4_ANY(port), true, reusePort );
 		}
 
 		//-----------------------------------

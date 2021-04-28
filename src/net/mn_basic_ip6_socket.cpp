@@ -91,7 +91,7 @@ namespace mn {
 		bool basic_ip6_socket::bind(basic_ip6_endpoint local_ep) {
 			if(m_iHandle == -1) return false;
 
-			basic_ip6_address ip = local_ep.get_ip();
+			basic_ip6_address ip = local_ep.get_host();
 			unsigned int port = local_ep.get_port();
 
 			struct sockaddr_in6 addr;

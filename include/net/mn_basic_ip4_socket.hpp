@@ -20,11 +20,13 @@
 
 #include "../mn_config.hpp"
 #include "mn_basic_socket.hpp"
+#include "mn_basic_ip4_endpoint.hpp"
 
 namespace mn {
 	namespace net {
 		/**
-		 * Wrapper class around lwip implementation of a ip4 socket.
+		 * @brief This class represents an internet (IP) version 4 host socket.
+		 * @ingroup socket
 		 */
 		class basic_ip4_socket : public basic_ip_socket {
 		public:
@@ -75,7 +77,7 @@ namespace mn {
 			 * 		- true: bind the socket on MNNET_IPV4_ADDRESS_ANY : port
 			 *		- false: bind error
 			 */
-			bool bind(const unsigned int& port, bool reuseAddress = false, bool reusePort = false);
+			bool bind(const unsigned int& port, bool reusePort = false);
 			/**
 			 * @brief Bind the socket on the given ip and port
 			 *
@@ -126,7 +128,7 @@ namespace mn {
 			 * @brief Get a copy of this socket
 			 * @return A copy of this socket
 			 */
-        	basic_ip_socket*	get_copy() 					{ return new basic_ip4_socket(*this); }
+        	virtual basic_ip_socket*	get_copy() 					{ return new basic_ip4_socket(*this); }
 
 
 		protected:

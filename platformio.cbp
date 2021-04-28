@@ -265,10 +265,15 @@
 		<Unit filename="include/mn_version.hpp" />
 		<Unit filename="include/net/mn_basic_dgram_socket.hpp" />
 		<Unit filename="include/net/mn_basic_endpoint.hpp" />
+		<Unit filename="include/net/mn_basic_ip4_address.hpp" />
+		<Unit filename="include/net/mn_basic_ip4_endpoint.hpp" />
 		<Unit filename="include/net/mn_basic_ip4_socket.hpp" />
+		<Unit filename="include/net/mn_basic_ip6_address.hpp" />
+		<Unit filename="include/net/mn_basic_ip6_endpoint.hpp" />
 		<Unit filename="include/net/mn_basic_ip6_socket.hpp" />
 		<Unit filename="include/net/mn_basic_ip_address.hpp" />
 		<Unit filename="include/net/mn_basic_netif.hpp" />
+		<Unit filename="include/net/mn_basic_raw_ip_socket.hpp" />
 		<Unit filename="include/net/mn_basic_slip_driver.hpp" />
 		<Unit filename="include/net/mn_basic_socket.hpp" />
 		<Unit filename="include/net/mn_basic_stream_ip_socket.hpp" />
@@ -305,7 +310,6 @@
 		<Unit filename="include/utils/mn_sort.hpp" />
 		<Unit filename="include/utils/mn_utils.hpp" />
 		<Unit filename="library.json" />
-		<Unit filename="mn_auto_version.h" />
 		<Unit filename="platformio.ini" />
 		<Unit filename="platformio.layout" />
 		<Unit filename="sdkconfig" />
@@ -314,6 +318,7 @@
 		<Unit filename="src/hash/mn_uuid.cpp" />
 		<Unit filename="src/miniThread.cpp" />
 		<Unit filename="src/mn_autolock.cpp" />
+		<Unit filename="src/mn_basic_ip6_endpoint.cpp" />
 		<Unit filename="src/mn_basic_semaphore.cpp" />
 		<Unit filename="src/mn_binary_semaphore.cpp" />
 		<Unit filename="src/mn_convar.cpp" />
@@ -340,10 +345,14 @@
 		<Unit filename="src/mn_version.cpp" />
 		<Unit filename="src/net/mn_basic_dgram_socket.cpp" />
 		<Unit filename="src/net/mn_basic_endpoint.cpp" />
+		<Unit filename="src/net/mn_basic_ip4_address.cpp" />
+		<Unit filename="src/net/mn_basic_ip4_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip4_socket.cpp" />
+		<Unit filename="src/net/mn_basic_ip6_address.cpp" />
 		<Unit filename="src/net/mn_basic_ip6_socket.cpp" />
 		<Unit filename="src/net/mn_basic_ip_address.cpp" />
 		<Unit filename="src/net/mn_basic_netif.cpp" />
+		<Unit filename="src/net/mn_basic_raw_ip_socket.cpp" />
 		<Unit filename="src/net/mn_basic_slip_driver.cpp" />
 		<Unit filename="src/net/mn_basic_socket.cpp" />
 		<Unit filename="src/net/mn_basic_stream_ip_socket.cpp" />

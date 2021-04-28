@@ -24,6 +24,7 @@
 #include "mn_basic_endpoint.hpp"
 #include "mn_basic_dgram_socket.hpp"
 #include "mn_basic_stream_ip_socket.hpp"
+#include "mn_basic_raw_ip_socket.hpp"
 
 namespace mn {
 	namespace net {
@@ -65,10 +66,10 @@ namespace mn {
 		 */
 		using stream_ip4_socket = basic_stream_ip_socket;
 		/**
-		 * @brief using void* for raw_ip4_socket
+		 * @brief using basic_raw_ip4_socket for raw_ip4_socket
 		 * @ingroup socket
 		 */
-		using raw_ip4_socket = void*; //basic_raw_ip4_socket;
+		using raw_ip4_socket = basic_raw_ip4_socket;
 	#if LWIP_UDP && LWIP_UDPLITE
 		/**
 		 * @brief using basic_dgramlite_ip_socket for dgramlite_ip4_socket
@@ -101,10 +102,10 @@ namespace mn {
 		 */
 		using stream_ip6_socket = basic_stream_ip6_socket;
 		/**
-		 * @brief using void* for raw_ip6_socket - - not IMPL
+		 * @brief using basic_raw_ip6_socket for raw_ip6_socket - - not IMPL
 		 * @ingroup socket
 		 */
-		using raw_ip6_socket = void*; //basic_raw_ip6_socket;
+		using raw_ip6_socket = basic_raw_ip6_socket;
 	#if LWIP_UDP && LWIP_UDPLITE
 		/**
 		 * @brief using basic_dgramlite_ip6_socket for dgramlite_ip6_socket
