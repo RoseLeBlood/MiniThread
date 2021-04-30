@@ -28,7 +28,7 @@ namespace mn {
 		: m_atomicCount(counter) { }
 
 	atomic_counter::atomic_counter(const atomic_counter& other)
-		: m_atomicCount(other.m_atomicCount) { }
+		: m_atomicCount(other.m_atomicCount.load() ) { }
 
 
 	atomic_counter& atomic_counter::operator = (const atomic_counter& counter) {
