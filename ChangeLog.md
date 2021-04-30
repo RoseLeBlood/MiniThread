@@ -7,6 +7,10 @@
 	- MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID: When enable then save the basic_ip6_address the scopeid
 	- MN_THREAD_CONFIG_NET_IPADDRESS6_SCOPEID_VAL: The basic scoped val default 0
 
+add atomic_counter class
+task: a atomic_counter create a new task id
+
+
 ## Versoin 2.27 März 2021 (unstable beta)
 + add sockets support -> see mn_socket.hpp
 + rename ERR_TIMEOUT => ERR_MINILIB_TIMEOUT - build bug

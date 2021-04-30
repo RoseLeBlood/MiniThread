@@ -82,7 +82,7 @@ namespace mn {
 		 * @brief If the counter zero?
 		 * @return If true the counter is zero and if false otherwise.
 		 */
-		inline bool operator ! () const					{ return _counter.load() == 0; }
+		inline bool operator ! () const					{ return m_atomicCount.load() == 0; }
 		/**
 		 * @brief Assigns the value of another atomic_counter.
 		 */
