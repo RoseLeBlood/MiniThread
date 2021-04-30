@@ -24,6 +24,7 @@
 				<Compiler>
 					<Add directory="include/net/" />
 					<Add directory="include/net" />
+					<Add directory="include" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -43,6 +44,7 @@
 				<Compiler>
 					<Add directory="include/net/" />
 					<Add directory="include/net" />
+					<Add directory="include" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -210,6 +212,7 @@
 		<Unit filename="include/mn_algorithm.hpp" />
 		<Unit filename="include/mn_allocator.hpp" />
 		<Unit filename="include/mn_atomic.hpp" />
+		<Unit filename="include/mn_atomic_counter.hpp" />
 		<Unit filename="include/mn_atomic_spinlock.hpp" />
 		<Unit filename="include/mn_auto_version.hpp" />
 		<Unit filename="include/mn_autolock.hpp" />
@@ -317,6 +320,7 @@
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />
 		<Unit filename="src/hash/mn_uuid.cpp" />
 		<Unit filename="src/miniThread.cpp" />
+		<Unit filename="src/mn_atomic_counter.cpp" />
 		<Unit filename="src/mn_autolock.cpp" />
 		<Unit filename="src/mn_basic_ip6_endpoint.cpp" />
 		<Unit filename="src/mn_basic_semaphore.cpp" />

@@ -25,16 +25,15 @@
 #include "mn_task_utils.hpp"
 #include "mn_task.hpp"
 #include "mn_task_list.hpp"
-
+#include "mn_atomic_counter.hpp"
 
 
 namespace mn {
   namespace internal {
-    int32_t __id_rnioeu = 0;
 
-    inline int32_t get_new_id() {
-      __id_rnioeu++;
-      return __id_rnioeu;
+    inline int32_t get_new_uniqid() {
+      static mn::atomic_counter _counter;
+      return _counter++;
     }
   }
   //-----------------------------------
@@ -71,6 +70,7 @@ namespace mn {
   //  start
   //-----------------------------------
   int basic_task::start(int iCore) {
+
     m_iCore = iCore;
 
     m_continuemutex.lock();
@@ -100,7 +100,7 @@ namespace mn {
 
     m_runningMutex.lock();
 
-    m_iID = internal::get_new_id();
+    m_iID = internal::get_new_uniqid();
     on_start();
     m_continuemutex.unlock();
     m_runningMutex.unlock();
