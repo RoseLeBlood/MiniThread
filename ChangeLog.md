@@ -1,5 +1,11 @@
 # Changelog
 
+## Versoin 2.28.3060 März 2021 (unstable beta)
++ add atomic_counter class
++ task: a atomic_counter create a new task id
++ add atomic counter
++ add multicast socketfor ipv4 and ipv6
+
 ## Versoin 2.28.x März 2021 (unstable beta)
 + add socket classes for udp, tcp and raw - IPv6 and IPv4
 + add new config defines for IPv6
@@ -7,8 +13,7 @@
 	- MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID: When enable then save the basic_ip6_address the scopeid
 	- MN_THREAD_CONFIG_NET_IPADDRESS6_SCOPEID_VAL: The basic scoped val default 0
 
-add atomic_counter class
-task: a atomic_counter create a new task id
+
 
 
 ## Versoin 2.27 März 2021 (unstable beta)

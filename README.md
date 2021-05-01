@@ -54,14 +54,14 @@ framework = espidf
 lib_deps =
   # RECOMMENDED
   # Accept new functionality in a backwards compatible manner and patches
-  roseleblood/mini Thread @ ^2.27.3082
+  roseleblood/mini Thread @ ^2.28.3060.0
 
   # Accept only backwards compatible bug fixes
   # (any version with the same major and minor versions, and an equal or greater patch version)
-  roseleblood/mini Thread @ ~2.27.3082
+  roseleblood/mini Thread @ ~2.28.3060.0
 
   # The exact version
-  roseleblood/mini Thread @ 2.27.3082
+  roseleblood/mini Thread @ 2.28.3060.0
 
 ```
 
