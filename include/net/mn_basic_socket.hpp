@@ -287,6 +287,34 @@ namespace mn {
         	 * @return The socket error code. If 0 then sucess
         	 */
 			int set_options(const socket_option_level& opt, const socket_option_name& name, int value);
+
+			/**
+        	 * @brief Sets the socket option specified by level and option to the given integer value.
+        	 * @param opt The socket option level
+        	 * @param name The name of the option
+        	 * @param value The value for the option
+        	 * @return The socket error code. If 0 then sucess
+        	 */
+			int set_options(const socket_option_level& opt, const socket_option_name& name, unsigned int value);
+
+			/**
+        	 * @brief Sets the socket option specified by level and option to the given integer value.
+        	 * @param opt The socket option level
+        	 * @param name The name of the option
+        	 * @param value The value for the option
+        	 * @return The socket error code. If 0 then sucess
+        	 */
+			int set_options(const socket_option_level& opt, const socket_option_name& name, basic_ip4_address value);
+
+			/**
+        	 * @brief Sets the socket option specified by level and option to the given integer value.
+        	 * @param opt The socket option level
+        	 * @param name The name of the option
+        	 * @param value The value for the option
+        	 * @return The socket error code. If 0 then sucess
+        	 */
+			int set_options(const socket_option_level& opt, const socket_option_name& name, basic_ip6_address value);
+
 			/**
         	 * @brief Set a given option, version for boolen values
         	 * @param opt The socket option level
@@ -303,7 +331,8 @@ namespace mn {
         	 * @param size The size of the pointer
         	 * @return The socket error code. If 0 then sucess
         	 */
-        	int set_options(const socket_option_level& opt, const socket_option_name& name, void* value, uint32_t size);
+        	int set_options(const socket_option_level& opt, const socket_option_name& name,
+							void* value, uint32_t size);
 
         	/**
         	 * @brief Get a interger value of a given option

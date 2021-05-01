@@ -48,7 +48,6 @@ namespace mn {
 
 		/**
 		 * @brief Converts the atomic_counter to value_type.
-		 * @return If true the counter is zero and if false otherwise.
 		 */
 		inline operator value_type () const 			{ return m_atomicCount.load(); }
 		/**

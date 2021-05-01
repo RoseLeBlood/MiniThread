@@ -91,8 +91,6 @@ namespace mn {
 			 */
 			int send_to(char* buffer, int offset, int size, const socket_flags& socketFlags, endpoint_type& ep);
 
-        	//bool bind_multicast(endpoint_type local_ep);
-        	//bool bind_multicast(const ipaddress_type& ip, const unsigned int& port);
 		protected:
 			basic_dgram_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }

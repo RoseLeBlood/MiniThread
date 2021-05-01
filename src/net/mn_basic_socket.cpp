@@ -178,6 +178,45 @@ namespace mn {
 		}
 
 		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
+		int basic_ip_socket::set_options(const socket_option_level& opt,
+										const socket_option_name& name, basic_ip4_address value) {
+
+			if(!initialized()) return -1;
+
+			uint32_t _value = value;
+
+			return ( setsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), &_value, sizeof(_value)));
+
+		}
+
+		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
+		int basic_ip_socket::set_options(const socket_option_level& opt,
+										const socket_option_name& name, basic_ip6_address value) {
+
+			if(!initialized()) return -1;
+
+			auto _value = value.get_bytes();
+
+			return ( setsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), &_value, sizeof(_value)));
+
+		}
+
+		//-----------------------------------
+		// basic_ip_socket::set_options
+		//-----------------------------------
+		int basic_ip_socket::set_options(const socket_option_level& opt, const socket_option_name& name,
+										unsigned int value) {
+			if(!initialized()) return -1;
+
+			socklen_t _size = sizeof(value);
+			return ( setsockopt(m_iHandle, static_cast<int>(opt), static_cast<int>(name), &value, _size));
+		}
+
+		//-----------------------------------
 		// basic_ip_socket::operator =
 		//-----------------------------------
 		basic_ip_socket& basic_ip_socket::operator = (const basic_ip_socket& other) {
@@ -425,6 +464,9 @@ namespace mn {
 
 	  		return _polled > 0;
 		}
+
+
+
 
 	}
 }

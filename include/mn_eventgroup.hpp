@@ -25,12 +25,13 @@
 
 namespace mn {
     /**
+     * @brief Wrapper class around FreeRTOS's implementation of a event_group.
      * @ingroup base
      */
     class basic_event_group {
     public:
         /**
-         * Create a new event group.
+         * @brief Consruct a new event group.
          *
          * @note Although event groups are not related to ticks, for internal implementation
          * reasons the number of bits available for use in an event group is dependent
@@ -43,19 +44,27 @@ namespace mn {
          */
         basic_event_group();
         /**
-         * Create from a FreeRTOS created event group
+         * @brief Consruct from a FreeRTOS created event group
          */
         basic_event_group(EventGroupHandle_t handle);
 
         /**
-         * Delete an event group
-         * Tasks that are blocked on the event group will be
+         * @brief  Delete an event group
+         * @note Tasks that are blocked on the event group will be
          * unblocked and obtain 0 as the event group's value.
          */
         virtual ~basic_event_group();
 
         /**
-         *  Allow two or more tasks to use an event group to sync each other.
+         * @brief Create the event group, only call when the given handle null is
+         * @return
+         *		- ERR_MNTHREAD_NULL: Error on create the event group.
+         *		- NO_ERROR: The event group are sucessfull created
+         */
+         int create();
+
+        /**
+         * @brief  Allow two or more tasks to use an event group to sync each other.
          *
          * @param uxBitsToSet The bits to set in the event group before determining
          * if, and possibly waiting for, all the bits specified by the uxBitsToWait
@@ -81,7 +90,7 @@ namespace mn {
                     TickType_t xTicksToWait);
 
         /**
-         * [Potentially] block to wait for one or more bits to be set within a
+         * @brief Block to wait for one or more bits to be set within a
          * previously created event group.
          *
          * This function cannot be called from an interrupt.
@@ -136,7 +145,7 @@ namespace mn {
                     bool xClearOnExit, bool xWaitForAllBits, uint32_t timeout);
 
         /**
-         *  Clear bits (flags) within an event group.
+         * @brief  Clear bits (flags) within an event group.
          *
          *  @param uxBitsToClear A bitwise value that indicates the bit or
          *  bits to clear in the event group.
@@ -147,7 +156,7 @@ namespace mn {
         EventBits_t clear(const EventBits_t uxBitsToClear);
 
         /**
-         * Returns the current value of the event bits (event flags) in an
+         * @brief Returns the current value of the event bits (event flags) in an
          * event group.
          *
          * @return The value of the event bits in the event group at the time
@@ -156,7 +165,7 @@ namespace mn {
         EventBits_t get();
 
         /**
-         * Set bits (flags) within an event group.
+         * @brief Set bits (flags) within an event group.
          *
          * @param uxBitsToSet A bitwise value that indicates the bit or bits
          * to set in the event group.
@@ -166,16 +175,34 @@ namespace mn {
          */
         EventBits_t set(const EventBits_t uxBitsToSet);
 
+        /**
+         * @brief Get the FreeRTOS Event Group handle.
+         * @return The FreeRTOS Event Group handle.
+         */
         EventGroupHandle_t get_handle() { return m_pHandle; }
+
+        /**
+         * @brief Is the basic_event_group initilisiert?
+         * @return True The basic_event_group is initilisiert and false if not.
+         */
+        bool is_init() { return m_pHandle != NULL; }
+	private:
+		/**
+		 * @brief Initialisert the eventgroup
+		 */
+		void init_internal();
     private:
         /**
          *  FreeRTOS Event Group handle.
          */
         EventGroupHandle_t m_pHandle;
 
-        #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-            StaticEventGroup_t m_xEventGroupBuffer;
-        #endif
+	#if( configSUPPORT_STATIC_ALLOCATION == 1 )
+		/**
+		 * @brief Holder of data for the static creating eventgroup
+		 */
+		StaticEventGroup_t m_xEventGroupBuffer;
+	#endif
     };
 
     using event_group_t = basic_event_group;

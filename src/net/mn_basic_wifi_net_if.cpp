@@ -85,6 +85,9 @@ namespace mn {
 			return wifi_ps_type_t(mode);
 		}
 
+		//-----------------------------------
+		// set_protocol
+		//-----------------------------------
 		int	basic_wifi_net_if::set_protocol(const wifi_protocol& prot) {
 			int _error = NO_ERROR;
 
@@ -104,6 +107,9 @@ namespace mn {
 			return _error;
 		}
 
+		//-----------------------------------
+		// get_protocol
+		//-----------------------------------
 		basic_wifi_net_if::wifi_protocol basic_wifi_net_if::get_protocol() {
 			int _error = NO_ERROR;
 			uint8_t _prot = 0;

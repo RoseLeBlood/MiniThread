@@ -23,6 +23,7 @@
 
 #include "mn_basic_endpoint.hpp"
 #include "mn_basic_dgram_socket.hpp"
+#include "mn_basic_multicast_ip_socket.hpp"
 #include "mn_basic_stream_ip_socket.hpp"
 #include "mn_basic_raw_ip_socket.hpp"
 
@@ -60,11 +61,20 @@ namespace mn {
 		 * @ingroup socket
 		 */
 		using dgram_ip4_socket = basic_dgram_ip_socket;
+
+		/**
+		 * @brief using basic_multicast_ip_socket for multicast_ip4_socket
+		 * @ingroup socket
+		 */
+		using multicast_ip4_socket = basic_multicast_ip_socket;
+
+
 		/**
 		 * @brief using basic_ip6_address for stream_ip4_socket
 		 * @ingroup socket
 		 */
 		using stream_ip4_socket = basic_stream_ip_socket;
+
 		/**
 		 * @brief using basic_raw_ip4_socket for raw_ip4_socket
 		 * @ingroup socket
@@ -76,6 +86,11 @@ namespace mn {
 		 * @ingroup socket
 		 */
 		using dgramlite_ip4_socket = basic_dgramlite_ip_socket;
+		/**
+		 * @brief using basic_multicast_ip_socket for multicast_ip4_socket
+		 * @ingroup socket
+		 */
+		using multicast_ip4_socket_lite = basic_multicast_lite_ip_socket;
 	#endif // LWIP_UDP
 
 

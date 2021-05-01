@@ -75,34 +75,7 @@ namespace mn {
 							   addrlen );
 		}
 
-		//-----------------------------------
-		//  bind_multicast
-		//-----------------------------------
-		/*bool basic_dgram_ip_socket::bind_multicast(basic_ip4_endpoint local_ep) {
-			bool _retBool = false;
 
-			if(bind((int)local_ep.get_port())) {
-				struct ip_mreq mreq;
-				mreq.imr_multiaddr.s_addr = (in_addr_t)local_ep.get_ip();
-				mreq.imr_interface.s_addr = INADDR_ANY;
-
-				if (setsockopt(m_iHandle, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) < 0) {
-					 ESP_LOGE("dgram socket", "could not join igmp: %d", errno);
-				} else {
-					_retBool = true;
-					m_ipMultiCast = local_ep.get_ip();
-				}
-			}
-			return _retBool;
-		}
-		//-----------------------------------
-		//  bind_multicast
-		//-----------------------------------
-		bool basic_dgram_ip_socket::bind_multicast(const typename basic_dgram_ip_socket::ipaddress_type& ip,
-													const unsigned int& port) {
-			return bind_multicast(basic_ip4_endpoint(ip, port));
-		}
-	*/
 
 		//======================== basic_dgram_ip6_socket ========================
 	#if MN_THREAD_CONFIG_NET_IPADDRESS6_ENABLE == MN_THREAD_CONFIG_YES

@@ -144,6 +144,13 @@ namespace mn {
 			virtual uint32_t		get_int(int index)  { return index < 4 ? as_int[index] : 0; }
 
 			/**
+			 * @brief Get the ip section on the given position as int
+			 * @param index The index of the position (0-3)
+			 * @return The ip section on the given position as int
+			 */
+			virtual uint32_t		get_int(int index) const  { return index < 4 ? as_int[index] : 0; }
+
+			/**
 			 * @brief set the ip to zero
 			 */
 			inline void				set_zero()

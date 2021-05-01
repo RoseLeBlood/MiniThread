@@ -30,6 +30,7 @@
 namespace mn {
 
 
+
     template<typename T>
     using atomic_ptr            = _atomic_ptr<T*>;
 

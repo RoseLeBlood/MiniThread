@@ -24,6 +24,11 @@
 #include "mn_lock.hpp"
 
 namespace mn {
+
+	/**
+	 * @brief This class implements a simple spinlack, whit atomic operations.
+	 * @tparam T The type of the object to lock
+	 */
     template<typename T>
     class atomic_spinlock : public ILockObject {
     public:
@@ -33,7 +38,19 @@ namespace mn {
         using reference = value_type&;
         using lock_guard = basic_autolock<self_type> ;
 
-        atomic_spinlock() : m_locked(false) { }
+        /**
+         * @brief Construct a new atomic_spinlock
+         */
+        atomic_spinlock()
+        	: m_locked(false), m_value() { }
+
+        /**
+         * @brief Construct a new atomic_spinlock and initializes it with the given value.
+         * @param value The locked value
+         */
+        explicit atomic_spinlock(const reference value)
+        	: m_locked(false), m_value(value) { }
+
         /**
          *  lock (take) a atomic_spinlock
          *  @param timeout Not use
@@ -76,6 +93,11 @@ namespace mn {
         virtual bool is_initialized() const {
             return true;
         }
+
+        /**
+		 * @brief Converts the atomic_spinlock to value_type.
+		 * @return The convertet value
+		 */
         operator value_type() { return m_value; }
 
         self_type& operator = (const value_type& oValue) {

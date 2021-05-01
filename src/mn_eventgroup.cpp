@@ -20,22 +20,17 @@
 #include <esp_log.h>
 
 #include "mn_eventgroup.hpp"
+#include "mn_error.hpp"
+#include "excp/mn_eventgroup_exception.hpp"
 
 
 namespace mn {
+
     //-----------------------------------
     //  construtor
     //-----------------------------------
     basic_event_group::basic_event_group() {
-
-        #if( configSUPPORT_STATIC_ALLOCATION == 1 )
-            m_pHandle = xEventGroupCreateStatic(&m_xEventGroupBuffer);
-        #else
-            m_pHandle = xEventGroupCreate();
-        #endif
-
-        if( m_pHandle == NULL )
-        	ESP_LOGE("event_group", "out of mem xEventGroupCreate - failed");
+		init_internal();
     }
 
     //-----------------------------------
@@ -43,14 +38,14 @@ namespace mn {
     //-----------------------------------
     basic_event_group::basic_event_group(EventGroupHandle_t handle)
         : m_pHandle(handle) {
-        	if( m_pHandle == NULL ) ESP_LOGE("event_group", "the given handle is NULL this group will not work!!");
+        	if( !is_init() ) ESP_LOGE("event_group", "the given handle is NULL this group will not work!!");
 	}
 
     //-----------------------------------
     //  deconstrutor
     //-----------------------------------
     basic_event_group::~basic_event_group() {
-        if(m_pHandle != NULL) {
+        if( is_init() ) {
             vEventGroupDelete(m_pHandle);
         }
     }
@@ -60,8 +55,12 @@ namespace mn {
     //-----------------------------------
     EventBits_t basic_event_group::sync( const EventBits_t bitstoset, const EventBits_t bitstowaitfor,
                                         TickType_t timeout) {
+		if(! is_init() ) init_internal();
 
-        return xEventGroupSync( m_pHandle, bitstoset, bitstowaitfor, timeout);
+		if( is_init() )
+			return xEventGroupSync( m_pHandle, bitstoset, bitstowaitfor, timeout);
+		else
+			return portMAX_DELAY;
     }
 
     //-----------------------------------
@@ -69,18 +68,24 @@ namespace mn {
     //-----------------------------------
     EventBits_t basic_event_group::wait( const EventBits_t uxBitsToWaitFor,
                                         bool xClearOnExit, bool xWaitForAllBits, uint32_t timeout) {
+		if(! is_init() ) init_internal();
 
-        return xEventGroupWaitBits( m_pHandle,
-                                    uxBitsToWaitFor,
-                                    xClearOnExit ? pdTRUE : pdFALSE,
-                                    xWaitForAllBits ? pdTRUE : pdFALSE,
-                                    timeout);
+		if( is_init() )
+			return xEventGroupWaitBits( m_pHandle,
+										uxBitsToWaitFor,
+										xClearOnExit ? pdTRUE : pdFALSE,
+										xWaitForAllBits ? pdTRUE : pdFALSE,
+										timeout);
+		else
+			return portMAX_DELAY;
     }
 
     //-----------------------------------
     //  clear
     //-----------------------------------
     EventBits_t basic_event_group::clear(const EventBits_t uxBitsToClear) {
+    	if(! is_init() ) return portMAX_DELAY;
+
         if(xPortInIsrContext()) {
             return xEventGroupClearBitsFromISR(m_pHandle, uxBitsToClear);
         } else {
@@ -92,6 +97,8 @@ namespace mn {
     //  get
     //-----------------------------------
     EventBits_t basic_event_group::get() {
+    	if(! is_init() ) return portMAX_DELAY;
+
         if(xPortInIsrContext()) {
             return xEventGroupGetBitsFromISR(m_pHandle);
         } else {
@@ -103,6 +110,8 @@ namespace mn {
     //  set
     //-----------------------------------
     EventBits_t basic_event_group::set(const EventBits_t uxBitsToSet) {
+    	if(! is_init() ) init_internal();
+
         EventBits_t success;
 
         if(xPortInIsrContext()) {
@@ -115,4 +124,28 @@ namespace mn {
         }
         return success;
     }
+
+    //-----------------------------------
+    //  init_internal
+    //-----------------------------------
+    void basic_event_group::init_internal() {
+		 #if( configSUPPORT_STATIC_ALLOCATION == 1 )
+		 	// Create the event group without dynamically allocating any memory.
+            m_pHandle = xEventGroupCreateStatic(&m_xEventGroupBuffer);
+        #else
+            m_pHandle = xEventGroupCreate();
+        #endif
+
+        #if MN_THREAD_CONFIG_USE_EXCEPTIONS == MN_THREAD_CONFIG_YES
+        	throw new mn::error::eventgroup_exception();
+        #endif // MN_THREAD_CONFIG_USE_EXCEPTIONS
+
+        if( m_pHandle == NULL ) ESP_LOGE("event_group", "out of mem xEventGroupCreate - failed");
+	}
+
+	int basic_event_group::create() {
+		if( m_pHandle == NULL ) init_internal();
+
+		return m_pHandle != NULL ? NO_ERROR : ERR_MNTHREAD_NULL;
+	}
 }

@@ -358,17 +358,17 @@ namespace mn {
 			/**
 			 * @brief Sets/gets the TTL value associated with IP multicast traffic on the socket.
 			 */
-			multicast_ip4_ttl = IP_MULTICAST_TTL,
+			multicast_ttl = IP_MULTICAST_TTL,
 			/**
 			 * @brief Gets or sets the outgoing interface for sending IPv4 multicast traffic.
 			 */
-			multicast_ip4_if = IP_MULTICAST_IF,
+			multicast_if = IP_MULTICAST_IF,
 			/**
 			 * @brief Controls whether data sent by an application on the local computer (not necessarily by the same
 			 * socket) in a multicast session will be received by a socket joined to the multicast destination group on
 			 * the loopback interface
 			 */
-			multicast_ip4_loop = IP_MULTICAST_LOOP,
+			multicast_loop = IP_MULTICAST_LOOP,
 		#endif
 
 		#if ESP_LWIP == 1 && LWIP_IPV6_MLD == 1
