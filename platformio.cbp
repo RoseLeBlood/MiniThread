@@ -26,6 +26,7 @@
 					<Add directory="include/net" />
 					<Add directory="include" />
 					<Add directory="include/excp" />
+					<Add directory="include/pointer" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -47,6 +48,7 @@
 					<Add directory="include/net" />
 					<Add directory="include" />
 					<Add directory="include/excp" />
+					<Add directory="include/pointer" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -217,9 +219,12 @@
 		<Unit filename="include/mn_atomic.hpp" />
 		<Unit filename="include/mn_atomic_counter.hpp" />
 		<Unit filename="include/mn_atomic_spinlock.hpp" />
+		<Unit filename="include/mn_auto_release.hpp" />
 		<Unit filename="include/mn_auto_version.hpp" />
 		<Unit filename="include/mn_autolock.hpp" />
 		<Unit filename="include/mn_basic_semaphore.hpp" />
+		<Unit filename="include/mn_basic_timespan.hpp" />
+		<Unit filename="include/mn_basic_timestamp.hpp" />
 		<Unit filename="include/mn_binary_semaphore.hpp" />
 		<Unit filename="include/mn_buffer.hpp" />
 		<Unit filename="include/mn_clock.hpp" />
@@ -229,6 +234,7 @@
 		<Unit filename="include/mn_container_esp32.hpp" />
 		<Unit filename="include/mn_convar.hpp" />
 		<Unit filename="include/mn_convar_task.hpp" />
+		<Unit filename="include/mn_copyable.hpp" />
 		<Unit filename="include/mn_counting_semaphore.hpp" />
 		<Unit filename="include/mn_critical.hpp" />
 		<Unit filename="include/mn_def.hpp" />
@@ -279,6 +285,7 @@
 		<Unit filename="include/net/mn_basic_ip6_endpoint.hpp" />
 		<Unit filename="include/net/mn_basic_ip6_socket.hpp" />
 		<Unit filename="include/net/mn_basic_ip_address.hpp" />
+		<Unit filename="include/net/mn_basic_ip_socket.hpp" />
 		<Unit filename="include/net/mn_basic_multicast_ip_socket.hpp" />
 		<Unit filename="include/net/mn_basic_netif.hpp" />
 		<Unit filename="include/net/mn_basic_raw_ip_socket.hpp" />
@@ -290,6 +297,7 @@
 		<Unit filename="include/net/mn_net_types.hpp" />
 		<Unit filename="include/net/mn_socket.hpp" />
 		<Unit filename="include/pointer/mn_any_ptr.hpp" />
+		<Unit filename="include/pointer/mn_auto_ptr.hpp" />
 		<Unit filename="include/pointer/mn_base_ptr.hpp" />
 		<Unit filename="include/pointer/mn_clone_ptr.hpp" />
 		<Unit filename="include/pointer/mn_linked_ptr.hpp" />
@@ -330,10 +338,13 @@
 		<Unit filename="src/mn_autolock.cpp" />
 		<Unit filename="src/mn_basic_ip6_endpoint.cpp" />
 		<Unit filename="src/mn_basic_semaphore.cpp" />
+		<Unit filename="src/mn_basic_timespan.cpp" />
+		<Unit filename="src/mn_basic_timestamp.cpp" />
 		<Unit filename="src/mn_binary_semaphore.cpp" />
 		<Unit filename="src/mn_buffer.cpp" />
 		<Unit filename="src/mn_convar.cpp" />
 		<Unit filename="src/mn_convar_task.cpp" />
+		<Unit filename="src/mn_copyable.cpp" />
 		<Unit filename="src/mn_counting_semaphore.cpp" />
 		<Unit filename="src/mn_critical.cpp" />
 		<Unit filename="src/mn_eventgroup.cpp" />
@@ -360,8 +371,10 @@
 		<Unit filename="src/net/mn_basic_ip4_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip4_socket.cpp" />
 		<Unit filename="src/net/mn_basic_ip6_address.cpp" />
+		<Unit filename="src/net/mn_basic_ip6_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip6_socket.cpp" />
 		<Unit filename="src/net/mn_basic_ip_address.cpp" />
+		<Unit filename="src/net/mn_basic_ip_socket.cpp" />
 		<Unit filename="src/net/mn_basic_multicast_ip_socket.cpp" />
 		<Unit filename="src/net/mn_basic_netif.cpp" />
 		<Unit filename="src/net/mn_basic_raw_ip_socket.cpp" />

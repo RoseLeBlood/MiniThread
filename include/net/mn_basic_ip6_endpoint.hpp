@@ -41,9 +41,9 @@ namespace mn {
 		class basic_ip6_endpoint : public basic_ip_endpoint<basic_ip6_address, address_family::inet_v6> {
 			using base_type = basic_ip_endpoint<basic_ip6_address, address_family::inet_v6>;
 		public:
-			basic_ip6_endpoint(const uint16_t& port = 0);
-			basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port);
-			basic_ip6_endpoint(const basic_ip6_endpoint& pOther);
+			basic_ip6_endpoint(const uint16_t& port = 0) noexcept;
+			basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port) noexcept;
+			basic_ip6_endpoint(const basic_ip6_endpoint& pOther) noexcept;
 
 			/**
 			 * @brief  Get the port number.
@@ -78,6 +78,8 @@ namespace mn {
 			using base_type::operator =;
 			using base_type::operator ==;
 			using base_type::operator !=;
+
+			using base_type::swap;
 
 			/**
 			 * @brief Get a copy from this

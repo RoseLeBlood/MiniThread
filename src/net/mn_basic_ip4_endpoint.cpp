@@ -24,20 +24,20 @@ namespace mn {
 		//-----------------------------------
 		//  ip4_endpoint::basic_ip4_endpoint
 		//-----------------------------------
-		basic_ip4_endpoint::basic_ip4_endpoint(const uint16_t& port)
+		basic_ip4_endpoint::basic_ip4_endpoint(const uint16_t& port) noexcept
 			: base_type(MNNET_IPV4_ADDRESS_ANY, port) { }
 
 
 		//-----------------------------------
 		//  ip4_endpoint::basic_ip4_endpoint
 		//-----------------------------------
-		basic_ip4_endpoint::basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port)
+		basic_ip4_endpoint::basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port) noexcept
 			: base_type(ip, port) { }
 
 		//-----------------------------------
 		//  ip4_endpoint::basic_ip4_endpoint
 		//-----------------------------------
-		basic_ip4_endpoint::basic_ip4_endpoint(const basic_ip4_endpoint& pOther)
+		basic_ip4_endpoint::basic_ip4_endpoint(const basic_ip4_endpoint& pOther) noexcept
 			: base_type(pOther.m_ipAdress, pOther.m_iPort) { }
 
 

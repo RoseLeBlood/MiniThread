@@ -47,13 +47,6 @@ namespace mn {
   basic_semaphore::basic_semaphore()
     : m_pSpinlock(NULL) { }
 
-  basic_semaphore::basic_semaphore(const basic_semaphore& other)
-    : m_pSpinlock(other.m_pSpinlock) {
-
-    if(!is_initialized()) {
-      MN_THROW_LOCK_EXP(ERR_MUTEX_NOTINIT);
-    }
-  }
 
   //-----------------------------------
   //  lock

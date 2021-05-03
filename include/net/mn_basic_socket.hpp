@@ -59,22 +59,22 @@ namespace mn {
 			 * @brief construtor from a raw handle
 			 * @param hndl The raw handle
 			 */
-			explicit basic_ip_socket(const handle_type& hndl);
+			explicit basic_ip_socket(const handle_type& hndl) noexcept;
 			/**
 			 * @brief construtor create the socket
 			 * @param fam 		The address family for the creating socket
 			 * @param type 		The type for the creating  socket
 			 * @param protocol 	The protocol for the creating socket
 			 */
-			basic_ip_socket(const address_family& fam, const socket_type& type, const protocol_type& protocol);
+			basic_ip_socket(const address_family& fam, const socket_type& type, const protocol_type& protocol) noexcept;
 			/**
 			 * @brief copy construtor
 			 */
-			basic_ip_socket(const basic_ip_socket& other);
+			basic_ip_socket(const basic_ip_socket& other) noexcept;
 			/**
 			 * @brief deconstrutor, close the socket
 			 */
-			virtual ~basic_ip_socket();
+			virtual ~basic_ip_socket() noexcept;
 
 			/**
 			 * @brief Open the socket - only used when the socket not initialized
@@ -132,6 +132,14 @@ namespace mn {
 
         	basic_ip_socket& operator = (const basic_ip_socket& other);
 
+
+        	virtual void swap(basic_ip_socket& rhs) noexcept {
+				mn::swap(m_iHandle, rhs.m_iHandle);
+				mn::swap(m_eFam, rhs.m_eFam);
+				mn::swap(m_eType, rhs.m_eType);
+				mn::swap(m_eProtocol, rhs.m_eProtocol);
+				mn::swap(m_bBlocked, rhs.m_bBlocked);
+			}
 
 			/**
 			 * @brief send shutdown
@@ -393,6 +401,8 @@ namespace mn {
 			 */
 			virtual bool			  	open(const address_family& fam, const socket_type& type,
 											 const protocol_type& protocol);
+
+
 		protected:
 			/**
         	 * @brief Reference to the underlying socket handle for this socket.

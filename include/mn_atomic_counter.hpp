@@ -19,7 +19,9 @@
 #define __MINLIB_ATOMIC_COUNTER_H__
 
 #include "mn_config.hpp"
+
 #include "mn_atomic.hpp"
+#include "mn_copyable.hpp"
 
 namespace mn {
 
@@ -27,7 +29,7 @@ namespace mn {
 	 * @brief This class implements a simple counter, whit atomic operations
 	 * for use in a multithreaded environment.
 	 */
-	class atomic_counter {
+	class atomic_counter  {
 	public:
 		using value_type = int;
 		/**

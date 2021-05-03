@@ -36,9 +36,9 @@ namespace mn {
 		class basic_ip4_endpoint : public basic_ip_endpoint<basic_ip4_address, address_family::inet_v4> {
 			using base_type = basic_ip_endpoint<basic_ip4_address, address_family::inet_v4>;
 		public:
-			basic_ip4_endpoint(const uint16_t& port = 0);
-			basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port);
-			basic_ip4_endpoint(const basic_ip4_endpoint& pOther);
+			basic_ip4_endpoint(const uint16_t& port = 0) noexcept;
+			basic_ip4_endpoint(const basic_ip4_address& ip, const uint16_t& port) noexcept;
+			basic_ip4_endpoint(const basic_ip4_endpoint& pOther) noexcept;
 
 			/**
 			 * @brief  Get the port number.
@@ -74,6 +74,8 @@ namespace mn {
 			using base_type::operator ==;
 			using base_type::operator !=;
 
+			using base_type::swap;
+
 			/**
 			 * @brief Get a copy from this
 			 * @return The copy of this.
@@ -85,7 +87,7 @@ namespace mn {
 			 * @return The host IP address.
 			 * @note deprecated
 			 */
-			basic_ip4_address get_ip() __attribute__ ((deprecated)) { return get_host(); }
+			basic_ip4_address get_ip() MN_DEPRECATED { return get_host(); }
 		};
 	}
 }

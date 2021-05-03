@@ -73,34 +73,34 @@ namespace mn {
 			 * Construtor
 			 * @brief construct a ip6 address from uint32_t's
 			 */
-			basic_ip6_address(uint32_t ax, uint32_t bx, uint32_t cx, uint32_t dx);
+			basic_ip6_address(uint32_t ax, uint32_t bx, uint32_t cx, uint32_t dx) noexcept;
 
 			/**
 			 * Construtor
 			 * @brief construct a ip6 address from uint32_t's
 			 */
-			basic_ip6_address(uint32_t iarray[4]);
+			basic_ip6_address(uint32_t iarray[4]) noexcept;
 			/**
 			 * Construtor
 			 * @brief construct a ip6 address from array
 			 */
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
-			basic_ip6_address(uint8_t address[16], int scopid);
+			basic_ip6_address(uint8_t address[16], int scopid) noexcept;
 #else
-			basic_ip6_address(uint8_t address[16]);
+			basic_ip6_address(uint8_t address[16]) noexcept;
 #endif
 			/**
 			 * Construtor
 			 * @brief construct a ip6 address from string
 			 * @param newAddress The ip6 address as string
 			 */
-			basic_ip6_address(const char* str_ip);
+			basic_ip6_address(const char* str_ip) noexcept;
 			/**
 			 * Construtor
 			 * @brief construct a ip6 address from a other ip6 address
 			 * @param ipOther The other object
 			 */
-			basic_ip6_address(const basic_ip6_address& ipOther);
+			basic_ip6_address(const basic_ip6_address& ipOther) noexcept;
 
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			/**
@@ -242,6 +242,14 @@ namespace mn {
 			 * Create an IPv6 netmask
 			 */
 			static basic_ip6_address netmask(int mask);
+
+			virtual void swap(basic_ip6_address& rhs) noexcept {
+				basic_ip_address::swap(rhs);
+				mn::swap<uint32_t>(as_int[0], rhs.as_int[0]);
+				mn::swap<uint32_t>(as_int[1], rhs.as_int[1]);
+				mn::swap<uint32_t>(as_int[2], rhs.as_int[2]);
+				mn::swap<uint32_t>(as_int[3], rhs.as_int[3]);
+			}
 		};
 	}
 }

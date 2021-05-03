@@ -26,8 +26,27 @@
 #include <freertos/FreeRTOS.h>
 #include <time.h>
 
+#include "mn_copyable.hpp"
 #include "mn_error.hpp"
 #include "mn_micros.hpp"
+
+/**
+ * Macro for locked sections
+ *
+ * @param LOCK The typ of lock class
+ * @param OBJECT The lock object
+ *
+ * @example @code
+ * mutex_t mutex;
+ * LOCKED_SECTION(mutex_t, mutex) {
+ *  locked
+ * }
+ * unlocked
+ * @endcode
+ *
+ * @ingroup lock
+ */
+#define LOCKED_SECTION(LOCK, OBJECT) if( (mn::basic_autolock<LOCK> lock(OBJECT)) )
 
 namespace mn {
     /**
@@ -40,8 +59,12 @@ namespace mn {
      * @ingroup Interface
      * @ingroup lock
      */
-    class ILockObject {
+    class ILockObject  : MN_ONSIGLETN_CLASS {
     public:
+		using this_type = ILockObject;
+
+		ILockObject() { }
+
         /**
          *  lock (take) a LokObject
          *  @param timeout How long to wait to get the Lock until giving up.
@@ -73,23 +96,7 @@ namespace mn {
         virtual bool is_initialized() const = 0;
     };
 
-    /**
-   * Macro for locked sections
-   *
-   * @param LOCK The typ of lock class
-   * @param OBJECT The lock object
-   *
-   * @example @code
-   * mutex_t mutex;
-   * LOCKED_SECTION(mutex_t, mutex) {
-   *  locked
-   * }
-   * unlocked
-   * @endcode
-   *
-   * @ingroup lock
-   */
-  #define LOCKED_SECTION(LOCK, OBJECT) if( (basic_autolock<LOCK> lock(OBJECT)) )
+
 
 
   /**
@@ -104,7 +111,7 @@ namespace mn {
    * \ingroup lock
    */
   template <class LOCK>
-  class  basic_autolock {
+  class  basic_autolock  : MN_ONSIGLETN_CLASS  {
   public:
     /**
      *  Create a basic_autolock with a specific LockType, without timeout

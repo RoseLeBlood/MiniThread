@@ -28,6 +28,7 @@
 
 #include "mn_autolock.hpp"
 #include "mn_error.hpp"
+#include "mn_basic_timespan.hpp"
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
 #include "mn_eventgroup.hpp"
@@ -85,7 +86,7 @@ namespace mn {
    * @author Amber-Sophia Schröck
    * @ingroup task
    */
-  class  basic_task {
+  class  basic_task : MN_ONSIGLETN_CLASS {
   public:
     /**
      * @brief Task priority
@@ -124,8 +125,6 @@ namespace mn {
     explicit basic_task(std::string strName, basic_task::priority uiPriority = PriorityNormal,
         unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
-    basic_task(const basic_task&) = delete;
-    basic_task& operator=(const basic_task&) = delete;
 
     /**
      * @brief Our destructor. Delete the task
@@ -208,7 +207,7 @@ namespace mn {
      *
      * @return The time since start of this task
      */
-    uint32_t              get_time_since_start();
+    timespan_t           get_time_since_start() const;
     /**
      * @brief Get the FreeRTOS task Numberid of this task
      *
@@ -378,7 +377,7 @@ namespace mn {
     /**
      * @brief Lock Objekt for task safty
      */
-    LockType_t m_runningMutex, m_contextMutext, m_continuemutex;
+    mutable LockType_t m_runningMutex, m_contextMutext, m_continuemutex;
   protected:
     /**
      * @brief The name of this task.

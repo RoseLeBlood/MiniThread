@@ -20,15 +20,18 @@
 
 #include "mn_config.hpp"
 
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/event_groups.h>
+
+#include "mn_copyable.hpp"
 
 namespace mn {
     /**
      * @brief Wrapper class around FreeRTOS's implementation of a event_group.
      * @ingroup base
      */
-    class basic_event_group {
+    class basic_event_group : MN_ONCOPYABLE_CLASS {
     public:
         /**
          * @brief Consruct a new event group.

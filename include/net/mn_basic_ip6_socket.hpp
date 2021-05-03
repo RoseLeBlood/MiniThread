@@ -41,24 +41,24 @@ namespace mn {
 			 * @param hndl The raw lwip socket handle.
 			 * @param endp The endpoint for this socket
 			 */
-        	basic_ip6_socket(handle_type& hndl, basic_ip6_endpoint* endp = nullptr);
+        	basic_ip6_socket(handle_type& hndl, basic_ip6_endpoint* endp = nullptr) noexcept;
         	/**
         	 * @brief Construct create a IPv4 Socket AF_INET
         	 * @param type The type of the socket
         	 * @param protocol The using protocal for this socket
         	 */
-        	basic_ip6_socket(const socket_type& type, const protocol_type& protocol);
+        	basic_ip6_socket(const socket_type& type, const protocol_type& protocol) noexcept;
         	/**
         	 * @brief a copy construtor
         	 */
-			basic_ip6_socket(const basic_ip6_socket& other);
+			basic_ip6_socket(const basic_ip6_socket& other) noexcept;
 			/**
 			 * @brief a copy operator
 			 * @param other The other socket object
 			 *
 			 * @return Return this as reference
 			 */
-			basic_ip6_socket& operator=(const basic_ip6_socket& other);
+			basic_ip6_socket& operator=(const basic_ip6_socket& other) noexcept;
 
 
 			/**
@@ -132,6 +132,11 @@ namespace mn {
 			 * @return A copy of this socket
 			 */
         	virtual basic_ip_socket*	get_copy() 					{ return new basic_ip6_socket(*this); }
+
+        	virtual void swap(basic_ip6_socket& rhs) noexcept {
+        		basic_ip_socket::swap(rhs);
+				mn::swap(m_pEndPoint, rhs.m_pEndPoint);
+			}
 		protected:
 			/**
 			 * @brief A saved / cached copy of the endpoint on binde the socket

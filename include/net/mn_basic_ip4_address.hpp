@@ -53,13 +53,13 @@ namespace mn {
 			 * @brief Construct a ip4 address from uint32_t
 			 * @param newAddress The ip4 address as uint32_t
 			 */
-			explicit basic_ip4_address(uint32_t newAddress);
+			explicit basic_ip4_address(uint32_t newAddress) noexcept;
 
 			/**
 			 * @brief Construct a ip4 address from array
 			 * @param adress The ip4 address as array
 			 */
-			basic_ip4_address(uint8_t adress[MNNET_IPV4_ADDRESS_BYTES]);
+			basic_ip4_address(uint8_t adress[MNNET_IPV4_ADDRESS_BYTES]) noexcept;
 			/**
 			 * @brief Construct a ip4 address from bytes
 			 * @param a The first octan
@@ -67,17 +67,17 @@ namespace mn {
 			 * @param c The third octan
 			 * @param d The 4. octan
 			 */
-			basic_ip4_address(uint8_t a, uint8_t b, uint8_t c, uint8_t d );
+			basic_ip4_address(uint8_t a, uint8_t b, uint8_t c, uint8_t d ) noexcept;
 			/**
 			 * @brief Construct an basic_ip4_address from the string containing
 			 */
-			basic_ip4_address(const char* str_ip);
+			basic_ip4_address(const char* str_ip) noexcept;
 			/**
 			 *
 			 * @brief Construct an basic_ip4_address by copying another one.
 			 * @param other The soucre of this copying address
 			 */
-			basic_ip4_address(const basic_ip4_address& other);
+			basic_ip4_address(const basic_ip4_address& other) noexcept;
 
 			/**
 			 * @brief Get the ip4 address as array
@@ -208,6 +208,11 @@ namespace mn {
 			 * @brief cast operator
 			 */
 			operator uint32_t() const { return as_int32; }
+
+			virtual void swap(basic_ip4_address& rhs) noexcept {
+				basic_ip_address::swap(rhs);
+				mn::swap<uint32_t>(as_int32, rhs.as_int32);
+			}
 		};
 	}
 }

@@ -39,24 +39,24 @@ namespace mn {
 			 * @param hndl The raw lwip socket handle.
 			 * @param endp The endpoint for this socket
 			 */
-        	basic_ip4_socket(handle_type& hndl, endpoint_type* endp = nullptr);
+        	basic_ip4_socket(handle_type& hndl, endpoint_type* endp = nullptr) noexcept;
         	/**
         	 * @brief Construct create a IPv4 Socket AF_INET
         	 * @param type The type of the socket
         	 * @param protocol The using protocal for this socket
         	 */
-        	basic_ip4_socket(const socket_type& type, const protocol_type& protocol = protocol_type::unspec);
+        	basic_ip4_socket(const socket_type& type, const protocol_type& protocol = protocol_type::unspec) noexcept;
         	/**
         	 * @brief a copy construtor
         	 */
-			basic_ip4_socket(const basic_ip4_socket& other);
+			basic_ip4_socket(const basic_ip4_socket& other) noexcept;
 			/**
 			 * @brief a copy operator
 			 * @param other The other socket object
 			 *
 			 * @return Return this as reference
 			 */
-			basic_ip4_socket& operator=(const basic_ip4_socket& other);
+			basic_ip4_socket& operator=(const basic_ip4_socket& other) noexcept;
 
 			/**
 			 * @brief Bind the socket on the given endpoint (ip and port)
@@ -131,6 +131,10 @@ namespace mn {
         	virtual basic_ip_socket*	get_copy() 					{ return new basic_ip4_socket(*this); }
 
 
+        	virtual void swap(basic_ip4_socket& rhs) noexcept {
+        		basic_ip_socket::swap(rhs);
+				mn::swap(m_pEndPoint, rhs.m_pEndPoint);
+			}
 		protected:
 			/**
 			 * @brief A saved / cached copy of the endpoint on binde the socket

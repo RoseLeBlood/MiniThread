@@ -33,7 +33,7 @@ namespace mn {
 	 * @note Useful for temporery buffering data.
 	 */
 	template <typename TVALUE, class TALLOCATOR = mn::memory::allocator_system_t>
-	class buffer {
+	class buffer : MN_ONCOPYABLE_CLASS {
 	public:
 		using self_type = buffer<TVALUE, TALLOCATOR>;
 		using value_type = TVALUE;

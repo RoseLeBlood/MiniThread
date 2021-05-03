@@ -2,18 +2,18 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2020 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_50f2b4fa_c256_450b_9595_0a6ed07718ca_H_
 #define MINLIB_50f2b4fa_c256_450b_9595_0a6ed07718ca_H_
@@ -24,7 +24,7 @@
 namespace mn {
     namespace container {
 
-        template<typename TNodePtr, typename TPtr, typename TRef> 
+        template<typename TNodePtr, typename TPtr, typename TRef>
         class list_node_iterator {
 	    public:
             using  iterator_category = bidirectional_iterator_tag ;
@@ -36,11 +36,11 @@ namespace mn {
             using  self_type = list_node_iterator<TNodePtr, TPtr, TRef>;
 
             explicit list_node_iterator()
-                : m_node(NULL) {/**/}            
-            explicit list_node_iterator(node_type node) 
+                : m_node(NULL) {/**/}
+            explicit list_node_iterator(node_type node)
                 :  m_node(node) {/**/}
-                
-            template<typename UNodePtr, typename UPtr, typename URef> 
+
+            template<typename UNodePtr, typename UPtr, typename URef>
             list_node_iterator(const list_node_iterator<UNodePtr, UPtr, URef>& rhs)
                 : m_node(rhs.node()) { }
 
@@ -49,13 +49,13 @@ namespace mn {
             reference operator*() const { return m_node->value; }
             pointer operator->() const { return &m_node->value; }
 
-            self_type& operator++() { 
+            self_type& operator++() {
                 m_node = m_node->Next; return *this; }
 
-            self_type& operator--()  { 
+            self_type& operator--()  {
                 m_node = m_node->Prev; return *this; }
 
-            self_type operator++(int) { 
+            self_type operator++(int) {
                 self_type copy(*this); ++(*this); return copy; }
 
             self_type operator--(int) {
@@ -71,7 +71,7 @@ namespace mn {
             node_type m_node;
         };
 
-        template<typename T, class TAllocator > 
+        template<typename T, class TAllocator >
         class basic_list {
         public:
             using self_type = basic_list<T, TAllocator>;
@@ -94,7 +94,7 @@ namespace mn {
             /**
              * @brief Construct a new basic list object
              */
-            template<class InputIterator> 
+            template<class InputIterator>
             basic_list(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type())
                 : m_allocator(allocator) {
                     m_root.reset();
@@ -178,8 +178,8 @@ namespace mn {
                 }
             }
 
-            bool empty() const { 
-                return !m_root.is(); 
+            bool empty() const {
+                return !m_root.is();
             }
 
             void clear() {
@@ -204,8 +204,8 @@ namespace mn {
                 return size;
             }
 
-            const allocator_type& get_allocator() const { 
-                return m_allocator; 
+            const allocator_type& get_allocator() const {
+                return m_allocator;
             }
             void set_allocator(const allocator_type& allocator) {
                 m_allocator = allocator;
@@ -234,18 +234,19 @@ namespace mn {
 
         /**
          * @brief List type witch allocated in global heap
-         * @tparam T The holding type for the value 
+         * @tparam T The holding type for the value
+         * @tparam TAllocator The using allocator
          */
-        template<typename T > 
-        using list = basic_list<T, memory::default_allocator_t >;
+        template<typename T , class TAllocator =  memory::default_allocator_t>
+        using list = basic_list<T, TAllocator >;
 
         /**
          * @brief List type witch allocated on the staked memory buffer
-         * 
-         * @tparam T The holding type for the value 
+         *
+         * @tparam T The holding type for the value
          * @tparam TBUFFERSIZE The size of the memory buffer
          */
-        template<typename T, int TBUFFERSIZE> 
+        template<typename T, int TBUFFERSIZE>
         using stacked_list = basic_list<T, memory::basic_allocator_stack<TBUFFERSIZE> >;
     }
 }

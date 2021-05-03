@@ -24,14 +24,14 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip_socket::basic_ip_socket
 		//-----------------------------------
-		basic_ip_socket::basic_ip_socket(const handle_type& hndl)
+		basic_ip_socket::basic_ip_socket(const handle_type& hndl) noexcept
 			: m_iHandle(hndl) { }
 
 		//-----------------------------------
 		// basic_ip_socket::basic_ip_socket
 		//-----------------------------------
 		basic_ip_socket::basic_ip_socket(const address_family& fam, const socket_type& type,
-										const protocol_type& protocol) {
+										const protocol_type& protocol) noexcept {
 			 m_eFam = fam;
 			 m_eType = type;
 			 m_eProtocol = protocol;
@@ -42,14 +42,14 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip_socket::basic_ip_socket
 		//-----------------------------------
-		basic_ip_socket::~basic_ip_socket() {
+		basic_ip_socket::~basic_ip_socket() noexcept {
 			close();
 		}
 
 		//-----------------------------------
 		// basic_ip_socket::basic_ip_socket
 		//-----------------------------------
-		basic_ip_socket::basic_ip_socket(const basic_ip_socket& other)
+		basic_ip_socket::basic_ip_socket(const basic_ip_socket& other) noexcept
 			: m_iHandle(other.m_iHandle) {
 			m_eFam = other.m_eFam;
 			m_eType = other.m_eType;

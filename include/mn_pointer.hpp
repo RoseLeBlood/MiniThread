@@ -31,6 +31,7 @@
 #include "pointer/mn_weak_ptr.hpp"
 #include "pointer/mn_linked_ptr.hpp"
 #include "pointer/mn_any_ptr.hpp"
+#include "pointer/mn_auto_ptr.hpp"
 
 
 
@@ -51,6 +52,7 @@ namespace mn {
 
     MN_TEMPLATE_USING(any_ptr, pointer::basic_any_ptr<void>);
 
+    MN_TEMPLATE_USING_ONE(auto_ptr, pointer::basic_auto_ptr, typename, T);
 
     //----------------------------------------
     // LOCK OKJECT
@@ -97,36 +99,41 @@ namespace mn {
 
 
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
-    inline shared_ptr<T> make_shared(T value) {
-        return shared_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline shared_ptr<T> make_shared(Args&&... args) {
+        return shared_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    MN_TEMPLATE_FULL_DECL_THREE(typename, T, class, TInterface, class, TALLOCATOR = memory::default_allocator_t)
-    inline clone_ptr_ex<T, TInterface> make_clone(T value) {
-        return clone_ptr_ex<T, TInterface>(internal::make_buffer<T, TALLOCATOR>(value));
+    template<typename T, class TInterface, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline clone_ptr_ex<T, TInterface> make_clone(Args&&... args) {
+        return clone_ptr_ex<T, TInterface>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
-    inline clone_ptr<T> make_clone(T value) {
-        return clone_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline clone_ptr<T> make_clone(Args&&... args) {
+        return clone_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
-    inline scoped_ptr<T> make_scoped(T value) {
-        return scoped_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline scoped_ptr<T> make_scoped(Args&&... args) {
+        return scoped_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
-    inline save_ptr<T> make_save(T value) {
-        return save_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline save_ptr<T> make_save(Args&&... args) {
+        return save_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
-    inline weak_ptr<T>  make_weak(T* value) {
-        return weak_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    inline weak_ptr<T>  make_weak(Args&&... args) {
+        return weak_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
+
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+	inline auto_ptr<T> make_auto(Args&&... args) {
+		return auto_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+	}
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline linked_ptr<T>  make_link(const linked_ptr<T>& value) {
@@ -140,6 +147,8 @@ namespace mn {
     inline linked_ptr<T>  make_link(T* value) {
         return linked_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
     }
+
+
 
     //----------------------------------------
     // SWAP
@@ -159,6 +168,11 @@ namespace mn {
     inline void swap(weak_ptr<T> & a, weak_ptr<T> & b) {
         a.swap(b);
     }
+    MN_TEMPLATE_FULL_DECL_ONE(class, T)
+	inline void swap(auto_ptr<T>& a, auto_ptr<T>& b) {
+		a.swap(b);
+	}
 }
+
 
 #endif

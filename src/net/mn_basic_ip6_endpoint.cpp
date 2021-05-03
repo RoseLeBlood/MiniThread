@@ -26,18 +26,18 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_endpoint
 		//-----------------------------------
-		basic_ip6_endpoint::basic_ip6_endpoint(const uint16_t& port)
+		basic_ip6_endpoint::basic_ip6_endpoint(const uint16_t& port) noexcept
 			: base_type(MNNET_IPV6_ADDRESS_ANY, port) { }
 
 		//-----------------------------------
 		//  basic_ip6_endpoint
 		//-----------------------------------
-		basic_ip6_endpoint::basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port)
+		basic_ip6_endpoint::basic_ip6_endpoint(const basic_ip6_address& ip, const uint16_t& port) noexcept
 			: base_type(ip, port) { }
 		//-----------------------------------
 		//  basic_ip6_endpoint
 		//-----------------------------------
-		basic_ip6_endpoint::basic_ip6_endpoint(const basic_ip6_endpoint& pOther)
+		basic_ip6_endpoint::basic_ip6_endpoint(const basic_ip6_endpoint& pOther) noexcept
 			: base_type(pOther.m_ipAdress, pOther.m_iPort) { }
 
 

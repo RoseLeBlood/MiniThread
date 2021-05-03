@@ -30,14 +30,14 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
-		basic_ip4_address::basic_ip4_address(uint32_t newAddress)
+		basic_ip4_address::basic_ip4_address(uint32_t newAddress) noexcept
 			: basic_ip_address(address_family::inet_v4), as_int32(newAddress) { }
 
 
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
-		basic_ip4_address::basic_ip4_address(uint8_t address[MNNET_IPV4_ADDRESS_BYTES])
+		basic_ip4_address::basic_ip4_address(uint8_t address[MNNET_IPV4_ADDRESS_BYTES]) noexcept
 			: basic_ip_address(address_family::inet_v4){
 
 			as_array[0] = address[0];
@@ -48,7 +48,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
-		basic_ip4_address::basic_ip4_address(uint8_t a, uint8_t b, uint8_t c, uint8_t d )
+		basic_ip4_address::basic_ip4_address(uint8_t a, uint8_t b, uint8_t c, uint8_t d ) noexcept
 			: basic_ip_address(address_family::inet_v4) {
 			as_array[0] = a;
 			as_array[1] = b;
@@ -59,7 +59,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
-		basic_ip4_address::basic_ip4_address(const char* address)
+		basic_ip4_address::basic_ip4_address(const char* address) noexcept
 			: basic_ip_address(address_family::inet_v4) {
 
 			uint16_t 	_acc = 0; // Accumulator
@@ -87,7 +87,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip4_address
 		//-----------------------------------
-		basic_ip4_address::basic_ip4_address(const basic_ip4_address& other)
+		basic_ip4_address::basic_ip4_address(const basic_ip4_address& other) noexcept
 			: basic_ip_address(address_family::inet_v4), as_int32(other.as_int32) { }
 
 		//-----------------------------------

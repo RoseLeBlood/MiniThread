@@ -21,6 +21,7 @@
 #include "../mn_config.hpp"
 
 #include <string.h>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
@@ -33,6 +34,8 @@
 #include "lwip/sockets.h"
 
 #include <array>
+
+#include "mn_algorithm.hpp"
 #include "mn_net_types.hpp"
 
 
@@ -101,6 +104,10 @@ namespace mn {
 			 * @return The length in bytes of the ip address
 			 */
 			virtual int length() const = 0;
+
+			virtual void swap(basic_ip_address& rhs) noexcept {
+				mn::swap<address_family>(m_aFamily, rhs.m_aFamily);
+			}
 		protected:
 			/**
 			 * @brief  A saved / cached copy of the address family type of this socket.

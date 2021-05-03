@@ -1,10 +1,13 @@
 # Changelog
 
-## Versoin 2.28.3060 März 2021 (unstable beta)
+## Versoin 2.28.3098 März 2021 (unstable beta)
 + add atomic_counter class
 + task: a atomic_counter create a new task id
 + add atomic counter
 + add multicast socketfor ipv4 and ipv6
++ add class timespan and timestamp
++ task: The function get_time_since_start() changed the return type from uint32_t to timespan_t
++ mn_micros.hpp: marked the functions ticks_to_ms, ms_to_ticks, seconds_to_ticks, time_to_ms and time_to_ticks as DEPRECATED remove in version 2.30
 
 ## Versoin 2.28.x März 2021 (unstable beta)
 + add socket classes for udp, tcp and raw - IPv6 and IPv4

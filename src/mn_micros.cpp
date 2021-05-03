@@ -34,6 +34,8 @@
 
 #include <sys/time.h>
 
+MN_EXTERNC_BEGINN
+
 namespace mn {
   portMUX_TYPE microsMux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -118,3 +120,4 @@ namespace mn {
     return ms_to_ticks(msecs);
   }
 }
+MN_EXTERNC_END

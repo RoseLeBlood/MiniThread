@@ -22,6 +22,8 @@
 
 #include <stddef.h>
 
+#include "mn_copyable.hpp"
+
 namespace mn {
     using max_align_t = int;
     using nullptr_t = decltype(nullptr);

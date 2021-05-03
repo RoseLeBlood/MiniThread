@@ -24,7 +24,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::basic_ip4_socket
 		//-----------------------------------
-		basic_ip4_socket::basic_ip4_socket(handle_type& hndl, basic_ip4_endpoint* endp)
+		basic_ip4_socket::basic_ip4_socket(handle_type& hndl, basic_ip4_endpoint* endp) noexcept
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 		}
@@ -32,7 +32,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::basic_ip4_socket
 		//-----------------------------------
-		basic_ip4_socket::basic_ip4_socket(const socket_type& type, const protocol_type& protocol)
+		basic_ip4_socket::basic_ip4_socket(const socket_type& type, const protocol_type& protocol) noexcept
 			: basic_ip_socket(address_family::inet_v4, type, protocol) {
 				m_pEndPoint = nullptr;
 		}
@@ -40,14 +40,14 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip4_socket::basic_ip4_socket
 		//-----------------------------------
-		basic_ip4_socket::basic_ip4_socket(const basic_ip4_socket& other)
+		basic_ip4_socket::basic_ip4_socket(const basic_ip4_socket& other) noexcept
 			: basic_ip_socket( other.m_iHandle), m_pEndPoint(other.m_pEndPoint) {
 		}
 
 		//-----------------------------------
 		// basic_ip4_socket::operator =
 		//-----------------------------------
-		basic_ip4_socket& basic_ip4_socket::operator = (const basic_ip4_socket& other) {
+		basic_ip4_socket& basic_ip4_socket::operator = (const basic_ip4_socket& other) noexcept {
 			m_iHandle = other.m_iHandle;
 			m_pEndPoint = other.m_pEndPoint;
 
@@ -83,7 +83,7 @@ namespace mn {
 		bool basic_ip4_socket::bind(basic_ip4_endpoint local_ep, bool reuseAddress, bool reusePort) {
 			if(m_iHandle == -1) return false;
 
-			basic_ip4_address ip = local_ep.get_ip();
+			basic_ip4_address ip = local_ep.get_host();
 			unsigned int port = local_ep.get_port();
 
 			if (reuseAddress)

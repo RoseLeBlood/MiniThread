@@ -49,7 +49,7 @@ namespace mn {
          *  The design here is that a basic_convar_task "waits", and a condition_variable
          *  "signals". This affects where the public interfaces reside.
          */
-        class basic_condition_variable {
+        class basic_condition_variable : MN_DEFAULT_CLASS {
             /**
              *  The basic_convar_task class and the basic_condition_variable class are interdependent.
              *  If we allow the basic_convar_task class to access the internals of the

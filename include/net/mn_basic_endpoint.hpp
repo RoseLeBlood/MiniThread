@@ -21,6 +21,7 @@
 #include "../mn_config.hpp"
 #include "../mn_def.hpp"
 
+
 #include "mn_basic_ip_address.hpp"
 #include "mn_basic_ip4_address.hpp"
 #include "mn_basic_ip6_address.hpp"
@@ -63,13 +64,13 @@ namespace mn {
 			/**
 			 * @brief Construct a basic_ip_endpoint by giving ip address and port
 			 */
-			basic_ip_endpoint(const ip_type& ip, const uint16_t& port)
+			basic_ip_endpoint(const ip_type& ip, const uint16_t& port) noexcept
 				: m_ipAdress(ip), m_iPort(port) { }
 
 			/**
 			 * @brief  Construct a basic_ip_endpoint by copying another one.
 			 */
-			basic_ip_endpoint(const self_type& pOther)
+			basic_ip_endpoint(const self_type& pOther) noexcept
 				: m_ipAdress(pOther.m_ipAdress), m_iPort(pOther.m_iPort) { }
 
 			/**
@@ -108,6 +109,7 @@ namespace mn {
 			bool 				is_loopback()  { return m_ipAdress.is_loopback(); }
 
 
+
 			/**
 			 * @brief Assigns another basic_ip_endpoint.
 			 */
@@ -136,6 +138,11 @@ namespace mn {
 			bool operator < (const self_type& pOther) const {
 				if(m_iPort >= pOther.m_iPort) return false;
 				return m_ipAdress < pOther.m_ipAdress;
+			}
+
+			virtual void swap(self_type& rhs) noexcept {
+				mn::swap<uint16_t>(m_iPort, rhs.m_iPort);
+				m_ipAdress.swap(rhs.m_ipAdress);
 			}
 		protected:
 			ip_type m_ipAdress;

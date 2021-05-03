@@ -22,7 +22,7 @@
 
 namespace mn {
     basic_task_list* basic_task_list::m_pInstance = NULL;
-    mutex_t  basic_task_list::m_staticInstanceMux = mutex_t();
+    mutex_t  basic_task_list::m_staticInstanceMux ;
 
     //-----------------------------------
     //  construtor

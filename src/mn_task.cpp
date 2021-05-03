@@ -228,9 +228,11 @@ namespace mn {
   //-----------------------------------
   //  get_time_since_start
   //-----------------------------------
-  uint32_t basic_task::get_time_since_start() {
+  timespan_t basic_task::get_time_since_start() const {
     autolock_t autolock(m_runningMutex);
-    return (uint32_t)(xTaskGetTickCount()*portTICK_PERIOD_MS);
+    auto ms = (xTaskGetTickCount()*portTICK_PERIOD_MS);
+
+    return timespan_t(ms);
   }
 
   //-----------------------------------

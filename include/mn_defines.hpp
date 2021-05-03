@@ -53,4 +53,7 @@
 #define MN_EXTERNC_END
 #endif
 
+
+#define MN_DEPRECATED 				__attribute__ ((deprecated))
+
 #endif // _MINLIB_cfc6e05b_d8d4_4a9d_ae4b_42fa56cd3443_H_

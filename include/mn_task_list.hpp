@@ -25,6 +25,8 @@ class basic_task;
 #include <list>
 #include <map>
 
+#include "mn_copyable.hpp"
+
 namespace mn {
 
     /**
@@ -33,7 +35,7 @@ namespace mn {
      * @note If MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST activated then automatic added new basic_tasks
      * to this list. On default is MN_THREAD_CONFIG_ADD_TASK_TO_TASK_LIST deactivated
      */
-    class basic_task_list  {
+    class basic_task_list : MN_ONSIGLETN_CLASS {
         /**
          * Construtor
          * @note This is a signleton class, only one object

@@ -26,6 +26,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+MN_EXTERNC_BEGINN
+
 namespace mn {
     /**
      * @ingroup base
@@ -50,43 +52,43 @@ namespace mn {
 
     /**
      *  Convert from ticks to ms.
-     *
+     *  @note DEPRECATED Use timespan
      *  @param ticks ticks to convert.
      *  @return milliseconds.
      */
-    unsigned int ticks_to_ms(unsigned int ticks);
+    unsigned int ticks_to_ms(unsigned int ticks) MN_DEPRECATED;
 
     /**
      *  Convert from ms to ticks.
-     *
+     *	@note DEPRECATED Use timespan
      *  @param milliseconds milliseconds to convert.
      *  @return ticks
      */
-    unsigned int ms_to_ticks(unsigned int ms);
+    unsigned int ms_to_ticks(unsigned int ms) MN_DEPRECATED;
 
     /**
      *  Convert from seconds to ticks.
-     *
+     *	@note DEPRECATED Use timespan
      *  @param seconds seconds to convert.
      *  @return ticks
      */
-    unsigned int seconds_to_ticks(unsigned int ms);
+    unsigned int seconds_to_ticks(unsigned int ms) MN_DEPRECATED;
 
     /**
      * Convert timeval to milliseconds
-     *
+     * @note DEPRECATED Use timespan
      * @param time The timeval to convert
      * @return the timeval in milliseconds
      */
-    unsigned int time_to_ms(const struct timeval* time);
+    unsigned int time_to_ms(const struct timeval* time) MN_DEPRECATED;
 
     /**
      * Convert timeval to ticks
-     *
+     * @note DEPRECATED Use timespan
      * @param time The timeval to convert
      * @return the timeval in ticks
      */
-    unsigned int time_to_ticks(const struct timeval* time);
+    unsigned int time_to_ticks(const struct timeval* time) MN_DEPRECATED;
 
     /**
      * Operator to sub two timevals
@@ -122,4 +124,7 @@ namespace mn {
         return timeval{s, ns};
     }
 }
+
+MN_EXTERNC_END
+
 #endif

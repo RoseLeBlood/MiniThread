@@ -46,10 +46,6 @@ namespace mn {
      * Construtor
      */
     basic_semaphore();
-    /**
-     * Copy Construtor
-     */
-    basic_semaphore(const basic_semaphore& other);
 
     /**
      * lock (take) a semaphore.

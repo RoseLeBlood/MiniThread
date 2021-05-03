@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
+*Copyright (c) 2018 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify
 *it under the terms of the GNU Lesser General Public License as published by
@@ -16,17 +16,8 @@
 *<https://www.gnu.org/licenses/>.
 */
 #include "mn_config.hpp"
-
-#include <stdio.h>
-
-#include "miniThread.hpp"
+#include "mn_basic_timestamp.hpp"
 
 namespace mn {
-  //-----------------------------------
-  //  mn_panic
-  //-----------------------------------
-  void panic() {
-    printf("MiniThread-PANIC!!!");
-    for(;;) { }
-  }
+
 }

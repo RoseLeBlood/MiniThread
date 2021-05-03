@@ -91,6 +91,7 @@ namespace mn {
 			 */
 			int send_to(char* buffer, int offset, int size, const socket_flags& socketFlags, endpoint_type& ep);
 
+
 		protected:
 			basic_dgram_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
@@ -107,6 +108,8 @@ namespace mn {
 		class basic_dgramlite_ip_socket : public basic_dgram_ip_socket {
 		public:
 			basic_dgramlite_ip_socket() : basic_dgram_ip_socket(protocol_type::udp_lite) { }
+
+
 		};
 #endif
 
@@ -172,6 +175,8 @@ namespace mn {
 			 * @return Returns the number of bytes sent, which may be less than the number of bytes specified.
 			 */
 			int send_to(char* buffer, int offset, int size, socket_flags socketFlags, endpoint_type* ep);
+
+
 		protected:
 			basic_dgram_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
@@ -186,6 +191,8 @@ namespace mn {
 		class basic_dgramlite_ip6_socket : public basic_dgram_ip6_socket {
 		public:
 			basic_dgramlite_ip6_socket() : basic_dgram_ip6_socket(protocol_type::udp_lite) { }
+
+
 		};
 	#endif // LWIP_UDP
 

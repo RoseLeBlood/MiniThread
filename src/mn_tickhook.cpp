@@ -29,7 +29,7 @@
 
 namespace mn {
     base_tickhook* base_tickhook::m_pInstance = NULL;
-    mutex_t  base_tickhook::m_staticInstanceMux = mutex_t();
+    mutex_t  base_tickhook::m_staticInstanceMux;
 
 
     void vApplicationTickHook(void) {

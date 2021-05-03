@@ -28,7 +28,7 @@ namespace mn {
    * FreeRTOS wrapper for notify and broadcast a task
    * \ingroup task
    */
-  class task_utils {
+  class task_utils : MN_ONSIGLETN_CLASS {
   public:
     /** Actions that can be performed when task_utils::notify() is called. */
     enum action {

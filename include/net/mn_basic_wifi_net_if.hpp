@@ -56,7 +56,7 @@ namespace mn {
 			 * @brief Construt
 			 * @param type The type of the using interface
 			 */
-			basic_wifi_net_if(esp_interface_t type);
+			basic_wifi_net_if(const esp_interface_t& type) noexcept;
 
 			/**
 			 * @brief Set the hostname

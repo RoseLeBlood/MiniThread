@@ -19,6 +19,7 @@
 #define MINLIB_ESP32_MUTEX_
 
 #include "mn_config.hpp"
+#include "mn_def.hpp"
 
 #include "mn_basic_semaphore.hpp"
 #include "mn_error.hpp"

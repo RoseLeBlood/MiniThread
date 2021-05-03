@@ -95,6 +95,10 @@ namespace mn {
 			 */
 			ipaddress_type	get_interface();
 
+			virtual void swap(self_typ& rhs) noexcept {
+        		base_type::swap(rhs);
+        		m_ipMulticast.swap(rhs.m_ipMulticast);
+			}
 		protected:
 			basic_multicast_ip_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
@@ -175,6 +179,10 @@ namespace mn {
 			 */
 			uint8_t	get_interface();
 
+			virtual void swap(self_typ& rhs) noexcept {
+        		base_type::swap(rhs);
+        		m_ipMulticast.swap(rhs.m_ipMulticast);
+			}
 		protected:
 			basic_multicast_ip6_socket(handle_type& hndl, endpoint_type* endp = nullptr)
 				: base_type(hndl, endp) { }
@@ -203,6 +211,10 @@ namespace mn {
 			using handle_type = typename base_type::handle_type;
 
 			basic_dgramlite_ip_socket() : base_type(protocol_type::udp_lite) { }
+
+			virtual void swap(self_typ& rhs) noexcept {
+        		base_type::swap(rhs);
+			}
 		};
 	#endif
 	}

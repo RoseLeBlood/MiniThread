@@ -41,7 +41,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(uint8_t address[16], int scopid)
+		basic_ip6_address::basic_ip6_address(uint8_t address[16], int scopid) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 
 			for (signed char i = 0; i < MNNET_NUMBER_OF_LABELS; i++) {
@@ -54,7 +54,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(uint8_t adress[MNNET_IPV6_ADDRESS_BYTES])
+		basic_ip6_address::basic_ip6_address(uint8_t adress[MNNET_IPV6_ADDRESS_BYTES]) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 
 			for (signed char i = 0; i < MNNET_NUMBER_OF_LABELS; i++) {
@@ -66,7 +66,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(uint32_t ax, uint32_t bx, uint32_t cx, uint32_t dx)
+		basic_ip6_address::basic_ip6_address(uint32_t ax, uint32_t bx, uint32_t cx, uint32_t dx) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			m_ScopeId = MN_THREAD_CONFIG_NET_IPADDRESS6_SCOPEID_VAL;
@@ -81,7 +81,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(uint32_t aa[4])
+		basic_ip6_address::basic_ip6_address(uint32_t aa[4]) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 		#if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
 			m_ScopeId = MN_THREAD_CONFIG_NET_IPADDRESS6_SCOPEID_VAL;
@@ -97,7 +97,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(const basic_ip6_address& ip)
+		basic_ip6_address::basic_ip6_address(const basic_ip6_address& ip) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 			mempcpy(m_Numbers, ip.m_Numbers, sizeof(m_Numbers));
 #if MN_THREAD_CONFIG_NET_IPADDRESS6_USE_SCOPEID  == MN_THREAD_CONFIG_YES
@@ -108,7 +108,7 @@ namespace mn {
 		//-----------------------------------
 		//  basic_ip6_address
 		//-----------------------------------
-		basic_ip6_address::basic_ip6_address(const char* str_ip)
+		basic_ip6_address::basic_ip6_address(const char* str_ip) noexcept
 			: basic_ip_address(address_family::inet_v6) {
 			char * _pos = (char*)str_ip;
 			int8_t _len = static_cast<int8_t>(strlen(str_ip));

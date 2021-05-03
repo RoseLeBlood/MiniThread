@@ -26,7 +26,7 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::basic_ip6_socket
 		//-----------------------------------
-		basic_ip6_socket::basic_ip6_socket(handle_type& hndl, basic_ip6_endpoint* endp)
+		basic_ip6_socket::basic_ip6_socket(handle_type& hndl, basic_ip6_endpoint* endp) noexcept
 			: basic_ip_socket(hndl) {
 				m_pEndPoint = endp;
 		}
@@ -34,22 +34,22 @@ namespace mn {
 		//-----------------------------------
 		// basic_ip6_socket::basic_ip6_socket
 		//-----------------------------------
-		basic_ip6_socket::basic_ip6_socket(const socket_type& type, const protocol_type& protocol)
-			: basic_ip_socket(address_family::inet_v6, type, protocol) {
+		basic_ip6_socket::basic_ip6_socket(const socket_type& type, const protocol_type& protocol) noexcept
+			: basic_ip_socket(address_family::inet_v6, type, protocol)  {
 				m_pEndPoint = nullptr;
 		}
 
 		//-----------------------------------
 		// basic_ip6_socket::basic_ip6_socket
 		//-----------------------------------
-		basic_ip6_socket::basic_ip6_socket(const basic_ip6_socket& other)
+		basic_ip6_socket::basic_ip6_socket(const basic_ip6_socket& other) noexcept
 			: basic_ip_socket( other.m_iHandle), m_pEndPoint(other.m_pEndPoint) {
 		}
 
 		//-----------------------------------
 		// basic_ip6_socket::operator =
 		//-----------------------------------
-		basic_ip6_socket& basic_ip6_socket::operator = (const basic_ip6_socket& other) {
+		basic_ip6_socket& basic_ip6_socket::operator = (const basic_ip6_socket& other) noexcept {
 			m_iHandle = other.m_iHandle;
 			m_pEndPoint = other.m_pEndPoint;
 

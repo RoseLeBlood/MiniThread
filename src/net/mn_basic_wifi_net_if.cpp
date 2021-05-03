@@ -24,7 +24,7 @@ namespace mn {
 		//-----------------------------------
 		//  construtor
 		//-----------------------------------
-		basic_wifi_net_if::basic_wifi_net_if(esp_interface_t type)
+		basic_wifi_net_if::basic_wifi_net_if(const esp_interface_t& type) noexcept
 			: m_ifInterface(type) {		}
 
 		//-----------------------------------
