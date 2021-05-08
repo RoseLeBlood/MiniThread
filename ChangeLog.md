@@ -8,6 +8,11 @@
 + add class timespan and timestamp
 + task: The function get_time_since_start() changed the return type from uint32_t to timespan_t
 + mn_micros.hpp: marked the functions ticks_to_ms, ms_to_ticks, seconds_to_ticks, time_to_ms and time_to_ticks as DEPRECATED remove in version 2.30
++ mn_sleep remove sleep, nsleep and usleep and added sleep version with timespan as argument :
+	- void delay(const timespan_t& ts); with macros MN_DELAY_SEC and MN_DELAY_MICROS
++ add simple atomic_flags class
++ remove mempool
++ start add new memory allocator stack
 
 ## Versoin 2.28.x März 2021 (unstable beta)
 + add socket classes for udp, tcp and raw - IPv6 and IPv4

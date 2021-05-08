@@ -24,9 +24,8 @@
 #ifdef CONFIG_LWIP_SLIP_SUPPORT
 
 #include <esp_netif.h>
-#include <esp_netif_slip.h>
 #include <esp_netif_net_stack.h>
-#include <esp_netif_lwip_slip.h>
+
 #include <esp_log.h>
 
 #include "net/mn_basic_netif.hpp"

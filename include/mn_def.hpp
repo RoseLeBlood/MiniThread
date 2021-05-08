@@ -25,7 +25,7 @@
 #include "mn_copyable.hpp"
 
 namespace mn {
-    using max_align_t = int;
+    using max_align_t = long double;
     using nullptr_t = decltype(nullptr);
 
     using size_t = MN_THREAD_CONFIG_SIZE_TYPE;
@@ -33,6 +33,8 @@ namespace mn {
     using uptrdiff_t = unsigned long;
     using intmax_t = int;
     using uintmax_t = unsigned int;
+
+	constexpr size_t max_alignment = alignof(max_align_t);
 
     enum class byte : unsigned char { };
 

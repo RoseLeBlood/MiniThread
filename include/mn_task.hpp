@@ -328,19 +328,19 @@ namespace mn {
      *
      * @param secs How long seconds to sleep the task.
      */
-    static void sleep(unsigned int secs)     { ::mn::sleep(secs); }
+    static void sleep(unsigned int secs)     { mn::delay(timespan_t(0, 0, 0, secs)); }
     /**
      * @brief sleep this task for n micro seconds
      *
      * @param secs How long micro seconds to sleep the task.
      */
-    static void usleep(unsigned int usec)     { ::mn::usleep(usec); }
+    static void usleep(unsigned int usec)     { mn::delay(timespan_t(0, 0, 0, 0, usec)); }
     /**
      * @brief pause execution for a specified time
      * @note see Linux nanosleep function
      */
-    static void nsleep(const struct timespec *req, struct timespec *rem)     {
-      ::mn::nsleep(req, rem);
+    static void nsleep(const timespan_t& req, timespan_t* rem)     {
+      	mn::ndelay(req, rem);
     }
 
     /**

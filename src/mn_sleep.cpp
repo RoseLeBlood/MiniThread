@@ -35,7 +35,10 @@
 
 #include "mn_sleep.hpp"
 
+MN_EXTERNC_BEGINN
+
 namespace mn {
+	#if 0
 	//-----------------------------------
 	//  sleep
 	//-----------------------------------
@@ -43,6 +46,8 @@ namespace mn {
 		vTaskDelay( (secs * 1000) / ((TickType_t) 1000 / configTICK_RATE_HZ));
 		return 0;
 	}
+
+
 
 	//-----------------------------------
 	//  usleep
@@ -98,4 +103,50 @@ namespace mn {
 
 		return 0;
 	}
+
+#endif // 0
+
+	//-----------------------------------
+	//  ndelay
+	//-----------------------------------
+	void ndelay(const timespan_t& req, timespan_t* rem) {
+		struct timeval start, end;
+		// Get time in msecs
+		uint32_t msecs = req.get_total_milliseconds();
+
+		if ( (msecs > 999999999)) {
+			errno = EINVAL; /* Invalid argument */
+			return;
+		}
+
+		gettimeofday(&start, NULL);
+
+		vTaskDelay( req.to_ticks() );
+
+		gettimeofday(&end, NULL);
+
+		uint32_t elapsed = (end.tv_sec - start.tv_sec) * 1000
+							+ ((end.tv_usec - start.tv_usec) / 1000000);
+
+		if(rem != NULL)
+			*rem = timespan_t(elapsed);
+	}
+	unsigned int delay_until( timespan_t& tsPreviousWakeTime, const unsigned int& uiTimeIncrement) {
+		int _ticks = tsPreviousWakeTime.to_ticks();
+		vTaskDelayUntil( (TickType_t*)&_ticks, uiTimeIncrement);
+
+		tsPreviousWakeTime = timespan_t::from_ticks((_ticks));
+
+		errno = EINTR; /* Interrupted system call */
+
+		return _ticks;
+	}
+	//-----------------------------------
+	//  delay
+	//-----------------------------------
+	void delay(const timespan_t& ts) {
+		vTaskDelay( ts.to_ticks() );
+	}
 }
+
+MN_EXTERNC_END

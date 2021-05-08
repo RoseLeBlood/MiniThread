@@ -30,7 +30,6 @@
 namespace mn {
 
 
-
     template<typename T>
     using atomic_ptr            = _atomic_ptr<T*>;
 
@@ -85,6 +84,38 @@ namespace mn {
     using atomic_char32_t	    = _atomic<char32_t>;
     using atomic_wchar_t	    = _atomic<wchar_t>;
     using atomic_sig_t          = _atomic<int>;
+
+	template <typename TAtomicType, TAtomicType TTrue = true, TAtomicType TFalse = false>
+    class basic_atomic_flag  {
+	public:
+		using flag_type = TAtomicType;
+		using reference = TAtomicType&;
+
+		constexpr basic_atomic_flag() noexcept
+			: m_bFlag(0) { }
+
+		constexpr basic_atomic_flag(const flag_type& flag) noexcept
+			: m_bFlag(flag) { }
+
+		basic_atomic_flag(const basic_atomic_flag&) noexcept = delete;
+
+		reference operator=(const reference)          noexcept = delete;
+		reference operator=(const reference) volatile noexcept = delete;
+
+		void clear(memory_order order = memory_order::SeqCst) noexcept {
+			m_bFlag.store(TFalse, order);
+		}
+		flag_type test_and_set(memory_order order = memory_order::SeqCst) noexcept {
+			return m_bFlag.exchange(TTrue, order);
+		}
+		flag_type test(memory_order order = memory_order::SeqCst) const {
+			return m_bFlag.load(order);
+		}
+	private:
+		_atomic<flag_type> m_bFlag;
+    };
+
+    using atomic_flag = basic_atomic_flag<bool>;
 }
 
 

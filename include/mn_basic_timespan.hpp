@@ -55,7 +55,7 @@ namespace mn {
 		/**
 		 * @brief Construct a new time span and initializes it the given values.
 		 */
-		basic_timespan(uint16_t days, uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t microSeconds);
+		basic_timespan(uint16_t days, uint8_t hours, uint8_t minutes, uint8_t seconds, uint16_t microSeconds = 0);
 
 		/**
 		 * @brief Construct a new time span from another time span.
@@ -203,7 +203,7 @@ namespace mn {
 		self_type& assign(struct timeval val);
 	public:
 		static basic_timespan from_ticks(const unsigned int& ticks);
-		time_type to_ticks();
+		time_type to_ticks() const;
 	private:
 		/**
 		 * @brief

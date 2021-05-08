@@ -94,7 +94,7 @@ namespace mn {
 	//-----------------------------------
 	//  to_ticks
 	//-----------------------------------
-	basic_timespan::time_type basic_timespan::to_ticks() {
+	basic_timespan::time_type basic_timespan::to_ticks() const {
 		return m_timeSpan / portTICK_PERIOD_MS;
 	}
 

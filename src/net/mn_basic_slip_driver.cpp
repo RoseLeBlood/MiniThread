@@ -16,9 +16,11 @@
 *<https://www.gnu.org/licenses/>.
 */
 #include "mn_config.hpp"
-#include "net/mn_basic_slip_driver.hpp"
+
 
 #if CONFIG_LWIP_SLIP_SUPPORT
+#include "net/mn_basic_slip_driver.hpp"
+
 namespace mn {
 	namespace net {
 

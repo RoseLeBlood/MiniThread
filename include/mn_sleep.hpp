@@ -31,22 +31,45 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
+#include "mn_basic_timespan.hpp"
+
+MN_EXTERNC_BEGINN
 /**
  * @ingroup base
  */
 
+#define MN_DELAY_SEC(sec)		mn::delay(timespan_t(0,0,0,sec,0))
+#define MN_DELAY_MICROS(ms)		mn::delay(timespan_t(0,0,0,0,ms))
+
 namespace mn {
+
     /**
-     * Delay a given task for a given number of seconds.
+     * Delay a task for a given timespan.
+     * @param ts The amount of time, as timespan, that the calling task should block.
      */
-    unsigned sleep(unsigned int secs);
+    void delay(const timespan_t& ts);
+
     /**
-     * Delay a given task for a given number of micro seconds.
+     * @brief Delay a task until a specified time.
+     * @param tsPreviousWakeTime The time at which the task was last unblocked.
+     *
+     * @param uiTimeIncrement The cycle time period.  The task will be unblocked at
+	 * time tsPreviousWakeTime + uiTimeIncrement.  Calling vTaskDelayUntil with the
+	 * same uiTimeIncrement parameter value will cause the task to execute with
+	 * a fixed interface period.
      */
-    int usleep(useconds_t usec);
+    unsigned int delay_until( timespan_t& tsPreviousWakeTime, const unsigned int& uiTimeIncrement);
     /**
-     * Delay a given task for a given timespec
+     * Delay a task for a given timespan_t and return in to rem the elapsed mircosecs as timespan_t
+     * @param req The amount of time, as timespan, that the calling task should block.
+     * @param[out] rem The elapsed mircosecs as timespan_t
+     *
+     * @note mircosecs > 999999999
      */
-    int nsleep(const struct timespec *req, struct timespec *rem);
+    void ndelay(const timespan_t& req, timespan_t* rem);
+
 }
+
+MN_EXTERNC_END
+
 #endif

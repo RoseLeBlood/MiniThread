@@ -1,32 +1,31 @@
-// *** ADDED BY HEADER FIXUP ***
-#include <string>
-// *** END ***
-/** 
+/**
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2021 Amber-Sophia Schroeck
  *
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
 
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
+ * <https://www.gnu.org/licenses/>.
 */
 
 #ifndef MINLIB_STL_UTILS_H_
 #define MINLIB_STL_UTILS_H_
 
+#include <string.h>
+
 #include "mn_inttokey.hpp"
 #include "../mn_defines.hpp"
 #include "../mn_def.hpp"
 
-#include <string.h>
+
 
 namespace mn {
     namespace internal {
@@ -85,7 +84,7 @@ namespace mn {
             const mn::size_t n = reinterpret_cast<uintptr_t>(last) - reinterpret_cast<uintptr_t>(first);
             memmove(result, first, n);
         }
-		
+
 
         MN_TEMPLATE_FULL_DECL_ONE(typename, T)
         void copy_construct_n(const T* first, mn::size_t n, T* result, int_to_type<false>) {
@@ -165,26 +164,26 @@ namespace mn {
         }
     }
 
-    MN_TEMPLATE_FULL_DECL_ONE(typename, T) 
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct less {
         bool operator()(const T& lhs, const T& rhs) const {
             return lhs < rhs;
         }
 	};
-	MN_TEMPLATE_FULL_DECL_ONE(typename, T) 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct greater {
         bool operator()(const T& lhs, const T& rhs) const {
             return lhs > rhs;
         }
 	};
-	MN_TEMPLATE_FULL_DECL_ONE(typename, T) 
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct equal_to {
         bool operator()(const T& lhs, const T& rhs) const {
             return lhs == rhs;
         }
 	};
-    
-	MN_TEMPLATE_FULL_DECL_ONE(typename, T) 
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     T nexthigher(T k) {
 		k--;
 		for (unsigned int i=1; i< sizeof(T) * 8; i <<= 1)

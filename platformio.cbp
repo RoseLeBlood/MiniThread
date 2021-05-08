@@ -27,6 +27,7 @@
 					<Add directory="include" />
 					<Add directory="include/excp" />
 					<Add directory="include/pointer" />
+					<Add directory="include/allocator" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -49,6 +50,7 @@
 					<Add directory="include" />
 					<Add directory="include/excp" />
 					<Add directory="include/pointer" />
+					<Add directory="include/allocator" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -187,6 +189,8 @@
 		<Unit filename="include/allocator/mn_allocator_object.hpp" />
 		<Unit filename="include/allocator/mn_allocator_stack.hpp" />
 		<Unit filename="include/allocator/mn_allocator_system.hpp" />
+		<Unit filename="include/allocator/mn_allocator_typetraits.hpp" />
+		<Unit filename="include/allocator/mn_basic_allocator.hpp" />
 		<Unit filename="include/atomic/mn_atomic_classes.hpp" />
 		<Unit filename="include/atomic/mn_atomic_flags.hpp" />
 		<Unit filename="include/atomic/mn_atomic_gcc.hpp" />
@@ -210,9 +214,6 @@
 		<Unit filename="include/hash/mn_uuid.hpp" />
 		<Unit filename="include/math/mn_color.hpp" />
 		<Unit filename="include/math/mn_colors.hpp" />
-		<Unit filename="include/memory/mn_basic_mempool.hpp" />
-		<Unit filename="include/memory/mn_basic_mempool_chunk.hpp" />
-		<Unit filename="include/memory/mn_mempool.hpp" />
 		<Unit filename="include/miniThread.hpp" />
 		<Unit filename="include/mn_algorithm.hpp" />
 		<Unit filename="include/mn_allocator.hpp" />
@@ -321,6 +322,7 @@
 		<Unit filename="include/slock/mn_system_lock.hpp" />
 		<Unit filename="include/utils/mn_alignment.hpp" />
 		<Unit filename="include/utils/mn_inttokey.hpp" />
+		<Unit filename="include/utils/mn_nlz.hpp" />
 		<Unit filename="include/utils/mn_random.hpp" />
 		<Unit filename="include/utils/mn_random_lfsr.hpp" />
 		<Unit filename="include/utils/mn_sort.hpp" />
@@ -330,6 +332,7 @@
 		<Unit filename="platformio.layout" />
 		<Unit filename="sdkconfig" />
 		<Unit filename="src/CMakeLists.txt" />
+		<Unit filename="src/allocator/mn_basic_allocator.cpp" />
 		<Unit filename="src/excp/mn_eventgroup_exception.cpp" />
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />
 		<Unit filename="src/hash/mn_uuid.cpp" />
