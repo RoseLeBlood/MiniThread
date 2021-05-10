@@ -24,8 +24,8 @@
 
 namespace mn {
 	namespace memory {
-		using std_allocator_tag { };
-		using nodeleter_allocator_tag { };
+		struct std_allocator_tag { };
+		struct nodeleter_allocator_tag { };
 
 		template<typename TAlloC>
 		struct allocator_traits {
@@ -35,7 +35,7 @@ namespace mn {
 
 		template <class TAlloC>
         struct is_thread_safe_allocator
-        	: mn::integral_constant<bool, !allocator_traits<TAlloC>::is_thread_safe::value> { };
+        	: mn::integral_constant<bool, allocator_traits<TAlloC>::is_thread_safe::value> { };
 
 		namespace internal {
 			template <class TAlloC>
@@ -65,20 +65,20 @@ namespace mn {
 
 		template <class TAlloC>
 		inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment) {
-			return internal::allocate(alloc, size, alignment,
-										typename allocator_traits<TAlloC>::allocator_category);
+			return internal::allocate(alloc, size, alignment, typename allocator_traits<TAlloC>::allocator_category() );
 		}
 
 		template <class TAlloC>
 		inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment) {
 			return internal::deallocate(alloc, address, size, alignment,
-										typename allocator_traits<TAlloC>::allocator_category);
+										typename allocator_traits<TAlloC>::allocator_category() );
 		}
 
 		template <class TAlloC>
 		inline size_t max_alocator_size(const TAlloC& alloc) {
 			return alloc.get_max_alocator_size();
 		}
+
 	}
 }
 

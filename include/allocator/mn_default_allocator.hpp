@@ -1,6 +1,6 @@
 /*
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2021 Amber-Sophia Schroeck
+*Copyright (c) 2018 Amber-Sophia Schroeck
 *
 *The Mini Thread Library is free software; you can redistribute it and/or modify
 *it under the terms of the GNU Lesser General Public License as published by
@@ -15,6 +15,20 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#include "allocator/mn_basic_allocator.hpp"
-#include "allocator/mn_allocator_typetraits.hpp"
-#include "allocator/mn_basic_deleter.hpp"
+#ifndef __MINLIB_DEFAULT_ALLOCATOR_H__
+#define __MINLIB_DEFAULT_ALLOCATOR_H__
+
+#include "../mn_config.hpp"
+
+#include "mn_basic_malloc_allocator.hpp"
+#include "mn_basic_new_allocaor.hpp"
+#include "mn_basic_allocator_stack.hpp"
+
+namespace mn {
+	namespace memory {
+
+		using default_allocator = malloc_allocator<basic_allocator_filter>;
+	}
+}
+
+#endif // __MINLIB_DEFAULT_ALLOCATOR_H__

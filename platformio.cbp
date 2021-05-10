@@ -191,6 +191,14 @@
 		<Unit filename="include/allocator/mn_allocator_system.hpp" />
 		<Unit filename="include/allocator/mn_allocator_typetraits.hpp" />
 		<Unit filename="include/allocator/mn_basic_allocator.hpp" />
+		<Unit filename="include/allocator/mn_basic_allocator_maximal_filter.hpp" />
+		<Unit filename="include/allocator/mn_basic_allocator_stack.hpp" />
+		<Unit filename="include/allocator/mn_basic_caps_allocator.hpp" />
+		<Unit filename="include/allocator/mn_basic_deleter.hpp" />
+		<Unit filename="include/allocator/mn_basic_malloc_allocator.hpp" />
+		<Unit filename="include/allocator/mn_basic_multiheap_allocator.hpp" />
+		<Unit filename="include/allocator/mn_basic_new_allocaor.hpp" />
+		<Unit filename="include/allocator/mn_default_allocator.hpp" />
 		<Unit filename="include/atomic/mn_atomic_classes.hpp" />
 		<Unit filename="include/atomic/mn_atomic_flags.hpp" />
 		<Unit filename="include/atomic/mn_atomic_gcc.hpp" />
@@ -332,6 +340,7 @@
 		<Unit filename="platformio.layout" />
 		<Unit filename="sdkconfig" />
 		<Unit filename="src/CMakeLists.txt" />
+		<Unit filename="src/allocator/default_allocator.cpp" />
 		<Unit filename="src/allocator/mn_basic_allocator.cpp" />
 		<Unit filename="src/excp/mn_eventgroup_exception.cpp" />
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />

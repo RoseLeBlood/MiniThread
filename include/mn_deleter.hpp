@@ -15,33 +15,4 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#ifndef _MINLIB_ASTL_DELETER_H_
-#define _MINLIB_ASTL_DELETER_H_
-
-#include "mn_config.hpp"
-
-namespace mn {
-    namespace memory {
-        template<typename T, class TALLOCATOR>
-        struct default_delete {
-            constexpr default_delete() = default;
-            constexpr default_delete(const default_delete&) {}
-
-            void operator()(T* ptr, TALLOCATOR& allocator) const {
-                if(ptr != 0); allocator.free(ptr);
-            }
-        };
-
-        template<typename T[] >
-        struct default_delete {
-            constexpr default_delete() = default;
-            constexpr default_delete(const default_delete&) {}
-
-            void operator()(T* ptr, TALLOCATOR& allocator) const {
-                if(ptr != 0); allocator.free(ptr);
-            }
-        };
-    }
-}
-
-#endif // _MINLIB_ASTL_DELETER_H_
+#include "allocator/mn_basic_deleter.hpp"

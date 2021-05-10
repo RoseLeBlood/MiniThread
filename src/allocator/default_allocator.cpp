@@ -15,6 +15,11 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
-#include "allocator/mn_basic_allocator.hpp"
-#include "allocator/mn_allocator_typetraits.hpp"
-#include "allocator/mn_basic_deleter.hpp"
+#include "mn_config.hpp"
+
+#include "allocator/mn_default_allocator.hpp"
+
+
+
+
+

@@ -21,39 +21,103 @@
 #include "../mn_config.hpp"
 #include "../mn_typetraits.hpp"
 
+#include "mn_basic_allocator_maximal_filter.hpp"
+
 namespace mn {
 	namespace memory {
 
-		template <class TAllocator>
-		class basic_allocator_debugger {
+		/**
+		 * A a basic filter for a allocater
+		 */
+		class basic_allocator_filter {
 		public:
-			virtual void on_alloc(size_t size) { }
-			virtual void on_dealloc(size_t size) { }
+			bool on_pre_alloc(size_t size, size_t alignment) { return true; }
+			void on_alloc(size_t size, size_t alignment) { }
+
+			bool on_pre_dealloc(size_t size, size_t alignment) { return true; }
+			void on_dealloc(size_t size, size_t alignment) { }
 		};
 
-		template <class TAllocator, class TDebugger = basic_allocator_debugger<TAllocator> >
-		class basic_allocator {
+		/**
+		 * The basic allocater for all allocator impl in this library.
+		 */
+		template <class TAllocator, class TFilter = basic_allocator_filter >
+		class basic_allocator  {
 		public:
 			using allocator_category = typename TAllocator::allocator_category ;
 			using is_thread_safe = typename TAllocator::is_thread_safe ;
+			using filter_type = TFilter;
 
-			using TDebugger::on_alloc;
-			using TDebugger::on_dealloc;
+			using pointer = void*;
 
-			basic_allocator() noexcept  {  }
+			basic_allocator() noexcept  { TAllocator::first();  }
 
-			void* allocate(size_t size, size_t alignment) {
-				auto memory = TAllocator::allocate(size, alignment);
-				this->on_alloc(size);
-				return memory;
+			/**
+			 * @brief malloc() a buffer in a given TAllocator and cheak with the given TFilter
+			 * is this okay to alloc
+			 * @param size		Size of desired buffer.
+			 * @param alignment
+			 * @return Pointer to new memory, or NULL if allocation fails.
+			 */
+			pointer allocate(size_t size, size_t alignment) {
+				pointer _mem = nullptr;
+
+				if(m_fFilter.on_pre_alloc(size)) {
+					_mem = TAllocator::allocate(size, alignment);
+					m_fFilter.on_alloc(size);
+				}
+				return _mem;
 			}
+
+			/**
+			 * @brief malloc() a buffer in a given TAllocator and cheak with the given TFilter
+			 * is this okay to alloc
+			 * @param size The size of the Type
+			 * @param count The count of the array
+			 * @param alignment
+			 * @return Pointer to new memory, or NULL if allocation fails.
+			 */
+			pointer allocate(size_t count, size_t size, size_t alignment) {
+				return allocate(count * size, alignment);
+			}
+
+			/**
+			 * @brief free() a buffer in a given heap.
+			 * @param address The address to free.
+			 * @param alignment
+			 * @param size The size of the Type
+			 */
 			void deallocate(void* address, size_t size, size_t alignment) noexcept {
-				TAllocator::deallocate(address, size, alignment);
-				this->on_dealloc(size);
+				if(m_fFilter.on_pre_dealloc(size)) {
+					TAllocator::deallocate(address, size, alignment);
+					m_fFilter.on_dealloc(size);
+				}
 			}
+
+			/**
+			 * @brief free() a buffer in a given heap.
+			 * @param address The address to free
+			 * @param count The count of the array
+			 * @param size The size of the Type
+			 * @param alignment
+			 */
+			void deallocate(void* address, size_t count, size_t size, size_t alignment) noexcept {
+				size = size * count;
+				if(m_fFilter.on_pre_dealloc(size)) {
+					TAllocator::deallocate(address, size, alignment);
+					m_fFilter.on_dealloc(size);
+				}
+			}
+
+			/**
+			 * @brief Get the maximal size to allocate.
+			 * @return The maximal size to allocate.
+			 */
 			size_t get_max_alocator_size() const noexcept {
 				return TAllocator::get_max_alocator_size();
 			}
+		private:
+			filter_type m_fFilter;
 		};
 
 
