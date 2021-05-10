@@ -182,13 +182,6 @@
 		<Unit filename="README.md" />
 		<Unit filename="STYLE_GUIDE.md" />
 		<Unit filename="configure" />
-		<Unit filename="include/allocator/mn_allactor_multiheap.hpp" />
-		<Unit filename="include/allocator/mn_allocator_buffer.hpp" />
-		<Unit filename="include/allocator/mn_allocator_caps.hpp" />
-		<Unit filename="include/allocator/mn_allocator_interface.hpp" />
-		<Unit filename="include/allocator/mn_allocator_object.hpp" />
-		<Unit filename="include/allocator/mn_allocator_stack.hpp" />
-		<Unit filename="include/allocator/mn_allocator_system.hpp" />
 		<Unit filename="include/allocator/mn_allocator_typetraits.hpp" />
 		<Unit filename="include/allocator/mn_basic_allocator.hpp" />
 		<Unit filename="include/allocator/mn_basic_allocator_maximal_filter.hpp" />

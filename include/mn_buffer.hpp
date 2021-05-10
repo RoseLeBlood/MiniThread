@@ -32,7 +32,7 @@ namespace mn {
 	 * @brief A buffer class that allocates a buffer of a given type and size.
 	 * @note Useful for temporery buffering data.
 	 */
-	template <typename TVALUE, class TALLOCATOR = mn::memory::allocator_system_t>
+	template <typename TVALUE, class TALLOCATOR = memory::default_allocator>
 	class buffer : MN_ONCOPYABLE_CLASS {
 	public:
 		using self_type = buffer<TVALUE, TALLOCATOR>;
@@ -291,7 +291,9 @@ namespace mn {
 		 *
 		 */
 		void init_internal_buffer() {
-			if(m_sSize > 0) m_allocator.calloc(m_sSize, sizeof(value_type), &m_pRawBuffer);
+			if(m_sSize > 0)
+				m_pRawBuffer = m_allocator.allocate(m_sSize, sizeof(value_type),
+													mn::aligned_as<value_type>::res );
 		}
 
 		/**
@@ -300,14 +302,16 @@ namespace mn {
 		 */
 		void init_internal_buffer(const pointer buffer) {
 			if(m_sSize > 0) {
-				m_pRawBuffer = m_allocator.alloc(m_sSize * sizeof(value_type), &m_pRawBuffer);
+				m_pRawBuffer = m_allocator.allocate(m_sSize, sizeof(value_type),
+													mn::aligned_as<value_type>::res);
+
 				memcpy(m_pRawBuffer, buffer, m_sUsed * sizeof(value_type));
 			}
 		}
 
 		void destroy_internal_buffer() {
 			if(m_bOwnMem && (m_pRawBuffer != 0))
-				m_allocator.free(m_pRawBuffer);
+				m_allocator.deallocate(m_pRawBuffer, sizeof(value_type), mn::aligned_as<value_type>::res);
 		}
 	private:
 

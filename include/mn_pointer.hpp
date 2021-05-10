@@ -63,7 +63,7 @@ namespace mn {
         return lock_ptr_ex<T, TLOCK> (v, m);
     }
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
+    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
     inline lock_ptr_ex<T, LockType_t>  lock_object(volatile T* v, LockType_t& m) {
         return lock_ptr_ex<T, LockType_t> (v, m);
     }
@@ -81,17 +81,12 @@ namespace mn {
          * @param value The value to hold
          * @return The new pointer class with the given value
          */
-        MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR)
+        MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
         inline T* make_buffer(T value) {
-            TALLOCATOR ac;
-            T* a = (T*)ac.alloc(sizeof(T)); assert(a != NULL); *a = value;
-            return a;
-        }
-
-        MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-        inline T* make_buffer(T value) {
-            memory::default_allocator_t ac;
-            T* a = (T*)ac.alloc(sizeof(T)); assert(a != NULL); *a = value;
+            TALLOCATOR ac; ac();
+            T* a = (T*)ac.allocate(sizeof(T), mn::aligned_as<T>::res);
+            assert(a != NULL);
+            *a = value;
             return a;
         }
     }
@@ -99,38 +94,38 @@ namespace mn {
 
 
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline shared_ptr<T> make_shared(Args&&... args) {
         return shared_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    template<typename T, class TInterface, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    template<typename T, class TInterface, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline clone_ptr_ex<T, TInterface> make_clone(Args&&... args) {
         return clone_ptr_ex<T, TInterface>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline clone_ptr<T> make_clone(Args&&... args) {
         return clone_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline scoped_ptr<T> make_scoped(Args&&... args) {
         return scoped_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline save_ptr<T> make_save(Args&&... args) {
         return save_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
     inline weak_ptr<T>  make_weak(Args&&... args) {
         return weak_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
     }
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator_t >
+    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
 	inline auto_ptr<T> make_auto(Args&&... args) {
 		return auto_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
 	}
@@ -143,7 +138,7 @@ namespace mn {
     inline linked_ptr<T>  make_link(const linked_ptr<U>& value) {
         return linked_ptr<T>(value);
     }
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator_t)
+    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
     inline linked_ptr<T>  make_link(T* value) {
         return linked_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
     }
