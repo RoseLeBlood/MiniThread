@@ -26,6 +26,7 @@
     #define BASE_ATOMIC_TYPE basic_atomic_gcc
     #define BASE_ATOMIC_SMART_POINTER basic_smart_pointer_atomic_gcc
 
+    #undef ATOMIC_VAR_INIT
     #define	ATOMIC_VAR_INIT(value)		{ .__tValue = (value) }
     #define	atomic_init(obj, value)		((void)((obj)->__tValue = (value)))
     #define ATOMIC_FLAG_INIT            { 0 }

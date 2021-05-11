@@ -40,107 +40,138 @@ namespace mn {
     //----------------------------------------
     // USINGS
     //----------------------------------------
-    MN_TEMPLATE_USING_ONE(clone_ptr, pointer::basic_clone_ptr, typename, T);
-    MN_TEMPLATE_USING_TWO(clone_ptr_ex, pointer::basic_clone_ptr, typename, T, class, TInterface);
-    MN_TEMPLATE_USING_ONE(shared_ptr, pointer::basic_shared_ptr, typename, T);
-    MN_TEMPLATE_USING_ONE(scoped_ptr, pointer::basic_scoped_ptr, typename, T);
-    MN_TEMPLATE_USING_ONE(save_ptr, pointer::basic_save_ptr, typename, T);
-    MN_TEMPLATE_USING_ONE(lock_ptr, pointer::basic_save_ptr, typename, T);
-    MN_TEMPLATE_USING_TWO(lock_ptr_ex, pointer::basic_lock_ptr, typename, T, class, TLOCK);
-    MN_TEMPLATE_USING_ONE(weak_ptr, pointer::basic_weak_ptr, typename, T);
-    MN_TEMPLATE_USING_ONE(linked_ptr, pointer::basic_linked_ptr, typename, T);
+    MN_TEMPLATE_USING_ONE(clone_ptr, 	pointer::basic_clone_ptr, 	typename, T);
+    MN_TEMPLATE_USING_TWO(clone_ptr_ex, pointer::basic_clone_ptr, 	typename, T, class, TInterface);
+    MN_TEMPLATE_USING_ONE(shared_ptr, 	pointer::basic_shared_ptr, 	typename, T);
+    MN_TEMPLATE_USING_ONE(scoped_ptr, 	pointer::basic_scoped_ptr, 	typename, T);
+    MN_TEMPLATE_USING_ONE(save_ptr, 	pointer::basic_save_ptr, 	typename, T);
+    MN_TEMPLATE_USING_ONE(lock_ptr, 	pointer::basic_save_ptr, 	typename, T);
+    MN_TEMPLATE_USING_TWO(lock_ptr_ex, 	pointer::basic_lock_ptr, 	typename, T, class, TLOCK);
+    MN_TEMPLATE_USING_ONE(weak_ptr, 	pointer::basic_weak_ptr, 	typename, T);
+    MN_TEMPLATE_USING_ONE(linked_ptr, 	pointer::basic_linked_ptr, 	typename, T);
 
-    MN_TEMPLATE_USING(any_ptr, pointer::basic_any_ptr<void>);
-
-    MN_TEMPLATE_USING_ONE(auto_ptr, pointer::basic_auto_ptr, typename, T);
+    MN_TEMPLATE_USING(any_ptr, 			pointer::basic_any_ptr<void>		   );
+    MN_TEMPLATE_USING_ONE(auto_ptr, 	pointer::basic_auto_ptr, 	typename, T);
 
     //----------------------------------------
     // LOCK OKJECT
     //----------------------------------------
 
+    /**
+     * @brief
+     */
     MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TLOCK)
     inline lock_ptr_ex<T, TLOCK>  lock_object(volatile T* v, TLOCK& m) {
         return lock_ptr_ex<T, TLOCK> (v, m);
     }
 
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
+    /**
+     * @brief
+     */
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline lock_ptr_ex<T, LockType_t>  lock_object(volatile T* v, LockType_t& m) {
         return lock_ptr_ex<T, LockType_t> (v, m);
     }
 
-    //----------------------------------------
-    // MAKE
-    //----------------------------------------
-    namespace internal {
-        /**
-         * @brief Make the given pointer
-         *
-         * @tparam TPOINTER The returned pointer class
-         * @tparam T Value type of the pointer
-         * @tparam TALLOCATOR The using allocator to create the raw pointer for the class.
-         * @param value The value to hold
-         * @return The new pointer class with the given value
-         */
-        MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
-        inline T* make_buffer(T value) {
-            TALLOCATOR ac; ac();
-            T* a = (T*)ac.allocate(sizeof(T), mn::aligned_as<T>::res);
-            assert(a != NULL);
-            *a = value;
-            return a;
-        }
-    }
 
-
-
-
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make a shared pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, typename... Args >
     inline shared_ptr<T> make_shared(Args&&... args) {
-        return shared_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return shared_ptr<T>(new T (mn::forward<Args>(args)...) );
     }
 
-    template<typename T, class TInterface, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make an clone pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, class TInterface, typename... Args >
     inline clone_ptr_ex<T, TInterface> make_clone(Args&&... args) {
-        return clone_ptr_ex<T, TInterface>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return clone_ptr_ex<T, TInterface>(new T (mn::forward<Args>(args)...) );
     }
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make a clone pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, typename... Args >
     inline clone_ptr<T> make_clone(Args&&... args) {
-        return clone_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return clone_ptr<T>(new T (mn::forward<Args>(args)...) );
     }
 
-
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+	/**
+     * @brief Make a scoped pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, typename... Args >
     inline scoped_ptr<T> make_scoped(Args&&... args) {
-        return scoped_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return scoped_ptr<T>(new T (mn::forward<Args>(args)...) );
     }
 
-     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make a save pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, typename... Args >
     inline save_ptr<T> make_save(Args&&... args) {
-        return save_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return save_ptr<T>(new T (mn::forward<Args>(args)...) );
     }
 
-     template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make a weak pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+	template<typename T, typename... Args >
     inline weak_ptr<T>  make_weak(Args&&... args) {
-        return weak_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+        return weak_ptr<T>(new T (mn::forward<Args>(args)...) );
     }
 
-    template<typename T, typename... Args, class TALLOCATOR = memory::default_allocator >
+    /**
+     * @brief Make a auto pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    template<typename T, typename... Args >
 	inline auto_ptr<T> make_auto(Args&&... args) {
-		return auto_ptr<T>(internal::make_buffer<T, TALLOCATOR>(mn::forward<Args>(args)...));
+		return auto_ptr<T>(new T (mn::forward<Args>(args)...) );
 	}
 
+	/**
+     * @brief Make a linked pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline linked_ptr<T>  make_link(const linked_ptr<T>& value) {
         return linked_ptr<T>(value);
     }
+
+    /**
+     * @brief Make a linked pointer from a other linked pointer type
+     * @tparam T Value type of the pointer.
+     * @tparam U Value of the type of td
+     */
     MN_TEMPLATE_FULL_DECL_TWO(typename, T, typename, U)
     inline linked_ptr<T>  make_link(const linked_ptr<U>& value) {
         return linked_ptr<T>(value);
     }
-    MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TALLOCATOR = memory::default_allocator)
+
+    /**
+     * @brief Make a link pointer
+     * @tparam T Value type of the pointer.
+     * @tparam Args Argument for the object.
+     */
+    MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline linked_ptr<T>  make_link(T* value) {
-        return linked_ptr<T>(internal::make_buffer<T, TALLOCATOR>(value));
+        return linked_ptr<T>(value);
     }
 
 
@@ -149,20 +180,33 @@ namespace mn {
     // SWAP
     //----------------------------------------
 
+    /**
+     * @brief swap a scoped pointer.
+     */
     MN_TEMPLATE_FULL_DECL_ONE(class, T)
     inline void swap(scoped_ptr<T> & a, scoped_ptr<T> & b) {
         a.swap(b);
     }
 
+    /**
+     * @brief swap a save pointer.
+     */
     MN_TEMPLATE_FULL_DECL_ONE(class, T)
     inline void swap(save_ptr<T> & a, save_ptr<T> & b) {
         a.swap(b);
     }
 
+    /**
+     * @brief swap a weak pointer.
+     */
     MN_TEMPLATE_FULL_DECL_ONE(class, T)
     inline void swap(weak_ptr<T> & a, weak_ptr<T> & b) {
         a.swap(b);
     }
+
+    /**
+     * @brief swap a auto pointer.
+     */
     MN_TEMPLATE_FULL_DECL_ONE(class, T)
 	inline void swap(auto_ptr<T>& a, auto_ptr<T>& b) {
 		a.swap(b);

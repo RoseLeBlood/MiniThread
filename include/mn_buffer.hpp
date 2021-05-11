@@ -314,7 +314,6 @@ namespace mn {
 				m_allocator.deallocate(m_pRawBuffer, sizeof(value_type), mn::aligned_as<value_type>::res);
 		}
 	private:
-
 		size_type m_sSize;
 		size_type m_sUsed;
 		pointer   m_pRawBuffer;

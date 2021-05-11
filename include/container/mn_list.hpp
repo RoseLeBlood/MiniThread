@@ -78,7 +78,7 @@ namespace mn {
             using value_type = T;
             using allocator_type = TAllocator;
             using size_type = mn::size_t;
-            using node_type = basic_node<T, TAllocator>;
+            using node_type = basic_node<T>;
 
             using iterator = list_node_iterator<node_type*, const value_type*, const value_type&>;
             using const_iterator = list_node_iterator<const node_type*, const value_type*, const value_type&>;
@@ -219,15 +219,17 @@ namespace mn {
             }
         private:
             node_type* construct_node(const T& value) {
-                //void* mem = m_allocator.alloc(NodeSize);
-                //return new (mem) node(value);
-                return new node_type(value);
+                void* mem = m_allocator.allocate(NodeSize, mn::alignment_for(NodeSize) );
+                return new (mem) node_type(value);
             }
             void destruct_node(node_type* n) {
-                //n->~node_type(); m_allocator.free(n);
-                if(n) delete n;
-            }
+            	if(n == nullptr) return;
 
+                n->~node_type();
+				m_allocator.deallocate(n, NodeSize, mn::alignment_for(NodeSize));
+				n = nullptr;
+            }
+		private:
             allocator_type  m_allocator;
             node_type       m_root;
         };
@@ -237,7 +239,7 @@ namespace mn {
          * @tparam T The holding type for the value
          * @tparam TAllocator The using allocator
          */
-        template<typename T , class TAllocator =  memory::default_allocator_t>
+        template<typename T , class TAllocator =  memory::default_allocator>
         using list = basic_list<T, TAllocator >;
 
         /**

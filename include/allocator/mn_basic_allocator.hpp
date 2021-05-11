@@ -19,7 +19,10 @@
 #define __MINILIB_BASIC_ALLOCATOR_H__
 
 #include "../mn_config.hpp"
+
+#include "../mn_functional.hpp"
 #include "../mn_typetraits.hpp"
+#include "../utils/mn_alignment.hpp"
 
 #include "mn_basic_allocator_maximal_filter.hpp"
 
@@ -72,14 +75,25 @@ namespace mn {
 			/**
 			 * @brief malloc() a buffer in a given TAllocator and cheak with the given TFilter
 			 * is this okay to alloc
+			 * @param size		Size of desired buffer.
+			 * @return Pointer to new memory, or NULL if allocation fails.
+			 */
+			pointer allocate(size_t size) {
+				return allocate(size, mn::alignment_for(size));
+			}
+
+			/**
+			 * @brief malloc() a buffer in a given TAllocator and cheak with the given TFilter
+			 * is this okay to alloc
 			 * @param size The size of the Type
 			 * @param count The count of the array
 			 * @param alignment
 			 * @return Pointer to new memory, or NULL if allocation fails.
 			 */
-			pointer allocate(size_t count, size_t size, size_t alignment) {
-				return allocate(count * size, alignment);
+			pointer allocate(size_t count, size_t size, size_t alignment = 0) {
+				return allocate(count * size, (alignment == 0) ? mn::alignment_for(size) : alignment);
 			}
+
 
 			/**
 			 * @brief free() a buffer in a given heap.
@@ -87,11 +101,20 @@ namespace mn {
 			 * @param alignment
 			 * @param size The size of the Type
 			 */
-			void deallocate(void* address, size_t size, size_t alignment) noexcept {
+			void deallocate(pointer address, size_t size, size_t alignment) noexcept {
 				if(m_fFilter.on_pre_dealloc(size)) {
 					TAllocator::deallocate(address, size, alignment);
 					m_fFilter.on_dealloc(size);
 				}
+			}
+
+			/**
+			 * @brief free() a buffer in a given heap.
+			 * @param address The address to free.
+			 * @param size The size of the Type
+			 */
+			void deallocate(pointer address, size_t size) noexcept {
+				deallocate(address, size, mn::alignment_for(size));
 			}
 
 			/**
@@ -101,12 +124,40 @@ namespace mn {
 			 * @param size The size of the Type
 			 * @param alignment
 			 */
-			void deallocate(void* address, size_t count, size_t size, size_t alignment) noexcept {
+			void deallocate(pointer address, size_t count, size_t size, size_t alignment) noexcept {
 				size = size * count;
 				if(m_fFilter.on_pre_dealloc(size)) {
 					TAllocator::deallocate(address, size, alignment);
 					m_fFilter.on_dealloc(size);
 				}
+			}
+
+			/**
+			 * @brief Construct a object from allocated impl.
+			 * @tparam Type The type of the object.
+			 * @param Args The arguments for the constructer of the object.
+			 */
+			template <class Type, typename... Args>
+			Type* construct(Args&&... args) {
+				auto _size = sizeof(Type);
+
+				pointer _mem = allocate(_size, mn::alignment_for(_size) );
+				return new (_mem) Type(mn::forward<Args>(args)...);
+			}
+
+			/**
+			 * @brief Deconstruct a object (call deconstructor) and free the memory
+			 * @tparam Type The type of the object.
+			 * @param address The pointer of the object to be deconstruct.
+			 */
+			template <class Type>
+			void destroy(Type* address) noexcept {
+				if(address == nullptr) return;
+
+				auto _size = sizeof(Type);
+
+				if(mn::is_class<Type>::value) address->~Type();
+				deallocate(address, _size, mn::alignment_for(_size));
 			}
 
 			/**

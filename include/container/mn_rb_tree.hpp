@@ -49,9 +49,8 @@ namespace mn {
             black
         };
 
-        template<typename TVALUE, class TAllocator>
+        template<typename TVALUE>
         struct rb_tree_node {
-            MNALLOC_OBJECT(TAllocator);
 
             rb_tree_node() { }
             rb_tree_node(rb_tree_node* node)
@@ -78,10 +77,9 @@ namespace mn {
             TVALUE                  value;
             rb_tree_color           color;
         };
-        MNALLOC_OBJECT_DTWO(rb_tree_node, typename, TVALUE, class, TAllocator );
 
-        template<typename TVALUE, class TAllocator>
-        void swap(rb_tree_node<TVALUE, TAllocator>& a, rb_tree_node<TVALUE, TAllocator>& b) {
+        template<typename TVALUE>
+        void swap(rb_tree_node<TVALUE>& a, rb_tree_node<TVALUE>& b) {
             a.swap(b);
         }
 
@@ -93,7 +91,9 @@ namespace mn {
             using allocator_type = TAllocator;
             using self_type = base_rb_tree<TTreeTraits, TAllocator>;
             using size_type = mn::size_t;
-            using node_type = rb_tree_node<value_type, TAllocator>;
+            using node_type = rb_tree_node<value_type>;
+
+            static const size_type NodeSize = sizeof(node_type);
 
             typedef void (*TravFunc)(node_type* n, size_type left, size_type depth);
 
@@ -109,6 +109,7 @@ namespace mn {
                 clear();
             }
 
+
             node_type* insert(const value_type& v) {
                 node_type* iter(m_root);
                 node_type* parent(&ms_sentinel);
@@ -123,7 +124,9 @@ namespace mn {
                             return iter;
                 }
 
-                node_type* new_node = new node_type();
+                node_type* new_node = construct_node();
+                if(new_node == nullptr) return nullptr;
+
                 new_node->color = rb_tree_color::red;
                 new_node->value = v;
                 new_node->left  = &ms_sentinel;
@@ -332,7 +335,7 @@ namespace mn {
                     if (n->right != &ms_sentinel) free_node(n->right, true);
                 }
                 if (n != &ms_sentinel) {
-                    delete n;
+                    destruct_node(n) ;
                 }
             }
 
@@ -474,6 +477,18 @@ namespace mn {
                 }
                 iter->color = rb_tree_color::black;
             }
+		private:
+            node_type* construct_node() {
+            	void* mem = m_allocator.allocate(NodeSize, mn::alignment_for(NodeSize) );
+                return new (mem) node_type();
+            }
+            void destruct_node(node_type* n) {
+            	if(n == nullptr) return;
+
+                n->~node_type();
+				m_allocator.deallocate(n, NodeSize, mn::alignment_for(NodeSize));
+				n = nullptr;
+            }
         private:
             node_type*              m_root;
             size_type               m_size;
@@ -488,7 +503,7 @@ namespace mn {
 
 
 
-        template<typename TKey, class TAllocator>
+        template<typename TKey, class TAllocator = memory::default_allocator>
         using rb_tree = base_rb_tree<internal::rb_tree_traits<TKey>, TAllocator>;
     }
 }
