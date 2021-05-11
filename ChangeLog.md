@@ -1,6 +1,11 @@
 # Changelog
 
-## Versoin 2.28.3098 März 2021 (unstable beta)
+## Version 2.29.8906 Mai 2021 (unstable beta)
++ update mn::container and mn_buffer now support the new allocator system
+
+
+
+## Versoin 2.28.3098 April 2021 (unstable beta)
 + add atomic_counter class
 + task: a atomic_counter create a new task id
 + add atomic counter
