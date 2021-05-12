@@ -2,6 +2,7 @@
 
 ## Version 2.29.8906 Mai 2021 (unstable beta)
 + update mn::container and mn_buffer now support the new allocator system
++ add allocator_typetraits
 
 
 
