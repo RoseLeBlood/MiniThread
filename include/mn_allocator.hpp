@@ -20,6 +20,10 @@
 #define _MINLIB_BASIC_ALLOCATOR_H_
 
 #include "mn_config.hpp"
+
+#include "allocator/mn_allocator_typetraits.hpp"
 #include "allocator/mn_default_allocator.hpp"
+
+
 
 #endif // _MINLIB_BASIC_ALLOCATOR_H_

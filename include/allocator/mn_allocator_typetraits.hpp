@@ -27,17 +27,27 @@ namespace mn {
 		struct std_allocator_tag { };
 		struct nodeleter_allocator_tag { };
 
-		template<typename TAlloC>
-		struct allocator_traits {
-			using allocator_category = typename TAlloC::allocator_category ;
-			using is_thread_safe = typename TAlloC::is_thread_safe ;
-		};
-
-		template <class TAlloC>
-        struct is_thread_safe_allocator
-        	: mn::integral_constant<bool, allocator_traits<TAlloC>::is_thread_safe::value> { };
-
 		namespace internal {
+
+			template<typename TAlloC>
+			struct allocator_traits {
+				using allocator_type = TAlloC ;
+				using value_type = typename allocator_type::value_type;
+				using pointer = typename allocator_type::pointer;
+				using const_pointer = typename allocator_type::const_pointer;
+				using difference_type = typename allocator_type::difference_type;
+				using size_type = typename allocator_type::size_type;
+
+
+				using allocator_category = typename TAlloC::allocator_category ;
+				using is_thread_safe = typename TAlloC::is_thread_safe ;
+			};
+
+			template <class TAlloC>
+			struct is_thread_safe_allocator
+				: mn::integral_constant<bool, allocator_traits<TAlloC>::is_thread_safe::value> { };
+
+
 			template <class TAlloC>
 			inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment,
 								  mn::memory::std_allocator_tag) {
@@ -63,21 +73,46 @@ namespace mn {
 
 		} // internal
 
-		template <class TAlloC>
-		inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment) {
-			return internal::allocate(alloc, size, alignment, typename allocator_traits<TAlloC>::allocator_category() );
-		}
 
-		template <class TAlloC>
-		inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment) {
-			return internal::deallocate(alloc, address, size, alignment,
-										typename allocator_traits<TAlloC>::allocator_category() );
-		}
+		/*
+		 * @brief The default specialization of the allocator_traits for a allocator.
+		 * Any specialization must provide the same interface.
+         */
+        template <class TAllocator>
+        class allocator_traits {
+		public:
+			using allocator_type = typename internal::allocator_traits<TAllocator>::allocator_type;
+			using pointer = typename internal::allocator_traits<TAllocator>::pointer;
+			using size_type = typename internal::allocator_traits<TAllocator>::size_type;
 
-		template <class TAlloC>
-		inline size_t max_alocator_size(const TAlloC& alloc) {
-			return alloc.get_max_alocator_size();
-		}
+			static pointer allocate_node(allocator_type& state, size_type size, size_type alignment) {
+				return state.allocate(size, alignment);
+			}
+
+			static pointer allocate_array(allocator_type& state, size_type count, size_type size,
+                                          size_type alignment) {
+				return state.allocate(count, size, alignment);
+			}
+
+			static void deallocate_node(allocator_type& state, pointer node, size_type size,
+                                        size_type alignment) noexcept {
+            	state.deallocate(node, size, alignment);
+			}
+			static void deallocate_array(allocator_type& state, pointer node, size_type count,
+											size_type size, size_type alignment) noexcept {
+            	state.deallocate(node, count, size, alignment);
+			}
+
+			static size_type max_node_size(const allocator_type& state) {
+				return size_t(-1);
+			}
+			static size_type max_array_size(const allocator_type& state) {
+				return size_t(-1);
+			}
+			static size_type max_alignment(const allocator_type& state) {
+				return mn::max_alignment;
+			}
+        };
 
 	}
 }

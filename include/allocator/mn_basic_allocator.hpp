@@ -44,14 +44,18 @@ namespace mn {
 		/**
 		 * The basic allocater for all allocator impl in this library.
 		 */
-		template <class TAllocator, class TFilter = basic_allocator_filter >
+		template <class TAllocator, class TFilter = basic_allocator_filter>
 		class basic_allocator  {
 		public:
 			using allocator_category = typename TAllocator::allocator_category ;
 			using is_thread_safe = typename TAllocator::is_thread_safe ;
 			using filter_type = TFilter;
 
+			using value_type = void;
 			using pointer = void*;
+			using const_pointer = const void*;
+			using difference_type = mn::ptrdiff_t;
+			using size_type = size_t;
 
 			basic_allocator() noexcept  { TAllocator::first();  }
 
@@ -167,6 +171,7 @@ namespace mn {
 			size_t get_max_alocator_size() const noexcept {
 				return TAllocator::get_max_alocator_size();
 			}
+
 		private:
 			filter_type m_fFilter;
 		};

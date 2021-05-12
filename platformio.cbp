@@ -252,6 +252,7 @@
 		<Unit filename="include/mn_iterator_pair.hpp" />
 		<Unit filename="include/mn_itimer.hpp" />
 		<Unit filename="include/mn_lock.hpp" />
+		<Unit filename="include/mn_memory.hpp" />
 		<Unit filename="include/mn_micros.hpp" />
 		<Unit filename="include/mn_msg_task.hpp" />
 		<Unit filename="include/mn_mutex.hpp" />
