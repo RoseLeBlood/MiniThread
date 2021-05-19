@@ -20,8 +20,8 @@
 
 #include "../mn_config.hpp"
 
-#include "mn_algorithm.hpp"
-#include "mn_base_ptr.hpp"
+#include "../mn_algorithm.hpp"
+#include "../mn_def.hpp"
 
 namespace mn {
 	 namespace pointer {
@@ -32,9 +32,10 @@ namespace mn {
 	 	 *
 	 	 */
 		template <typename T>
-		class basic_auto_ptr :  pointer_ptr<T> {
+		class basic_auto_ptr {
 		public:
 			using value_type = T;
+			using element_type = T;
 			using const_value_type = const value_type;
             using pointer = T*;
             using reference = T&;

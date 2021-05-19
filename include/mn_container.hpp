@@ -27,5 +27,7 @@
 #include "container/mn_queue.hpp"
 #include "container/mn_rb_tree.hpp"
 
+#include "container/mn_array.hpp"
+
 
 #endif

@@ -535,6 +535,13 @@
     #define MN_THREAD_CONFIG_USE_TRACE configUSE_TRACE_FACILITY
 #endif
 
+#if defined(__has_builtin)
+	#define MN_THREAD_CONFIG_HAS_BUILTIN 	MN_THREAD_CONFIG_YES
+#else
+	#define MN_THREAD_CONFIG_HAS_BUILTIN 	MN_THREAD_CONFIG_NO
+#endif // defined
+
+
 #include "mn_defines.hpp"
 
 

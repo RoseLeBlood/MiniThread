@@ -18,40 +18,37 @@
 #ifndef MINLIB_22d7d658_9601_4b2d_afb1_c4b43d387f33_H_
 #define MINLIB_22d7d658_9601_4b2d_afb1_c4b43d387f33_H_
 
-#include "../mn_def.hpp"
+#include "../mn_config.hpp"
+
 #include "../mn_algorithm.hpp"
-#include "mn_atomic.hpp"
+#include "../mn_def.hpp"
+#include "../utils/mn_addressof.hpp"
 
 namespace mn {
     namespace pointer {
 
-        template <typename T>
-        struct pointer_ptr {
-            using value_type = T;
-            using reference = T&;
-            using const_value_type = const value_type;
-            using pointer = value_type*;
+        template <class TPR>
+        struct smart_pointer_traits {
+            using value_type = typename TPR::value_type;
+            using element_type = typename TPR::element_type;
+            using reference = typename TPR::reference;
+            using const_value_type = typename TPR::const_value_type;
+            using pointer = typename TPR::pointer;
 
-           /* pointer_ptr(const pointer _pValue) : __ptr(_pValue) { }
-
-            pointer get() const {
-		        return static_cast<T*>(__ptr);
-	        }
-
-            pointer operator->() const {
-                assert(get() != 0);
-                return this->get();
-            }
-            const_value_type& operator*() {
-                assert(get() != 0);
-                return *this->get();
-            }
-            operator bool() {
-                return __ptr != 0;
-            }
-
-            pointer __ptr;*/
+            static inline element_type* to_address(const TPR& _pPtr) noexcept {
+        		return mn::addressof<element_type>(_pPtr.get()); }
         };
+
+        template <class TPR>
+        inline typename smart_pointer_traits<TPR>::pointer get_pointer(const TPR& _pPtr) {
+            return _pPtr.get(); }
+
+		template <class TPR>
+        inline bool is_null(const TPR& _pPtr) {
+            return _pPtr.get() == nullptr; }
+
+
+
     }
 }
 

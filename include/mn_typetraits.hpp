@@ -35,17 +35,112 @@ namespace mn {
     using  true_type = integral_constant<bool, true>;
     using false_type =  integral_constant<bool, false> ;
 
+    template<typename>
+    struct is_const : public false_type { };
+
+    template<typename _Tp>
+    struct is_const<_Tp const>  : public true_type { };
+
+	/// is_volatile
+	template<typename>
+	struct is_volatile : public false_type { };
+
+	template<typename _Tp>
+	struct is_volatile<_Tp volatile> : public true_type { };
+
+
+
+	/// is_empty
+	template<typename _Tp>
+	struct is_empty : public integral_constant<bool, __is_empty(_Tp)> { };
+
+
     template<typename T>
     struct is_enum : public integral_constant<bool, __is_enum(T)> { };
 
     template<typename T>
     struct is_union : public integral_constant<bool, __is_union(T)> { };
 
-    template<typename T> struct is_class : public integral_constant<bool, __is_class(T)> { };
-    template<typename> struct is_function : public false_type { };
-
     template<typename T>
-    struct is_empty : public integral_constant<bool, __is_empty(T)> { };
+    struct is_class : public integral_constant<bool, __is_class(T)> { };
+
+    template<typename>
+    struct is_function;
+
+    template<typename>
+    struct is_function : public false_type { };
+
+    template<typename T, typename... Args>
+    struct is_function<T(Args...)> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......)> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) volatile> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) volatile &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) volatile &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) volatile> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) volatile &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) volatile &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const volatile> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const volatile &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args...) const volatile &&> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const volatile> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const volatile &> : public true_type { };
+
+	template<typename T, typename... Args>
+	struct is_function<T(Args......) const volatile &&> : public true_type { };
 
     template<typename T>
     struct is_abstract : public integral_constant<bool, __is_abstract(T)> { };
@@ -58,6 +153,18 @@ namespace mn {
 
     template<typename T>
     struct is_pod : public integral_constant<bool, __is_pod(T)> { };
+
+    /// is_trivial
+	template<typename _Tp>
+	struct is_trivial : public integral_constant<bool, __is_trivial(_Tp)> { };
+
+	// is_trivially_copyable
+  	template<typename _Tp>
+    struct is_trivially_copyable : public integral_constant<bool, __is_trivially_copyable(_Tp)>  { };
+
+	/// is_standard_layout
+	template<typename _Tp>
+	struct is_standard_layout : public integral_constant<bool, __is_standard_layout(_Tp)> { };
 
 
 
@@ -106,28 +213,94 @@ namespace mn {
     struct is_floating_point<float> : public integral_constant<bool, true> { };
 
     template<>
-    struct is_floating_point<double> : public integral_constant<bool, true> { };
+    struct is_floating_point<double>
+    	: public integral_constant<bool, true> { };
+
+	 /// is_lvalue_reference
+  	template<typename>
+    struct is_lvalue_reference : public false_type { };
+
+  	template<typename _Tp>
+    struct is_lvalue_reference<_Tp&> : public true_type { };
+
+    /// is_rvalue_reference
+  	template<typename>
+    struct is_rvalue_reference : public false_type { };
+
+  	template<typename _Tp>
+    struct is_rvalue_reference<_Tp&&> : public true_type { };
 
     template<typename T>
-    struct is_pointer : public integral_constant<bool, false> { };
+    struct is_pointer
+    	: public integral_constant<bool, false> { };
 
     template<typename T>
-    struct is_pointer<T*> : public integral_constant<bool, true> { };
+    struct is_pointer<T*>
+    	: public integral_constant<bool, true> { };
 
     template<typename T>
-    struct is_fundamental : public integral_constant<bool, is_integral<T>::value || is_rational<T>::value> { };
+    struct is_fundamental
+    	: public integral_constant<bool, is_integral<T>::value || is_rational<T>::value> { };
 
     template<typename T>
-    struct has_trivial_constructor : public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
+    struct has_trivial_constructor
+    	: public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
 
     template<typename T>
-    struct has_trivial_copy : public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
+    struct has_trivial_copy
+    	: public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
 
     template<typename T>
-    struct has_trivial_assign : public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
+    struct has_trivial_assign
+    	: public integral_constant<bool, is_fundamental<T>::value | is_pointer<T>::value | is_pod<T>::value> { };
 
     template<typename T>
-    struct has_trivial_destructor : public integral_constant<bool, is_fundamental<T>::value || is_pointer<T>::value || is_pod<T>::value> { };
+    struct has_trivial_destructor
+    	: public integral_constant<bool, is_fundamental<T>::value || is_pointer<T>::value || is_pod<T>::value> { };
+
+	template<typename T>
+	struct is_reference
+		: public integral_constant<bool, is_lvalue_reference<T>::value | is_rvalue_reference<T>::value> { };
+
+	/// is_arithmetic
+	template<typename T>
+	struct is_arithmetic
+		: public integral_constant< bool, !(is_integral<T>::value | is_floating_point<T>::value) > { };
+
+	/// is_object
+	template<typename T>
+	struct is_object
+		: public integral_constant< bool, ! (is_function<T>::value |  is_reference<T>::value |
+											is_void<T>::value) > { };
+
+	namespace internal {
+		template<typename _Tp, bool = is_arithmetic<_Tp>::value >
+    	struct is_signed_help : public false_type { };
+
+		template<typename _Tp>
+		struct is_signed_help<_Tp, true>
+			: public integral_constant<bool, _Tp(-1) < _Tp(0)> { };
+	}
+
+
+	/// is_signed
+  	template<typename _Tp>
+    struct is_signed
+    	: public internal::is_signed_help <_Tp>::value  { };
+
+	/// is_unsigned
+	template<typename _Tp>
+    struct is_unsigned
+    	: public integral_constant< bool, is_arithmetic<_Tp>::value & !( is_signed<_Tp>::value) >  { };
+
+	template<typename>
+	struct is_member_pointer;
+
+	/// is_compound
+	template<typename T>
+	struct is_compound
+	: public integral_constant<bool, !is_fundamental<T>::value> { };
+
 
     template<typename T>
     struct has_cheap_compare : public integral_constant<bool, has_trivial_copy<T>::value && sizeof(T) <= 4 > { };

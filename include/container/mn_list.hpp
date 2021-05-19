@@ -18,7 +18,8 @@
 #ifndef MINLIB_50f2b4fa_c256_450b_9595_0a6ed07718ca_H_
 #define MINLIB_50f2b4fa_c256_450b_9595_0a6ed07718ca_H_
 
-#include "../mn_algorithm.hpp"
+#include "../mn_config.hpp"
+
 #include "mn_node.hpp"
 
 namespace mn {
@@ -71,14 +72,15 @@ namespace mn {
             node_type m_node;
         };
 
-        template<typename T, class TAllocator >
+        template<typename T, class TAllocator, class TDeleter = memory::default_delete<T,TAllocator>>
         class basic_list {
         public:
-            using self_type = basic_list<T, TAllocator>;
+            using self_type = basic_list<T, TAllocator, TDeleter>;
             using value_type = T;
             using allocator_type = TAllocator;
             using size_type = mn::size_t;
             using node_type = basic_node<T>;
+			using deleter = TDeleter;
 
             using iterator = list_node_iterator<node_type*, const value_type*, const value_type&>;
             using const_iterator = list_node_iterator<const node_type*, const value_type*, const value_type&>;
@@ -89,22 +91,22 @@ namespace mn {
              * @brief Construct a new basic list object
              */
             explicit basic_list(const allocator_type& allocator = allocator_type() )
-                : m_allocator(allocator) { m_root.reset(); }
+                : m_allocator(allocator), m_deleter(m_allocator) { m_root.reset(); }
 
             /**
              * @brief Construct a new basic list object
              */
             template<class InputIterator>
             basic_list(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type())
-                : m_allocator(allocator) {
+                : m_allocator(allocator), m_deleter(m_allocator) {
                     m_root.reset();
                     assign(first, last);
             }
             /**
              * @brief Construct a new basic list object
              */
-            basic_list(const basic_list& rhs, const allocator_type& allocator = allocator_type())
-                : m_allocator(allocator) {
+            basic_list(const basic_list& rhs)
+                : m_allocator(rhs.m_allocator), m_deleter(m_allocator) {
                     m_root.reset();
                     assign(rhs.begin(), rhs.end());
             }
@@ -204,11 +206,19 @@ namespace mn {
                 return size;
             }
 
-            const allocator_type& get_allocator() const {
+            allocator_type& get_allocator() noexcept {
                 return m_allocator;
             }
+            deleter_type& get_deleter() noexcept {
+            	return m_deleter;
+			}
+
+
             void set_allocator(const allocator_type& allocator) {
+            	if(!empty()) return;
+
                 m_allocator = allocator;
+                m_deleter.set_deleter(m_allocator);
             }
 
             basic_list& operator = (const basic_list& rhs) {
@@ -225,12 +235,16 @@ namespace mn {
             void destruct_node(node_type* n) {
             	if(n == nullptr) return;
 
-                n->~node_type();
+            	/*mn::destruct<node_type>(n);
+
 				m_allocator.deallocate(n, NodeSize, mn::alignment_for(NodeSize));
-				n = nullptr;
+				n = nullptr;*/
+
+				get_deleter()(n);
             }
 		private:
             allocator_type  m_allocator;
+            deleter			m_deleter;
             node_type       m_root;
         };
 
@@ -239,17 +253,9 @@ namespace mn {
          * @tparam T The holding type for the value
          * @tparam TAllocator The using allocator
          */
-        template<typename T , class TAllocator =  memory::default_allocator>
-        using list = basic_list<T, TAllocator >;
-
-        /**
-         * @brief List type witch allocated on the staked memory buffer
-         *
-         * @tparam T The holding type for the value
-         * @tparam TBUFFERSIZE The size of the memory buffer
-         */
-        template<typename T, int TBUFFERSIZE>
-        using stacked_list = basic_list<T, memory::basic_allocator_stack<TBUFFERSIZE> >;
+        template<typename T, class TAllocator = memory::default_allocator,
+				 class TDeleter = memory::default_delete<T,TAllocator>>
+        using list = basic_list<T, TAllocator, TDeleter >;
     }
 }
 

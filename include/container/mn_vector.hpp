@@ -191,7 +191,7 @@ namespace mn {
             }
             void pop_back() {
                 assert(!empty()); --m_end;
-                mn::destruct(m_end);
+                mn::destruct<iterator>(m_end);
             }
 
             void assign(const pointer first, const pointer last) {
@@ -297,7 +297,7 @@ namespace mn {
                     move_down_1(it, int_to_type<has_trivial_copy<T>::value>());
                 }
                 --m_end;
-                mn::destruct(m_end);
+                mn::destruct<iterator>(m_end);
                 return it;
             }
             iterator erase(iterator first, iterator last) {

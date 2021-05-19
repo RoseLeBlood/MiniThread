@@ -24,6 +24,6 @@
 #include "allocator/mn_allocator_typetraits.hpp"
 #include "allocator/mn_default_allocator.hpp"
 
-
+#define config_haveDefaultAllocator 1
 
 #endif // _MINLIB_BASIC_ALLOCATOR_H_

@@ -1,7 +1,7 @@
 {
     "name": "mini Thread",
-    "keywords": ["esp32", "task", "mutex", "queue", "convar", "c++", "mempool", "stl"],
-    "description": "Mini Thread is a library for creating easy tasks and other useful thinks for the esp32 microcontroller",
+    "keywords": ["esp32", "task", "mutex", "queue", "convar", "container", "frameork", "socket"],
+    "description": "Mini Thread is a esp32 IoT freamework for useful thinks",
     "authors":
     {
         "name": "RoseLeBlood",
@@ -13,7 +13,7 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "2.29.8907.771",
+    "version": "2.29.8908.1532",
     "frameworks": "espidf",
     "platforms": "espressif32",
     "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",

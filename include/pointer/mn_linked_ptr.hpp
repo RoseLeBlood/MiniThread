@@ -2,23 +2,25 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_ee040f46_b480_4f16_a0f8_c6765774ff00_H_
 #define MINLIB_ee040f46_b480_4f16_a0f8_c6765774ff00_H_
 
-#include "mn_base_ptr.hpp"
+#include "../mn_config.hpp"
+
+#include "../mn_def.hpp"
 
 namespace mn {
     namespace pointer {
@@ -32,19 +34,20 @@ namespace mn {
 		    mutable basic_linked_ptr_node* Next;
         };
 
-        /** 
-         * @brief This class implements a basic_linked_ptr template that it allows 
-         * sharing of pointers between instances via reference counting. basic_linked_ptr 
+        /**
+         * @brief This class implements a basic_linked_ptr template that it allows
+         * sharing of pointers between instances via reference counting. basic_linked_ptr
          * objects can safely be copied
-         * 
+         *
          * @note Is not thread-safe.
          */
         template <typename T >
-	    class basic_linked_ptr : public basic_linked_ptr_node,  pointer_ptr<T> {
+	    class basic_linked_ptr : public basic_linked_ptr_node {
             template <typename U> friend class basic_linked_ptr;
         public:
             using self_type = basic_linked_ptr<T>;
             using value_type = T;
+            using element_type = T;
             using reference = T&;
             using pointer = T*;
             using base_type = basic_linked_ptr_node;
@@ -54,10 +57,10 @@ namespace mn {
              */
             basic_linked_ptr() : m_pValue(NULL) { Prev = Next = this; }
             /**
-             * @brief Construct, 
+             * @brief Construct,
              * @note It is OK if the input pointer is null.
              */
-            explicit basic_linked_ptr(pointer pValue)  
+            explicit basic_linked_ptr(pointer pValue)
                 : m_pValue(pValue) { Prev = Next = this; }
 
             basic_linked_ptr(const basic_linked_ptr& _pPtr) : m_pValue(_pPtr.m_pValue) {
@@ -66,14 +69,14 @@ namespace mn {
 		    }
 
             template <typename U>
-		    basic_linked_ptr(const basic_linked_ptr<U>& _pPtr) 
+		    basic_linked_ptr(const basic_linked_ptr<U>& _pPtr)
                 : m_pValue(_pPtr.m_pValue) {
                     if(m_pValue) link(_pPtr);
 			        else Prev = Next = this;
 		    }
             ~basic_linked_ptr() { reset(); }
 
-            
+
             void reset() { reset((T*)NULL); }
             pointer get() { return m_pValue; }
 
@@ -87,9 +90,9 @@ namespace mn {
              */
             int count() const {
                 int _count = 1;
-                
-                for(const base_type* _pCurrent = static_cast<const base_type*>(this); 
-                        _pCurrent->Next != static_cast<const base_type*>(this); 
+
+                for(const base_type* _pCurrent = static_cast<const base_type*>(this);
+                        _pCurrent->Next != static_cast<const base_type*>(this);
                         _pCurrent = _pCurrent->Next) ++_count;
 
                 return _count;
@@ -111,10 +114,10 @@ namespace mn {
                 return _pValue;
             }
 
-            
+
             /**
              * @brief If the use count of the owned pointer
-             * 
+             *
              * @return true The use count of the owned pointer is one
              * @return false when not
              */
@@ -123,7 +126,7 @@ namespace mn {
             basic_linked_ptr& operator = (const basic_linked_ptr& _pPtr) {
 			    if(_pPtr.m_pValue != m_pValue) {
 				    reset(_pPtr.m_pValue);
-				    if(_pPtr.m_pValue) 
+				    if(_pPtr.m_pValue)
                         link(_pPtr);
 			    }
 			    return *this;
@@ -153,19 +156,19 @@ namespace mn {
             basic_linked_ptr& operator = (const basic_linked_ptr<U>& _pPtr) {
                 if(_pPtr.m_pValue != m_pValue) {
 				    reset(_pPtr.m_pValue);
-				    if(_pPtr.m_pValue) 
+				    if(_pPtr.m_pValue)
                         link(_pPtr);
 			    }
 			    return *this;
-            }  
+            }
             template <typename U>
             basic_linked_ptr& operator = (U* pValue) {
                 reset(pValue);
                 return *this;
-            }     
-        protected:    
+            }
+        protected:
             template <typename U>
-            void link(const basic_linked_ptr<U>& pOther) {   
+            void link(const basic_linked_ptr<U>& pOther) {
                 Next           = pOther.mpNext;
                 Prev           = this;
                 Prev           = const_cast<basic_linked_ptr<U>*>(&pOther);
@@ -175,20 +178,20 @@ namespace mn {
             pointer m_pValue;
         };
 
-        
+
         /**
          * @brief Get the pointer object
          * @tparam T    The type of the value
-         * 
-         * @param _pPtr  The input pointer to get the pointer   
+         *
+         * @param _pPtr  The input pointer to get the pointer
          * @return T*    The pointer of the value from input
          */
         template <typename T>
-        inline T* get_pointer(const basic_linked_ptr<T>& _pPtr) { 
-            return _pPtr.get(); 
+        inline T* get_pointer(const basic_linked_ptr<T>& _pPtr) {
+            return _pPtr.get();
         }
         /**
-         * @brief Compares two basic_linked_ptr objects for equality. Equality is defined as 
+         * @brief Compares two basic_linked_ptr objects for equality. Equality is defined as
          * being true when the pointer shared between two basic_linked_ptr objects is equal.
          */
         template <typename T, typename U>

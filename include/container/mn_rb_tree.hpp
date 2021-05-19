@@ -479,15 +479,18 @@ namespace mn {
             }
 		private:
             node_type* construct_node() {
-            	void* mem = m_allocator.allocate(NodeSize, mn::alignment_for(NodeSize) );
-                return new (mem) node_type();
+            	//void* mem = m_allocator.allocate(NodeSize, mn::alignment_for(NodeSize) );
+                //return new (mem) node_type();
+
+                return m_allocator.construct<node_type>());
             }
             void destruct_node(node_type* n) {
             	if(n == nullptr) return;
 
-                n->~node_type();
-				m_allocator.deallocate(n, NodeSize, mn::alignment_for(NodeSize));
-				n = nullptr;
+               	// n->~node_type();
+			  	//	m_allocator.deallocate(n, NodeSize, mn::alignment_for(NodeSize));
+			  	//	n = nullptr;
+			  	m_allocator.destroy<node_type>(n));
             }
         private:
             node_type*              m_root;

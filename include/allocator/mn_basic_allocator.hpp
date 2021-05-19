@@ -20,6 +20,7 @@
 
 #include "../mn_config.hpp"
 
+#include "../mn_algorithm.hpp"
 #include "../mn_functional.hpp"
 #include "../mn_typetraits.hpp"
 #include "../utils/mn_alignment.hpp"
@@ -145,8 +146,9 @@ namespace mn {
 			Type* construct(Args&&... args) {
 				auto _size = sizeof(Type);
 
-				pointer _mem = allocate(_size, mn::alignment_for(_size) );
-				return new (_mem) Type(mn::forward<Args>(args)...);
+				void* _mem = allocate(_size, mn::alignment_for(_size) );
+
+				return ::new (_mem) Type(mn::forward<Args>(args)...);
 			}
 
 			/**
@@ -160,7 +162,7 @@ namespace mn {
 
 				auto _size = sizeof(Type);
 
-				if(mn::is_class<Type>::value) address->~Type();
+				mn::destruct<Type>(address);
 				deallocate(address, _size, mn::alignment_for(_size));
 			}
 

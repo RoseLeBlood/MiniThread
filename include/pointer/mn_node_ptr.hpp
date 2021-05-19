@@ -2,43 +2,45 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_aff55cd7_915b_4f3d_82b9_124e264a3df5_H_
 #define MINLIB_aff55cd7_915b_4f3d_82b9_124e264a3df5_H_
 
-#include <container/mn_node.hpp>
-#include "mn_base_ptr.hpp"
+#include "../mn_config.hpp"
+
+#include "../container/mn_node.hpp"
 
 namespace mn {
     namespace pointer {
 
         template <typename T, class TAllocator>
-        class node_ptr  : pointer_ptr<T>  {
+        class node_ptr   {
         public:
             using self_type = node_ptr<T, TAllocator>;
+            using element_type = T;
             using value_type = T;
             using pointer = T*;
             using reference = T&;
             using node_type = container::basic_value_node<pointer, TAllocator>*;
 
-            node_ptr() 
+            node_ptr()
                 : m_pNode(0) { }
-            explicit node_ptr(const pointer value) { 
+            explicit node_ptr(const pointer value) {
                 m_pNode = new node_type(value); }
-        
-            ~node_ptr() { 
+
+            ~node_ptr() {
                 clear(); if(m_pNode) delete m_pNode;
             }
 
@@ -71,25 +73,25 @@ namespace mn {
                 m_root.reset();
             }
 
-            pointer release() { 
-                pointer tmp = m_pNode->Value; 
-                m_pNode->Value = NULL; 
-                return tmp; 
-            }       
+            pointer release() {
+                pointer tmp = m_pNode->Value;
+                m_pNode->Value = NULL;
+                return tmp;
+            }
             void reset(pointer p = NULL) {
                 clear();
 
                 delete m_pNode;
                 m_pNode = new node_type(p);
-                
+
             }
-            void swap(self_type &other) {                       
+            void swap(self_type &other) {
                 m_pNode->swap(other);
             }
 
             const pointer get() const               { return m_pNode->Value;  }
             pointer get()                           { return m_pNode->Value; }
-    
+
             const reference operator *() const          { return *m_pNode->Value; }
             reference operator *()                      { return *m_pNode->Value; }
 

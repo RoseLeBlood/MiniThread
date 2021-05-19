@@ -24,9 +24,12 @@
 
 #include "mn_copyable.hpp"
 
+#define MNTHREAD_STATIC_CAST_BYTE(BYTE)			static_cast<unsigned char>(BYTE)
+
 namespace mn {
     using max_align_t = long double;
     using nullptr_t = decltype(nullptr);
+    using addrof_null_t = nullptr_t ;
 
     using size_t = MN_THREAD_CONFIG_SIZE_TYPE;
     using ptrdiff_t = long;
@@ -38,60 +41,80 @@ namespace mn {
 
     enum class byte : unsigned char { };
 
+   // __CHAR_MAX__
 
     template<typename IntegerType>
-    inline byte& operator <<= (byte& b, IntegerType shift) {
-        return b = byte(static_cast<unsigned char>(b) << shift);
-    }
-
-    template<typename IntegerType>
-    inline byte& operator << (byte& b, IntegerType shift) {
-        return b = byte(static_cast<unsigned char>(b) << shift);
+    inline byte& operator <<= (byte& b, IntegerType shift) noexcept {
+        return b = byte(MNTHREAD_STATIC_CAST_BYTE(b) << shift);
     }
 
     template<typename IntegerType>
-    inline byte& operator >>= (byte& b, IntegerType shift) {
-        return b = byte(static_cast<unsigned char>(b) >> shift);
+    inline byte& operator >>= (byte& b, IntegerType shift) noexcept {
+        return b = byte(MNTHREAD_STATIC_CAST_BYTE(b) >> shift);
     }
 
     template<typename IntegerType>
-    inline byte& operator >> (byte& b, IntegerType shift) {
-        return b = byte(static_cast<unsigned char>(b) >> shift);
-    }
-
-
-
-    inline byte& operator |= (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) | static_cast<unsigned char>(rhr));
-    }
-
-    inline byte& operator | (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) | static_cast<unsigned char>(rhr));
-    }
-
-    inline byte& operator &= (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) & static_cast<unsigned char>(rhr));
-    }
-
-    inline byte& operator & (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) & static_cast<unsigned char>(rhr));
-    }
-
-    inline byte& operator ^= (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) ^ static_cast<unsigned char>(rhr));
-    }
-
-    inline byte& operator ^ (byte& lhr, byte rhr)  {
-        return lhr = byte(static_cast<unsigned char>(lhr) ^ static_cast<unsigned char>(rhr));
-    }
-
-    inline byte operator ~ (byte b) {
-        return byte(~static_cast<unsigned char>(b));
+    inline constexpr byte operator << (byte& b, IntegerType shift) noexcept {
+        return b = byte(MNTHREAD_STATIC_CAST_BYTE(b) << shift);
     }
 
     template<typename IntegerType>
-    inline IntegerType to_integer(byte b) {
-        return IntegerType(b);
+    inline constexpr byte operator >> (byte& b, IntegerType shift) noexcept {
+        return b = byte(MNTHREAD_STATIC_CAST_BYTE(b) >> shift);
+    }
+
+    inline constexpr bool operator==( const byte l, const byte r ) noexcept {
+		return l == r;
+	}
+
+	inline constexpr bool operator!=( const byte l, const byte r ) noexcept {
+		return !( l == r );
+	}
+
+	inline constexpr bool operator< ( const byte l, const byte r ) noexcept {
+		return l < r;
+	}
+
+	inline constexpr bool operator<=( const byte l, const byte r ) noexcept {
+		return !( r < l );
+	}
+
+	inline constexpr bool operator> ( const byte l, const byte r ) noexcept {
+		return ( r < l );
+	}
+
+	inline constexpr bool operator>=( const byte l, const byte r ) noexcept {
+		return !( l < r );
+	}
+
+    inline byte operator |= (byte& lhr, const byte rhr) noexcept {
+        lhr = byte(MNTHREAD_STATIC_CAST_BYTE(lhr) | MNTHREAD_STATIC_CAST_BYTE(rhr));
+        return lhr;
+    }
+
+    inline byte operator &= (byte& lhr, const byte rhr) noexcept {
+        lhr = byte(MNTHREAD_STATIC_CAST_BYTE(lhr) & MNTHREAD_STATIC_CAST_BYTE(rhr));
+        return lhr;
+    }
+    inline byte operator ^= (byte& lhr, const byte rhr) noexcept {
+        lhr = byte(MNTHREAD_STATIC_CAST_BYTE(lhr) ^ MNTHREAD_STATIC_CAST_BYTE(rhr));
+        return lhr;
+    }
+
+    inline constexpr byte operator | (const byte& lhr, const byte& rhr) noexcept {
+        return byte(MNTHREAD_STATIC_CAST_BYTE(lhr) | MNTHREAD_STATIC_CAST_BYTE(rhr));
+    }
+
+    inline constexpr byte operator ^ (const byte& lhr, const byte& rhr) noexcept {
+        return byte(MNTHREAD_STATIC_CAST_BYTE(lhr) ^ MNTHREAD_STATIC_CAST_BYTE(rhr));
+    }
+
+    inline constexpr byte operator & (const byte& lhr, const byte& rhr) noexcept {
+        return byte(MNTHREAD_STATIC_CAST_BYTE(lhr) & MNTHREAD_STATIC_CAST_BYTE(rhr));
+    }
+
+    inline constexpr byte operator ~ (byte b) noexcept {
+        return byte(~MNTHREAD_STATIC_CAST_BYTE(b));
     }
 }
 

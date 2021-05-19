@@ -20,6 +20,7 @@
 
 #include "../mn_iterator.hpp"
 #include "../mn_allocator.hpp"
+#include "../mn_deleter.hpp"
 
 namespace mn {
     namespace container {

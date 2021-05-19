@@ -20,9 +20,9 @@
 
 #include "mn_config.hpp"
 
-#include <stddef.h>
-
+#include "mn_def.hpp"
 #include "mn_allocator.hpp"
+
 #include "pointer/mn_save_ptr.hpp"
 #include "pointer/mn_clone_ptr.hpp"
 #include "pointer/mn_shared_ptr.hpp"

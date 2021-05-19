@@ -28,6 +28,7 @@
 #include "mn_iterator.hpp"
 #include "mn_functional.hpp"
 
+
 namespace mn {
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void  copy_construct(T* mem, const T& orig) {
@@ -38,6 +39,7 @@ namespace mn {
     inline void construct(T* mem) {
 	        internal::construct(mem, int_to_type<has_trivial_constructor<T>::value>());
 	}
+
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void destruct(T* mem) {
@@ -255,6 +257,18 @@ namespace mn {
         a = b;
         b = tmp;
 	}
+
+	template<typename fIt1, typename fit2>
+    inline void iter_swap(fIt1 a, fit2 b) {
+      swap(*a, *b);
+    }
+
+	template<typename fIt1, typename fit2>
+    fit2 swap_ranges(fIt1 a, fIt1 b, fit2 c) {
+		for (; a != b; ++a, ++c)
+			iter_swap(*a, *c);
+		return c;
+    }
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct value2size {

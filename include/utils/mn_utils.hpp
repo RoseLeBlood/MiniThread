@@ -25,8 +25,6 @@
 #include "../mn_defines.hpp"
 #include "../mn_def.hpp"
 
-
-
 namespace mn {
     namespace internal {
 
@@ -162,7 +160,12 @@ namespace mn {
         inline bool debug_pred(const TPred& pred, const T1& a, const T2& b) {
          	return pred(a, b);
         }
-    }
+
+		struct in_place_type_tag {};
+		struct in_place_index_tag {};
+
+		struct in_place_type {};
+    } // Intarnal
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct less {
@@ -183,12 +186,40 @@ namespace mn {
         }
 	};
 
+
+
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     T nexthigher(T k) {
 		k--;
 		for (unsigned int i=1; i< sizeof(T) * 8; i <<= 1)
 			k |= (k >> i);
 		return k+1;
+	}
+
+	using in_place_t = internal::in_place_type;
+
+	MN_TEMPLATE_FULL_DECL_ONE(class, T)
+		using in_place_type_tag = internal::in_place_type_tag;
+	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
+		using in_place_index_tag = internal::in_place_index_tag;
+
+	MN_TEMPLATE_FULL_DECL_ONE(class, T)
+	inline in_place_t in_place( in_place_type_tag<T> = in_place_type_tag<T>() ) {
+		return in_place_t();
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(class, T)
+	inline in_place_t in_place_type( in_place_type_tag<T> = in_place_type_tag<T>() ) {
+		return in_place_t();
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
+	inline in_place_t in_place( in_place_index_tag<K> = in_place_index_tag<K>() ) {
+		return in_place_t();
+	}
+	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
+	inline in_place_t in_place_index( in_place_index_tag<K> = in_place_index_tag<K>() ) {
+		return in_place_t();
 	}
 }
 

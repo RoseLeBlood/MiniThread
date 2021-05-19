@@ -22,6 +22,7 @@
 
 #include "allocator/mn_allocator_typetraits.hpp"
 #include "mn_default_allocator.hpp"
+#include "utils/mn_addressof.hpp"
 
 namespace mn {
 	namespace memory {

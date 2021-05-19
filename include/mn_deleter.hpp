@@ -15,4 +15,20 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
+#ifndef __MINLIB_DEFAULT_DELETER_H__
+#define __MINLIB_DEFAULT_DELETER_H__
+
+#include "mn_config.hpp"
+
 #include "allocator/mn_basic_deleter.hpp"
+#include "mn_allocator.hpp"
+
+#define config_haveDefaultDeleter 1
+
+namespace mn {
+	namespace memory {
+		template<typename Type, class TAllocator = default_allocator>
+		using default_delete = basic_deleter<Type, TAllocator>;
+	}
+}
+#endif // __MINLIB_DEFAULT_DELETER_H__

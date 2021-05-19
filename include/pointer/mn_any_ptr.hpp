@@ -2,31 +2,33 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 #ifndef MINLIB_de6432e5_32f4_4ce2_bec3_0a8f4e20a0f4_H_
 #define MINLIB_de6432e5_32f4_4ce2_bec3_0a8f4e20a0f4_H_
 
-#include <stddef.h>
-#include "mn_base_ptr.hpp"
+#include "../mn_config.hpp"
+
+#include "../mn_def.hpp"
 
 namespace mn {
     namespace pointer {
 
         template <typename T>
-        class basic_any_ptr : pointer_ptr<T> {   
+        class basic_any_ptr  {
         public:
+        	using element_type = T;
             using size_type = size_t;
             using pointer = T*;
             using const_pointer = const T*;
@@ -41,13 +43,13 @@ namespace mn {
             /**
              * @brief Construct a new basic any ptr object
              */
-            basic_any_ptr(const_pointer pObject) 
+            basic_any_ptr(const_pointer pObject)
                 : m_pObject( const_cast<const_pointer>(m_pObject) ) { }
 
             /**
              * @brief Construct a new basic any ptr object from a copy
              */
-            basic_any_ptr(const basic_any_ptr &other) 
+            basic_any_ptr(const basic_any_ptr &other)
                 : m_pObject( const_cast<const_pointer>(other.m_pObject) ) { }
 
             /**
@@ -55,8 +57,8 @@ namespace mn {
              * @tparam U        The type of the other any_ptr type
              * @param other      The copy
              */
-            template <typename U> 
-            basic_any_ptr(const basic_any_ptr<U> &other) 
+            template <typename U>
+            basic_any_ptr(const basic_any_ptr<U> &other)
                 : m_pObject( const_cast<const_pointer>(other.m_pObject) ) { }
 
             /**
@@ -88,15 +90,15 @@ namespace mn {
             }
 
             /**
-             * @brief 
+             * @brief
              */
-            operator const_pointer() { return static_cast<T*>( m_pObject ); } 
+            operator const_pointer() { return static_cast<T*>( m_pObject ); }
 
 
             /**
              * @brief Implicit cast to non-const object pointer
              */
-            template <class U> 
+            template <class U>
             operator const U*()             { return static_cast<U*>( m_pObject ); }
 
             /**

@@ -24,6 +24,7 @@
 #include "mn_def.hpp"
 #include "mn_typetraits.hpp"
 
+#include <type_traits>
 
 using nullptr_t = decltype(nullptr);
 
@@ -32,6 +33,10 @@ namespace mn {
 
     template <typename T> struct tag { using type = T; };
     template <typename Tag> using type_t = typename Tag::type;
+
+    template< bool B, typename T, typename F > struct conditional              { using type = T; };
+    template<         typename T, typename F > struct conditional<false, T, F> { using type = F; };
+
 
     template <typename T> T &&move(T &t) {
         return static_cast<T &&>(t); }
@@ -74,7 +79,34 @@ namespace mn {
 
     template <typename T>
     struct remove_cv
-        : remove_const<type_t<remove_volatile<T>>> {};
+        : remove_const<type_t<remove_volatile<T>>> { };
+
+	template< typename T >
+	struct remove_cvref
+		: remove_cv<type_t<remove_reference<T>>> { };
+
+	template< class T >
+	struct add_const
+		: tag<const T> {};
+
+	template< class T >
+	struct add_volatile
+		: tag<volatile T> {};
+
+	template< class T >
+	struct add_cv {
+	 	using type = const volatile typename remove_reference<T>::type;
+	};
+
+	template <typename T>
+    struct add_reference
+        { using type = typename remove_reference<T>::type&;  };
+
+	template< class T >
+	struct add_pointer {
+	 	using type = typename remove_reference<T>::type*;
+	};
+
 
     template <typename T>
     struct decay3 : remove_cv<T> {};
@@ -154,6 +186,11 @@ namespace mn {
     template <class A>
     struct is_same<A, A> : true_type {};
 
+    template<typename TBase, typename TDerived>
+    struct is_base_of : public integral_constant<bool, __is_base_of(TBase, TDerived)> { };
+
+
+
     template <class Sig, size_t sz, size_t algn>
     struct small_task;
 
@@ -196,8 +233,7 @@ namespace mn {
             new (&data) dF(forward<F>(f));
         }
         ~small_task() {
-            if (table)
-                table->destroyer(&data);
+            if (table) table->destroyer(&data);
         }
 
         small_task &operator=(const small_task &o) {
@@ -241,8 +277,6 @@ namespace mn {
 
     template <class Sig>
     using function = small_task<Sig, sizeof(void *) * 4, alignof(void *)>;
-
-
 }
 
 #endif
