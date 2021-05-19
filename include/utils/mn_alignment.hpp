@@ -68,7 +68,7 @@ namespace mn {
 			float f;
 			double d;
         };
-    }
+    } // internal
 
     template<> struct is_pod<internal::aligned0> : public true_type{};
     template<> struct is_pod<internal::aligned1> : public true_type{};
@@ -100,10 +100,6 @@ namespace mn {
 		enum { res = 0  };
 	};
 
-	template<size_t Len, size_t Align>
-	struct aligned_storage {
-		struct type { alignas(Align) unsigned char data[Len]; };
-	};
 
 	template <size_t Target, bool check>  struct long_double_alignment{ using type = long double; };
 	template <size_t Target> struct long_double_alignment<Target, false> {
@@ -180,13 +176,13 @@ namespace mn {
 		return _isaligned != 0 ? (alignment - _isaligned) : 0;
 	}
 
-
-
 	inline size_t alignment_for(const size_t size) noexcept {
 		if(size >= max_alignment) return max_alignment;
 
 		return (size_t(1) << nlz(size) );
 	}
+
+
 }
 
 

@@ -24,7 +24,6 @@
 #include "mn_def.hpp"
 #include "mn_typetraits.hpp"
 
-#include <type_traits>
 
 using nullptr_t = decltype(nullptr);
 
@@ -175,9 +174,6 @@ namespace mn {
     template <class Sig>
     using res_of_t = type_t<res_of<Sig>>;
 
-    // aligned_storage
-    template <size_t size, size_t align>
-    struct alignas(align) aligned_storage_t { char buff[size]; };
 
     // is_same
     template <class A, class B>
@@ -190,93 +186,6 @@ namespace mn {
     struct is_base_of : public integral_constant<bool, __is_base_of(TBase, TDerived)> { };
 
 
-
-    template <class Sig, size_t sz, size_t algn>
-    struct small_task;
-
-
-
-    template <class R, class... Args, size_t sz, size_t algn>
-    struct small_task<R(Args...), sz, algn> {
-        struct vtable_t {
-            void (*mover)(void *src, void *dest);
-            void (*destroyer)(void *);
-            R (*invoke)(void const *t, Args &&...args);
-            template <class T> static vtable_t const *get() {
-                static const vtable_t table = {
-                    [](void *src, void *dest) { new (dest) T(move(*static_cast<T *>(src))); },
-                    [](void *t) { static_cast<T *>(t)->~T(); },
-                    [](void const *t, Args &&...args) -> R {
-                        return (*static_cast<T const *>(t))(forward<Args>(args)...);
-                    }};
-                return &table;
-            }
-        };
-
-        vtable_t const *table = nullptr;
-        aligned_storage_t<sz, algn> data;
-
-        small_task() { }
-        small_task(const small_task &o)
-            : table(o.table), data(o.data) { }
-
-        small_task(small_task &&o)
-            : table(o.table) {
-            if (table) table->mover(&o.data, &data);
-        }
-
-        template <class F, class dF = decay_t<F>, enable_if_t<!is_same<dF, small_task>{}> * = nullptr,
-                  enable_if_t<is_convertible<res_of_t<dF &(Args...)>, R>{}> * = nullptr>
-        small_task(F &&f) : table(vtable_t::template get<dF>()) {
-            static_assert(sizeof(dF) <= sz, "object too large");
-            static_assert(alignof(dF) <= algn, "object too aligned");
-            new (&data) dF(forward<F>(f));
-        }
-        ~small_task() {
-            if (table) table->destroyer(&data);
-        }
-
-        small_task &operator=(const small_task &o) {
-            this->~small_task();
-            new (this) small_task(move(o));
-            return *this;
-        }
-        small_task &operator=(small_task &&o) {
-            this->~small_task();
-            new (this) small_task(move(o));
-            return *this;
-        }
-        explicit operator bool() const {
-            return table;
-        }
-        R operator()(Args... args) const {
-            return table->invoke(&data, forward<Args>(args)...);
-        }
-    };
-
-    template <class R, class... Args, size_t sz, size_t algn>
-    inline bool operator==(const small_task<R(Args...), sz, algn> &__f, nullptr_t) {
-        return !static_cast<bool>(__f);
-    }
-
-
-    template <class R, class... Args, size_t sz, size_t algn>
-    inline bool operator==(nullptr_t, const small_task<R(Args...), sz, algn> &__f) {
-        return !static_cast<bool>(__f);
-    }
-
-    template <class R, class... Args, size_t sz, size_t algn>
-    inline bool operator!=(const small_task<R(Args...), sz, algn> &__f, nullptr_t) {
-        return static_cast<bool>(__f);
-    }
-
-    template <class R, class... Args, size_t sz, size_t algn>
-    inline bool operator!=(nullptr_t, const small_task<R(Args...), sz, algn> &__f) {
-        return static_cast<bool>(__f);
-    }
-
-    template <class Sig>
-    using function = small_task<Sig, sizeof(void *) * 4, alignof(void *)>;
 }
 
 #endif

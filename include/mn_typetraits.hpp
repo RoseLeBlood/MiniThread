@@ -38,21 +38,21 @@ namespace mn {
     template<typename>
     struct is_const : public false_type { };
 
-    template<typename _Tp>
-    struct is_const<_Tp const>  : public true_type { };
+    template<typename T>
+    struct is_const<T const>  : public true_type { };
 
 	/// is_volatile
 	template<typename>
 	struct is_volatile : public false_type { };
 
-	template<typename _Tp>
-	struct is_volatile<_Tp volatile> : public true_type { };
+	template<typename T>
+	struct is_volatile<T volatile> : public true_type { };
 
 
 
 	/// is_empty
-	template<typename _Tp>
-	struct is_empty : public integral_constant<bool, __is_empty(_Tp)> { };
+	template<typename T>
+	struct is_empty : public integral_constant<bool, __is_empty(T)> { };
 
 
     template<typename T>
@@ -155,16 +155,24 @@ namespace mn {
     struct is_pod : public integral_constant<bool, __is_pod(T)> { };
 
     /// is_trivial
-	template<typename _Tp>
-	struct is_trivial : public integral_constant<bool, __is_trivial(_Tp)> { };
+	template<typename T>
+	struct is_trivial : public integral_constant<bool, __is_trivial(T)> { };
 
 	// is_trivially_copyable
-  	template<typename _Tp>
-    struct is_trivially_copyable : public integral_constant<bool, __is_trivially_copyable(_Tp)>  { };
+  	template<typename T>
+    struct is_trivially_copyable : public integral_constant<bool, __is_trivially_copyable(T)>  { };
 
 	/// is_standard_layout
-	template<typename _Tp>
-	struct is_standard_layout : public integral_constant<bool, __is_standard_layout(_Tp)> { };
+	template<typename T>
+	struct is_standard_layout : public integral_constant<bool, __is_standard_layout(T)> { };
+
+	template<typename T>
+    struct is_bind_expression  : public false_type { };
+
+	template<typename T>
+    struct is_placeholder  : public integral_constant<int, 0> { };
+
+
 
 
 
@@ -220,15 +228,15 @@ namespace mn {
   	template<typename>
     struct is_lvalue_reference : public false_type { };
 
-  	template<typename _Tp>
-    struct is_lvalue_reference<_Tp&> : public true_type { };
+  	template<typename T>
+    struct is_lvalue_reference<T&> : public true_type { };
 
     /// is_rvalue_reference
   	template<typename>
     struct is_rvalue_reference : public false_type { };
 
-  	template<typename _Tp>
-    struct is_rvalue_reference<_Tp&&> : public true_type { };
+  	template<typename T>
+    struct is_rvalue_reference<T&&> : public true_type { };
 
     template<typename T>
     struct is_pointer
@@ -274,24 +282,24 @@ namespace mn {
 											is_void<T>::value) > { };
 
 	namespace internal {
-		template<typename _Tp, bool = is_arithmetic<_Tp>::value >
+		template<typename T, bool = is_arithmetic<T>::value >
     	struct is_signed_help : public false_type { };
 
-		template<typename _Tp>
-		struct is_signed_help<_Tp, true>
-			: public integral_constant<bool, _Tp(-1) < _Tp(0)> { };
+		template<typename T>
+		struct is_signed_help<T, true>
+			: public integral_constant<bool, T(-1) < T(0)> { };
 	}
 
 
 	/// is_signed
-  	template<typename _Tp>
+  	template<typename T>
     struct is_signed
-    	: public internal::is_signed_help <_Tp>::value  { };
+    	: public internal::is_signed_help <T>::value  { };
 
 	/// is_unsigned
-	template<typename _Tp>
+	template<typename T>
     struct is_unsigned
-    	: public integral_constant< bool, is_arithmetic<_Tp>::value & !( is_signed<_Tp>::value) >  { };
+    	: public integral_constant< bool, is_arithmetic<T>::value & !( is_signed<T>::value) >  { };
 
 	template<typename>
 	struct is_member_pointer;
@@ -304,6 +312,17 @@ namespace mn {
 
     template<typename T>
     struct has_cheap_compare : public integral_constant<bool, has_trivial_copy<T>::value && sizeof(T) <= 4 > { };
+
+
+    template<size_t size, size_t align = alignof(void *)>
+	struct aligned_storage {
+		struct type { alignas(align) unsigned char data[size]; };
+	};
+
+    template<size_t size, size_t align = alignof(void *)>
+    using aligned_storage_t = typename aligned_storage<size, align>::type;
+
+
 
     #define MN_INTEGRAL(T) template<> \
     struct is_integral<T> : public integral_constant<bool, true> { };
@@ -333,7 +352,6 @@ namespace mn {
     MN_RATIONAL(float);
     MN_RATIONAL(double);
     MN_RATIONAL(long double);
-
 }
 
 

@@ -253,18 +253,25 @@ namespace mn {
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, TAssignable)
     void swap(TAssignable& a, TAssignable& b) {
-        TAssignable tmp(a);
-        a = b;
-        b = tmp;
+        TAssignable tmp = mn::move(a);
+
+        a = mn::move(b);
+        b = mn::move(tmp);
 	}
 
-	template<typename fIt1, typename fit2>
-    inline void iter_swap(fIt1 a, fit2 b) {
+	MN_TEMPLATE_FULL_DECL_TWO(typename, TAssignable, size_t, N)
+    inline void swap(TAssignable (&x)[N], TAssignable (&y)[N]) {
+      for (size_t i = 0; i < N; i++)
+			swap(x[i], y[i]);
+    }
+
+	MN_TEMPLATE_FULL_DECL_TWO(typename, fIt1, typename, fIt2 )
+    inline void iter_swap(fIt1 a, fIt2 b) {
       swap(*a, *b);
     }
 
-	template<typename fIt1, typename fit2>
-    fit2 swap_ranges(fIt1 a, fIt1 b, fit2 c) {
+	MN_TEMPLATE_FULL_DECL_TWO(typename, fIt1, typename, fIt2 )
+    fIt2 swap_ranges(fIt1 a, fIt1 b, fIt2 c) {
 		for (; a != b; ++a, ++c)
 			iter_swap(*a, *c);
 		return c;

@@ -26,7 +26,10 @@
 
 #define MNTHREAD_STATIC_CAST_BYTE(BYTE)			static_cast<unsigned char>(BYTE)
 
+#define offsetof(TYPE, MEMBER) 					__builtin_offsetof (TYPE, MEMBER)
+
 namespace mn {
+
     using max_align_t = long double;
     using nullptr_t = decltype(nullptr);
     using addrof_null_t = nullptr_t ;

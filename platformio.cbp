@@ -252,6 +252,7 @@
 		<Unit filename="include/mn_eventgroup.hpp" />
 		<Unit filename="include/mn_fast_type.hpp" />
 		<Unit filename="include/mn_foreign_task.hpp" />
+		<Unit filename="include/mn_function.hpp" />
 		<Unit filename="include/mn_functional.hpp" />
 		<Unit filename="include/mn_iterator.hpp" />
 		<Unit filename="include/mn_iterator_pair.hpp" />
@@ -334,6 +335,7 @@
 		<Unit filename="include/utils/mn_random.hpp" />
 		<Unit filename="include/utils/mn_random_lfsr.hpp" />
 		<Unit filename="include/utils/mn_sort.hpp" />
+		<Unit filename="include/utils/mn_stl.hpp" />
 		<Unit filename="include/utils/mn_utils.hpp" />
 		<Unit filename="library.json" />
 		<Unit filename="platformio.ini" />

@@ -3,7 +3,10 @@
 ## Version 2.29.8906 Mai 2021 (unstable beta)
 + update mn::container and mn_buffer now support the new allocator system
 + add allocator_typetraits
-
++ add smart_pointer_traits
++ add container/array
++ add default_deleter and add this support to list
++ add mn::function a lightwight version of std::function
 
 
 ## Versoin 2.28.3098 April 2021 (unstable beta)
