@@ -42,10 +42,9 @@ namespace mn {
 			using reference = TAllocator&;
 
 			/**
-			 * @brief Construct a basic deleter, without a allocator
-			 * @note Atentation: call set_allocator first, otherwise the deleter not work
+			 * @brief Construct a basic deleter
 			 */
-			constexpr basic_deleter() : m_refAllocator(nullptr) {}
+			constexpr basic_deleter() : m_refAllocator() {}
 			/**
 			 * @brief Construt a basic deleter
 			 * @param alloc The using allocator class
@@ -64,7 +63,7 @@ namespace mn {
 
             /**
 			 * @brief Is the deleter valid - have a allocator
-			 * @return True when the deleter valid is anh false if not.
+			 * @return True when the deleter valid is and false if not.
 			 */
 			bool is_valid() const noexcept {
 				return m_refAllocator != nullptr;
@@ -124,10 +123,9 @@ namespace mn {
 			 						!(is_same<remove_cv_type<value_type>, remove_cv_type<U>>::value )>;
 
 			/**
-			 * @brief Construct a basic deleter, without a allocator
-			 * @note Atentation: call set_allocator first, otherwise the deleter not work
+			 * @brief Construct a basic deleter.
 			 */
-			constexpr basic_deleter() : m_refAllocator(nullptr), m_sArraySize(0u) {}
+			constexpr basic_deleter() : m_refAllocator(), m_sArraySize(0u) {}
 			/**
 			 * @brief Construt a basic deleter
 			 * @param alloc The using allocator class
@@ -147,7 +145,7 @@ namespace mn {
 
 			/**
 			 * @brief Is the deleter valid - have a allocator
-			 * @return True when the deleter valid is anh false if not.
+			 * @return True when the deleter valid is and false if not.
 			 */
 			bool is_valid() const noexcept {
 				return m_refAllocator != nullptr;

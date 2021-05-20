@@ -315,6 +315,7 @@
 		<Unit filename="include/pointer/mn_scoped_ptr.hpp" />
 		<Unit filename="include/pointer/mn_shared_ptr.hpp" />
 		<Unit filename="include/pointer/mn_smart_pointer_traits.hpp" />
+		<Unit filename="include/pointer/mn_unique_ptr.hpp" />
 		<Unit filename="include/pointer/mn_weak_ptr.hpp" />
 		<Unit filename="include/queue/mn_binaryqueue.hpp" />
 		<Unit filename="include/queue/mn_deque.hpp" />

@@ -28,6 +28,155 @@
 using nullptr_t = decltype(nullptr);
 
 namespace mn {
+	template <typename T>
+	struct type_traits {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<const T> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<const T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+#if 0
+	template<typename Arg, typename TResult>
+	struct unary_function {
+	  /// @c argument_type is the type of the argument
+	  using argument_type = Arg;
+	  /// @c result_type is the return type
+	  using result_type =  TResult;
+	};
+
+
+	template<typename Arg1, typename Arg2, typename TResult>
+	struct binary_function {
+		/// @c first_argument_type is the type of the first argument
+		using first_argument_type = Arg;
+		/// @c second_argument_type is the type of the second argument
+		using second_argument_type = Arg2;
+		/// @c result_type is the return type
+		using result_type =  TResult;
+	};
+
+	template<typename T>
+	struct negate : public unary_function<T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a) const noexcept { return -a; }
+	};
+
+	template<typename T>
+	struct plus : public binary_function<T, T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const  noexcept { return a + b; }
+	};
+
+	template<typename T>
+	struct minus : public binary_function<T, T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a - b; }
+	};
+
+	template<typename T>
+	struct multiplies : public binary_function<T, T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a * b; }
+	};
+
+	template<typename T>
+	struct divides : public binary_function<T, T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a / b; }
+	};
+
+	template<typename T>
+	struct modulus : public binary_function<T, T, T> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a % b; }
+	};
+
+	template<typename T>
+	struct equal_to : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a == b; }
+	};
+
+	template<typename T>
+	struct not_equal_to : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a != b; }
+	};
+
+	template<typename T>
+	struct greater : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a > b; }
+	};
+
+	template<typename T>
+	struct less : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a < b; }
+	};
+
+	template<typename T>
+	struct greater_equal : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a >= b; }
+	};
+
+	template<typename T>
+	struct less_equal : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a <= b; }
+	};
+
+	template<typename T>
+	struct logic_and : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		bool operator()(const T& a, const T& b) const noexcept { return a && b; }
+	};
+
+	template<typename T>
+	struct logic_or : public binary_function<T, T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a, const T& b) const noexcept { return a || b; }
+	};
+
+	template<typename T>
+	struct logic_not : public unary_function<T, bool> {
+		typename binary_function<T, T, T>::result_type
+		operator()(const T& a) const noexcept { return !a; }
+	};
+#endif // 0
 
 
     template <typename T> struct tag { using type = T; };
@@ -36,6 +185,41 @@ namespace mn {
     template< bool B, typename T, typename F > struct conditional              { using type = T; };
     template<         typename T, typename F > struct conditional<false, T, F> { using type = F; };
 
+    template<typename...>
+    struct bit_or;
+
+	template<>
+	struct bit_or<> : public false_type { };
+
+	template<typename A>
+	struct bit_or<A>
+		: public A { };
+
+	template<typename A, typename B>
+	struct bit_or<A, B>
+		: public conditional<A::value, A, B>::type { };
+
+	template<typename A, typename B, typename C, typename... N>
+	struct bit_or<A, B, C, N...>
+		: public conditional<A::value, B, bit_or<B, C, N...>>::type { };
+
+    template<typename...>
+    struct bit_and;
+
+	template<>
+	struct bit_and<> : public true_type { };
+
+	template<typename B>
+	struct bit_and<B> : public B { };
+
+	template<typename A, typename B>
+	struct bit_and<A, B> : public conditional<A::value, B, A>::type { };
+
+	template<typename A, typename B, typename C, typename... N>
+	struct bit_and<A, B, C, N...> : public conditional<A::value, bit_and<B, C, N...>, A>::type { };
+
+	template<typename A>
+	struct bit_not : public integral_constant<bool, !A::value> { };
 
     template <typename T> T &&move(T &t) {
         return static_cast<T &&>(t); }
@@ -106,6 +290,13 @@ namespace mn {
 	 	using type = typename remove_reference<T>::type*;
 	};
 
+	template<class T>
+	struct add_lvalue_reference
+		: tag<T&> { };
+
+	template<class T>
+	struct add_rvalue_reference
+		: tag<T&&> { };
 
     template <typename T>
     struct decay3 : remove_cv<T> {};
@@ -163,6 +354,9 @@ namespace mn {
 
     template <class T>
     struct enable_if<true, T> : tag<T> {};
+
+    template<typename... _Cond>
+    using require = typename enable_if<bit_and<_Cond...>::value>::type;
 
     template <bool b, class T = void>
     using enable_if_t = type_t<enable_if<b, T>>;
