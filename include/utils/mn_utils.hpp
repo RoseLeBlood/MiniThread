@@ -169,27 +169,90 @@ namespace mn {
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct less {
-        bool operator()(const T& lhs, const T& rhs) const {
+        bool operator()(const T& lhs, const T& rhs) const noexcept {
             return lhs < rhs;
         }
 	};
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct greater {
-        bool operator()(const T& lhs, const T& rhs) const {
+        bool operator()(const T& lhs, const T& rhs) const noexcept {
             return lhs > rhs;
         }
 	};
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct equal_to {
-        bool operator()(const T& lhs, const T& rhs) const {
+        bool operator()(const T& lhs, const T& rhs) const noexcept {
             return lhs == rhs;
+        }
+	};
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct not_equal_to {
+        bool operator()(const T& lhs, const T& rhs) const noexcept {
+            return lhs != rhs;
+        }
+	};
+
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct greater_equal  {
+		bool operator()(const T& lhs, const T& rhs) const noexcept {
+            return lhs >= rhs;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct less_equal  {
+		bool operator()(const T& lhs, const T& rhs) const noexcept {
+            return lhs <= rhs;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct negate  {
+		T operator()(const T& a) const noexcept {
+            return -a;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct plus  {
+		T operator()(const T& a, const T& b) const noexcept {
+            return a + b;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct minus  {
+		T operator()(const T& a, const T& b) const noexcept {
+            return a - b;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct multiplies  {
+		T operator()(const T& a, const T& b) const noexcept {
+            return a * b;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct divides {
+		T operator()(const T& a, const T& b) const noexcept {
+            return a / b;
+        }
+	};
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+	struct modulus {
+		T operator()(const T& a, const T& b) const noexcept {
+            return a % b;
         }
 	};
 
 
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-    T nexthigher(T k) {
+    T nexthigher(T k) noexcept  {
 		k--;
 		for (unsigned int i=1; i< sizeof(T) * 8; i <<= 1)
 			k |= (k >> i);

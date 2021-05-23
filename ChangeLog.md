@@ -7,6 +7,8 @@
 + add container/array
 + add default_deleter and add this support to list
 + add mn::function a lightwight version of std::function
++ add a simple unique_ptr pointer
++ add optional
 
 
 ## Versoin 2.28.3098 April 2021 (unstable beta)

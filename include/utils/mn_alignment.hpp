@@ -36,7 +36,7 @@ namespace mn {
 	        char    x;
 	        T 		y;
 	    };
-	    struct __attribute__ ((aligned (0)))  aligned0 	{  uint8_t member : 4; };
+
 	    struct __attribute__ ((aligned (1)))  aligned1 	{  uint8_t member; };
 		struct __attribute__ ((aligned (2)))  aligned2 	{ uint16_t member; };
 		struct __attribute__ ((aligned (4)))  aligned4 	{ uint32_t member; };
@@ -50,7 +50,7 @@ namespace mn {
         template<size_t N> struct type_with_alignment {
 	        typedef char err_invalid_alignment[N > 0 ? -1 : 1];
 	    };
-        template<> struct type_with_alignment<0> { aligned0 type; };
+
         template<> struct type_with_alignment<1> { aligned1 type; };
         template<> struct type_with_alignment<2> { aligned2 type; };
         template<> struct type_with_alignment<4> { aligned4 type; };
@@ -70,7 +70,6 @@ namespace mn {
         };
     } // internal
 
-    template<> struct is_pod<internal::aligned0> : public true_type{};
     template<> struct is_pod<internal::aligned1> : public true_type{};
 	template<> struct is_pod<internal::aligned2> : public true_type{};
 	template<> struct is_pod<internal::aligned4> : public true_type{};

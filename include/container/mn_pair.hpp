@@ -68,16 +68,7 @@ namespace mn {
 				return second != rhs.second;
 			}
 
-			reference_first& 	first () noexcept { return first; }
-			reference_second& 	second() noexcept { return second; }
 
-			const_reference_first& 	first () const noexcept { return first; }
-			const_reference_second& second() const noexcept { return second; }
-
-
-			void	first (const_reference_first&  val) { first = val; }
-			void 	second(const_reference_second& val) { second = val; }
-		private:
 			first_type first;
 			second_type second;
 		};

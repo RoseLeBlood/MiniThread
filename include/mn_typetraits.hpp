@@ -25,6 +25,102 @@
  * @date 2021.02.14
  */
 namespace mn {
+	template <typename T>
+	struct type_traits {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<const T> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<const T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<volatile T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<const volatile T&> {
+		using value_type = T;
+		using const_type = const T;
+		using reference = T&;
+		using const_reference = const T&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T>
+	struct type_traits<T*> {
+		using value_type = T*;
+		using const_type = const T*;
+		using reference = T*&;
+		using const_reference = const T*&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T, size_t N>
+	struct type_traits<T [N]> {
+	private:
+		typedef T array_type[N];
+	public:
+	   	using value_type = T*;
+	  	using const_type = const T*;
+		using reference = array_type&;
+		using const_reference = const array_type&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
+	template <typename T, size_t N>
+	struct type_traits<const T [N]> {
+	private:
+		typedef const T array_type[N];
+	public:
+	   	using value_type = const T*;
+	  	using const_type = const T*;
+		using reference = array_type&;
+		using const_reference = const array_type&;
+		using pointer = T*;
+		using const_pointer = const T*;
+	};
+
     template <class ...ts> struct make_void { typedef void type; };
     template <class ...ts> using void_t = typename make_void<ts ...>::type;
 

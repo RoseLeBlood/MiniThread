@@ -178,6 +178,7 @@
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/lib/gcc/xtensa-esp32-elf/5.2.0/include" />
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/xtensa-esp32-elf/include" />
 		</Compiler>
+		<Unit filename=".gitignore" />
 		<Unit filename="CODE_OF_CONDUCT.md" />
 		<Unit filename="CODE_OF_CONDUCT_de.md" />
 		<Unit filename="CONTRIBUTING.md" />
@@ -263,6 +264,7 @@
 		<Unit filename="include/mn_msg_task.hpp" />
 		<Unit filename="include/mn_mutex.hpp" />
 		<Unit filename="include/mn_null_lock.hpp" />
+		<Unit filename="include/mn_optional.hpp" />
 		<Unit filename="include/mn_pin.hpp" />
 		<Unit filename="include/mn_pointer.hpp" />
 		<Unit filename="include/mn_recursive_mutex.hpp" />
@@ -331,6 +333,8 @@
 		<Unit filename="include/slock/mn_system_lock.hpp" />
 		<Unit filename="include/utils/mn_addressof.hpp" />
 		<Unit filename="include/utils/mn_alignment.hpp" />
+		<Unit filename="include/utils/mn_compressed_pair.hpp" />
+		<Unit filename="include/utils/mn_ebo_storage.hpp" />
 		<Unit filename="include/utils/mn_inttokey.hpp" />
 		<Unit filename="include/utils/mn_nlz.hpp" />
 		<Unit filename="include/utils/mn_random.hpp" />
@@ -350,7 +354,6 @@
 		<Unit filename="src/miniThread.cpp" />
 		<Unit filename="src/mn_atomic_counter.cpp" />
 		<Unit filename="src/mn_autolock.cpp" />
-		<Unit filename="src/mn_basic_ip6_endpoint.cpp" />
 		<Unit filename="src/mn_basic_semaphore.cpp" />
 		<Unit filename="src/mn_basic_timespan.cpp" />
 		<Unit filename="src/mn_basic_timestamp.cpp" />
@@ -414,8 +417,8 @@
 		<Unit filename="update-docs.sh" />
 		<Extensions>
 			<AutoVersioning>
-				<Scheme minor_max="100" build_max="0" rev_max="0" rev_rand_max="1000" build_times_to_increment_minor="100000" />
-				<Settings autoincrement="0" date_declarations="0" use_define="1" update_manifest="0" do_auto_increment="1" ask_to_increment="1" language="C++" svn="0" svn_directory="" header_path="include/mn_auto_version.hpp" />
+				<Scheme minor_max="100" build_max="0" rev_max="0" rev_rand_max="1000" build_times_to_increment_minor="20000" />
+				<Settings autoincrement="0" date_declarations="1" use_define="1" update_manifest="0" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="include/mn_auto_version.hpp" />
 				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
 				<Code header_guard="_MINLIB_AUTO_VERSION_H_" namespace="mn" prefix="MN_VERSION" />
 			</AutoVersioning>

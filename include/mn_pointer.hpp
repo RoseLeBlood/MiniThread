@@ -33,7 +33,7 @@
 #include "pointer/mn_any_ptr.hpp"
 #include "pointer/mn_auto_ptr.hpp"
 
-
+#include "pointer/mn_unique_ptr.hpp"
 
 namespace mn {
 
