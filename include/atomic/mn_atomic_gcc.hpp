@@ -87,21 +87,31 @@ namespace mn {
         value_type exchange (value_type v, memory_order order = memory_order::SeqCst)
             { return __atomic_exchange_n (&__tValue, v, static_cast<int>(order)); }
 
-        bool compare_exchange_n (value_type& expected, value_type& desired, bool b, memory_order order = memory_order::SeqCst)
-            { return __atomic_compare_exchange_n (&__tValue, &expected, desired, b, order, static_cast<int>(order)); }
+        bool compare_exchange_n (value_type& expected, value_type& desired, bool b,
+								 memory_order order = memory_order::SeqCst)
+            { return __atomic_compare_exchange_n (&__tValue, &expected, desired, b,
+												order, static_cast<int>(order)); }
 
-        bool compare_exchange_t (value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return compare_exchange_n (&expected, desired, true, static_cast<int>(order)); }
+        bool compare_exchange_t (value_type& expected, value_type& desired,
+								memory_order order = memory_order::SeqCst)
+            { return compare_exchange_n (&expected, desired, true,
+										static_cast<int>(order)); }
 
-        bool compare_exchange_f (value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return compare_exchange_n (&expected, desired, false, static_cast<int>(order)); }
+        bool compare_exchange_f (value_type& expected, value_type& desired,
+								memory_order order = memory_order::SeqCst)
+            { return compare_exchange_n (&expected, desired, false,
+										static_cast<int>(order)); }
 
 
-        bool compare_exchange_strong(value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 0, order, static_cast<int>(order)); }
+        bool compare_exchange_strong(value_type& expected, value_type& desired,
+									memory_order order = memory_order::SeqCst)
+            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 0,
+											order, static_cast<int>(order)); }
 
-        bool compare_exchange_weak(value_type& expected, value_type& desired, memory_order order = memory_order::SeqCst)
-            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 1, order, static_cast<int>(order)); }
+        bool compare_exchange_weak(value_type& expected, value_type& desired,
+								memory_order order = memory_order::SeqCst)
+            { return _atomic_compare_exchange (&__tValue, &expected, &desired, 1,
+											order, static_cast<int>(order)); }
 
         value_type fetch_add (value_type v, memory_order order = memory_order::SeqCst )
             { return __atomic_fetch_add (&__tValue, v, static_cast<int>(order)); }

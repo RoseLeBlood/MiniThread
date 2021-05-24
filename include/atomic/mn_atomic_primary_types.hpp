@@ -23,8 +23,8 @@
 
 #if defined(__GNUC__) || defined(__clang__) || defined(__xlc__)
     #include "mn_atomic_gcc.hpp"
-    #define BASE_ATOMIC_TYPE basic_atomic_gcc
-    #define BASE_ATOMIC_SMART_POINTER basic_smart_pointer_atomic_gcc
+    #define BASE_ATOMIC_TYPE mn::basic_atomic_gcc
+    #define BASE_ATOMIC_SMART_POINTER mn::basic_smart_pointer_atomic_gcc
 
     #undef ATOMIC_VAR_INIT
     #define	ATOMIC_VAR_INIT(value)		{ .__tValue = (value) }

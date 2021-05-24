@@ -23,24 +23,38 @@
 #include <stddef.h>
 
 #include "mn_copyable.hpp"
+#include "mn_void.hpp"
 
 #define MNTHREAD_STATIC_CAST_BYTE(BYTE)			static_cast<unsigned char>(BYTE)
 
 #define offsetof(TYPE, MEMBER) 					__builtin_offsetof (TYPE, MEMBER)
 
-namespace mn {
 
-    using max_align_t = long double;
-    using nullptr_t = decltype(nullptr);
+namespace mn {
+    using max_align_t 	= long double;
+    using nullptr_t 	= decltype(nullptr);
     using addrof_null_t = nullptr_t ;
 
-    using size_t = MN_THREAD_CONFIG_SIZE_TYPE;
-    using ptrdiff_t = long;
-    using uptrdiff_t = unsigned long;
-    using intmax_t = int;
-    using uintmax_t = unsigned int;
+    using size_t 	 	= MN_THREAD_CONFIG_SIZE_TYPE;
+    using ptrdiff_t  	= long;
+    using uptrdiff_t 	= unsigned long;
+    using intmax_t 	 	= signed long;
+    using uintmax_t 	= unsigned long;
 
 	constexpr size_t max_alignment = alignof(max_align_t);
+
+	 namespace math {
+		constexpr double pi               = 3.14159265358979;
+		constexpr double pi_reciprocal    = 0.31830988618379;
+		constexpr double pi_squared       = 9.86960440108936;
+		constexpr double e                = 2.71828182845905;
+		constexpr double e_reciprocal     = 0.36787944117144;
+		constexpr double e_squared        = 7.38905609893065;
+		constexpr double root2            = 1.41421356237310;
+		constexpr double root2_reciprocal = 0.70710678118655;
+		constexpr double euler            = 0.57721566490153;
+		constexpr double golden_ratio     = 1.61803398874989;
+	}
 
     enum class byte : unsigned char { };
 

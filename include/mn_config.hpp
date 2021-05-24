@@ -147,6 +147,12 @@
 #ifndef MN_THREAD_CONFIG_BASIC_ALIGNMENT
     #define MN_THREAD_CONFIG_BASIC_ALIGNMENT     sizeof(unsigned char*)
 #endif
+
+#ifndef MN_THREAD_CONFIG_BASIC_HASHMUL_VAL
+	/// Basic value for struct::hash as basic hash calculate @see mn::hash
+	#define MN_THREAD_CONFIG_BASIC_HASHMUL_VAL 2149645487U
+#endif // MN_THREAD_CONFIG_BASIC_HASHMUL_VAL
+
 //==================================
 // end basic config
 

@@ -34,6 +34,8 @@ namespace mn {
     template< bool B, typename T, typename F > struct conditional              { using type = T; };
     template<         typename T, typename F > struct conditional<false, T, F> { using type = F; };
 
+
+
     template<typename...>
     struct bit_or;
 
@@ -222,6 +224,52 @@ namespace mn {
 	template<typename T>
 	struct logic_not {
 		bool operator()(const T& a) const noexcept { return !a; }
+	};
+
+	template <size_t VAL, size_t X = 1>
+	struct sqrt{
+		using type = typename mn::conditional<
+			((X * X) > VAL), mn::integral_constant<intmax_t, X - 1>, mn::sqrt<VAL, X + 1> >::type;
+		static constexpr size_t value = type::value;
+	};
+
+	/**
+	 * @brief Calculates the Nth factorial value.
+	 * @tparam N The number to find the factorial value of.
+	 */
+	template <size_t N>
+	struct factorial {
+		static constexpr size_t value = N * factorial<N - 1>::value;
+	};
+	/**
+	 * @brief Calculates the 0 factorial value.
+	 */
+	template <>
+	struct factorial<0> {
+		static constexpr size_t value = 1;
+	};
+
+	/**
+	 * @brief Calculates the Nth Fibonacci value.
+	 * @tparam N The number to find the Fibbonacci value of.
+	 */
+	template <size_t N>
+	struct fibonacci {
+		static constexpr size_t value = fibonacci<N - 1>::value + fibonacci<N - 2>::value;
+	};
+	/**
+	 * @brief Calculates the 0 Fibonacci value.
+	 */
+	template <>
+	struct fibonacci<0> {
+		static constexpr size_t value = 0;
+	};
+	/**
+	 * @brief Calculates the 1 Fibonacci value.
+	 */
+	template <>
+	struct fibonacci<1> {
+		static constexpr size_t value = 1;
 	};
 }
 

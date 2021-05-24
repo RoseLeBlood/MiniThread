@@ -53,9 +53,9 @@ namespace mn {
 		 * @ingroup container
 		 */
 		template<typename T, size_t N>
-		class basic_array {
+		class basic_fixed_array {
 		public:
-			using self_type = basic_array<T, N>;
+			using self_type = basic_fixed_array<T, N>;
 
 			using value_type = T;
 			using pointer = T*;
@@ -68,9 +68,9 @@ namespace mn {
 			using size_type = mn::size_t;
 			using difference_type = mn::ptrdiff_t;
 
-			basic_array() { fill(0); }
-			basic_array(const value_type& val) 	{ fill(val); }
-			basic_array(const self_type& other) {
+			basic_fixed_array() { }
+			basic_fixed_array(const value_type& val) 	{ fill(val); }
+			basic_fixed_array(const self_type& other) {
 				memcpy(m_nData, other.m_nData, sizeof(m_nData));
 			}
 
@@ -94,8 +94,11 @@ namespace mn {
 			reference 		at(size_type pos) 			{ return m_nData[pos]; }
 			const_reference at(size_type pos) const 	{ return m_nData[pos]; }
 
-			constexpr bool empty() const noexcept {
+			constexpr bool is_empty() const noexcept {
 				return size() == 0; }
+
+			constexpr bool is_full() const noexcept {
+				return size() == (N-1); }
 
 			void fill(const value_type& val) {
 				mn::fill_n<value_type>(begin(), size(), val);
@@ -116,67 +119,68 @@ namespace mn {
 					if(m_nData[i] != other.m_nData[i]) return false;
 				return true;
 			}
+
 		private:
 			value_type m_nData[N];
 		};
 
 		// Array comparisons.
 		template<typename T, size_t N>
-		inline bool  operator == (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator == (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			return a.is_equele(b);
 		}
 
 		template<typename T, size_t N>
-		inline bool  operator != (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator != (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			return !(a.is_equele(b));
 		}
 
 
  		template<typename T, size_t N>
-		inline bool  operator < (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator < (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			for(int i = 0; i<N; i++)
 				if(a[i] >= b[i]) return false;
 			return true;
 		}
 
 		template<typename T, size_t N>
-		inline bool  operator <= (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator <= (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			for(int i = 0; i<N; i++)
 				if(a[i] > b[i]) return false;
 			return true;
 		}
 
 		template<typename T, size_t N>
-		inline bool  operator > (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator > (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			for(int i = 0; i<N; i++)
 				if(a[i] <= b[i]) return false;
 			return true;
 		}
 
 		template<typename T, size_t N>
-		inline bool  operator >= (const basic_array<T, N>& a, const basic_array<T, N>& b) {
+		inline bool  operator >= (const basic_fixed_array<T, N>& a, const basic_fixed_array<T, N>& b) {
 			for(int i = 0; i<N; i++)
 				if(a[i] < b[i]) return false;
 			return true;
 		}
 
 		template<typename T, size_t N>
-		inline void swap (basic_array<T, N>& a, basic_array<T, N>& b) {
+		inline void swap (basic_fixed_array<T, N>& a, basic_fixed_array<T, N>& b) {
 			a.swap(b);
 		}
 
 		template<typename T, size_t N>
-		inline void fill (basic_array<T, N>& a, const int val) {
+		inline void fill (basic_fixed_array<T, N>& a, const int val) {
 			a.fill(val);
 		}
 
 		template<typename T, size_t N>
-		inline void zero (basic_array<T, N>& a) {
+		inline void zero (basic_fixed_array<T, N>& a) {
 			a.fill(0);
 		}
 
 		template<typename T, size_t N>
-		using array = basic_array<T, N>;
+		using fixed_array = basic_fixed_array<T, N>;
 	}
 }
 

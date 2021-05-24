@@ -204,6 +204,9 @@
 		<Unit filename="include/atomic/mn_atomic_weak_ptr.hpp" />
 		<Unit filename="include/container/mn_any.hpp" />
 		<Unit filename="include/container/mn_array.hpp" />
+		<Unit filename="include/container/mn_atomic_queue" />
+		<Unit filename="include/container/mn_atomic_queue.hpp" />
+		<Unit filename="include/container/mn_basic_light_map.hpp" />
 		<Unit filename="include/container/mn_biqueue.hpp" />
 		<Unit filename="include/container/mn_deque.hpp" />
 		<Unit filename="include/container/mn_fixed_sorted_vector.hpp" />
@@ -226,6 +229,7 @@
 		<Unit filename="include/mn_allocator.hpp" />
 		<Unit filename="include/mn_atomic.hpp" />
 		<Unit filename="include/mn_atomic_counter.hpp" />
+		<Unit filename="include/mn_atomic_singleton.hpp" />
 		<Unit filename="include/mn_atomic_spinlock.hpp" />
 		<Unit filename="include/mn_auto_release.hpp" />
 		<Unit filename="include/mn_auto_version.hpp" />
@@ -248,6 +252,7 @@
 		<Unit filename="include/mn_def.hpp" />
 		<Unit filename="include/mn_defines.hpp" />
 		<Unit filename="include/mn_deleter.hpp" />
+		<Unit filename="include/mn_endianness.hpp" />
 		<Unit filename="include/mn_error.hpp" />
 		<Unit filename="include/mn_error_preview.hpp" />
 		<Unit filename="include/mn_eventgroup.hpp" />
@@ -255,6 +260,7 @@
 		<Unit filename="include/mn_foreign_task.hpp" />
 		<Unit filename="include/mn_function.hpp" />
 		<Unit filename="include/mn_functional.hpp" />
+		<Unit filename="include/mn_hash.hpp" />
 		<Unit filename="include/mn_iterator.hpp" />
 		<Unit filename="include/mn_iterator_pair.hpp" />
 		<Unit filename="include/mn_itimer.hpp" />
@@ -287,6 +293,7 @@
 		<Unit filename="include/mn_typetraits.hpp" />
 		<Unit filename="include/mn_uint128.hpp" />
 		<Unit filename="include/mn_version.hpp" />
+		<Unit filename="include/mn_void.hpp" />
 		<Unit filename="include/net/mn_basic_dgram_socket.hpp" />
 		<Unit filename="include/net/mn_basic_endpoint.hpp" />
 		<Unit filename="include/net/mn_basic_ip4_address.hpp" />
@@ -349,6 +356,7 @@
 		<Unit filename="src/CMakeLists.txt" />
 		<Unit filename="src/allocator/default_allocator.cpp" />
 		<Unit filename="src/allocator/mn_basic_allocator.cpp" />
+		<Unit filename="src/container/mn_basic_light_map.cpp" />
 		<Unit filename="src/excp/mn_eventgroup_exception.cpp" />
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />
 		<Unit filename="src/miniThread.cpp" />
@@ -382,6 +390,7 @@
 		<Unit filename="src/mn_timer.cpp" />
 		<Unit filename="src/mn_timer_esp32.cpp" />
 		<Unit filename="src/mn_version.cpp" />
+		<Unit filename="src/mn_void.cpp" />
 		<Unit filename="src/net/mn_basic_dgram_socket.cpp" />
 		<Unit filename="src/net/mn_basic_endpoint.cpp" />
 		<Unit filename="src/net/mn_basic_ip4_address.cpp" />

@@ -9,6 +9,11 @@
 + add mn::function a lightwight version of std::function
 + add a simple unique_ptr pointer
 + add optional
++ add helper function to mn_functional
+	- sqrt
+	- factorial
+	- fibonacci
++ add simple hash support
 
 
 ## Versoin 2.28.3098 April 2021 (unstable beta)

@@ -259,30 +259,27 @@ namespace mn {
 		return k+1;
 	}
 
-	using in_place_t = internal::in_place_type;
 
-	MN_TEMPLATE_FULL_DECL_ONE(class, T)
-		using in_place_type_tag = internal::in_place_type_tag;
-	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
-		using in_place_index_tag = internal::in_place_index_tag;
+	template <typename T>
+	struct inc {
+		using value_type = T;
+		value_type operator()(value_type x) const { return ++x; }
+	};
 
-	MN_TEMPLATE_FULL_DECL_ONE(class, T)
-	inline in_place_t in_place( in_place_type_tag<T> = in_place_type_tag<T>() ) {
-		return in_place_t();
+	template <typename T>
+	struct dec {
+		using value_type = T;
+		value_type operator()(value_type x) const { return --x; }
+	};
+
+	template <typename T, typename R>
+	inline R _reinterpret_cast(T* p) {
+		return static_cast<R>(static_cast<void*>(p));
 	}
 
-	MN_TEMPLATE_FULL_DECL_ONE(class, T)
-	inline in_place_t in_place_type( in_place_type_tag<T> = in_place_type_tag<T>() ) {
-		return in_place_t();
-	}
-
-	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
-	inline in_place_t in_place( in_place_index_tag<K> = in_place_index_tag<K>() ) {
-		return in_place_t();
-	}
-	MN_TEMPLATE_FULL_DECL_ONE(mn::size_t, K)
-	inline in_place_t in_place_index( in_place_index_tag<K> = in_place_index_tag<K>() ) {
-		return in_place_t();
+	template <typename T, typename R>
+	inline const R _const_reinterpret_cast(const T* p) {
+		return static_cast<const R>(static_cast<const void*>(p));
 	}
 }
 

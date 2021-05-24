@@ -101,6 +101,13 @@ namespace mn {
                 return m_end >= m_begin;
             }
 
+            void swap( self_type& other ) {
+				mn::swap(m_begin, 		other.m_begin);
+				mn::swap(m_end, 		other.m_end);
+				mn::swap(m_capacityEnd, other.m_capacityEnd);
+				mn::swap(m_allocator, 	other.m_allocator);
+			}
+
             pointer              m_begin;
             pointer              m_end;
             pointer              m_capacityEnd;
@@ -180,6 +187,8 @@ namespace mn {
 
             reference at(size_type i)                { assert(i < size()); return m_begin[i]; }
             const reference const_at(size_type i)    { assert(i < size()); return m_begin[i]; }
+
+            using TStorage::swap;
 
             void push_back(const reference v) {
                 if (m_end >= m_capacityEnd) grow();
@@ -290,7 +299,6 @@ namespace mn {
             iterator erase(iterator it) {
                 assert(validate_iterator(it));
                 assert(it != end());
-                assert(invariant());
 
                 // Move everything down, overwriting *it
                 if (it + 1 < m_end) {
@@ -303,7 +311,6 @@ namespace mn {
             iterator erase(iterator first, iterator last) {
                 assert(validate_iterator(first));
                 assert(validate_iterator(last));
-                assert(invariant());
 
                 if (last <= first) return end();
 
@@ -389,6 +396,7 @@ namespace mn {
             const reference operator[](size_type i) const {
                 return at(i);
             }
+
         private:
             size_type compute_new_capacity(size_type newMinCapacity) const {
                 const size_type c = capacity();
@@ -433,8 +441,11 @@ namespace mn {
             using TStorage::reallocate;
         };
 
-        template<typename T >
-        using vector = basic_vector<T, mn::memory::default_allocator>;
+		template<typename T, class TAllocator =  mn::memory::default_allocator,
+				 class TStorage = basic_vector_storage<T, TAllocator> >
+		void swap(basic_vector<T, TAllocator, TStorage>& a, basic_vector<T, TAllocator, TStorage>& b) {
+			a.swap(b);
+		}
 
 
         template<typename T, int calc = 0, class TAllocator =  mn::memory::default_allocator,
@@ -599,6 +610,10 @@ namespace mn {
                                                     const T s) {
             return v * s;
         }
+
+        template<typename T, class TAllocator =  mn::memory::default_allocator,
+				 class TStorage = basic_vector_storage<T, TAllocator> >
+        using vector = basic_vector<T, mn::memory::default_allocator>;
     }
 }
 #endif

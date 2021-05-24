@@ -110,13 +110,15 @@ namespace mn {
     }
 
 
-    template<typename TForwardIter, typename TDistance = typename iterator_traits<TForwardIter>::difference_type>
+    template<typename TForwardIter,
+			 typename TDistance = typename iterator_traits<TForwardIter>::difference_type>
     TForwardIter next(TForwardIter x, TDistance n = 1) {
         advance<TForwardIter, TDistance> (x, n);
         return x;
     }
 
-    template<typename TBidirectionalIter, typename TDistance = typename iterator_traits<TBidirectionalIter>::difference_type>
+    template<typename TBidirectionalIter,
+    		 typename TDistance = typename iterator_traits<TBidirectionalIter>::difference_type>
     TBidirectionalIter prev(TBidirectionalIter x, TDistance n = 1) {
         advance<TBidirectionalIter, TDistance> (x, -n);
         return x;

@@ -232,36 +232,36 @@ namespace mn {
 		 * @brief is the buffer  empty?
 		 * @return If true then is the buffer empty and if false then not.
 		 */
-		bool is_empty() const				{ return m_sUsed == 0; }
+		constexpr bool is_empty() const noexcept			{ return m_sUsed == 0; }
 
 		/**
 		 * @brief is the buffer  full?
 		 * @return If true then is the buffer full and if false then not.
 		 */
-		bool is_full() const 				{ return m_sUsed == m_sSize; }
+		constexpr bool is_full() const noexcept				{ return m_sUsed == m_sSize; }
 		/**
 		 * @brief Get the allocated memory size in elements.
 		 * @return The allocated memory size in elements.
 		 */
-		size_type get_size() const	 		{ return m_sSize; }
+		constexpr size_type get_size() const noexcept 		{ return m_sSize; }
 
 		/**
 		 * @brief Get the allocated memory size in bytes.
 		 * @return The allocated memory size in bytes.
 		 */
-		size_type get_size_bytes() const 	{ return m_sSize * sizeof(value_type); }
+		constexpr size_type get_size_bytes() const noexcept { return m_sSize * sizeof(value_type); }
 
 		/**
 		 * @brief Get the used size of the buffer in elements.
 		 * @return The used size of the buffer in elements.
 		 */
-		size_type get_used() const 			{ return m_sUsed; }
+		constexpr size_type get_used() const noexcept		{ return m_sUsed; }
 
 		/**
 		 * @brief Get the used size of the buffer in bytes.
 		 * @return The used size of the buffer in bytes.
 		 */
-		size_type get_used_bytes() const 	{ return m_sUsed * sizeof(value_type); }
+		constexpr size_type get_used_bytes() const noexcept { return m_sUsed * sizeof(value_type); }
 
 		/**
 		 * @brief Compare operator.

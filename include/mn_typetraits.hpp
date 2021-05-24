@@ -19,6 +19,7 @@
 #define _MINLIB_TYPE_TRAITS_H_
 
 #include "mn_config.hpp"
+#include "mn_def.hpp"
 
 /**
  * @author Amber-Sophia Schröck
@@ -120,9 +121,6 @@ namespace mn {
 		using pointer = T*;
 		using const_pointer = const T*;
 	};
-
-    template <class ...ts> struct make_void { typedef void type; };
-    template <class ...ts> using void_t = typename make_void<ts ...>::type;
 
     template<class T, T v> struct integral_constant {
         enum { value = v  };
