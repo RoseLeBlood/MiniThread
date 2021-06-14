@@ -45,8 +45,21 @@ namespace mn {
   //  construtor
   //-----------------------------------
   basic_semaphore::basic_semaphore()
-    : m_pSpinlock(NULL) { }
+    : m_pSpinlock(NULL) { m_isLocked = false; }
 
+#if( configSUPPORT_STATIC_ALLOCATION == 0 )
+  basic_semaphore::basic_semaphore(const basic_semaphore& other)
+  	: m_pSpinlock(other.m_pSpinlock),
+	  m_iCreateErrorCode(other.m_iCreateErrorCode),
+	  m_isLocked(other.m_isLocked) { }
+
+  basic_semaphore::basic_semaphore(basic_semaphore&& other)
+  	: m_pSpinlock( mn::move(other.m_pSpinlock)),
+	  m_iCreateErrorCode( mn::move(other.m_iCreateErrorCode)),
+	  m_isLocked( mn::move(other.m_isLocked)) { }
+
+
+#endif
 
   //-----------------------------------
   //  lock
@@ -65,6 +78,7 @@ namespace mn {
     if(success != pdTRUE) {
       return ERR_SPINLOCK_LOCK;
     }
+    m_isLocked = true;
     return ERR_SPINLOCK_OK;
   }
 
@@ -85,7 +99,7 @@ namespace mn {
     if(success != pdTRUE) {
       return ERR_SPINLOCK_UNLOCK;
     }
-
+	m_isLocked = false;
     return ERR_SPINLOCK_OK;
   }
 

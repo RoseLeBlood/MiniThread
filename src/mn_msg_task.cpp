@@ -47,12 +47,12 @@ namespace mn {
         //-----------------------------------
         //  on_task
         //-----------------------------------
-        void* basic_message_task::on_task() {
+        int basic_message_task::on_task() {
             bool m_bRunning = true;
             task_message *msg;
 
             while(m_bRunning) {
-                msg = NULL;
+                msg = nullptr;
 
 				m_ltMessageQueueLock.lock();
 
@@ -71,7 +71,7 @@ namespace mn {
 				m_ltMessageQueueLock.unlock();
             } //while(m_bRunning)
 
-            return NULL;
+            return ERR_TASK_OK;
         }
     }
 }

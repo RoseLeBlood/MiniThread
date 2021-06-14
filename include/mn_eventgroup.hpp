@@ -1,20 +1,21 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify
-*it under the terms of the GNU Lesser General Public License as published by
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but
-*WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef MINLIB_ESP32_EVENT_GROUP_
 #define MINLIB_ESP32_EVENT_GROUP_
 
@@ -36,6 +37,8 @@ namespace mn {
         /**
          * @brief Consruct a new event group.
          *
+         * @param strName The name for this event group, only for debugging.
+         *
          * @note Although event groups are not related to ticks, for internal implementation
          * reasons the number of bits available for use in an event group is dependent
          * on the configUSE_16_BIT_TICKS setting in FreeRTOSConfig.h.  If
@@ -44,8 +47,9 @@ namespace mn {
          * 24 usable bits (bit 0 to bit 23).  The EventBits_t type is used to store
          * event bits within an event group.
          *
+         * @note Version >2.30 call create after this!
          */
-        basic_event_group();
+        basic_event_group(const char* strName = "unamed");
         /**
          * @brief Consruct from a FreeRTOS created event group
          */
@@ -59,7 +63,7 @@ namespace mn {
         virtual ~basic_event_group();
 
         /**
-         * @brief Create the event group, only call when the given handle null is
+         * @brief Create the event group.
          * @return
          *		- ERR_MNTHREAD_NULL: Error on create the event group.
          *		- NO_ERROR: The event group are sucessfull created
@@ -93,6 +97,22 @@ namespace mn {
                     TickType_t xTicksToWait);
 
         /**
+         * @brief Block to wait for one bit to be set within a previously created event group.
+         *
+         * This function cannot be called from an interrupt.
+         *
+         * @param uxBitToWaitFor A bitwise value that indicates the bit
+         * or bits to test inside the event group.
+         *
+         * @param xTicksToWait The maximum amount of time (specified in
+         * 'ticks') to wait for one/all (depending on the xWaitForAllBits
+         * value) of the bits specified by uxBitToWaitFor to become set.
+         *
+         * @return If true then was set the bit and false if not.
+         */
+        bool is_bit( const EventBits_t uxBitToWaitFor, uint32_t timeout);
+
+		/**
          * @brief Block to wait for one or more bits to be set within a
          * previously created event group.
          *
@@ -189,6 +209,18 @@ namespace mn {
          * @return True The basic_event_group is initilisiert and false if not.
          */
         bool is_init() { return m_pHandle != NULL; }
+
+        /**
+         * @brief Get the debug name.
+         * @return The debug name of this event group.
+         */
+        const char* get_name() { return m_strName; }
+
+        /**
+         * @brief Set a new debug name for this event group.
+         * @param strName The name of this class.
+         */
+        void set_name(const char* strName);
 	private:
 		/**
 		 * @brief Initialisert the eventgroup
@@ -199,6 +231,10 @@ namespace mn {
          *  FreeRTOS Event Group handle.
          */
         EventGroupHandle_t m_pHandle;
+		/**
+		 * The name of this event group, for debuging.
+		 */
+        char m_strName[16];
 
 	#if( configSUPPORT_STATIC_ALLOCATION == 1 )
 		/**

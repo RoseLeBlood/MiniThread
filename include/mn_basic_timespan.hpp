@@ -1,20 +1,21 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify
-*it under the terms of the GNU Lesser General Public License as published by
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but
-*WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef _MINLIB_b7a90cc_ab5c_11eb_aa97_e9108ec71670_H__
 #define _MINLIB_b7a90cc_ab5c_11eb_aa97_e9108ec71670_H__
 
@@ -50,7 +51,7 @@ namespace mn {
 		/**
 		 * @brief Construct a new time span and initializes it with the given timeval.
 		 */
-		basic_timespan(struct timeval val);
+		basic_timespan(struct timeval& val);
 
 		/**
 		 * @brief Construct a new time span and initializes it the given values.
@@ -61,7 +62,6 @@ namespace mn {
 		 * @brief Construct a new time span from another time span.
 		 */
 		basic_timespan(const self_type& other);
-
 
 
 		/**
@@ -184,6 +184,12 @@ namespace mn {
 
 		self_type operator - (time_type ms) const
 			{ return self_type(m_timeSpan - ms); }
+
+		/**
+		 * @brief Get the current time.
+		 * @return The current time.
+		 */
+		static basic_timespan now();
 	public:
 		/**
 		 * @brief Swap this time span with a other time span

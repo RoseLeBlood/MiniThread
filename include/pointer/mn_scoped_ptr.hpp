@@ -52,6 +52,21 @@ namespace mn {
         private:
             pointer m_pPointer;
         };
+
+        /**
+		 * @brief Make a scoped pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline basic_scoped_ptr<T> make_scoped(Args&&... args) {
+			return basic_scoped_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
+
+        template <typename T>
+        using scoped_ptr = basic_scoped_ptr<T>;
+
+
     } // namespace pointer
 } // namespace mn
 

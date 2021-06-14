@@ -55,10 +55,12 @@ namespace mn {
 			using const_pointer = const TPairType*;
 
 			using difference_type = mn::ptrdiff_t;
-			using size_type = mn::size_t
+			using size_type = mn::size_t;
 
 			using iterator = TValue*;
 			using const_iterator = const TValue*;
+
+			using self_type = basic_light_map < TKey, TValue, TALLOCATOR, TPairType, TContainer>;
 
 			basic_light_map(const size_type start_size = 32) noexcept
 				:  m_ayKeyValue(start_size) { }
@@ -82,14 +84,14 @@ namespace mn {
 			mn::container::pair<iterator, bool> assign(const value_type& vValue) {
 				mn::container::pair<iterator, bool> _ret(vValue.seconde, false);
 
-				for(TContainer::iterator it = m_ayKeyValue.begin();
+				for(typename TContainer::iterator it = m_ayKeyValue.begin();
 							it != m_ayKeyValue.end(); it++) {
 					value_type _pair = *it;
 
 					if(_pair.first == vValue.first) {
 						m_ayKeyValue.erase(it);
 						m_ayKeyValue.insert(vValue);
-						_ret->second = tue;
+						_ret->second = true;
 					}
 				}
 				return _ret;
@@ -121,7 +123,7 @@ namespace mn {
 				mn::container::pair<iterator, bool> result(&value, false);
 
 				if(find(value.first) == nullptr) {
-					m_ayKeyValue.push_back(_value);
+					m_ayKeyValue.push_back(value);
 					result.second = find(value.first) != nullptr;
 				}
 
@@ -132,7 +134,7 @@ namespace mn {
 			void insert_or_assign(const key_type& key, Args && ... args) {
 				value_type _value(key, mn::forward<Args>(args)...);
 
-				auto iter = m_map.find(key);
+				auto iter = find(key);
 				if(iter == nullptr)
 					insert(_value);
 				else
@@ -187,11 +189,11 @@ namespace mn {
 			 * @return Number of elements removed (0 or 1).
 			 */
 			size_type erase( const key_type& tKey ) {
-				if(is_empty()) return nullptr;
+				if(empty()) return 0;
 
 				size_type _ret  = 0;
 
-				for(TContainer::iterator it = m_ayKeyValue.begin();
+				for(typename TContainer::iterator it = m_ayKeyValue.begin();
 							it != m_ayKeyValue.end(); it++) {
 					value_type _pair = *it;
 
@@ -208,9 +210,9 @@ namespace mn {
 			 * @return The associerte value with this key, when not exist then return the end();
 			 */
 			iterator find(const key_type& tKey) noexcept {
-				if(is_empty()) return nullptr;
+				if(empty()) return nullptr;
 
-				for(TContainer::iterator it = m_ayKeyValue.begin();
+				for(typename TContainer::iterator it = m_ayKeyValue.begin();
 							it != m_ayKeyValue.end(); it++) {
 					value_type _pair = *it;
 
@@ -228,9 +230,9 @@ namespace mn {
 			 * setted alternative value.
 			 */
 			const_iterator find(const key_type& tKey) const noexcept {
-				if(is_empty()) return nullptr;
+				if(empty()) return nullptr;
 
-				for(TContainer::iterator it = m_ayKeyValue.begin();
+				for(typename TContainer::iterator it = m_ayKeyValue.begin();
 							it != m_ayKeyValue.end(); it++) {
 					value_type _pair = *it;
 
@@ -263,8 +265,8 @@ namespace mn {
 			 * @param key Value of the elements to count.
 			 * @return Number of elements with key that compares equivalent to key, which is either 1 or 0.
 			 */
-			size_type count( const Key& key ) const {
-				return (find(key) != nullptr) 1 : 0;
+			size_type count( const key_type& key ) const {
+				return (find(key) != nullptr) ? 1 : 0;
 			}
 
 

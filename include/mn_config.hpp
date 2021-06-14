@@ -1,20 +1,21 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify
-*it under the terms of the GNU Lesser General Public License as published by
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but
-*WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2018 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 
 #ifndef __MINLIB_MNTHREAD_CONFIG_H__
 #define __MINLIB_MNTHREAD_CONFIG_H__
@@ -292,7 +293,7 @@
      * @note default: Priority for the workqueue single-threaded thread
      * @note default: basic_thread::PriorityLow
      */
-    #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      basic_task::PriorityLow
+    #define MN_THREAD_CONFIG_WORKQUEUE_SINGLE_PRIORITY      mn::basic_task::priority::Low
 #endif
 
 #ifndef MN_THREAD_CONFIG_WORKQUEUE_MULTI_WORKER
@@ -324,7 +325,7 @@
      * @note default: Priority for the workqueue multi-threaded for all worked thread
      * @note default: basic_thread::PriorityLow
      */
-    #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      basic_task::PriorityLow
+    #define MN_THREAD_CONFIG_WORKQUEUE_MULTI_PRIORITY      mn::basic_task::priority::Low
 #endif
 //==================================
 // end workqueue config

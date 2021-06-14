@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 2.29.8995 Jun 2021 (unstable beta)
++ remove build errors
++ add numeric_limits
++ change return variable from void* to int in funtion basic_task::on_task
+
+
 ## Version 2.29.8906 Mai 2021 (unstable beta)
 + update mn::container and mn_buffer now support the new allocator system
 + add allocator_typetraits
@@ -14,7 +20,14 @@
 	- factorial
 	- fibonacci
 + add simple hash support
-
+rename array -> fixed_array
+add atomic utils:
+        - basic_atomic_singleton : Singleton with double-checked locking pattern with atomic and mutex lock
+        - atomic_queue: A basic lockfree atomic queue
+add a basic map : basic_light_map
+add endianess function - see include/mn_endianness.hpp
+add basic_void_type for void_t type
+add value_ptr and update clone_ptr to standard of c++11 and add mn::initializer_list
 
 ## Versoin 2.28.3098 April 2021 (unstable beta)
 + add atomic_counter class

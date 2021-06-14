@@ -315,8 +315,19 @@ namespace mn {
     struct is_floating_point<float> : public integral_constant<bool, true> { };
 
     template<>
-    struct is_floating_point<double>
-    	: public integral_constant<bool, true> { };
+    struct is_floating_point<double> : public integral_constant<bool, true> { };
+
+	template <>
+	struct is_floating_point<long double> : public integral_constant<bool, true> { };
+
+	template <typename T>
+	struct is_floating_point<const T> : is_floating_point<T> {};
+
+	template <typename T>
+	struct is_floating_point<volatile T> : is_floating_point<T> {};
+
+	template <typename T>
+	struct is_floating_point<const volatile T> : is_floating_point<T> {};
 
 	 /// is_lvalue_reference
   	template<typename>
@@ -324,6 +335,7 @@ namespace mn {
 
   	template<typename T>
     struct is_lvalue_reference<T&> : public true_type { };
+
 
     /// is_rvalue_reference
   	template<typename>
@@ -375,28 +387,85 @@ namespace mn {
 		: public integral_constant< bool, ! (is_function<T>::value |  is_reference<T>::value |
 											is_void<T>::value) > { };
 
-	namespace internal {
-		template<typename T, bool = is_arithmetic<T>::value >
-    	struct is_signed_help : public false_type { };
-
-		template<typename T>
-		struct is_signed_help<T, true>
-			: public integral_constant<bool, T(-1) < T(0)> { };
-	}
-
-
 	/// is_signed
-  	template<typename T>
-    struct is_signed
-    	: public internal::is_signed_help <T>::value  { };
+	template <typename T>
+	struct is_signed : false_type {};
+
+	template <>
+	struct is_signed<char> : integral_constant<bool, (char(255) < 0)> {};
+
+	template <>
+	struct is_signed<signed char> : true_type {};
+
+	template <>
+	struct is_signed<short> : true_type {};
+
+	template <>
+	struct is_signed<int> : true_type {};
+
+	template <>
+	struct is_signed<long> : true_type {};
+
+	template <>
+	struct is_signed<long long> : true_type {};
+
+	template <>
+	struct is_signed<float> : true_type {};
+
+	template <>
+	struct is_signed<double> : true_type {};
+
+	template <>
+	struct is_signed<long double> : true_type {};
+
+	template <typename T>
+	struct is_signed<const T> : is_signed<T> {};
+
+	template <typename T>
+	struct is_signed<volatile T> : is_signed<T> {};
+
+	template <typename T>
+	struct is_signed<const volatile T> : is_signed<T> {};
+
 
 	/// is_unsigned
-	template<typename T>
-    struct is_unsigned
-    	: public integral_constant< bool, is_arithmetic<T>::value & !( is_signed<T>::value) >  { };
+	template <typename T>
+	struct is_unsigned : false_type {};
+
+	template <>
+	struct is_unsigned<bool> : true_type {};
+
+	template <>
+	struct is_unsigned<char> : integral_constant<bool, (char(255) > 0)> {};
+
+	template <>
+	struct is_unsigned<unsigned char> : true_type {};
+
+	template <>
+	struct is_unsigned<unsigned short> : true_type {};
+
+	template <>
+	struct is_unsigned<unsigned int> : true_type {};
+
+	template <>
+	struct is_unsigned<unsigned long> : true_type {};
+
+	template <>
+	struct is_unsigned<unsigned long long> : true_type {};
+
+	template <typename T>
+	struct is_unsigned<const T> : is_unsigned<T> {};
+
+	template <typename T>
+	struct is_unsigned<volatile T> : is_unsigned<T> {};
+
+	template <typename T>
+	struct is_unsigned<const volatile T> : is_unsigned<T> {};
 
 	template<typename>
 	struct is_member_pointer;
+
+
 
 	/// is_compound
 	template<typename T>

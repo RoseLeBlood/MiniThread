@@ -25,7 +25,7 @@
 namespace mn {
     namespace pointer {
 
-        template < typename T, typename TRefType = atomic_size_t >
+        template < typename T, typename TRefType >
         class basic_shared_ptr   {
         public:
             using value_type = T;
@@ -33,9 +33,9 @@ namespace mn {
             using reference = T&;
             using const_value_type = const value_type;
             using pointer = value_type*;
-            using atomic_type = TRefType;
+            using ref_type = TRefType;
 
-            using self_type = basic_shared_ptr<value_type, atomic_type>;
+            using self_type = basic_shared_ptr<value_type, ref_type>;
 
 
             explicit basic_shared_ptr(pointer ptr )
@@ -59,12 +59,12 @@ namespace mn {
             void reset( pointer pValue = 0)
                 { self_type(pValue).swap(*this); }
 
-            atomic_type ref() {
+            ref_type ref() {
                 return m_ref;
             }
             void swap(self_type& b) {
                 mn::swap<pointer>(m_ptr, b.m_ptr);
-                mn::swap<atomic_type >(m_ref, b.m_ref);
+                mn::swap<ref_type >(m_ref, b.m_ref);
             }
 
             pointer get() const {
@@ -90,9 +90,40 @@ namespace mn {
                 return *this;
             }
         private:
-            atomic_type m_ref;
+            ref_type m_ref;
             pointer m_ptr;
         };
+
+        template < typename T, typename TRefType >
+        void swap(basic_shared_ptr<T, TRefType>& a, basic_shared_ptr<T, TRefType>& b) {
+        	a.swap(b);
+        }
+
+        template < typename T >
+		using shared_ptr = basic_shared_ptr<T, size_t>;
+
+		template < typename T >
+		using shared_atomic_ptr = basic_shared_ptr<T, atomic_size_t>;
+
+		/**
+		 * @brief Make a shared pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline shared_ptr<T> make_shared(Args&&... args) {
+			return shared_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
+
+		/**
+		 * @brief Make a shared atomic pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline shared_atomic_ptr<T> make_atomic_shared(Args&&... args) {
+			return shared_atomic_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
     }
 }
 

@@ -72,7 +72,8 @@ namespace mn {
             node_type m_node;
         };
 
-        template<typename T, class TAllocator, class TDeleter = memory::default_delete<T,TAllocator>>
+        template<typename T, class TAllocator = memory::default_allocator,
+        	class TDeleter = memory::default_delete<T,TAllocator>>
         class basic_list {
         public:
             using self_type = basic_list<T, TAllocator, TDeleter>;

@@ -55,7 +55,8 @@ namespace mn {
             /**
              * @brief Construct a new basic linked ptr object
              */
-            basic_linked_ptr() : m_pValue(NULL) { Prev = Next = this; }
+            basic_linked_ptr()
+            	: m_pValue(nullptr) { Prev = Next = this; }
             /**
              * @brief Construct,
              * @note It is OK if the input pointer is null.
@@ -77,7 +78,7 @@ namespace mn {
             ~basic_linked_ptr() { reset(); }
 
 
-            void reset() { reset((T*)NULL); }
+            void reset() { reset(nullptr); }
             pointer get() { return m_pValue; }
 
             void force_delete() { pointer _pValue = detach(); delete _pValue; }
@@ -93,7 +94,9 @@ namespace mn {
 
                 for(const base_type* _pCurrent = static_cast<const base_type*>(this);
                         _pCurrent->Next != static_cast<const base_type*>(this);
-                        _pCurrent = _pCurrent->Next) ++_count;
+                        _pCurrent = _pCurrent->Next) {
+					++_count;
+				}
 
                 return _count;
             }
@@ -178,6 +181,36 @@ namespace mn {
             pointer m_pValue;
         };
 
+        /**
+		 * @brief Make a linked pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template <typename T >
+		inline basic_linked_ptr<T>  make_link(const basic_linked_ptr<T>& value) {
+			return basic_linked_ptr<T>(value);
+		}
+
+		/**
+		 * @brief Make a linked pointer from a other linked pointer type
+		 * @tparam T Value type of the pointer.
+		 * @tparam U Value of the type of td
+		 */
+		template <typename T, typename U  >
+		inline basic_linked_ptr<T>  make_link(const basic_linked_ptr<U>& value) {
+			return basic_linked_ptr<T>(value);
+		}
+
+		/**
+		 * @brief Make a link pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template <typename T>
+		inline basic_linked_ptr<T>  make_link(T* value) {
+			return basic_linked_ptr<T>(value);
+		}
+
 
         /**
          * @brief Get the pointer object
@@ -187,7 +220,7 @@ namespace mn {
          * @return T*    The pointer of the value from input
          */
         template <typename T>
-        inline T* get_pointer(const basic_linked_ptr<T>& _pPtr) {
+        inline T* get(const basic_linked_ptr<T>& _pPtr) {
             return _pPtr.get();
         }
         /**
@@ -206,6 +239,10 @@ namespace mn {
         inline bool operator!=(const basic_linked_ptr<T>& a, const basic_linked_ptr<U>& b) {
             return (a.get() != b.get());
         }
+
+        template <typename T>
+        using linked_ptr = basic_linked_ptr<T>;
+
     }
 }
 

@@ -1,11 +1,12 @@
 /**
+ * @file
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2021 Amber-Sophia Schroeck
- *
+ * @author Copyright (c) 2017 Amber-Sophia Schroeck
+ * @par License
  * The Mini Thread Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
-
+ *
  * The Mini Thread Library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -14,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef _MINLIB_MN_FUNCTION_LIGHT_H_
 #define _MINLIB_MN_FUNCTION_LIGHT_H_
@@ -22,7 +23,7 @@
 #include "mn_config.hpp"
 
 #include "mn_functional.hpp"
-#include "util/mn_alignment.hpp"
+#include "utils/mn_alignment.hpp"
 
 #include <type_traits>
 
@@ -54,13 +55,12 @@ namespace mn {
         };
 	public:
 		using return_type = R;
-		using self_type = small_task<return_type, Args, sz, algn>;
 
         small_task() { }
-        small_task(const self_type &o)
+        small_task(const small_task &o)
             : table(o.table), data(o.data) { }
 
-        small_task(self_type &&o)
+        small_task(small_task &&o)
             : table(o.table) {
             if (table) table->mover(&o.data, &data);
         }
@@ -76,16 +76,14 @@ namespace mn {
             if (table) table->destroyer(&data);
         }
 
-        template<typename U>
-		using not_self_type = !(is_same<U, small_task>::value);
 
-        self_type &operator=(const self_type &o) {
+        small_task &operator=(const small_task &o) {
             this->~small_task();
             new (this) small_task(move(o));
             return *this;
         }
 
-        self_type &operator=(self_type &&o) {
+        small_task &operator=(small_task &&o) {
             this->~small_task();
             new (this) small_task(move(o));
             return *this;
@@ -96,7 +94,7 @@ namespace mn {
         }
 
         return_type operator()(Args... args) const {
-            return table->invoke(&data, forward<Args>(args)...);
+            return table->invoke(&data, mn::forward<Args>(args)...);
         }
 	private:
 		vtable_t const *table = nullptr;

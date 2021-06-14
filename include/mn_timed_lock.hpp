@@ -1,20 +1,21 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2020 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2018 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef MINLIB_ESP32_TIMED_LOCK_
 #define MINLIB_ESP32_TIMED_LOCK_
 
@@ -28,7 +29,7 @@
 namespace mn {
     /**
      * \ingroup lock
-     */ 
+     */
     template<class TLOCK>
     class basic_timed_lock {
     public:
@@ -51,7 +52,7 @@ namespace mn {
          */
         void lock(basic_convar_task& task, unsigned int timeout = MN_THREAD_CONFIG_TIMEOUT_MUTEX_DEFAULT) {
             basic_autolock<TLOCK> lock(m_lockObject);
-            while (m_bLocked) { 
+            while (m_bLocked) {
                 task.wait(m_cv, m_mutex, timeout);
             }
             m_bLocked = true;
@@ -77,7 +78,7 @@ namespace mn {
     using timed_counting_semaphore_t      = basic_timed_lock<counting_semaphore_t>;
 
 }
-#if MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES 
+#if MN_THREAD_CONFIG_RECURSIVE_MUTEX == MN_THREAD_CONFIG_YES
     using timed_remutex_t = basic_timed_lock<remutex_t>;
 #endif //MN_THREAD_CONFIG_RECURSIVE_MUTEX
 

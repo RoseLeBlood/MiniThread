@@ -20,13 +20,17 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
+
 #include <stdio.h>
+#include <esp_log.h>
 
 #include "mn_task_utils.hpp"
 #include "mn_task.hpp"
 #include "mn_task_list.hpp"
 #include "mn_atomic_counter.hpp"
 
+#define EVENTGROUP_BIT_JOINABLE (1 << 0)
+#define EVENTGROUP_BIT_STARTED	(1 << 2)
 
 namespace mn {
   namespace internal {
@@ -47,11 +51,12 @@ namespace mn {
           m_strName(strName),
           m_uiPriority(uiPriority),
           m_usStackDepth(usStackDepth),
-          m_retval(NULL),
+          m_retval(ERR_TASK_OK),
           m_bRunning(false),
           m_iID(0),
           m_iCore(-1),
-          m_pHandle(NULL)
+          m_pHandle(NULL),
+          m_eventGroup(strName.c_str())
           { }
   //-----------------------------------
   //  deconstrutor
@@ -79,22 +84,31 @@ namespace mn {
     {
       m_runningMutex.unlock();
       m_continuemutex.unlock();
+
+      ESP_LOGI(m_strName.c_str(), "task allready running");
       return ERR_TASK_ALREADYRUNNING;
     }
     m_runningMutex.unlock();
 
+    if(m_eventGroup.create() != 0) {
+		m_continuemutex.unlock();
+		ESP_LOGE(m_strName.c_str(), "can create the event group for this task");
+		return ERR_TASK_CANTCREATEEVENTGROUP;
+    }
+
     #if( configSUPPORT_STATIC_ALLOCATION == 1 )
       xTaskCreateStaticPinnedToCore(&runtaskstub, m_strName.c_str(),
                   m_usStackDepth,
-                  this, (int)m_uiPriority, &m_pHandle, m_stackBuffer, m_TaskBuffer m_iCore);
+                  this, (UBaseType_t)m_uiPriority, &m_pHandle, m_stackBuffer, m_TaskBuffer m_iCore);
     #else
       xTaskCreatePinnedToCore(&runtaskstub, m_strName.c_str(),
                   m_usStackDepth,
-                  this, (int)m_uiPriority, &m_pHandle, m_iCore);
+                  this, (UBaseType_t)m_uiPriority, &m_pHandle, m_iCore);
     #endif
 
     if (m_pHandle == 0) {
       m_continuemutex.unlock();
+      ESP_LOGE(m_strName.c_str(), "the freertos task can not created");
       return ERR_TASK_CANTSTARTTHREAD;
     }
 
@@ -113,8 +127,57 @@ namespace mn {
     basic_task_list::instance().add_task(this);
   #endif
 
+
     return ERR_TASK_OK;
   }
+
+  //-----------------------------------
+  //  join
+  //-----------------------------------
+  int basic_task::join(timespan_t time) {
+	timespan_t _time = time - timespan_t::now();
+	return join(_time.to_ticks());
+
+  }
+
+  //-----------------------------------
+  //  wait
+  //-----------------------------------
+  int basic_task::wait(timespan_t time) {
+	timespan_t _time = time - timespan_t::now();
+	return wait(_time.to_ticks());
+  }
+
+  //-----------------------------------
+  //  join
+  //-----------------------------------
+  int basic_task::join(unsigned int xTimeOut) {
+  	if(!m_bRunning) return ERR_TASK_NOTRUNNING;
+  	if(m_pHandle == xTaskGetCurrentTaskHandle())  {
+  		ESP_LOGW("WARNING BOT", "Don't do this!! Don't do this.... only you are a cake! ... Bob?");
+		return ERR_TASK_CALLFROMSELFTASK;
+  	}
+
+  	while ( !m_eventGroup.is_bit(EVENTGROUP_BIT_JOINABLE, xTimeOut) ) { }
+
+  	return NO_ERROR;
+  }
+
+  //-----------------------------------
+  //  wait
+  //-----------------------------------
+  int basic_task::wait(unsigned int xTimeOut) {
+  	if(!m_bRunning) return ERR_TASK_NOTRUNNING;
+  	if(m_pHandle == xTaskGetCurrentTaskHandle())  {
+  		ESP_LOGW("WARNING BOT", "Don't do this!! Don't do this.... only you are a cake! ... Bob?");
+		return ERR_TASK_CALLFROMSELFTASK;
+  	}
+
+  	while ( !m_eventGroup.is_bit(EVENTGROUP_BIT_STARTED, xTimeOut) ) { }
+
+  	return NO_ERROR;
+  }
+
   //-----------------------------------
   //  kill
   //-----------------------------------
@@ -220,9 +283,9 @@ namespace mn {
   //-----------------------------------
   //  get_return_value
   //-----------------------------------
-  void *basic_task::get_return_value() {
+  int basic_task::get_return_value() {
     autolock_t autolock(m_runningMutex);
-    return (m_bRunning) ? NULL : m_retval;
+    return (m_bRunning) ? -999 : m_retval;
   }
 
   //-----------------------------------
@@ -248,6 +311,7 @@ namespace mn {
     _task->m_runningMutex.lock();
     _task->m_iID = -1;
     _task->m_pHandle = _pHandle;
+    _task->m_eventGroup.create();
     _task->m_runningMutex.unlock();
 
     return _task;
@@ -260,7 +324,7 @@ namespace mn {
     autolock_t autolock(m_runningMutex);
     m_uiPriority = uiPriority;
     if(m_pHandle != NULL)
-      vTaskPrioritySet(m_pHandle, uiPriority);
+      vTaskPrioritySet(m_pHandle, (UBaseType_t)uiPriority);
   }
 
   //-----------------------------------
@@ -283,28 +347,43 @@ namespace mn {
   //-----------------------------------
   void basic_task::runtaskstub(void* parm) {
     basic_task *esp_task;
-    void *ret;
+    int ret; // the return value of the user task functions
 
+    // cast the user data to this object
     esp_task = (static_cast<basic_task*>(parm));
 
-	if(esp_task) {
+    // error?
+    if(esp_task == nullptr) {
+		// Log the error and delete the task
+		ESP_LOGE("basic_task", "unknown error on minilib task stub, task will delete");
+		vTaskDelete(xTaskGetCurrentTaskHandle());
+    } else { // on no error run normal minilib task system
+    	// set the started bit
+		esp_task->m_eventGroup.set(EVENTGROUP_BIT_STARTED);
+
+		// set running
 		esp_task->m_runningMutex.lock();
+		esp_task->m_continuemutex.lock();
 		esp_task->m_bRunning = true;
 		esp_task->m_runningMutex.unlock();
 
-		esp_task->m_continuemutex.lock();
-
+		// call the user task functions
 		ret = esp_task->on_task();
+
+		// clean up
 		esp_task->on_cleanup();
 
+		// set the return value and delete the task
 		esp_task->m_runningMutex.lock();
 		esp_task->m_bRunning = false;
 		esp_task->m_retval = ret;
 		vTaskDelete(esp_task->m_pHandle);
 		esp_task->m_pHandle = 0;
-
 		esp_task->m_runningMutex.unlock();
 		esp_task->m_continuemutex.unlock();
-	}
+
+		// set the join bit
+		esp_task->m_eventGroup.set(EVENTGROUP_BIT_JOINABLE);
+    }
   }
 }

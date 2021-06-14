@@ -25,6 +25,10 @@
 #include "../mn_defines.hpp"
 #include "../mn_def.hpp"
 
+#include "mn_random.hpp"
+#include "mn_random_lfsr.hpp"
+#include "mn_ramdom_xorshift.hpp"
+
 namespace mn {
     namespace internal {
 
@@ -281,6 +285,11 @@ namespace mn {
 	inline const R _const_reinterpret_cast(const T* p) {
 		return static_cast<const R>(static_cast<const void*>(p));
 	}
+
+	using random_xorshift = basic_ramdom_xorshift;
+	using random_lfsr = basic_random_lfsr;
+
+	using default_random_engine = random_xorshift;
 }
 
 #endif

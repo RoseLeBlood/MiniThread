@@ -1,23 +1,21 @@
-// *** ADDED BY HEADER FIXUP ***
-#include <ctime>
-// *** END ***
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify
-*it under the terms of the GNU Lesser General Public License as published by
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but
-*WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef MINLIB_ESP32_BASE_SEMAPHORE_
 #define MINLIB_ESP32_BASE_SEMAPHORE_
 
@@ -47,6 +45,10 @@ namespace mn {
      */
     basic_semaphore();
 
+#if( configSUPPORT_STATIC_ALLOCATION == 0 )
+	basic_semaphore(const basic_semaphore& other);
+	basic_semaphore(basic_semaphore&& other);
+#endif
     /**
      * lock (take) a semaphore.
      *
@@ -93,6 +95,13 @@ namespace mn {
     #if configQUEUE_REGISTRY_SIZE > 0
       void set_name(const char* name)       { vQueueAddToRegistry(m_pSpinlock, name); }
     #endif // configQUEUE_REGISTRY_SIZE
+
+
+    /**
+	 * @brief Is locked?
+	 * @return True if locked and false when not.
+	 */
+	virtual bool is_locked() const { return m_isLocked; }
   public:
 
     bool operator == (const basic_semaphore &r) const {
@@ -127,7 +136,7 @@ namespace mn {
      * A saved / cached copy of error code on creating
      */
     int m_iCreateErrorCode;
-
+	bool m_isLocked;
   };
 }
 

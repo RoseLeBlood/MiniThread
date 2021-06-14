@@ -39,7 +39,7 @@ namespace mn {
             /**
              * @brief Construct a new basic any ptr object
              */
-            basic_any_ptr() : m_pObject(NULL) { }
+            basic_any_ptr() : m_pObject(nullptr) { }
             /**
              * @brief Construct a new basic any ptr object
              */
@@ -49,7 +49,7 @@ namespace mn {
             /**
              * @brief Construct a new basic any ptr object from a copy
              */
-            basic_any_ptr(const basic_any_ptr &other)
+            basic_any_ptr(const basic_any_ptr& other)
                 : m_pObject( const_cast<const_pointer>(other.m_pObject) ) { }
 
             /**
@@ -58,7 +58,7 @@ namespace mn {
              * @param other      The copy
              */
             template <typename U>
-            basic_any_ptr(const basic_any_ptr<U> &other)
+            basic_any_ptr(const basic_any_ptr<U>& other)
                 : m_pObject( const_cast<const_pointer>(other.m_pObject) ) { }
 
             /**
@@ -66,8 +66,9 @@ namespace mn {
              * @param other The assignment object
              * @return self
              */
-            const self_type &operator = (const self_type &other) {
-                m_pObject = const_cast<const_pointer>(other.m_pObject); return *this;
+            const self_type& operator = (const self_type &other) {
+                m_pObject = const_cast<const_pointer>(other.m_pObject);
+                return *this;
             }
 
             /**
@@ -85,8 +86,9 @@ namespace mn {
              * @brief Assign from object pointer
              */
             template <class U>
-            const self_type &operator = (const U* pObject) {
-                m_pObject = const_cast<const_pointer>(m_pObject); return (*this);
+            const self_type& operator = (const U* pObject) {
+                m_pObject = const_cast<const_pointer>(m_pObject);
+                return (*this);
             }
 
             /**
@@ -111,6 +113,8 @@ namespace mn {
         private:
             const_pointer m_pObject;
         };
+
+        using any_ptr = basic_any_ptr<void>;
     }
 }
 

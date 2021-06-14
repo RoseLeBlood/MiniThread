@@ -52,10 +52,21 @@ namespace mn {
              * @param v Reference to locked area/object
              * @param m The reference of the lock object
              */
-            basic_lock_ptr(volatile reference& v, lock_type& m)
-                : m_ptr(const_cast<pointer>(&v)), m_lock(m) {
+            basic_lock_ptr(volatile reference v, lock_type& m)
+                : m_ptr(static_cast<pointer>(&v)), m_lock(m) {
                     m_lock.lock();
             }
+
+            /**
+             * @brief constructor make the pointer and auto lock
+             * @param v Pointer to locked area/object
+             * @param m The reference of the lock object
+             */
+            basic_lock_ptr(volatile pointer v, lock_type& m)
+                : m_ptr(v), m_lock(m) {
+                    m_lock.lock();
+            }
+
             /**
              * @brief decunstructor and auto unlock the pointer
              */
@@ -111,6 +122,19 @@ namespace mn {
             volatile pointer m_ptr;
             lock_type& m_lock;
         };
+
+		template <typename T, class TLOCK = LockType_t>
+		inline basic_lock_ptr<T, TLOCK> make_lock_ref(volatile T& v, TLOCK& m) {
+			return basic_lock_ptr<T, TLOCK>(v, m);
+		}
+
+		template <typename T, class TLOCK = LockType_t>
+		inline basic_lock_ptr<T, TLOCK> make_lock_ptr(volatile T* v, TLOCK& m) {
+			return basic_lock_ptr<T, TLOCK>(v, m);
+		}
+
+		template <typename T, class TLOCK = LockType_t>
+		using lock_ptr = basic_lock_ptr<T, TLOCK>;
     }
 }
 #endif

@@ -55,6 +55,7 @@ namespace mn {
         if(xSemaphoreTakeRecursive(m_pSpinlock, timeout) != pdTRUE) {
             return ERR_MUTEX_LOCK;
         }
+        m_isLocked = true;
         return ERR_MUTEX_OK;
     }
 
@@ -66,6 +67,7 @@ namespace mn {
         if(xSemaphoreGiveRecursive(m_pSpinlock) != pdTRUE) {
             return ERR_MUTEX_UNLOCK;
         }
+        m_isLocked = false;
         return ERR_MUTEX_OK;
     }
 }

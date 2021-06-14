@@ -98,12 +98,36 @@ namespace mn {
                 m_ref = r.m_ref;
                 return *this;
             }
-
-
         private:
         	pointer m_ptr;
             count_type m_ref;
         };
+
+        template < typename T >
+		using weak_ptr = basic_weak_ptr<T, size_t>;
+
+		template < typename T >
+		using weak_atomic_ptr = basic_weak_ptr<T, atomic_size_t>;
+
+		/**
+		 * @brief Make a weak pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline weak_ptr<T>  make_weak(Args&&... args) {
+			return weak_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
+
+		/**
+		 * @brief Make a weak atomic pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline weak_atomic_ptr<T> make_atomic_weak(Args&&... args) {
+			return weak_atomic_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
     }
 }
 

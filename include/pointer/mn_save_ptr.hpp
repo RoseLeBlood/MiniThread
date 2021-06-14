@@ -19,7 +19,6 @@
 #define _MINILIB_7bee8ff5_abe8_4176_bc96_f42b0e71632b_H_
 
 #include "../mn_config.hpp"
-
 #include "../mn_def.hpp"
 
 
@@ -69,6 +68,29 @@ namespace mn {
         private:
             pointer m_ptr;
         };
+
+		template <typename T>
+        using save_ptr = basic_save_ptr<T>;
+
+
+		/**
+		* @brief Make a save pointer
+		* @tparam T Value type of the pointer.
+		* @tparam Args Argument for the object.
+		*/
+		template<typename T, typename... Args >
+		inline save_ptr<T> make_save(Args&&... args) {
+			return save_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
+
+		/**
+		 * @brief swap a save pointer.
+		 */
+		template <typename T>
+		inline void swap(save_ptr<T> & a, save_ptr<T> & b) {
+			a.swap(b);
+		}
+
     }
 }
 

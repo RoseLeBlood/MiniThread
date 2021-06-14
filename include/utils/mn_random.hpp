@@ -2,23 +2,25 @@
 *This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
 *Copyright (c) 2021 Amber-Sophia Schroeck
 *
-*The Mini Thread Library is free software; you can redistribute it and/or modify  
-*it under the terms of the GNU Lesser General Public License as published by  
+*The Mini Thread Library is free software; you can redistribute it and/or modify
+*it under the terms of the GNU Lesser General Public License as published by
 *the Free Software Foundation, version 3, or (at your option) any later version.
 
-*The Mini Thread Library is distributed in the hope that it will be useful, but 
-*WITHOUT ANY WARRANTY; without even the implied warranty of 
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+*The Mini Thread Library is distributed in the hope that it will be useful, but
+*WITHOUT ANY WARRANTY; without even the implied warranty of
+*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 *General Public License for more details.
 *
 *You should have received a copy of the GNU Lesser General Public
 *License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.  
+*<https://www.gnu.org/licenses/>.
 */
 
 
 #ifndef _MINLIB_RANDOM_H_
 #define _MINLIB_RANDOM_H_
+
+#include "../mn_limits.hpp"
 
 namespace mn {
     /**
@@ -34,55 +36,64 @@ namespace mn {
          */
         union convers {
             unsigned int g32;
-            unsigned char g[4]; 
+            unsigned char g[4];
             unsigned short g16[2];
-            
+
         };
     public:
         using seed_t = TSEEDTYPE;
+        using result_type = TSEEDTYPE;
 
         /**
          * @brief Construct a new IPseudoRandomUtil object
-         * 
+         *
          * @param startSeed The start seed
          */
-        IPseudoRandomUtil(seed_t startSeed) 
+        IPseudoRandomUtil(seed_t startSeed)
             : m_startSeed(startSeed) { }
 
         /**
-         * @brief Get a random unsigned char number 
-         * 
+         * @brief Get a random unsigned char number
+         *
          * @return A random unsigned char number
          */
         virtual unsigned char rand8() = 0;
         /**
          * @brief Get a random unsigned short number
-         * 
-         * @return A random unsigned short number 
+         *
+         * @return A random unsigned short number
          */
         virtual unsigned short rand16() = 0;
         /**
          * @brief Get a random unsigned int number
-         * 
-         * @return A random unsigned int number 
+         *
+         * @return A random unsigned int number
          */
         virtual unsigned int rand32() = 0;
 
         /**
-         * @brief Get the current used Seed 
-         * 
-         * @return The current used Seed 
+         * @brief Get the current used Seed
+         *
+         * @return The current used Seed
          */
-        seed_t get_seed() { return m_startSeed; }
+        virtual seed_t get_seed() { return m_startSeed; }
         /**
          * @brief Set the a new seed
-         * 
+         *
          * @param seed Tde new used seed
          */
-        void set_seed(seed_t seed) { m_startSeed = seed; }
+        virtual void set_seed(seed_t seed) { m_startSeed = seed; }
+
+        result_type operator () (bool b = true) const noexcept {
+			return rand32();
+        }
+
+        result_type min() { return mn::numeric_limits<result_type>::min(); }
+        result_type max() { return mn::numeric_limits<result_type>::max(); }
     protected:
-        seed_t m_startSeed; 
+        seed_t m_startSeed;
     };
 }
+
 
 #endif

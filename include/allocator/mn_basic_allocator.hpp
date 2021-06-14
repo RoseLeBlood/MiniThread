@@ -132,7 +132,7 @@ namespace mn {
 			void deallocate(pointer address, size_t count, size_t size, size_t alignment) noexcept {
 				size = size * count;
 				if(m_fFilter.on_pre_dealloc(size)) {
-					TAllocator::deallocate(address, size, alignment);
+					TAllocator::deallocate(address, size, (alignment == 0) ? mn::alignment_for(size) : alignment);
 					m_fFilter.on_dealloc(size);
 				}
 			}

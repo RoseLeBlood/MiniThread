@@ -30,6 +30,7 @@
 					<Add directory="include/allocator" />
 					<Add directory="include/utils" />
 					<Add directory="include/container" />
+					<Add directory="include/device" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -55,6 +56,7 @@
 					<Add directory="include/allocator" />
 					<Add directory="include/utils" />
 					<Add directory="include/container" />
+					<Add directory="include/device" />
 				</Compiler>
 				<MakeCommands>
 					<Build command="/usr/bin/pio -f -c codeblocks run" />
@@ -197,6 +199,7 @@
 		<Unit filename="include/allocator/mn_basic_multiheap_allocator.hpp" />
 		<Unit filename="include/allocator/mn_basic_new_allocaor.hpp" />
 		<Unit filename="include/allocator/mn_default_allocator.hpp" />
+		<Unit filename="include/allocator/mn_lock_storage.hpp" />
 		<Unit filename="include/atomic/mn_atomic_classes.hpp" />
 		<Unit filename="include/atomic/mn_atomic_flags.hpp" />
 		<Unit filename="include/atomic/mn_atomic_gcc.hpp" />
@@ -204,22 +207,29 @@
 		<Unit filename="include/atomic/mn_atomic_weak_ptr.hpp" />
 		<Unit filename="include/container/mn_any.hpp" />
 		<Unit filename="include/container/mn_array.hpp" />
-		<Unit filename="include/container/mn_atomic_queue" />
 		<Unit filename="include/container/mn_atomic_queue.hpp" />
 		<Unit filename="include/container/mn_basic_light_map.hpp" />
 		<Unit filename="include/container/mn_biqueue.hpp" />
 		<Unit filename="include/container/mn_deque.hpp" />
+		<Unit filename="include/container/mn_fixed_array.hpp" />
 		<Unit filename="include/container/mn_fixed_sorted_vector.hpp" />
 		<Unit filename="include/container/mn_fixed_vector.hpp" />
 		<Unit filename="include/container/mn_list.hpp" />
+		<Unit filename="include/container/mn_multimap.hpp" />
 		<Unit filename="include/container/mn_node.hpp" />
 		<Unit filename="include/container/mn_pair.hpp" />
 		<Unit filename="include/container/mn_queue.hpp" />
 		<Unit filename="include/container/mn_rb_tree.hpp" />
+		<Unit filename="include/container/mn_shared_list.hpp" />
 		<Unit filename="include/container/mn_sorted_vector.hpp" />
 		<Unit filename="include/container/mn_stack.hpp" />
 		<Unit filename="include/container/mn_triple.hpp" />
+		<Unit filename="include/container/mn_tuple.hpp" />
 		<Unit filename="include/container/mn_vector.hpp" />
+		<Unit filename="include/device/mn_block_device.hpp" />
+		<Unit filename="include/device/mn_input_pin.hpp" />
+		<Unit filename="include/device/mn_io_pin.hpp" />
+		<Unit filename="include/device/mn_output_in.hpp" />
 		<Unit filename="include/excp/mn_eventgroup_exception.hpp" />
 		<Unit filename="include/excp/mn_lock_exptions.hpp" />
 		<Unit filename="include/math/mn_color.hpp" />
@@ -255,15 +265,18 @@
 		<Unit filename="include/mn_endianness.hpp" />
 		<Unit filename="include/mn_error.hpp" />
 		<Unit filename="include/mn_error_preview.hpp" />
+		<Unit filename="include/mn_event.hpp" />
 		<Unit filename="include/mn_eventgroup.hpp" />
 		<Unit filename="include/mn_fast_type.hpp" />
 		<Unit filename="include/mn_foreign_task.hpp" />
 		<Unit filename="include/mn_function.hpp" />
 		<Unit filename="include/mn_functional.hpp" />
 		<Unit filename="include/mn_hash.hpp" />
+		<Unit filename="include/mn_initializer_list.hpp" />
 		<Unit filename="include/mn_iterator.hpp" />
 		<Unit filename="include/mn_iterator_pair.hpp" />
 		<Unit filename="include/mn_itimer.hpp" />
+		<Unit filename="include/mn_limits.hpp" />
 		<Unit filename="include/mn_lock.hpp" />
 		<Unit filename="include/mn_memory.hpp" />
 		<Unit filename="include/mn_micros.hpp" />
@@ -325,6 +338,7 @@
 		<Unit filename="include/pointer/mn_shared_ptr.hpp" />
 		<Unit filename="include/pointer/mn_smart_pointer_traits.hpp" />
 		<Unit filename="include/pointer/mn_unique_ptr.hpp" />
+		<Unit filename="include/pointer/mn_value_ptr.hpp" />
 		<Unit filename="include/pointer/mn_weak_ptr.hpp" />
 		<Unit filename="include/queue/mn_binaryqueue.hpp" />
 		<Unit filename="include/queue/mn_deque.hpp" />
@@ -344,6 +358,7 @@
 		<Unit filename="include/utils/mn_ebo_storage.hpp" />
 		<Unit filename="include/utils/mn_inttokey.hpp" />
 		<Unit filename="include/utils/mn_nlz.hpp" />
+		<Unit filename="include/utils/mn_ramdom_xorshift.hpp" />
 		<Unit filename="include/utils/mn_random.hpp" />
 		<Unit filename="include/utils/mn_random_lfsr.hpp" />
 		<Unit filename="include/utils/mn_sort.hpp" />
@@ -357,6 +372,7 @@
 		<Unit filename="src/allocator/default_allocator.cpp" />
 		<Unit filename="src/allocator/mn_basic_allocator.cpp" />
 		<Unit filename="src/container/mn_basic_light_map.cpp" />
+		<Unit filename="src/device/mn_block_device.cpp" />
 		<Unit filename="src/excp/mn_eventgroup_exception.cpp" />
 		<Unit filename="src/excp/mn_lock_exptions.cpp" />
 		<Unit filename="src/miniThread.cpp" />
@@ -372,8 +388,10 @@
 		<Unit filename="src/mn_copyable.cpp" />
 		<Unit filename="src/mn_counting_semaphore.cpp" />
 		<Unit filename="src/mn_critical.cpp" />
+		<Unit filename="src/mn_event.cpp" />
 		<Unit filename="src/mn_eventgroup.cpp" />
 		<Unit filename="src/mn_foreign_task.cpp" />
+		<Unit filename="src/mn_limits.cpp" />
 		<Unit filename="src/mn_memory.cpp" />
 		<Unit filename="src/mn_micros.cpp" />
 		<Unit filename="src/mn_msg_task.cpp" />
@@ -421,6 +439,7 @@
 		<Unit filename="src/slock/mn_criticalsection.cpp" />
 		<Unit filename="src/slock/mn_interrupts_lock.cpp" />
 		<Unit filename="src/slock/mn_schedular_lock.cpp" />
+		<Unit filename="src/utils/mn_ramdom_xorshift.cpp" />
 		<Unit filename="src/utils/mn_random.cpp" />
 		<Unit filename="src/utils/mn_random_lfsr.cpp" />
 		<Unit filename="update-docs.sh" />

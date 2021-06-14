@@ -42,36 +42,34 @@ namespace mn {
 				using allocator_category = typename TAlloC::allocator_category ;
 				using is_thread_safe = typename TAlloC::is_thread_safe ;
 			};
+		}
+		template <class TAlloC>
+		struct is_thread_safe_allocator
+			: public mn::integral_constant<bool, internal::allocator_traits<TAlloC>::is_thread_safe::value> { };
 
-			template <class TAlloC>
-			struct is_thread_safe_allocator
-				: mn::integral_constant<bool, allocator_traits<TAlloC>::is_thread_safe::value> { };
 
+		template <class TAlloC>
+		inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment,
+							  mn::memory::std_allocator_tag) {
+			return alloc.allocate(size, alignment);
+		}
 
-			template <class TAlloC>
-			inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment,
-								  mn::memory::std_allocator_tag) {
-				return alloc.allocate(size, alignment);
-			}
+		template <class TAlloC>
+		inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment,
+							  mn::memory::nodeleter_allocator_tag) {
+			return alloc.allocate(size, alignment);
+		}
+		template <class TAlloC>
+		inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment,
+							   mn::memory::std_allocator_tag)  {
+			alloc.deallocate(address, size, alignment); return address;
+		}
 
-			template <class TAlloC>
-			inline void* allocate(const TAlloC& alloc, size_t size, size_t alignment,
-								  mn::memory::nodeleter_allocator_tag) {
-				return alloc.allocate(size, alignment);
-			}
-			template <class TAlloC>
-			inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment,
-								   mn::memory::std_allocator_tag)  {
-				alloc.deallocate(address, size, alignment); return address;
-			}
-
-			template <class TAlloC>
-			inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment,
-								   mn::memory::nodeleter_allocator_tag)  {
-				return address;
-			}
-
-		} // internal
+		template <class TAlloC>
+		inline void* deallocate(const TAlloC& alloc, void* address, size_t size, size_t alignment,
+							   mn::memory::nodeleter_allocator_tag)  {
+			return address;
+		}
 
 
 		/*

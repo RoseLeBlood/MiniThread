@@ -19,6 +19,10 @@
 #include "mn_config.hpp"
 #include "mn_basic_timespan.hpp"
 
+#include <stdio.h>
+#include <sys/time.h>
+#include <ctime>
+
 
 #include <freertos/FreeRTOS.h>
 
@@ -68,7 +72,7 @@ namespace mn {
 	//-----------------------------------
 	//  basic_timespan
 	//-----------------------------------
-	basic_timespan::basic_timespan(struct timeval val)
+	basic_timespan::basic_timespan(struct timeval& val)
 		: m_timeSpan( ( (int_type)val.tv_sec * _MINILIB_TIMEDIFF_SECONDS) + (int_type)val.tv_usec ) { }
 
 	//-----------------------------------
@@ -82,6 +86,13 @@ namespace mn {
 		m_timeSpan +=  hours * _MINILIB_TIMEDIFF_HOURS;
 		m_timeSpan +=  days * _MINILIB_TIMEDIFF_DAYS;
 
+	}
+
+	basic_timespan basic_timespan::now() {
+		struct timeval _now;
+		::gettimeofday(&_now, NULL);
+
+		return basic_timespan(_now);
 	}
 
 	//-----------------------------------

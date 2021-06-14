@@ -1,20 +1,21 @@
-/*
-*This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-*Copyright (c) 2018-2020 Amber-Sophia Schroeck
-*
-*The Mini Thread Library is free software; you can redistribute it and/or modify
-*it under the terms of the GNU Lesser General Public License as published by
-*the Free Software Foundation, version 3, or (at your option) any later version.
-
-*The Mini Thread Library is distributed in the hope that it will be useful, but
-*WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-*General Public License for more details.
-*
-*You should have received a copy of the GNU Lesser General Public
-*License along with the Mini Thread  Library; if not, see
-*<https://www.gnu.org/licenses/>.
-*/
+/**
+ * @file
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2018 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef MINLIB_ESP32_THREAD_
 #define MINLIB_ESP32_THREAD_
 
@@ -32,8 +33,6 @@
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
 #include "mn_eventgroup.hpp"
-
-
 
 namespace mn {
 
@@ -91,38 +90,37 @@ namespace mn {
     /**
      * @brief Task priority
      */
-    enum  priority {
-      PriorityIdle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
-      PriorityLow = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,             /*!< Priority for low operation  */
-      PriorityNormal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,         /*!< Priority for tasks for normal operatins - user interfaces for example */
-      PriorityHalfCritical = MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT,/*!< Priority for tasks with normal deadlines and not a lot of processings*/
-      PriorityUrgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,       /*!< priority for tasks with short deadlines and a lot of processings */
-      PriorityCritical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
+    enum  class priority {
+      Idle = MN_THREAD_CONFIG_CORE_PRIORITY_IDLE,           /*!< Priority for no real time operations - idle task */
+      Low = MN_THREAD_CONFIG_CORE_PRIORITY_LOW,             /*!< Priority for low operation  */
+      Normal = MN_THREAD_CONFIG_CORE_PRIORITY_NORM,         /*!< Priority for tasks for normal operatins - user interfaces for example */
+      HalfCritical = MN_THREAD_CONFIG_CORE_PRIORITY_HALFCRT,/*!< Priority for tasks with normal deadlines and not a lot of processings*/
+      Urgent = MN_THREAD_CONFIG_CORE_PRIORITY_URGENT,       /*!< priority for tasks with short deadlines and a lot of processings */
+      Critical = MN_THREAD_CONFIG_CORE_PRIORITY_CRITICAL    /*!< Priority for critical tasks - the highest priority  */
     };
 
     /** Task states returned by get_state(). */
-    enum state {
-      StateRunning = 0,	  /*!< A task is querying the state of itself, so must be running. */
-      StateReady,			    /*!< The task being queried is in a read or pending ready list. */
-      StateBlocked,		    /*!< The task being queried is in the Blocked state. */
-      StateSuspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
-      StateDeleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
+    enum class state {
+      Running = 0,	  /*!< A task is querying the state of itself, so must be running. */
+      Ready,			    /*!< The task being queried is in a read or pending ready list. */
+      Blocked,		    /*!< The task being queried is in the Blocked state. */
+      Suspended,		  /*!< The task being queried is in the Suspended state, or is in the Blocked state with an infinite time out. */
+      Deleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
     };
-
   public:
     /**
      * Basic Constructor for this task.
-     * The priority is PriorityNormal and use 2048 for the stack size
+     * The priority is PriorityNormal and use MN_THREAD_CONFIG_MINIMAL_STACK_SIZE for the stack size
      */
-    basic_task() : basic_task(" ", PriorityNormal, 2048) { }
+    basic_task() : basic_task(" ", priority::Normal, MN_THREAD_CONFIG_MINIMAL_STACK_SIZE) { }
     /**
      * Constructor for this task.
      *
      * @param strName Name of the Task. Only useful for debugging.
      * @param uiPriority FreeRTOS priority of this Task.
-     * @param usStackDepth Number of "words" allocated for the Task stack. default 2048
+     * @param usStackDepth Number of "words" allocated for the Task stack. default MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
      */
-    explicit basic_task(std::string strName, basic_task::priority uiPriority = PriorityNormal,
+    explicit basic_task(std::string strName, basic_task::priority uiPriority = basic_task::priority::Normal,
         unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
 
 
@@ -147,9 +145,10 @@ namespace mn {
      *
      * @return
      *  - ERR_TASK_OK The task are creating,
-     *  - ERR_TASK_CANTINITMUTEX on error creating the using LockObjets, the task is not created,
-     *  - ERR_TASK_ALREADYRUNNING the Task is allready running
-     *  - ERR_TASK_CANTSTARTTHREAD can't create the task
+     *  - ERR_TASK_CANTINITMUTEX on error creating the using LockObjets, the task is not created.
+     *  - ERR_TASK_ALREADYRUNNING the Task is allready running.
+     *  - ERR_TASK_CANTSTARTTHREAD can't create the tas.
+     *	- ERR_TASK_CANTCREATEEVENTGROUP can't create the event group, the task is not created.
      */
     virtual int           start(int uiCore = MN_THREAD_CONFIG_DEFAULT_CORE);
 
@@ -201,7 +200,7 @@ namespace mn {
      *
      * @return The return value
      */
-    void*                 get_return_value();
+    int                  get_return_value();
     /**
      * @brief Get the time since start of this task
      *
@@ -241,6 +240,50 @@ namespace mn {
     void                  resume();
 
     /**
+     * @brief join the task, Wait in other task to end this task.
+     * @param xTickTimeout The maximum amount of ticks to wait.
+     * @note call never in the this task, then wait this task to end this task.
+     * @return
+	 *		- ERR_TASK_NOTRUNNING Call start first.
+	 *		- ERR_TASK_CALLFROMSELFTASK Don't do this ... see the notes
+	 *		- NO_ERROR No error
+     */
+    int 				  join(unsigned int xTickTimeout = portMAX_DELAY);
+
+   /**
+     * @brief join the task, Wait in other task to end this task.
+     * @param time The maximum amount of time to wait.
+     * @note call never in the this task, then wait this task to end this task.
+     * @return
+	 *		- ERR_TASK_NOTRUNNING Call start first.
+	 *		- ERR_TASK_CALLFROMSELFTASK Don't do this ... see the notes
+	 *		- NO_ERROR No error
+     */
+    int				  	join(timespan_t time);
+
+    /**
+     * @brief Wait for start the task.
+     * @param xTickTimeout The maximum amount of ticks to wait.
+     * @note call never in the this task, then wait this task to start this task.
+     * @return
+	 *		- ERR_TASK_NOTRUNNING Call start first.
+	 *		- ERR_TASK_CALLFROMSELFTASK Don't do this ... see the notes
+	 *		- NO_ERROR No error
+     */
+    int				  	wait(unsigned int xTimeOut);
+
+    /**
+     * @brief Wait for start the task.
+     * @param xTickTimeout The maximum amount of time to wait.
+     * @note call never in the this task, then wait this task to start this task.
+     * @return
+	 *		- ERR_TASK_NOTRUNNING Call start first.
+	 *		- ERR_TASK_CALLFROMSELFTASK Don't do this ... see the notes
+	 *		- NO_ERROR No error
+     */
+    int				  	wait(timespan_t time);
+
+    /**
      * @brief This virtual function call on creating, use for user code
      * It is optional whether you implement this or not.
      */
@@ -257,7 +300,7 @@ namespace mn {
      *
      * @return Your return your task function, get with get_return_value()
      */
-    virtual void*         on_task() { return NULL; }
+    virtual int         on_task() { return ERR_TASK_OK; }
 
     /**
      * @brief Called on exit from your on_task() routine.
@@ -394,7 +437,7 @@ namespace mn {
     /**
      * @brief The return value from user task routine
      */
-    void* m_retval;
+    int m_retval;
     /**
      *  @brief Flag whether or not the task was started.
      */
@@ -413,6 +456,7 @@ namespace mn {
      */
     xTaskHandle m_pHandle;
 
+    event_group_t m_eventGroup;
 
     #if( configSUPPORT_STATIC_ALLOCATION == 1 )
       StaticTask_t m_TaskBuffer;

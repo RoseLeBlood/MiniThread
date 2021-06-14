@@ -1,11 +1,12 @@
 /**
+ * @file
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2021 Amber-Sophia Schroeck
- *
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
  * The Mini Thread Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
-
+ *
  * The Mini Thread Library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -14,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
-*/
+ */
 #ifndef __MINILIB_BASIC_HASH_H__
 #define __MINILIB_BASIC_HASH_H__
 
@@ -67,12 +68,21 @@ namespace mn {
 	/**
 	 * @brief Default implementation of hasher.
 	 */
-	 template<typename T>
-	 struct hash {
-	 	const result_type operator()(T& t) const noexcept {
+	template<typename T>
+	struct hash {
+		const result_type operator()(T& t) const noexcept {
 			return internal::rjenkins_hash(t);
-	 	}
-	 };
+		}
+	};
+
+	template<typename T>
+    struct hash<T*>{
+		result_type operator () (T* pPtr) const noexcept {
+			assert(pPtr);
+			auto _value = *pPtr;
+			return internal::rjenkins_hash(_value);
+		}
+    };
 
   	template<>
     struct hash<char*>{

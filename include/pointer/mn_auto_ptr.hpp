@@ -184,6 +184,24 @@ namespace mn {
 			pointer m_ptr;
 		};
 
+		template <typename T>
+		inline void swap(basic_auto_ptr<T>& a, basic_auto_ptr<T>& b) {
+			a.swap(b);
+		}
+
+		template <typename T>
+		using auto_ptr = basic_auto_ptr<T>;
+
+		/**
+		 * @brief Make a auto pointer
+		 * @tparam T Value type of the pointer.
+		 * @tparam Args Argument for the object.
+		 */
+		template<typename T, typename... Args >
+		inline auto_ptr<T> make_auto(Args&&... args) {
+			return auto_ptr<T>(new T (mn::forward<Args>(args)...) );
+		}
+
 	 }
 }
 

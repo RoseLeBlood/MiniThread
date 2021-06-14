@@ -1,22 +1,28 @@
 /**
-* This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
-* Copyright (c) 2018-2020 Amber-Sophia Schroeck
-*
-* The Mini Thread Library is free software; you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, version 3, or (at your option) any later version.
-
-* The Mini Thread Library is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with the Mini Thread  Library; if not, see
-* <https://www.gnu.org/licenses/>.
-*/
+ * @file
+ * @brief Basic vector container
+ * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, version 3, or (at your option) any later version.
+ *
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the Mini Thread  Library; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
 #ifndef _MINILIB_4dcc23da_d2cf_41da_9e29_571d9f17efbe_H_
 #define _MINILIB_4dcc23da_d2cf_41da_9e29_571d9f17efbe_H_
+
+#include "../mn_config.hpp"
+
+#include <assert.h>
 
 #include "../mn_typetraits.hpp"
 #include "../mn_algorithm.hpp"
@@ -33,6 +39,7 @@ namespace mn {
             using value_type = T;
             using pointer = value_type*;
             using reference = value_type&;
+            using lreference = T&&;
             using size_type = mn::size_t;
 
 
@@ -41,12 +48,9 @@ namespace mn {
         	    : m_begin(0), m_end(0), m_capacityEnd(0), m_allocator(allocator) { }
 
             void reallocate(size_type newCapacity, size_type oldSize) {
-			#if 0
+
             	void* mem = m_allocator.allocate(newCapacity, sizeof(value_type) );
                 pointer newBegin = new (mem) value_type();
-			#else
-                pointer newBegin = m_allocator.construct<value_type>();
-			#endif // 0
 
                 const size_type newSize = oldSize < newCapacity ? oldSize : newCapacity;
                 // Copy old data if needed.
@@ -62,12 +66,9 @@ namespace mn {
             void reallocate_discard_old(size_type newCapacity) {
                 assert(newCapacity > size_type(m_capacityEnd - m_begin));
 
-			#if 0
                 void* mem = m_allocator.allocate(newCapacity, sizeof(value_type) );
                 pointer newBegin = new (mem) value_type();
-			#else
-                pointer newBegin = m_allocator.construct<value_type>();
-			#endif // 0
+
 
                 const size_type currSize((size_type)(m_end - m_begin));
 
@@ -82,14 +83,12 @@ namespace mn {
             void destroy(pointer ptr, size_type n) {
                 mn::destruct_n(ptr, n);
 
-			#if 0
+
                 if(mn::is_class<value_type>::value)
 					 ptr->~value_type();
 
 				m_allocator.deallocate(ptr, n, mn::alignment_for(sizeof(n)));
-			#else
-				m_allocator.destroy<value_type>(ptr);
-			#endif // 0
+
             }
             void reset()  {
                 if (m_begin) m_allocator.free(m_begin);
@@ -117,15 +116,16 @@ namespace mn {
         template<typename T, class TAllocator, class TStorage = basic_vector_storage<T, TAllocator> >
         class basic_vector : private TStorage {
         public:
-            using iterator_category = random_access_iterator_tag ;
-            using value_type = T;
-            using pointer = value_type*;
-            using reference = value_type&;
-            using difference_type = ptrdiff_t;
+            using iterator_category = random_access_iterator_tag;
 
+            using value_type = T;
+            using pointer = T*;
+            using reference = T&;
+            using lreference = T&&;
+            using const_reference = const T&;
+            using difference_type = mn::ptrdiff_t;
             using iterator = pointer;
             using const_iterator = const pointer;
-
             using allocator_type = TAllocator;
             using size_type = mn::size_t;
 
@@ -138,7 +138,7 @@ namespace mn {
             explicit basic_vector(size_type initialSize, const allocator_type& allocator = allocator_type())
                 : TStorage(allocator) { resize(initialSize); }
 
-            basic_vector(const pointer first, const pointer last, const allocator_type& allocator = allocator_type())
+            basic_vector(const_iterator first, const_iterator last, const allocator_type& allocator = allocator_type())
                 : TStorage(allocator) { assign(first, last); }
 
             basic_vector(const basic_vector& rhs, const allocator_type& allocator = allocator_type())
@@ -190,10 +190,15 @@ namespace mn {
 
             using TStorage::swap;
 
-            void push_back(const reference v) {
+            void push_back(const_reference v) {
                 if (m_end >= m_capacityEnd) grow();
                 mn::copy_construct(m_end++, v);
             }
+            inline void	 push_back (lreference v)	{
+				if (m_end >= m_capacityEnd) grow();
+                mn::copy_construct(m_end++, mn::move(v));
+			}
+
             void push_back() {
                 if (m_end == m_capacityEnd) grow();
                 mn::construct(m_end); ++m_end;
@@ -264,7 +269,9 @@ namespace mn {
                 insert(size_type(it - m_begin), n, val);
             }
 
-            iterator insert(iterator it, const reference val) {
+
+
+            iterator insert(iterator it, const_reference val) {
                 assert(validate_iterator(it));
                 assert(invariant());
 
@@ -324,23 +331,15 @@ namespace mn {
                 return m_begin + indexFirst;
             }
 
-            inline void erase_undestroy(iterator it) {
-                assert(validate_iterator(it));
-                assert(it != end());
-                assert(invariant());
-
-                const iterator itNewEnd = end() - 1;
-                if (it != itNewEnd) *it = *itNewEnd;
-                pop_back();
-            }
-
             void resize(size_type n) {
                 if (n > size()) insert(m_end, n - size(), value_type());
                 else shrink(n);
             }
+
             void reserve(size_type n) {
                 if (n > capacity()) reallocate(n, size());
             }
+
             void clear() {
                 shrink(0);
                 assert(invariant());
@@ -350,6 +349,7 @@ namespace mn {
                 TStorage::reset();
                 assert(invariant());
             }
+
             void set_capacity(size_type newCapacity) {
                 reallocate(newCapacity, size());
             }
@@ -365,6 +365,7 @@ namespace mn {
                 }
                 return _pos;
             }
+
             iterator find(const reference item) {
                 iterator itEnd = end();
 
@@ -396,7 +397,6 @@ namespace mn {
             const reference operator[](size_type i) const {
                 return at(i);
             }
-
         private:
             size_type compute_new_capacity(size_type newMinCapacity) const {
                 const size_type c = capacity();
@@ -430,6 +430,7 @@ namespace mn {
                 assert(it_start > it_result);
                 internal::copy(it_start, m_end, it_result, itt);
             }
+
 
 
         private:

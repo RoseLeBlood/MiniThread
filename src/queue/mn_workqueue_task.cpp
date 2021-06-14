@@ -43,7 +43,7 @@ namespace mn {
         //-----------------------------------
         //  on_task
         //-----------------------------------
-        void* work_queue_task::on_task() {
+        int work_queue_task::on_task() {
             basic_task::on_task();
 
             work_queue_item *work_item = NULL;
@@ -70,7 +70,7 @@ namespace mn {
                 }
             }
 
-            return 0;
+            return ERR_TASK_OK;
         }
     }
 }

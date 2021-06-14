@@ -1,11 +1,12 @@
 /**
+ * @file
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2021 Amber-Sophia Schroeck
- *
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
  * The Mini Thread Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
-
+ *
  * The Mini Thread Library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -14,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef _MINLIB_423a6056_5421_4f39_85b0_41c5bada4730_H_
 #define _MINLIB_423a6056_5421_4f39_85b0_41c5bada4730_H_
@@ -196,9 +197,14 @@ namespace mn {
     template <class Sig>
     using res_of = internal::res_of<Sig>;
 
+	template <class Sig>
+    using result_of = internal::res_of<Sig>;
+
     template <class Sig>
     using res_of_t = type_t<res_of<Sig>>;
 
+	template <class Sig>
+    using result_of_t = internal::res_of<Sig>;
 
     // is_same
     template <class A, class B>

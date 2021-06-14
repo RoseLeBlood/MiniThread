@@ -45,6 +45,9 @@ namespace mn {
     }
   }
 
+  basic_mutex::basic_mutex(const basic_mutex& other)
+  	: basic_semaphore(other) { }
+
   //-----------------------------------
   //  deconstrutor
   //-----------------------------------
@@ -71,6 +74,7 @@ namespace mn {
     if(success != pdTRUE ) {
       return ERR_MUTEX_LOCK;
     }
+    m_isLocked = true;
     return ERR_MUTEX_OK;
   }
 
@@ -92,6 +96,7 @@ namespace mn {
     if(success != pdTRUE ) {
       return ERR_MUTEX_UNLOCK;
     }
+    m_isLocked = false;
     return ERR_MUTEX_OK;
   }
 }

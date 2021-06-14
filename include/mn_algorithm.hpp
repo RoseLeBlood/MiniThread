@@ -1,11 +1,13 @@
 /**
+ * @file
+ * @brief Basic algorithmens
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
- * Copyright (c) 2021 Amber-Sophia Schroeck
- *
+ * @author Copyright (c) 2021 Amber-Sophia Schroeck
+ * @par License
  * The Mini Thread Library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
-
+ *
  * The Mini Thread Library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -14,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
-*/
+ */
 
 #ifndef _MINLIB_STL_ALGORITHM_H_
 #define _MINLIB_STL_ALGORITHM_H_
@@ -28,11 +30,25 @@
 #include "mn_iterator.hpp"
 #include "mn_functional.hpp"
 
+#include "mn_initializer_list.hpp"
+
 
 namespace mn {
+
+	inline size_t popcount (uint32_t v)	{
+		return __builtin_popcount (v);
+	}
+
+
+
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     inline void  copy_construct(T* mem, const T& orig) {
 	        internal::copy_construct(mem, orig, int_to_type <has_trivial_copy<T>::value> ());
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    inline void  copy_construct(T* mem, const T&& orig) {
+	        internal::copy_construct(mem, mn::move(orig), int_to_type <has_trivial_copy<T>::value> ());
 	}
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
@@ -93,6 +109,12 @@ namespace mn {
         }
 	}
 
+	template <typename T>
+	inline T* copy_backward (const T* first, const T* last, T* result) noexcept {
+		const size_t nBytes (mn::distance (first, last));
+		memmove (advance_ptr(result,-nBytes), first, nBytes);
+	}
+
 	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TFn)
     TFn foreach(TIter src, TIter last, TFn fn) {
         while (src!=last)  {
@@ -133,11 +155,24 @@ namespace mn {
         }
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred)
-    inline TIter lower_bound(TIter src, TIter last, const T& val, const TPred& pred) {
+
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TPred = mn::less<TIter> )
+	constexpr TIter lower_bound (TIter first, TIter last, const TPred& value) {
+		TIter mid;
+		while (first != last) {
+
+			mid = first + size_t(mn::distance (first,last))/2;
+			if (value < *mid) first = mid + 1;
+			else last = mid;
+		}
+		return last;
+	}
+
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred = mn::less<TIter> )
+    constexpr TIter lower_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
-	        distance(src, last, dist);
+	        dist = distance(src, last);
 
 	        while (dist > 0) {
                 const int halfDist = dist >> 1;
@@ -151,11 +186,24 @@ namespace mn {
 	        return src;
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred)
-    inline TIter upper_bound(TIter src, TIter last, const T& val, const TPred& pred) {
+
+	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, class, TPred = mn::less<TIter> )
+	constexpr TIter upper_bound (TIter first, TIter last, const TPred& value) {
+		TIter mid;
+		while (first != last) {
+
+			mid = first + size_t(mn::distance (first,last))/2;
+			if (value < *mid) last = mid;
+			else first = mid + 1;
+		}
+		return last;
+	}
+
+	MN_TEMPLATE_FULL_DECL_THREE(class, TIter, typename, T, class, TPred = mn::less<TIter>)
+    constexpr TIter upper_bound(TIter src, TIter last, const T& val, const TPred& pred) {
 	        internal::test_ordering(src, last, pred);
 	        int dist(0);
-	        distance(src, last, dist);
+	        dist = distance(src, last);
 
 	        while (dist > 0) {
                 const int halfDist = dist >> 1;
@@ -169,6 +217,15 @@ namespace mn {
 	        return src;
 	}
 
+	template <typename TIter, typename TComp>
+	inline constexpr bool binary_search (TIter first, TIter last, const TComp& value) {
+		TIter found = mn::lower_bound (first, last, value);
+		return found != last && !(value < *found);
+	}
+
+
+
+
 	MN_TEMPLATE_FULL_DECL_TWO(class, TIter, typename, T)
     TIter find(TIter src, TIter last, const T& val) {
         while (src != last) {
@@ -178,7 +235,7 @@ namespace mn {
         return last;
 	}
 
-	MN_TEMPLATE_FULL_DECL_THREE(class ,TIter, typename, T, class, TPred)
+	MN_TEMPLATE_FULL_DECL_THREE(class ,TIter, typename, T, class, TPred = mn::less<TIter>)
     TIter find_if(TIter src, TIter last, const T& val, const TPred& pred) {
         while (src != last) {
             if (pred(*src, val))
@@ -262,20 +319,26 @@ namespace mn {
 	MN_TEMPLATE_FULL_DECL_TWO(typename, TAssignable, size_t, N)
     inline void swap(TAssignable (&x)[N], TAssignable (&y)[N]) {
       for (size_t i = 0; i < N; i++)
-			swap(x[i], y[i]);
+			mn::swap(x[i], y[i]);
     }
 
 	MN_TEMPLATE_FULL_DECL_TWO(typename, fIt1, typename, fIt2 )
     inline void iter_swap(fIt1 a, fIt2 b) {
-      swap(*a, *b);
+      mn::swap(*a, *b);
     }
 
 	MN_TEMPLATE_FULL_DECL_TWO(typename, fIt1, typename, fIt2 )
     fIt2 swap_ranges(fIt1 a, fIt1 b, fIt2 c) {
 		for (; a != b; ++a, ++c)
-			iter_swap(*a, *c);
+			mn::iter_swap(*a, *c);
 		return c;
     }
+
+    template <typename TRandomAccessIterator, typename TRandFunc>
+	void random_shuffle (TRandomAccessIterator first, TRandomAccessIterator last, const TRandFunc& func) {
+		for (; first != last; ++ first)
+			mn::iter_swap (first, first + (func() % distance (first, last)));
+	}
 
     MN_TEMPLATE_FULL_DECL_ONE(typename, T)
     struct value2size {

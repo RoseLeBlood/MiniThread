@@ -19,7 +19,7 @@
 #define _MINILIB_19ee7665_8c63_48b7_803f_9c056afce956_H_
 
 #include "../mn_typetraits.hpp"
-
+#include "../mn_algorithm.hpp"
 
 namespace mn {
 
@@ -78,17 +78,29 @@ namespace mn {
             return basic_pair<TFIRST, TSECOND>(a, b);
         }
 
-        template <typename TFIRST, typename TSECOND>
-    	struct is_pod< basic_pair<TFIRST, TSECOND> > {
-			enum {
-				value = ( (is_pod<TFIRST>::value || is_fundamental<TFIRST>::value) &&
-						  (is_pod<TSECOND>::value || is_fundamental<TSECOND>::value) )
-			};
-    	};
+        template <typename ForwardIterator, typename TComp>
+		inline constexpr basic_pair<ForwardIterator,ForwardIterator>  equal_range (ForwardIterator first,
+																				   ForwardIterator last,
+																				   const TComp& value) {
+			basic_pair<ForwardIterator,ForwardIterator> rv;
+
+			rv.second = rv.first = mn::lower_bound (first, last, value);
+			while (rv.second != last && !(value < *(rv.second)))
+				++ rv.second;
+			return rv;
+		}
 
     	template<typename TFIRST, typename TSECOND>
         using pair = basic_pair<TFIRST, TSECOND>;
 	}
+
+	template <typename TFIRST, typename TSECOND>
+	struct is_pod< container::pair<TFIRST, TSECOND> > {
+		enum {
+			value = ( (is_pod<TFIRST>::value || is_fundamental<TFIRST>::value) &&
+					  (is_pod<TSECOND>::value || is_fundamental<TSECOND>::value) )
+		};
+	};
 
 }
 
