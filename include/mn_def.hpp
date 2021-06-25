@@ -51,6 +51,20 @@ namespace mn {
     const size_t default_alignment = alignof(void*);
 	constexpr size_t max_alignment = alignof(max_align_t);
 
+	using ::clock_t;
+	using ::time_t;
+	using ::tm;
+
+	using ::clock;
+	using ::difftime;
+	using ::mktime;
+	using ::time;
+	using ::asctime;
+	using ::ctime;
+	using ::gmtime;
+	using ::localtime;
+	using ::strftime;
+
 	class null_type { };
 
 	namespace math {

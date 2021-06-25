@@ -303,6 +303,7 @@
 		<Unit filename="include/mn_timed_lock.hpp" />
 		<Unit filename="include/mn_timer.hpp" />
 		<Unit filename="include/mn_timer_esp32.hpp" />
+		<Unit filename="include/mn_timestamp.hpp" />
 		<Unit filename="include/mn_typetraits.hpp" />
 		<Unit filename="include/mn_uint128.hpp" />
 		<Unit filename="include/mn_version.hpp" />
@@ -407,6 +408,7 @@
 		<Unit filename="src/mn_tickhook_entry.cpp" />
 		<Unit filename="src/mn_timer.cpp" />
 		<Unit filename="src/mn_timer_esp32.cpp" />
+		<Unit filename="src/mn_timestamp.cpp" />
 		<Unit filename="src/mn_version.cpp" />
 		<Unit filename="src/mn_void.cpp" />
 		<Unit filename="src/net/mn_basic_dgram_socket.cpp" />
