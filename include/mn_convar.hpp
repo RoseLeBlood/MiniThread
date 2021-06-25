@@ -28,6 +28,8 @@
 
 #include "mn_config.hpp"
 #include "mn_mutex.hpp"
+#include "mn_autolock.hpp"
+#include "mn_autounlock.hpp"
 
 #include <list>
 
@@ -73,6 +75,16 @@ namespace mn {
              * Signal all threads waiting on this condition_variable.
              */
             void broadcast();
+
+            inline void notify_one() noexcept { // wake up one waiter
+				automutx_t autolock(m_mutex);
+				signal();
+			}
+
+			inline void notify_all() noexcept { // wake up all waiters
+				automutx_t autolock(m_mutex);
+				broadcast();
+			}
 
         private:
             /**

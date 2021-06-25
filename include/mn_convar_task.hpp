@@ -19,6 +19,8 @@
 #ifndef MINLIB_ESP32_CON_THREAD_
 #define MINLIB_ESP32_CON_THREAD_
 
+#include "mn_config.hpp"
+
 /**
  *  Condition variables are an additon to the mini Thread
  *  classes. If you want to include them, you need to define the
@@ -26,7 +28,7 @@
  */
 #if MN_THREAD_CONFIG_CONDITION_VARIABLE_SUPPORT == MN_THREAD_CONFIG_YES
 
-#include "mn_config.hpp"
+
 #include "mn_task.hpp"
 #include "mn_convar.hpp"
 

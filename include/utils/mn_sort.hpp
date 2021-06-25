@@ -1,19 +1,19 @@
-/** 
+/**
  * This file is part of the Mini Thread Library (https://github.com/RoseLeBlood/MiniThread ).
  * Copyright (c) 2021 Amber-Sophia Schroeck
  *
- * The Mini Thread Library is free software; you can redistribute it and/or modify  
- * it under the terms of the GNU Lesser General Public License as published by  
+ * The Mini Thread Library is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, version 3, or (at your option) any later version.
 
- * The Mini Thread Library is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * The Mini Thread Library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with the Mini Thread  Library; if not, see
- * <https://www.gnu.org/licenses/>.  
+ * <https://www.gnu.org/licenses/>.
 */
 
 #ifndef MINLIB_STL_SORT_H_
@@ -50,9 +50,9 @@ namespace mn {
 				} while (i <= j);
 
                 if (low < j) quick_sort(data, low, j, pred);
-                if (i < high) low = i;    
+                if (i < high) low = i;
                 else break;
-			} 
+			}
 		}
 
 		MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
@@ -70,11 +70,27 @@ namespace mn {
 			}
 			data[k - 1] = temp;
 		}
+
+		MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
+		void shell_sort(T* data, size_t n, TPredicate pred) {
+			size_t temp, j;
+
+			for (size_t gap = n/2; gap > 0; gap /= 2) {
+				for (size_t i = gap; i < n; i += 1) {
+					temp = data[i];
+
+					for (j = i; j >= gap && pred(arr[j - gap], temp); j -= gap) {
+						data[j] = data[j - gap];
+					}
+					data[j] = temp;
+				}
+			}
+		}
 	} // internal
 
 	MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
     void insertion_sort(T* begin, T* end, TPredicate pred) {
-		const size_t num = end - begin; 
+		const size_t num = end - begin;
 
 		for (size_t i = 0; i < num; ++i) {
 			const T t = begin[i];
@@ -93,9 +109,21 @@ namespace mn {
 	}
 
 	MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
+    void shell_sort(T* begin, T* end, TPredicate pred) {
+		if (end - begin > 1)
+			internal::shell_sort(begin, (size_t)(end - begin), pred);
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    void shell_sort(T* begin, T* end) {
+		shell_sort(begin, end, mn::greater<T>());
+	}
+
+
+	MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
     void quick_sort(T* begin, T* end, TPredicate pred) {
 		if (end - begin > 1)
-			internal::quick_sort(begin, 0, (long)(end - begin - 1), pred);
+			internal::quick_sort(begin, 0, (size_t)(end - begin - 1), pred);
 	}
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
@@ -143,6 +171,18 @@ namespace mn {
 		}
 		return is_sorted;
 	}
+
+	MN_TEMPLATE_FULL_DECL_TWO(typename, T, class, TPredicate)
+    void sort(T* begin, T* end, TPredicate pred) {
+		shell_sort(begin, end, pred);
+	}
+
+	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
+    void sort(T* begin, T* end) {
+		shell_sort(begin, end, mn::greater<T>());
+	}
+
+
 }
 
 #endif

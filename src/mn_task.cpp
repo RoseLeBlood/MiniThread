@@ -44,7 +44,7 @@ namespace mn {
   //  construtor
   //-----------------------------------
   basic_task::basic_task(std::string strName, basic_task::priority uiPriority,
-      unsigned short  usStackDepth)
+      unsigned short  usStackDepth) noexcept
         : m_runningMutex(),
           m_contextMutext(),
           m_continuemutex(),
@@ -148,10 +148,15 @@ namespace mn {
 	return wait(_time.to_ticks());
   }
 
+  bool basic_task::joinable() const noexcept {
+	return (m_pHandle != nullptr);
+  }
   //-----------------------------------
   //  join
   //-----------------------------------
   int basic_task::join(unsigned int xTimeOut) {
+  	if(!joinable()) return ERR_TASK_NOTRUNNING;
+
   	if(!m_bRunning) return ERR_TASK_NOTRUNNING;
   	if(m_pHandle == xTaskGetCurrentTaskHandle())  {
   		ESP_LOGW("WARNING BOT", "Don't do this!! Don't do this.... only you are a cake! ... Bob?");

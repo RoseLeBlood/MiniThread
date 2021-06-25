@@ -244,6 +244,7 @@
 		<Unit filename="include/mn_auto_release.hpp" />
 		<Unit filename="include/mn_auto_version.hpp" />
 		<Unit filename="include/mn_autolock.hpp" />
+		<Unit filename="include/mn_autounlock.hpp" />
 		<Unit filename="include/mn_basic_semaphore.hpp" />
 		<Unit filename="include/mn_basic_timespan.hpp" />
 		<Unit filename="include/mn_basic_timestamp.hpp" />
@@ -298,6 +299,7 @@
 		<Unit filename="include/mn_task_list.hpp" />
 		<Unit filename="include/mn_task_utils.hpp" />
 		<Unit filename="include/mn_tasklet.hpp" />
+		<Unit filename="include/mn_thread.hpp" />
 		<Unit filename="include/mn_tickhook.hpp" />
 		<Unit filename="include/mn_tickhook_entry.hpp" />
 		<Unit filename="include/mn_timed_lock.hpp" />

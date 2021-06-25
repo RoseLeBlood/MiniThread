@@ -108,11 +108,13 @@ namespace mn {
       Deleted		    /*!< The task being queried has been deleted, but its TCB has not yet been freed. */
     };
   public:
+  	using native_handle_type = xTaskHandle;
+
     /**
      * Basic Constructor for this task.
      * The priority is PriorityNormal and use MN_THREAD_CONFIG_MINIMAL_STACK_SIZE for the stack size
      */
-    basic_task() : basic_task(" ", priority::Normal, MN_THREAD_CONFIG_MINIMAL_STACK_SIZE) { }
+    basic_task() noexcept : basic_task(" ", priority::Normal, MN_THREAD_CONFIG_MINIMAL_STACK_SIZE) { }
     /**
      * Constructor for this task.
      *
@@ -121,7 +123,7 @@ namespace mn {
      * @param usStackDepth Number of "words" allocated for the Task stack. default MN_THREAD_CONFIG_MINIMAL_STACK_SIZE
      */
     explicit basic_task(std::string strName, basic_task::priority uiPriority = basic_task::priority::Normal,
-        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE);
+        unsigned short  usStackDepth = MN_THREAD_CONFIG_MINIMAL_STACK_SIZE) noexcept;
 
 
     /**
@@ -239,6 +241,7 @@ namespace mn {
      */
     void                  resume();
 
+    bool 				  joinable() const noexcept;
     /**
      * @brief join the task, Wait in other task to end this task.
      * @param xTickTimeout The maximum amount of ticks to wait.
@@ -454,7 +457,7 @@ namespace mn {
      * @brief Reference to the underlying task handle for this task.
      * @note Can be obtained from get_handle().
      */
-    xTaskHandle m_pHandle;
+    native_handle_type m_pHandle;
 
     event_group_t m_eventGroup;
 
