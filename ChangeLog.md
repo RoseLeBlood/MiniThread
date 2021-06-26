@@ -1,9 +1,15 @@
 # Changelog
 
+
 ## Version 2.29.8995 Jun 2021 (unstable beta)
 + remove build errors
 + add numeric_limits
 + change return variable from void* to int in funtion basic_task::on_task
++ reorder and add wifi error codes.
++ add basic_wifi class and a class for create a ESP32 WiFi AP (basic_wifi_ap).
++ add shell sort and manked t as std
++ add github pull_request_template, security.md and issue templates: bug report and future request.
++ ade the function notify_one and notify_all to convar.
 
 
 ## Version 2.29.8906 Mai 2021 (unstable beta)

@@ -299,12 +299,12 @@ namespace mn {
 
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-    inline T max(const T& x, const T& y) {
+    inline T max(const T x, const T y) {
 	    return x > y ? x : y;
 	}
 
 	MN_TEMPLATE_FULL_DECL_ONE(typename, T)
-    inline T min(const T& x, const T& y) {
+    inline T min(const T x, const T y) {
 	    return x < y ? x : y;
 	}
 

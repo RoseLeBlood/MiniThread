@@ -42,7 +42,7 @@ namespace mn {
   #endif
 
 
-  using auto unlock_t = basic_autounlock<LockType_t>;
+  using unlock_t = basic_autounlock<LockType_t>;
 }
 
 #endif

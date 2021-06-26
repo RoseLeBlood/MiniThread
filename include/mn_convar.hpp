@@ -77,12 +77,10 @@ namespace mn {
             void broadcast();
 
             inline void notify_one() noexcept { // wake up one waiter
-				automutx_t autolock(m_mutex);
 				signal();
 			}
 
 			inline void notify_all() noexcept { // wake up all waiters
-				automutx_t autolock(m_mutex);
 				broadcast();
 			}
 

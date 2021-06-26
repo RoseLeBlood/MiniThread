@@ -62,7 +62,7 @@ namespace mn {
 		void update();
 
 		mn::time_t get_epoch() const
-			{ return mn::time_t(m_time / MINILIB_TIMESTAMP_RESELUTION)); }
+			{ return mn::time_t(m_time / MINILIB_TIMESTAMP_RESELUTION); }
 
 		/**
 		 * @brief Get  the timestamp expressed in UTC-based time.
@@ -82,7 +82,7 @@ namespace mn {
 		 * @note Equivalent to Timestamp() - *this.
 		 */
 		value_type get_elapsed() const
-			{ Timestamp now; return now - *this; }
+			{ self_type now; return now - *this; }
 
 
 		/**
@@ -90,7 +90,7 @@ namespace mn {
 		 * the time denoted by the timestamp.
 		 */
 		bool is_elapsed(value_type interval) const
-			{ return elapsed() >= interval; }
+			{ return get_elapsed() >= interval; }
 
 		void swap(self_type& ts) {
 			mn::swap(m_time, ts.m_time);
@@ -99,7 +99,7 @@ namespace mn {
 		static self_type from_epoch(mn::time_t t);
 			/// Creates a timestamp from a mn::time_t.
 
-		static self_type from_utc(UtcTimeVal val);
+		static self_type from_utc(value_type val);
 			/// Creates a timestamp from a UTC time value
 			/// (100 nanosecond intervals since midnight,
 			/// October 15, 1582).
@@ -139,7 +139,7 @@ namespace mn {
 			{ m_time += d; return *this; }
 
 		self_type& operator -= (value_type d)
-			 m_time = d; return *this; }
+			{ m_time = d; return *this; }
 
 		self_type  operator +  (const timepan_type& span) const;
 		self_type  operator -  (const timepan_type& span) const;

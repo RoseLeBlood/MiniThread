@@ -23,6 +23,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <time.h>
 
 #include "mn_copyable.hpp"
 #include "mn_void.hpp"

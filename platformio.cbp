@@ -180,6 +180,10 @@
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/lib/gcc/xtensa-esp32-elf/5.2.0/include" />
 			<Add directory="/home/ambersophia/.platformio/packages/toolchain-xtensa32@2.50200.97/xtensa-esp32-elf/include" />
 		</Compiler>
+		<Unit filename=".github/ISSUE_TEMPLATE/bug_report.md" />
+		<Unit filename=".github/ISSUE_TEMPLATE/feature_request.md" />
+		<Unit filename=".github/SECURITY.md" />
+		<Unit filename=".github/pull_request_template.md" />
 		<Unit filename=".gitignore" />
 		<Unit filename="CODE_OF_CONDUCT.md" />
 		<Unit filename="CODE_OF_CONDUCT_de.md" />
@@ -330,6 +334,8 @@
 		<Unit filename="include/net/mn_basic_wifi_sta_net_if.hpp" />
 		<Unit filename="include/net/mn_net_types.hpp" />
 		<Unit filename="include/net/mn_socket.hpp" />
+		<Unit filename="include/net/mn_wifi.hpp" />
+		<Unit filename="include/net/mn_wifi_ap.hpp" />
 		<Unit filename="include/pointer/mn_any_ptr.hpp" />
 		<Unit filename="include/pointer/mn_auto_ptr.hpp" />
 		<Unit filename="include/pointer/mn_clone_ptr.hpp" />
@@ -432,6 +438,8 @@
 		<Unit filename="src/net/mn_basic_wifi_net_if.cpp" />
 		<Unit filename="src/net/mn_basic_wifi_sta_net_if.cpp" />
 		<Unit filename="src/net/mn_socket.cpp" />
+		<Unit filename="src/net/mn_wifi.cpp" />
+		<Unit filename="src/net/mn_wifi_ap.cpp" />
 		<Unit filename="src/queue/mn_binaryqueue.cpp" />
 		<Unit filename="src/queue/mn_deque.cpp" />
 		<Unit filename="src/queue/mn_queue.cpp" />
