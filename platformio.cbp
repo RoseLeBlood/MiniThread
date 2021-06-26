@@ -333,6 +333,7 @@
 		<Unit filename="include/net/mn_basic_wifi_net_if.hpp" />
 		<Unit filename="include/net/mn_basic_wifi_sta_net_if.hpp" />
 		<Unit filename="include/net/mn_net_types.hpp" />
+		<Unit filename="include/net/mn_network.hpp" />
 		<Unit filename="include/net/mn_socket.hpp" />
 		<Unit filename="include/net/mn_wifi.hpp" />
 		<Unit filename="include/net/mn_wifi_ap.hpp" />
@@ -458,7 +459,7 @@
 		<Extensions>
 			<AutoVersioning>
 				<Scheme minor_max="100" build_max="0" rev_max="0" rev_rand_max="1000" build_times_to_increment_minor="20000" />
-				<Settings autoincrement="0" date_declarations="1" use_define="1" update_manifest="0" do_auto_increment="0" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="include/mn_auto_version.hpp" />
+				<Settings autoincrement="0" date_declarations="0" use_define="0" update_manifest="0" do_auto_increment="1" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="" />
 				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangesLog.txt" />
 				<Code header_guard="_MINLIB_AUTO_VERSION_H_" namespace="mn" prefix="MN_VERSION" />
 			</AutoVersioning>

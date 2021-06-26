@@ -189,8 +189,6 @@ namespace mn {
 			virtual void on_probereqrec(esp_event_base_t event_base, void* event_data) { }
 
 		};
-
-		using wifi_ap = basic_wifi_ap;
 	}
 }
 
