@@ -12,14 +12,14 @@
 #include <driver/spi_master.h>
 #endif // CONFIG_ETH_USE_SPI_ETHERNET
 
-#include "mn_basic_ip_address.hpp"
-#include "mn_basic_ip4_address.hpp"
-#include "mn_basic_ip6_address.hpp"
+#include <net/mn_basic_ip_address.hpp>
+#include <net/mn_basic_ip4_address.hpp>
+#include <net/mn_basic_ip6_address.hpp>
 
 #include "mn_lock.hpp"
 
 namespace mn {
-	namespace net {
+	namespace device {
 
 		/**
 		 * @brief Wrapper class around esp-idf implementation of a esp-netif device.
@@ -32,10 +32,12 @@ namespace mn {
 		 */
 		class basic_net_if {
 			public:
+				using ip4_address_t = net::basic_ip4_address;
+
 				struct ip_info {
-					basic_ip4_address ip;      /**< Interface IPV4 address */
-					basic_ip4_address netmask; /**< Interface IPV4 netmask */
-					basic_ip4_address gw;      /**< Interface IPV4 gateway address */
+					ip4_address_t ip;      /**< Interface IPV4 address */
+					ip4_address_t netmask; /**< Interface IPV4 netmask */
+					ip4_address_t gw;      /**< Interface IPV4 gateway address */
 				};
 				using ip_info_t = ip_info;
 

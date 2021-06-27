@@ -21,7 +21,38 @@
 
 #include "mn_config.hpp"
 
+
+#include "mn_def.hpp"
+
+
 namespace mn {
+	basic_timestamp::basic_timestamp() {
+		update();
+	}
 
+	basic_timestamp::basic_timestamp(time_type tv)
+		: m_time(tv) { }
 
+	basic_timestamp::basic_timestamp(const self_type& other)
+		: m_time(other.m_time)  { }
+
+	void basic_timestamp::update() {
+		struct timeval tv;
+		mn::gettimeofday(&tv, NULL);
+
+		m_time = time_type(tv.tv_sec) * MINILIB_TIMESTAMP_RESELUTION + tv.tv_usec;
+	}
+	void basic_timestamp::swap(self_type& time) {
+		mn::swap(m_time, time.m_time);
+	}
+
+	basic_timestamp::self_type basic_timestamp::from_epoch(const mn::time_t t) {
+		time_type _time = time_type(t);
+		return self_type( _time * MINILIB_TIMESTAMP_RESELUTION );
+	}
+
+	basic_timestamp::self_type basic_timestamp::from_utc(const time_type val) {
+		time_type _time = (val - ( time_type(0x01b21dd2) << 32 ) + 0x13814000);
+		return self_type( (_time / 10) );
+	}
 }

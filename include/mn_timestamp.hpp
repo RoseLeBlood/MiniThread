@@ -22,9 +22,15 @@
 #define _MINLIB_BASIC_TIMESTAMP_H__
 
 #include "mn_config.hpp"
-#include "mn_basic_timespan.hpp"
+
+#include "mn_limits.hpp"
+#include "mn_timespan.hpp"
 
 #define MINILIB_TIMESTAMP_RESELUTION 	1000000
+
+#define MINILIB_TIMESTAMP_TIME_TYPE		typename basic_timespan::time_type
+#define MINILIB_TIMESTAMP_MIN			mn::numeric_limits<MINILIB_TIMESTAMP_TIME_TYPE>::min()
+#define MINILIB_TIMESTAMP_MAX			mn::numeric_limits<MINILIB_TIMESTAMP_TIME_TYPE>::max()
 
 namespace mn {
 	/**
@@ -33,9 +39,8 @@ namespace mn {
 	 */
 	class basic_timestamp {
 	public:
-		using value_type = int64_t;
+		using time_type = MINILIB_TIMESTAMP_TIME_TYPE;
 		using self_type = basic_timestamp;
-		using timepan_type = basic_timespan;
 
 		/**
 		 * @brief Consruct a basic_timestamp with the current time.
@@ -45,21 +50,26 @@ namespace mn {
 		/**
 		 * @brief Creates a timestamp from the given time value.
 		 */
-		basic_timestamp(value_type tv);
+		basic_timestamp(time_type tv);
 
 		/**
 		 * @brief Copy constructor.
 		 */
 		basic_timestamp(const self_type& other);
 
-		/**
-		 * @brief Destroys the timestamp
-		 */
-		~basic_timestamp();
-
-
-
 		void update();
+		void swap(self_type& time);
+
+		/**
+		 * @brief Creates a timestamp from a mn::time_t.
+		 */
+		static self_type from_epoch(const mn::time_t t);
+
+		/**
+		 * @brief Creates a timestamp from a UTC time value.
+		 * @note since midnight 15 October 1582.
+		 */
+		static self_type from_utc(const time_type val);
 
 		mn::time_t get_epoch() const
 			{ return mn::time_t(m_time / MINILIB_TIMESTAMP_RESELUTION); }
@@ -67,21 +77,21 @@ namespace mn {
 		/**
 		 * @brief Get  the timestamp expressed in UTC-based time.
 		 */
-		value_type get_utc() const
-			{ return m_time * 10 + (value_type(0x01b21dd2) << 32) + 0x13814000; }
+		time_type get_utc() const
+			{ return m_time * 10 + (time_type(0x01b21dd2) << 32) + 0x13814000; }
 
 		/**
 		 * @brief Get  the timestamp expressed in microseconds.
 		 * @note Unix epoch, midnight, January 1, 1970.
 		 */
-		value_type get_microseconds() const
+		time_type get_microseconds() const
 			{ return m_time; }
 
 		/**
 		 * @brief Get the time elapsed since the time denoted by the timestamp.
 		 * @note Equivalent to Timestamp() - *this.
 		 */
-		value_type get_elapsed() const
+		time_type get_elapsed() const
 			{ self_type now; return now - *this; }
 
 
@@ -89,21 +99,8 @@ namespace mn {
 		 * @brief if the given interval has passed since
 		 * the time denoted by the timestamp.
 		 */
-		bool is_elapsed(value_type interval) const
+		bool is_elapsed(time_type interval) const
 			{ return get_elapsed() >= interval; }
-
-		void swap(self_type& ts) {
-			mn::swap(m_time, ts.m_time);
-		}
-
-		static self_type from_epoch(mn::time_t t);
-			/// Creates a timestamp from a mn::time_t.
-
-		static self_type from_utc(value_type val);
-			/// Creates a timestamp from a UTC time value
-			/// (100 nanosecond intervals since midnight,
-			/// October 15, 1582).
-
 
 		bool operator == (const self_type& ts) const
 			{ return m_time == ts.m_time; }
@@ -123,35 +120,50 @@ namespace mn {
 		bool operator >  (const self_type& ts) const
 			{ return m_time > ts.m_time; }
 
-		value_type operator -  (const self_type& ts) const
+		time_type operator -  (const self_type& ts) const
 			{ return m_time - ts.m_time; }
 
-		value_type operator +  (const self_type& ts) const
+		time_type operator +  (const self_type& ts) const
 			{ return m_time + ts.m_time; }
 
-		self_type  operator +  (value_type d) const
+		self_type  operator +  (time_type d) const
 			{ return self_type(m_time + d); }
 
-		self_type  operator -  (value_type d) const
+		self_type  operator -  (time_type d) const
 			{ return self_type(m_time - d); }
 
-		self_type& operator += (value_type d)
+		self_type& operator += (time_type d)
 			{ m_time += d; return *this; }
 
-		self_type& operator -= (value_type d)
-			{ m_time = d; return *this; }
+		self_type& operator -= (time_type d)
+			{ m_time -= d; return *this; }
 
-		self_type  operator +  (const timepan_type& span) const;
-		self_type  operator -  (const timepan_type& span) const;
-		self_type& operator += (const timepan_type& span);
-		self_type& operator -= (const timepan_type& span);
+		self_type  operator +  (const basic_timespan& span) const {
+			return self_type(m_time + span.get_total_microseconds());
+		}
+		self_type  operator -  (const basic_timespan& span) const {
+			return self_type(m_time - span.get_total_microseconds());
+		}
+		self_type& operator += (const basic_timespan& span) {
+			m_time += span.get_total_microseconds(); return *this;
+		}
+		self_type& operator -= (const basic_timespan& span) {
+			m_time -= span.get_total_microseconds(); return *this;
+		}
+		self_type& operator = (const self_type& other) {
+			m_time = other.m_time; return *this;
+		}
+		self_type& operator = (time_type tv) {
+			m_time = tv; return *this;
+		}
 
-
-		self_type& operator = (const self_type& other);
-		self_type& operator = (value_type tv);
 	private:
-		value_type m_time;
+		time_type m_time;
 	};
+
+	void swap(basic_timestamp a, basic_timestamp b) {
+		a.swap(b);
+	}
 
 	using timestamp_t = basic_timestamp;
 }

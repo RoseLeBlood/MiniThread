@@ -22,11 +22,11 @@
 
 #include "../mn_config.hpp"
 
-#include "mn_basic_ip4_address.hpp"
+#include "../net/mn_basic_ip4_address.hpp"
 #include "mn_wifi.hpp"
 
 namespace mn {
-	namespace net {
+	namespace device {
 
 		/**
 		 * @brief Wifi AP class for the esp32
@@ -34,7 +34,8 @@ namespace mn {
 		class basic_wifi_ap : public basic_wifi {
 			using base_type = basic_wifi;
 		public:
-			using ip4_adress_t = basic_ip4_address;
+
+			using ip4_adress_t = net::basic_ip4_address;
 			using auth_mode_t = typename base_type::auth_mode;
 			using interface_t = typename base_type::wifi_interface_type;
 

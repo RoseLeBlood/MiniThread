@@ -31,7 +31,7 @@
 #include <cstring>
 
 namespace mn {
-	namespace net {
+	namespace device {
 		/**
 		 * @brief Wrapper basic WiFi class around esp-idf implementation of a esp-netif device.
 		 * @note Class for STA and soft AP class

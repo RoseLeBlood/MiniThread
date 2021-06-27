@@ -17,7 +17,7 @@
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
  */
-#include "net/mn_wifi.hpp"
+#include "device/mn_wifi.hpp"
 #include "mn_config.hpp"
 
 #include "esp_system.h"
@@ -29,7 +29,7 @@
 #include "lwip/sys.h"
 
 namespace mn {
-	namespace net {
+	namespace device {
 
 		//-----------------------------------
 		// basic_wifi::basic_wifi

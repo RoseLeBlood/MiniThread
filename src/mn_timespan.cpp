@@ -17,7 +17,7 @@
 */
 
 #include "mn_config.hpp"
-#include "mn_basic_timespan.hpp"
+#include "mn_timespan.hpp"
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -181,8 +181,15 @@ namespace mn {
 	//-----------------------------------
 	//  get_total_milliseconds
 	//-----------------------------------
-	basic_timespan::time_type basic_timespan::get_total_milliseconds() const {
+	basic_timespan::int_type basic_timespan::get_total_milliseconds() const {
 		return m_timeSpan/_MINILIB_TIMEDIFF_MILLISECONDS;
+	}
+
+	//-----------------------------------
+	//  get_total_microseconds
+	//-----------------------------------
+	basic_timespan::int_type basic_timespan::get_total_microseconds() const {
+		return basic_timespan::int_type (m_timeSpan);
 	}
 
 	//-----------------------------------

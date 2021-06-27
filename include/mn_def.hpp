@@ -24,6 +24,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <time.h>
+#include <sys/time.h>
+#include <time.h>
 
 #include "mn_copyable.hpp"
 #include "mn_void.hpp"
@@ -65,6 +67,8 @@ namespace mn {
 	using ::gmtime;
 	using ::localtime;
 	using ::strftime;
+
+	using ::gettimeofday;
 
 	class null_type { };
 

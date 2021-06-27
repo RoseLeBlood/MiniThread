@@ -29,7 +29,7 @@
 
 #include "mn_autolock.hpp"
 #include "mn_error.hpp"
-#include "mn_basic_timespan.hpp"
+#include "mn_timespan.hpp"
 #include "mn_sleep.hpp"
 #include "mn_micros.hpp"
 #include "mn_eventgroup.hpp"

@@ -89,7 +89,7 @@
 #endif
 
 #ifndef MN_THREAD_CONFIG_BOARD
-    #define MN_THREAD_CONFIG_BOARD  MN_THREAD_CONFIG_BOARD_NODEFS
+    #define MN_THREAD_CONFIG_BOARD  MN_THREAD_CONFIG_ESP32
 #endif
 /**
  * @brief Pre defined on which core must run the task, can override in the create

@@ -30,7 +30,24 @@
 //#include "mn_serial_net.hpp"
 
 namespace mn {
-	namespace net {
+	namespace device {
+
+		/**
+		 * @brief using basic_ip6_address for ip6_address
+		 * @ingroup device
+		 */
+		using wifi_net_if = basic_wifi_net_if;
+
+		/**
+		 * @brief using void* for ppp_net_if - not IMPL
+		 * @ingroup device
+		 */
+		using ppp_net_if = void*; //basic_ppp_net_if;
+		/**
+		 * @brief using void* for ethernet_nef_if - not IMPL
+		 * @ingroup device
+		 */
+		using ethernet_nef_if = void*; // basic_ethernet_nef_if;
 
 		using wifi = basic_wifi;
 		using wifi_ap = basic_wifi_ap;

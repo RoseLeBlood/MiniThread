@@ -29,7 +29,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include "mn_basic_timespan.hpp"
+#include "mn_timespan.hpp"
 
 MN_EXTERNC_BEGINN
 /**

@@ -1,23 +1,13 @@
 # Security Policies and Procedures
 
-This document outlines security procedures and general policies for the `standard`
-project.
-
-  * [Reporting a Bug](#reporting-a-bug)
-  * [Disclosure Policy](#disclosure-policy)
-  * [Comments on this Policy](#comments-on-this-policy)
-
 ## Reporting a Bug
 
-Thank you for improving the security of `mnthread`. We appreciate your efforts and
-responsible disclosure and will make every effort to acknowledge your
-contributions.
+Thank you for improving the security of `mnthread`. Report security bugs by emailing
+the lead maintainer at ambersophia.amshop@outlook.de.
 
-Report security bugs by emailing the lead maintainer at ambersophia.amshop@outlook.de.
-
-The lead maintainer will acknowledge your email within 48 hours, and will send a
+The lead maintainer will acknowledge your email within 2 days, and will send a
 more detailed response within 48 hours indicating the next steps in handling
-your report. After the initial reply to your report, the security team will
+your report. After the initial reply to your report, I will
 endeavor to keep you informed of the progress towards a fix and full
 announcement, and may ask for additional information or guidance.
 

@@ -15,12 +15,14 @@
 *License along with the Mini Thread  Library; if not, see
 *<https://www.gnu.org/licenses/>.
 */
+#include "device/mn_basic_wifi_net_if.hpp"
+
 #include "mn_config.hpp"
-#include "net/mn_basic_wifi_net_if.hpp"
+
 
 
 namespace mn {
-	namespace net {
+	namespace device {
 		//-----------------------------------
 		//  construtor
 		//-----------------------------------

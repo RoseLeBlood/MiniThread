@@ -10,6 +10,10 @@
 + add shell sort and manked t as std
 + add github pull_request_template, security.md and issue templates: bug report and future request.
 + ade the function notify_one and notify_all to convar.
++ !! Rename mn_basic_timespan to mn_timespan !!
++ !! move wifi and netif stack from mn::net to mn::device. BT, WIFI and TelNet are a device
++ add mn::device::system a simple device interface to get useful SoC informations
++ update the examples
 
 
 ## Version 2.29.8906 Mai 2021 (unstable beta)

@@ -1,5 +1,5 @@
 #include "mn_config.hpp"
-#include "net/mn_basic_netif.hpp"
+#include "device/mn_basic_netif.hpp"
 
 #include <esp_eth.h>
 #include <esp_wifi.h>
@@ -7,14 +7,14 @@
 #include <esp_event.h>
 #include <esp_log.h>
 
-//#include //<esp_netif_ppp.h>
+//#include <esp_netif_ppp.h>
 
 #include <cstring>
 
 
 
 namespace mn {
-	namespace net {
+	namespace device {
 		//-----------------------------------
 		//  create_default
 		//-----------------------------------
@@ -105,9 +105,9 @@ namespace mn {
 			MN_ESP2MNTHREAD_ERROR_END(_error);
 
 			if(_error == NO_ERROR) {
-				ip_info.gw = basic_ip4_address(_info_t.gw.addr);
-				ip_info.ip = basic_ip4_address(_info_t.ip.addr);
-				ip_info.netmask = basic_ip4_address(_info_t.netmask.addr);
+				ip_info.gw = ip4_address_t(_info_t.gw.addr);
+				ip_info.ip = ip4_address_t(_info_t.ip.addr);
+				ip_info.netmask = ip4_address_t(_info_t.netmask.addr);
 			}
 
 			return _error;

@@ -34,7 +34,7 @@
 
 
 namespace mn {
-	namespace net {
+	namespace device {
 		/**
 		 * @brief A basic class for wifi.
 		 */

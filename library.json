@@ -13,7 +13,7 @@
         "type": "git",
         "url": "https://github.com/RoseLeBlood/MiniThread.git"
     },
-    "version": "2.29.8908.1532",
+    "version": "2.29.8995.57",
     "frameworks": "espidf",
     "platforms": "espressif32",
     "homepage": "https://roseleblood.github.io/mnthread-docs/index.html",
@@ -65,7 +65,8 @@
 			".pio",
 			"platformio.*",
 			".gitignore",
-			"example/.git"
+			"example/.git",
+			"*.s"
 		]
 	},
 	"build": {

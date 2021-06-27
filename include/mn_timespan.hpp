@@ -113,7 +113,12 @@ namespace mn {
 		/**
 		 * @brief Get the total number of milliseconds.
 		 */
-		time_type get_total_milliseconds() const;
+		int_type get_total_milliseconds() const;
+
+		/**
+		 * @brief Get the total number of microseconds.
+		 */
+		int_type get_total_microseconds() const;
 
 
 		self_type& operator = (const self_type& timespan);

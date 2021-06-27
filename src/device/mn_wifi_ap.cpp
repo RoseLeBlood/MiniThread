@@ -17,7 +17,7 @@
  * License along with the Mini Thread  Library; if not, see
  * <https://www.gnu.org/licenses/>.
  */
-#include "net/mn_wifi_ap.hpp"
+#include "device/mn_wifi_ap.hpp"
 #include "mn_config.hpp"
 
 #include <stdint.h>
@@ -35,10 +35,10 @@
 
 #include "mn_algorithm.hpp"
 
-#define ESP2ERR mn::net::__esp32error_to_mnerror
+#define ESP2ERR mn::device::__esp32error_to_mnerror
 
 namespace mn {
-	namespace net {
+	namespace device {
 
 		//-----------------------------------
         //  __esp32error_to_mnerror

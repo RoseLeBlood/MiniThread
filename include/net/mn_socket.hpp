@@ -18,9 +18,6 @@
 #ifndef _MINILIB_SOCKET_BASE_H_
 #define _MINILIB_SOCKET_BASE_H_
 
-#include "mn_basic_netif.hpp"
-#include "mn_basic_wifi_net_if.hpp"
-
 #include "mn_basic_endpoint.hpp"
 #include "mn_basic_dgram_socket.hpp"
 #include "mn_basic_multicast_ip_socket.hpp"
@@ -29,23 +26,6 @@
 
 namespace mn {
 	namespace net {
-		/**
-		 * @brief using basic_ip6_address for ip6_address
-		 * @ingroup device
-		 */
-		using wifi_net_if = basic_wifi_net_if;
-
-		/**
-		 * @brief using void* for ppp_net_if - not IMPL
-		 * @ingroup device
-		 */
-		using ppp_net_if = void*; //basic_ppp_net_if;
-		/**
-		 * @brief using void* for ethernet_nef_if - not IMPL
-		 * @ingroup device
-		 */
-		using ethernet_nef_if = void*; // basic_ethernet_nef_if;
-
 		/**
 		 * @brief using basic_ip4_address for ip4_address
 		 * @ingroup socket

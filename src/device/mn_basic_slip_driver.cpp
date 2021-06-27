@@ -19,10 +19,10 @@
 
 
 #if CONFIG_LWIP_SLIP_SUPPORT
-#include "net/mn_basic_slip_driver.hpp"
+#include "device/mn_basic_slip_driver.hpp"
 
 namespace mn {
-	namespace net {
+	namespace device {
 
 		//-----------------------------------
 		//  basic_slip_driver::basic_slip_driver
