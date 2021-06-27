@@ -30,6 +30,8 @@
 #include <string.h>
 
 #include "mn_basic_wifi_net_if.hpp"
+#include "mn_network_device.hpp"
+
 #include "../mn_eventgroup.hpp"
 
 
@@ -68,7 +70,7 @@ namespace mn {
 			basic_wifi(const interface_t& type);
 			virtual ~basic_wifi();
 
-			virtual bool stop(bool wifioff = false) { return true; }
+			virtual bool stop(bool wifioff) { return true; }
 	  	protected:
 			/**
 			 * @brief start the wifi system and set the config.

@@ -5786,6 +5786,7 @@
 		<Unit filename="include/container/mn_triple.hpp" />
 		<Unit filename="include/container/mn_tuple.hpp" />
 		<Unit filename="include/container/mn_vector.hpp" />
+		<Unit filename="include/device/mn_basic_device.hpp" />
 		<Unit filename="include/device/mn_basic_netif.hpp" />
 		<Unit filename="include/device/mn_basic_slip_driver.hpp" />
 		<Unit filename="include/device/mn_basic_wifi_net_if.hpp" />
@@ -5793,6 +5794,7 @@
 		<Unit filename="include/device/mn_input_pin.hpp" />
 		<Unit filename="include/device/mn_io_pin.hpp" />
 		<Unit filename="include/device/mn_network.hpp" />
+		<Unit filename="include/device/mn_network_device.hpp" />
 		<Unit filename="include/device/mn_output_in.hpp" />
 		<Unit filename="include/device/mn_system.hpp" />
 		<Unit filename="include/device/mn_wifi.hpp" />
@@ -5944,6 +5946,7 @@
 		<Unit filename="src/device/mn_basic_slip_driver.cpp" />
 		<Unit filename="src/device/mn_basic_wifi_net_if.cpp" />
 		<Unit filename="src/device/mn_block_device.cpp" />
+		<Unit filename="src/device/mn_network_device.cpp" />
 		<Unit filename="src/device/mn_system_esp32.cpp" />
 		<Unit filename="src/device/mn_wifi.cpp" />
 		<Unit filename="src/device/mn_wifi_ap.cpp" />

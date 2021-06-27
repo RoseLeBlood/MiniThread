@@ -31,7 +31,7 @@ namespace mn {
 		/**
 		 * @brief Wifi AP class for the esp32
 		 */
-		class basic_wifi_ap : public basic_wifi {
+		class basic_wifi_ap : public basic_wifi, public basic_network_device {
 			using base_type = basic_wifi;
 		public:
 
@@ -42,7 +42,8 @@ namespace mn {
 			/**
 			 * @brief Construct the wifi ap object.
 			 */
-			basic_wifi_ap() : basic_wifi(interface_t::Acesspoint) { }
+			basic_wifi_ap() : basic_wifi(interface_t::Acesspoint),
+							  basic_network_device("wifiap") { }
 			/**
 			 * @brief Basic destructor, stopped the Wifi.
 			 */
@@ -80,14 +81,26 @@ namespace mn {
 
 			/**
 			 * @brief Set IPv4 infos, local ip, gateway and subnet.
-			 * @return If true then set all address anh false if not.
+			 * @return If true then set all address and false if not.
 			 */
-			bool set_ipinfo(const ip4_adress_t& local_ip, const ip4_adress_t& gateway, const ip4_adress_t& subnet);
+			int set_ipinfo(const ip4_adress_t& local_ip, const ip4_adress_t& gateway, const ip4_adress_t& subnet);
+
+			/**
+			 * @brief Get IPv4 infos, local ip, gateway and subnet.
+			 * @return If true then get all address and false if not.
+			 */
+			int get_ipinfo(ip4_adress_t& local_ip, ip4_adress_t& gateway, ip4_adress_t& subnet) override {
+				local_ip = get_ip(); 		if(local_ip == MNNET_IPV4_ADDRESS_NONE) return -1;
+				gateway = get_gateway();	if(gateway  == MNNET_IPV4_ADDRESS_NONE) return -2;
+				subnet = get_netmask();		if(subnet   == MNNET_IPV4_ADDRESS_NONE) return -3;
+
+				return 0;
+			}
 			/**
 			 * @brief
 			 * @return
 			 */
-        	bool stop(bool wifioff = false) override;
+        	bool stop(bool wifioff) override;
 
         	/**
         	 * @brief Get Tte IPv4 address of the WiFi AP device.
@@ -154,6 +167,13 @@ namespace mn {
 			 * @return The hostname of the WiFi AP device.
 			 */
 			operator const char*()  { return get_hostname(); }
+
+			// basic_network_device
+		public:
+			int 	stop() override { return stop(true) ? 0 : 1; }
+			int 	open() override { if(is_enable()) return 0; else return -1; }
+			bool 	is_enable() override { return (get_mode() != WIFI_MODE_NULL); }
+			bool 	is_stream_support() override { return false; }
 		protected:
 			/**
 			 * @brief  Get interface's IP address information.

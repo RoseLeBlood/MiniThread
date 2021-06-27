@@ -111,7 +111,7 @@ namespace mn {
 		//-----------------------------------
         //  basic_wifi_ap::set_ipinfo
         //-----------------------------------
-		bool basic_wifi_ap::set_ipinfo(const ip4_adress_t& local_ip, const ip4_adress_t& gateway,
+		int basic_wifi_ap::set_ipinfo(const ip4_adress_t& local_ip, const ip4_adress_t& gateway,
 										const ip4_adress_t& subnet) {
 			tcpip_adapter_ip_info_t info;
 			info.ip.addr 		= (uint32_t)local_ip;
@@ -131,9 +131,9 @@ namespace mn {
 					(void*)&lease, sizeof(dhcps_lease_t)
 				);
 
-				return tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP) == ESP_OK;
+				return tcpip_adapter_dhcps_start(TCPIP_ADAPTER_IF_AP) == ESP_OK ? 0 : 1;
 			}
-			return false;
+			return -1;
 		}
 
 		//-----------------------------------

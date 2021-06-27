@@ -44,7 +44,7 @@ namespace mn {
 		// basic_wifi::~basic_wifi
 		//-----------------------------------
 		basic_wifi::~basic_wifi() {
-			stop();
+			stop(false);
 		}
 
 		//-----------------------------------

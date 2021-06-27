@@ -22,6 +22,9 @@
 #define __MINILIB_BLOCK_DEVICE_H__
 
 #include "../mn_config.hpp"
+
+
+#include "mn_basic_device.hpp"
 #include "../mn_def.hpp"
 
 namespace mn {
@@ -30,9 +33,9 @@ namespace mn {
 		 * @brief basic_block_device class is an interface for a block device.
 		 * @ingroup devices
 		 */
-		class basic_block_device {
+		class basic_block_device : public basic_device {
 		public:
-			basic_block_device() = default;
+			basic_block_device(char prefix[8]) : basic_device(prefix) { }
 
 			/**
 			 * @brief BlockDevice's destructor
@@ -57,7 +60,7 @@ namespace mn {
 			 * @pre Device is opened.
 			 * @return 0 on success, error code otherwise
 			 */
-			virtual int close() = 0;
+			virtual int stop() = 0;
 
 			/**
 			 * @brief Locks the device for exclusive use by current thread.

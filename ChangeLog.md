@@ -13,6 +13,7 @@
 + !! Rename mn_basic_timespan to mn_timespan !!
 + !! move wifi and netif stack from mn::net to mn::device. BT, WIFI and TelNet are a device
 + add mn::device::system a simple device interface to get useful SoC informations
++ add device base classes
 + update the examples
 
 
